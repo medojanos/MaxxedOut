@@ -1,18 +1,23 @@
 # MaxxedOut
 Maxx out your workouts.
 
-## Project Description
+## Project description
 ### Why we created it? 
-### What is our goal with it.
+-
+### What is our goal with it?
+-
 
-## Parts of the Project
+## Parts of the project
 ### Mobile app
-Functions
+-
 ### Website
-Functions
+-
 
-## How to Use the Project
-### How to install the app.
+## How to use the project
+### How to install the app?
+-
 ### Screenshots
+-
 
 ## Credits
+-
