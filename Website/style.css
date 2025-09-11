@@ -1,0 +1,17 @@
+html {
+    width: 100%;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+#hero {
+    background-color: lightblue;
+    height: 94vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
