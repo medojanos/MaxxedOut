@@ -6,8 +6,11 @@ body {
     font-family: sans-serif;
 }
 
-#hero {
+nav {
     background-color: lightblue;
+}
+
+#hero {
     height: 94vh;
 }
 

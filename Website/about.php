@@ -10,9 +10,11 @@
 </head>
 <body>
     <?php
-        include_once "header.htm";
+        include_once "nav.htm";
     ?>
-    
+    <!--
+    about us
+    -->
     <?php
         include_once "footer.htm";
     ?>

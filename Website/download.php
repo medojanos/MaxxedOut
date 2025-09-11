@@ -12,20 +12,9 @@
     <?php
         include_once "nav.htm";
     ?>
-
-    <section id="hero" class="container-fluid d-flex align-items-center text-center justify-content-center">
-        <div>
-            <h1>Maxxold ki az edzéseid.</h1>
-            <a href="#more"><button>Megtekintem</button></a>    
-        </div>
-    </section>
-    <section id="more">
-    <!-- github readme api -->
-    </section>
-    <section id="download">
-    <!-- github link, download.php -->
-    </section>
-    
+    <!--
+    carousel, download, github
+    -->
     <?php
         include_once "footer.htm";
     ?>
