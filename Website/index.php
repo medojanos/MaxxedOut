@@ -12,20 +12,20 @@
     <?php
         include_once "nav.htm";
     ?>
-
     <section id="hero" class="container-fluid d-flex align-items-center text-center justify-content-center">
         <div>
-            <h1>Maxxold ki az edzéseid.</h1>
-            <a href="#more"><button>Megtekintem</button></a>    
+            <h1>Maxx out your workouts</h1>
+            <a href="#more"><button>More</button></a>    
         </div>
     </section>
-    <section id="more">
-    <!-- github readme api -->
+    <section id="more" class="more">
+        <script src="readme.js"></script>
     </section>
-    <section id="download">
-    <!-- github link, download.php -->
+    <hr>
+    <section class="more">
+        <a href="download.php"><button>Try it out</button></a>
     </section>
-    
+    <hr>
     <?php
         include_once "footer.htm";
     ?>

@@ -1,3 +1,23 @@
+@media (max-width: 992px) {
+    .more {
+        width: 75%;
+    }
+
+    #download {
+        width: 75% !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .more {
+        width: 100% !important;
+    }
+
+    #download {
+        width: 100% !important;
+    }
+}
+
 html {
     width: 100%;
 }
@@ -12,6 +32,24 @@ nav {
 
 #hero {
     height: 94vh;
+}
+
+section {
+    padding: 1rem;
+}
+
+.more {
+    width: 50%;
+    margin: auto;
+}
+
+#download {
+    width: 60%;
+    margin: auto;
+}
+
+#downloadImg {
+    max-width: 400px;
 }
 
 a {

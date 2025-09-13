@@ -12,9 +12,9 @@
     <?php
         include_once "nav.htm";
     ?>
-    <!--
-    carousel, download, github
-    -->
+    <section id="download">
+        <img id="downloadImg" src="img/testPhone.webp">
+    </section>
     <?php
         include_once "footer.htm";
     ?>
