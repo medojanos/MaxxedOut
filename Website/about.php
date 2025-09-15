@@ -12,9 +12,7 @@
     <?php
         include_once "nav.htm";
     ?>
-    <!--
-    about us
-    -->
+    
     <?php
         include_once "footer.htm";
     ?>
