@@ -1,0 +1,8 @@
+Creating expo app
+npx create-expo-app "myapp"
+
+Installing module
+npx expo install "mymodule"
+
+Starting project
+npx expo start
