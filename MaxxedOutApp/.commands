@@ -4,5 +4,8 @@ npx create-expo-app "myapp"
 Installing module
 npx expo install "mymodule"
 
+Install requriements
+npm install
+
 Starting project
 npx expo start
