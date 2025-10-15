@@ -1,4 +1,4 @@
-window.onload = async() => {
+window.onload = async () => {
   const url = "https://raw.githubusercontent.com/medojanos/MaxxedOut/refs/heads/main/README.md";
   try {
     const response = await fetch(url);

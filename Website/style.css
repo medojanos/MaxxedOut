@@ -1,20 +1,12 @@
 @media (max-width: 992px) {
-    .more {
-        width: 75%;
-    }
-
-    #download {
-        width: 75% !important;
+    section {
+        max-width: 75% !important;
     }
 }
 
 @media (max-width: 767px) {
-    .more {
-        width: 100% !important;
-    }
-
-    #download {
-        width: 100% !important;
+    section {
+        max-width: 100% !important;
     }
 }
 
@@ -24,35 +16,36 @@ html {
 
 body {
     font-family: sans-serif;
+    background-color: black;
+    color: #F5EDED;
 }
 
-nav {
-    background-color: lightblue;
-}
-
-#hero {
-    height: 94vh;
+nav, footer {
+    background-color: #3E3636;
+    padding: 2rem;
 }
 
 section {
-    padding: 1rem;
-}
-
-.more {
-    width: 50%;
     margin: auto;
-}
-
-#download {
-    width: 60%;
-    margin: auto;
-}
-
-#downloadImg {
-    max-width: 400px;
+    max-width: 50%;
 }
 
 a {
     text-decoration: none;
     color: inherit;
+}
+
+#hero {
+    height: 95vh;
+}
+
+#hero button {
+    background-color: #D72323;
+    border: none;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+.navbar-brand {
+    color: inherit !important;
 }

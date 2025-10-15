@@ -18,14 +18,9 @@
             <a href="#more"><button>More</button></a>    
         </div>
     </section>
-    <section id="more" class="more">
+    <section id="more">
         <script src="readme.js"></script>
     </section>
-    <hr>
-    <section class="more">
-        <a href="download.php"><button>Try it out</button></a>
-    </section>
-    <hr>
     <?php
         include_once "footer.htm";
     ?>

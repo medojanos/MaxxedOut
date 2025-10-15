@@ -1,28 +1,25 @@
 {
   "expo": {
-    "name": "MaxxedOutApp",
-    "slug": "MaxxedOutApp",
+    "name": "MaxxedOut",
+    "slug": "MaxxedOut",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "assets/icon.svg",
+    "icon": "./assets/icon.svg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "assets/icon.svg",
+      "image": "./assets/icon.svg",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F5EDED"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#F5EDED"
       },
       "edgeToEdgeEnabled": true
-    },
-    "web": {
-      "favicon": "assets/icon.svg"
     }
   }
 }
