@@ -6,6 +6,5 @@ export default function Footer() {
                 <h3>MaxxedOut 2025 @</h3>
             </div>
         </div>
-        
     )
 }

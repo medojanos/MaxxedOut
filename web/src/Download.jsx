@@ -1,12 +1,5 @@
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-
-export default function Home() {
+export default function Download() {
   return (
-    <>
-      <Navbar></Navbar>
-
-      <Footer></Footer>
-    </>
+    <section>Download</section>
   )
 }

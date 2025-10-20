@@ -17,3 +17,19 @@ button {
     box-shadow: 2px 2px 5px;
     padding: 1rem;
 }
+
+#hero {
+    height: 95vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+section {
+    max-width: 75%;
+    margin: auto;
+}
+
+.navbar-brand {
+    color: inherit !important;
+}

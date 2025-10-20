@@ -1,9 +1,5 @@
-
-
 export default function Readme() {
     return (
-        <div id="readme">
-
-        </div>
+        <section id="readme">Readme</section>
     )
 }
