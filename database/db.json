@@ -1,0 +1,333 @@
+{
+  "tables": [
+    {
+      "name": "workouts",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "id": "KINjgrk9u0foNw8oNBkLV",
+          "name": "id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": true,
+          "increment": false,
+          "notNull": true,
+          "primary": true,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "I2qccpZKS7IFuV0sijQko",
+          "name": "user_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "9z5O1tPxMYrwCm9jQopu5",
+          "name": "date",
+          "type": "DATETIME",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": ""
+        }
+      ],
+      "indices": [],
+      "id": "F6Z5h2KSqXceRhQAheSan",
+      "x": -311.30000000000007,
+      "y": 83.20000000000002,
+      "locked": false
+    },
+    {
+      "name": "users",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "id": "EkjVqQqmSttj2myEudqUN",
+          "name": "id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": true,
+          "increment": false,
+          "notNull": true,
+          "primary": true,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "yDgmo1APeAqLKEEvosGsC",
+          "name": "email",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "E-8winT2HTsOlXTaJzmkM",
+          "name": "nickname",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "m-PQoxV6XvBLbGtL6e_wL",
+          "name": "password",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": ""
+        }
+      ],
+      "indices": [],
+      "id": "6fYr_azmZ6y3Y8HraOqlu",
+      "x": -578.6999999999999,
+      "y": -193.5
+    },
+    {
+      "name": "exercises",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "id": "U-mDR8lYfF6tyoOM7CUns",
+          "name": "id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": true,
+          "increment": false,
+          "notNull": true,
+          "primary": true,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "u7zIElKr3CP0qw6eYhW9d",
+          "name": "name",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": ""
+        }
+      ],
+      "indices": [],
+      "id": "3eK9bzrJh0r_L4Ohya1VG",
+      "x": 337.95000000000005,
+      "y": 52.450000000000045
+    },
+    {
+      "name": "sets",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "id": "3fxopgWWm6ygct2_B-qf5",
+          "name": "id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": true,
+          "increment": false,
+          "notNull": true,
+          "primary": true,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "xv4Bl9jFQ6x-vxjSDK8ES",
+          "name": "workout_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "VZ7SYSnRYRGIC4RaOJ4DW",
+          "name": "exercise_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "7Be06r9MbgMkQkqst9gt_",
+          "name": "rep",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": false,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "INJeYsn0Z_VXlB1aXN9__",
+          "name": "weight",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": false,
+          "default": "",
+          "check": ""
+        }
+      ],
+      "indices": [],
+      "id": "gi5NzXARciyFqiSXd5Jwx",
+      "x": 43.05000000000007,
+      "y": -248.35
+    },
+    {
+      "id": "qpBB1a_AiCO9orR658RWM",
+      "name": "codes",
+      "x": -674.4500000000002,
+      "y": 20.824999999999932,
+      "locked": false,
+      "fields": [
+        {
+          "name": "code",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "i28gRqxnBm4OMooKOjaDq"
+        },
+        {
+          "id": "QUzhrws7iQGkzSeWebUEl",
+          "name": "user_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "fCyZ2xUjA6efeNlI8Lpne",
+          "name": "expiry",
+          "type": "DATETIME",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "obhuQwXONEB2KSvx8tD9t",
+          "name": "used",
+          "type": "BOOLEAN",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a"
+    }
+  ],
+  "relationships": [
+    {
+      "startTableId": "6fYr_azmZ6y3Y8HraOqlu",
+      "startFieldId": "EkjVqQqmSttj2myEudqUN",
+      "endTableId": "F6Z5h2KSqXceRhQAheSan",
+      "endFieldId": "I2qccpZKS7IFuV0sijQko",
+      "cardinality": "one_to_many",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_users_id_workouts",
+      "id": "BhxhYsWA8OZyhjrB5HtYw"
+    },
+    {
+      "startTableId": "F6Z5h2KSqXceRhQAheSan",
+      "startFieldId": "KINjgrk9u0foNw8oNBkLV",
+      "endTableId": "gi5NzXARciyFqiSXd5Jwx",
+      "endFieldId": "xv4Bl9jFQ6x-vxjSDK8ES",
+      "cardinality": "one_to_many",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_workouts_id_sets",
+      "id": "iC1-tCVRmzY9V0p6AfnE2"
+    },
+    {
+      "startTableId": "3eK9bzrJh0r_L4Ohya1VG",
+      "startFieldId": "U-mDR8lYfF6tyoOM7CUns",
+      "endTableId": "gi5NzXARciyFqiSXd5Jwx",
+      "endFieldId": "VZ7SYSnRYRGIC4RaOJ4DW",
+      "cardinality": "one_to_many",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_exercises_id_sets",
+      "id": "7c73HwwPmIMlGmDlFEU-N"
+    },
+    {
+      "startTableId": "qpBB1a_AiCO9orR658RWM",
+      "startFieldId": "QUzhrws7iQGkzSeWebUEl",
+      "endTableId": "6fYr_azmZ6y3Y8HraOqlu",
+      "endFieldId": "EkjVqQqmSttj2myEudqUN",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_codes_user_id_users",
+      "id": "vsNZt-lJ1hRfXVautplzo"
+    }
+  ],
+  "notes": [],
+  "subjectAreas": [],
+  "database": "sqlite",
+  "title": "MaxxedOutDatabase"
+}
