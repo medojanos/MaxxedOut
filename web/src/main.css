@@ -28,6 +28,8 @@ button {
 section {
     max-width: 75%;
     margin: auto;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
 }
 
 .navbar-brand {

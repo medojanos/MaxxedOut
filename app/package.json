@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "start": "expo start"
   },
   "dependencies": {
     "@react-native-vector-icons/ionicons": "^12.3.0",
@@ -22,5 +19,5 @@
     "react-native-screens": "~4.16.0",
     "react-native-web": "^0.21.0"
   },
-  "private": true
+  "private" : "true"
 }

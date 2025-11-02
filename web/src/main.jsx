@@ -7,6 +7,7 @@ import Navbar from './components/Navbar'
 import Home from './Home'
 import Registration from './Registration'
 import Download from './Download'
+import About from './About'
 import Footer from './components/Footer'
 
 createRoot(document.getElementById('root')).render(
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/" element={<Home />} />
       <Route path="/registration" element={<Registration />} />
       <Route path="/download" element={<Download />} />
+      <Route path="/about" element={<About />} />
     </Routes>
     <Footer></Footer>
   </BrowserRouter>

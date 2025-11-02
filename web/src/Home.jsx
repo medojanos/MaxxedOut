@@ -1,11 +1,11 @@
 import Hero from './components/Hero'
-import Readme from './components/Readme'
+import More from './components/More'
 
 export default function Home() {
   return (
     <>
       <Hero></Hero>
-      <Readme></Readme>
+      <More></More>
     </>
   )
 }
