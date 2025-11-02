@@ -1,7 +1,7 @@
 {
   "name": "maxxedoutapi",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "api.js",
   "type": "module",
   "dependencies": {
     "cors": "^2.8.5",
@@ -9,7 +9,7 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "cd db && node create.js && cd .. && node api.js"
   },
-  "private" : "true"
+  "private": "true"
 }

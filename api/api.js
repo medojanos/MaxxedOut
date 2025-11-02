@@ -1,7 +1,6 @@
 import express from 'express'
 import sqlite3 from 'sqlite3'
 import cors from 'cors'
-
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
@@ -16,21 +15,33 @@ app.use(cors())
 app.use(express.json())
 
 const db = new sqlite3.Database(dbPath, (e) => {
-  if (e) console.error('Database error:', e)
-  else console.log('Database opened successfully')
+  if (e) console.error("Database error: ", e)
+  else console.log("Database opened successfully")
 })
 
-app.get('/', (req, res) => {
-  res.send('The API is working!')
+app.get("/", (req, res) => {
+  res.send("The API is working!")
 })
 
-app.get('/readme', (req, res) => {
-  fs.readFile(readmePath, 'utf-8', (e, text) => {
+app.get("/readme", (req, res) => {
+  fs.readFile(readmePath, "utf-8", (e, text) => {
     res.send(text)
   })
 })
 
+app.get("/users", (req, res) => {
+  db.all("SELECT * FROM users", (e, rows) => {
+    res.send(rows);
+  });
+})
+
+app.get("/exercises", (req, res) => {
+  db.all("SELECT * FROM exercises", (e, rows) => {
+    res.send(rows);
+  });
+})
+
 const PORT = 4000
 app.listen(PORT, () => {
-  console.log(`API running on http://localhost:${PORT}`)
+  console.log("API listening on http://localhost:" + PORT)
 })

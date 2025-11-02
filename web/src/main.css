@@ -35,3 +35,12 @@ section {
 .navbar-brand {
     color: inherit !important;
 }
+
+#registrationForm {
+    width: fit-content;
+    margin: auto;
+}
+
+#registrationForm input {
+    margin-bottom: 2rem;
+}

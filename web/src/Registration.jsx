@@ -1,5 +1,9 @@
+import RegistrationForm from "./components/RegistrationForm"
+
 export default function Home() {
   return (
-    <section>Registration</section>
+    <section>
+      <RegistrationForm></RegistrationForm>
+    </section>
   )
 }
