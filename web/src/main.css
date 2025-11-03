@@ -17,16 +17,23 @@ button {
     box-shadow: 2px 2px 5px;
     padding: 1rem;
 }
+button:hover {
+    filter: brightness(1.2);
+    transition: 0.3s;
+}
 
 #hero {
     height: 95vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-image: url("assets/testhero.jpeg");
+    background-size: cover;
+    background-position: center;
 }
 
 section {
-    max-width: 75%;
+    max-width: 50%;
     margin: auto;
     padding-top: 5rem;
     padding-bottom: 5rem;
@@ -34,13 +41,4 @@ section {
 
 .navbar-brand {
     color: inherit !important;
-}
-
-#registrationForm {
-    width: fit-content;
-    margin: auto;
-}
-
-#registrationForm input {
-    margin-bottom: 2rem;
 }

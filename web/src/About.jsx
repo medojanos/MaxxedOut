@@ -15,8 +15,6 @@ async function Fetch() {
 export default function About() {
     useEffect(() => {Fetch()})
     return (
-        <section>
-            <div id="readme"></div>
-        </section>
+        <section id="readme"></section>
     )
 }
