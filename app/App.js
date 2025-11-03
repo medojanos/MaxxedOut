@@ -1,5 +1,4 @@
-import React from "react";
-import * as Var from "./Variables";
+import * as Var from "./misc/Variables";
 
 // Components
 import { NavigationContainer } from "@react-navigation/native";

@@ -1,9 +1,6 @@
-import * as React from "react";
-
 import { View, Text } from "react-native";
 
-// Styles
-import Style from "./Style";
+import Style from "../misc/Style";
 
 export default function Workouts() {
     return (
