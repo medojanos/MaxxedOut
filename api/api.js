@@ -4,7 +4,6 @@ import cors from 'cors'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
-import { json } from 'stream/consumers'
 import { hash } from 'crypto'
 
 const filename = fileURLToPath(import.meta.url)
@@ -44,12 +43,17 @@ app.get("/exercises", (req, res) => {
 })
 
 app.post("/register", (req, res) => {
-  db.run(
-    "INSERT INTO users (email, password) VALUES (?, ?)",
-    [req.body.email, req.body.password],
-    err => console.log(err)
-  )
-  res.json({message : "Success"});
+  db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
+    if (row) {
+      res.json({status: "Email already registered"});
+    } else {
+      db.run(
+        "INSERT INTO users (email, password) VALUES (?, ?)",
+        [req.body.email, hash('sha-512', req.body.password)]
+      )
+      res.json({status : "Successfully registered"});
+    }
+  })
 })
 
 const PORT = 4000

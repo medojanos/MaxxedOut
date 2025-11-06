@@ -5,11 +5,15 @@ export default function Registration() {
   const[email, setEmail] = useState();
   const[password, setPassword] = useState();
   const[repassword, setRepassword] = useState();
+  const[status, setStatus] = useState();
   
   function HandleForm(event){
     event.preventDefault();
 
-    if(password != repassword) return ;
+    if(password != repassword) {
+      setStatus("Passwords do not match")
+      return;
+    };
 
     fetch("http://localhost:4000/register", {
       method: "POST",
@@ -22,7 +26,7 @@ export default function Registration() {
       })
     })
     .then(res => res.json())
-    .then(data => console.log(data.message))
+    .then(data => setStatus(data.status))
     .catch(err => console.log(err))
   }
   
@@ -44,11 +48,12 @@ export default function Registration() {
     <section>
       <form onSubmit={HandleForm}>
         <h3>Registration</h3>
-        <input name="email" type="email" autoComplete="on" onInput={HandleInput}></input><br></br>
-        <input name="password" type="password" onInput={HandleInput}></input><br></br>
-        <input name="repassword" type="password" onInput={HandleInput}></input><br></br>
+        <input name="email" type="email" autoComplete="on" onInput={HandleInput} required></input><br></br>
+        <input name="password" type="password" onInput={HandleInput} required></input><br></br>
+        <input name="repassword" type="password" onInput={HandleInput} required></input><br></br>
         <input type="submit" className="me-2" onInput={HandleInput}></input>
         <input type="reset"></input>
+        {status ? status : ""}
       </form>
     </section>
   )
