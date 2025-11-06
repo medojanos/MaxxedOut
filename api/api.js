@@ -4,6 +4,8 @@ import cors from 'cors'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
+import { json } from 'stream/consumers'
+import { hash } from 'crypto'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -39,6 +41,15 @@ app.get("/exercises", (req, res) => {
   db.all("SELECT * FROM exercises", (e, rows) => {
     res.send(rows);
   });
+})
+
+app.post("/register", (req, res) => {
+  db.run(
+    "INSERT INTO users (email, password) VALUES (?, ?)",
+    [req.body.email, req.body.password],
+    err => console.log(err)
+  )
+  res.json({message : "Success"});
 })
 
 const PORT = 4000
