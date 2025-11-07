@@ -52,7 +52,7 @@ export default function Registration() {
         <input name="password" type="password" onInput={HandleInput} required></input><br></br>
         <input name="repassword" type="password" onInput={HandleInput} required></input><br></br>
         <input type="submit" className="me-2" onInput={HandleInput}></input>
-        <input type="reset"></input>
+        <input type="reset"></input><br></br>
         {status ? status : ""}
       </form>
     </section>

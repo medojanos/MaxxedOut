@@ -36,6 +36,24 @@ app.get("/users", (req, res) => {
   });
 })
 
+app.get("/codes", (req, res) => {
+  db.all("SELECT * FROM codes", (e, rows) => {
+    res.send(rows);
+  });
+})
+
+app.get("/workouts", (req, res) => {
+  db.all("SELECT * FROM workouts", (e, rows) => {
+    res.send(rows);
+  });
+})
+
+app.get("/sets", (req, res) => {
+  db.all("SELECT * FROM sets", (e, rows) => {
+    res.send(rows);
+  });
+})
+
 app.get("/exercises", (req, res) => {
   db.all("SELECT * FROM exercises", (e, rows) => {
     res.send(rows);
