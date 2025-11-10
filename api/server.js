@@ -36,24 +36,6 @@ app.get("/users", (req, res) => {
   });
 })
 
-app.get("/codes", (req, res) => {
-  db.all("SELECT * FROM codes", (e, rows) => {
-    res.send(rows);
-  });
-})
-
-app.get("/workouts", (req, res) => {
-  db.all("SELECT * FROM workouts", (e, rows) => {
-    res.send(rows);
-  });
-})
-
-app.get("/sets", (req, res) => {
-  db.all("SELECT * FROM sets", (e, rows) => {
-    res.send(rows);
-  });
-})
-
 app.get("/exercises", (req, res) => {
   db.all("SELECT * FROM exercises", (e, rows) => {
     res.send(rows);
@@ -63,13 +45,13 @@ app.get("/exercises", (req, res) => {
 app.post("/register", (req, res) => {
   db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
     if (row) {
-      res.json({status: "Email already registered"});
+      res.json({message: "Email already registered", status: false});
     } else {
       db.run(
         "INSERT INTO users (email, password) VALUES (?, ?)",
         [req.body.email, hash('sha-512', req.body.password)]
       )
-      res.json({status : "Successfully registered"});
+      res.json({message : "Successfully registered", status: true});
     }
   })
 })
@@ -77,9 +59,9 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
   db.get("SELECT * FROM users WHERE email = '" + req.body.email + "' AND password = '" + hash("sha-512", req.body.password) + "'", (e, row) => {
     if (row) {
-      res.json({status: "Successfully logged in"})
+      res.json({message: "Successfully logged in", status: true})
     } else {
-      res.json({status: "Wrong email or password"})
+      res.json({message: "Wrong email or password", status: false})
     }
   });
 })

@@ -12,6 +12,12 @@ export default StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         backgroundColor: Var.darkGray,
-        color: Var.white
+        color: Var.white,
+        marginBottom: 15
+    },
+    button : {
+        backgroundColor: Var.red,
+        borderWidth: 1,
+        borderRadius: 5,
     }
 })

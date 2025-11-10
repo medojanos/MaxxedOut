@@ -1,22 +1,10 @@
 import { View, Text, TextInput, Pressable } from "react-native";
 import { useState } from "react";
-
 import Style from "../misc/Style";
 
 export default function Login() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-
-    function HandleInput(e){
-        switch(e.target.id){
-          case "email":
-            setEmail(e.target.value);
-            break;
-          case "password":
-            setPassword(e.target.value); 
-            break;
-        }
-      }
 
     function Authenticate() {
         fetch("http://localhost:4000/login", {
@@ -30,7 +18,13 @@ export default function Login() {
             })
         })
         .then(res => res.json())
-        .then(data => console.log(data.status))
+        .then(data => {
+          if (data.status) {
+            alert(data.message);
+          } else {
+            alert(data.message)
+          }
+        })
         .catch(err => console.log(err))
     }
 
@@ -39,19 +33,24 @@ export default function Login() {
             <View>
                 <Text>Email:</Text>
                 <TextInput 
-                    id="email"
-                    placeholder="Enter your email..."
-                    style={Style.input}
-                    onChange={HandleInput}
+                  autoComplete="email"
+                  id="email"
+                  placeholder="Enter your email..."
+                  style={Style.input}
+                  onChangeText={setEmail}
                 />
                 <Text>Password:</Text>
                 <TextInput 
-                    id="password"
-                    placeholder="Enter your password..."
-                    style={Style.input}
-                    onChange={HandleInput}
+                  autoComplete="password"
+                  id="password"
+                  placeholder="Enter your password..."
+                  style={Style.input}
+                  onChangeText={setPassword}
+                  secureTextEntry
                 />
-                <Pressable onPress={Authenticate}>
+                <Pressable
+                  onPress={Authenticate}
+                  style={Style.button}>
                     <Text>Login</Text>
                 </Pressable>
             </View>

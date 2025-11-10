@@ -9,11 +9,9 @@ export default function Home() {
       </div>
       <section id='more'>
         <p>You need to register to use the app!</p>
-          <Link to="/registration"><button>Registration</button></Link><br></br>
-          <div id='download'>
-            <Link to="/download"><button>Download</button></Link>
-            <img src={TestPhone} width={400}></img>
-          </div>
+        <Link to="/registration"><button>Registration</button></Link><br/>
+        <Link to="/download"><button>Download</button></Link>
+        <img src={TestPhone} width={400}/>
       </section>
     </>
   )

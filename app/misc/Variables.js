@@ -1,6 +1,6 @@
 // Sizes
 const iconSize = 40;
-const tabBarSize = 75;
+const tabBarSize = 60;
 
 // Colors
 const black = "#000000";
