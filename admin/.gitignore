@@ -1,0 +1,9 @@
+# C# build output
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.pdb
+*.dbmdl
+*.log

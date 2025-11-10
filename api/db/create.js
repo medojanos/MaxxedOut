@@ -1,4 +1,5 @@
 import sqlite3 from 'sqlite3'
+import { hash } from 'crypto'
 
 const db = new sqlite3.Database("maxxedout.db");
 
@@ -18,7 +19,7 @@ db.serialize(() => {
     db.run("CREATE TABLE exercises (id INTEGER PRIMARY KEY, name TEXT(255));");
 
     // Test data
-    db.run("INSERT INTO users (email, nickname, password) VALUES ('johndoe@yahoo.com', 'John Doe', '1234');");
+    db.run("INSERT INTO users (email, nickname, password) VALUES ('johndoe@yahoo.com', 'John Doe', '" + hash("sha-512", "1234") + "');");
     db.run("INSERT INTO exercises (name) VALUES ('Squat');");
     db.run("INSERT INTO exercises (name) VALUES ('Bench');");
     db.run("INSERT INTO exercises (name) VALUES ('Deadlift');");
