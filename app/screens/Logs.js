@@ -4,6 +4,6 @@ import Style from "../misc/Style";
 
 export default function Logs() {
     return (
-        <View style={Style.container}><Text style={Style.font}>Logs</Text></View>
+        <View style={Style.container}><Text>Logs</Text></View>
     );
 }

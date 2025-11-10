@@ -4,6 +4,6 @@ import Style from "../misc/Style";
 
 export default function Workouts() {
     return (
-        <View style={Style.container}><Text style={Style.font}>Workouts</Text></View>
+        <View style={Style.container}><Text>Workouts</Text></View>
     );
 }

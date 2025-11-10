@@ -6,9 +6,12 @@ export default StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: Var.black,
+        backgroundColor: Var.white
     },
-    font: {
-        color: Var.white,
+    input : {
+        borderWidth: 1,
+        borderRadius: 5,
+        backgroundColor: Var.darkGray,
+        color: Var.white
     }
 })

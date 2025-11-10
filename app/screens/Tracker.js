@@ -4,6 +4,6 @@ import Style from "../misc/Style";
 
 export default function Tracker() {
     return (
-        <View style={Style.container}><Text style={Style.font}>Tracker</Text></View>
+        <View style={Style.container}><Text>Tracker</Text></View>
     );
 }

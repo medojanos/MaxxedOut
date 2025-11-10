@@ -11,6 +11,7 @@ import Logs from "./screens/Logs";
 import Tracker from "./screens/Tracker";
 import Workouts from "./screens/Workouts";
 import Settings from "./screens/Settings";
+import Login from "./components/Login";
 
 const Tab = createBottomTabNavigator();
 

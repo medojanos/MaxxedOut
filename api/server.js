@@ -77,7 +77,7 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
   db.get("SELECT * FROM users WHERE email = '" + req.body.email + "' AND password = '" + hash("sha-512", req.body.password) + "'", (e, row) => {
     if (row) {
-      res.json({status: "Succsefully logged in"})
+      res.json({status: "Successfully logged in"})
     } else {
       res.json({status: "Wrong email or password"})
     }

@@ -4,6 +4,6 @@ import Style from "../misc/Style";
 
 export default function Statistics() {
     return (
-        <View style={Style.container}><Text style={Style.font}>Statistics</Text></View>
+        <View style={Style.container}><Text>Statistics</Text></View>
     );
 }
