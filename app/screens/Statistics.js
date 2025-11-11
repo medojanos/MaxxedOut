@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 
-import Style from "../misc/Style";
+import Style from "../style/Style";
 
 export default function Statistics() {
     return (

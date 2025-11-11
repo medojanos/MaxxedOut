@@ -1,19 +1,26 @@
-import Login from "./components/Login";
-import Screens from "./components/Screens";
-import { useEffect, useState } from "react";
-import { getData } from "./misc/Storage";
+import Login from "./screens/Login";
+import Main from "./Main";
+
+import { useContext, useEffect } from "react";
+import { Context } from "./misc/Provider";
+import { getData, setData } from "./misc/Storage";
+import Loader from "./components/Loader";
 
 export default function App() {
-  const [isLoggedIn, setLogin] = useState();
+  const { isLoggedIn, setLogin } = useContext(Context)
 
   useEffect(() => {
-    async function get() {
-      setLogin(await getData("isLoggedIn"))
-    }
-    get();
-  })
+    async function isLogin() {
+        await getData("user").then(data => setLogin(data.login));
+      }
+    isLogin();
+  }, [])
 
-  return (
-    {isLoggedIn} ? <Screens/> : <Login/>
-  );
+  useEffect(() => {
+    isLoggedIn ? setData("user", {"login" : true}) : setData("user", {"login" : false});
+  }, [isLoggedIn]);
+  
+  if (isLoggedIn == undefined) return <Loader/>
+  
+  return isLoggedIn ? <Main/> : <Login/>;
 }

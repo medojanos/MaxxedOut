@@ -12,13 +12,13 @@ export default function Registration() {
     event.preventDefault();
 
     if(password != repassword) {
-      setStatus("Passwords do not match")
-      return
+      setStatus("Passwords do not match");
+      return;
     }
 
     if(pwdStrength == "Weak"){
-      setStatus("Password is weak")
-      return
+      setStatus("Password is weak");
+      return;
     }
 
     fetch("http://localhost:4000/register", {
@@ -32,7 +32,7 @@ export default function Registration() {
       })
     })
     .then(res => res.json())
-    .then(data => setStatus(data.status))
+    .then(data => setStatus(data.message))
     .catch(err => console.log(err))
   }
   
@@ -54,34 +54,18 @@ export default function Registration() {
   function evaluatePwdStrength(password){
     let score = 0;
 
-    if(password){
-      if(password.length > 8) score += 2;
-      if(/[a-z]/.test(password)) score++;
-      if(/[A-Z]/.test(password)) score++;
-      if(/[0-9]/.test(password)) score++;
-      if(/[^A-Za-z0-9]/.test(password)) score++;
+    if(password.length >= 8) score += 2;
+    if(password.length >= 12) score++;
+    if(/[a-z]/.test(password)) score++;
+    if(/[A-Z]/.test(password)) score++;
+    if(/[0-9]/.test(password)) score++;
+    if(/[^A-Za-z0-9]/.test(password)) score++;
   
-      switch (score) {
-        case 0:
-        case 1:
-        case 2:
-          setPwdStrength("Weak");
-          break;
-        case 3:
-        case 4:
-          setPwdStrength("Medium");
-          break;
-        case 5:
-          setPwdStrength("Strong");
-          break;
-        case 6:
-          setPwdStrength("Very strong");
-          break;
-      }
-    }
-    else{
-      setPwdStrength("");
-    }
+    if (score == 7) setPwdStrength("Very strong")
+    else if (score >= 6) setPwdStrength("Strong")
+    else if (score > 4) setPwdStrength("Medium")
+    else if (score > 0) setPwdStrength("Weak")
+    else if (score == 0) setPwdStrength("")
   }
 
   return (
