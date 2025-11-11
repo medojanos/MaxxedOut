@@ -42,6 +42,12 @@ app.get("/exercises", (req, res) => {
   });
 })
 
+app.get("/muscle_groups", (req, res) => {
+  db.all("SELECT * FROM muscle_groups", (e, rows) => {
+    res.send(rows);
+  });
+})
+
 app.post("/register", (req, res) => {
   db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
     if (row) {
