@@ -32,22 +32,20 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Rows = new System.Windows.Forms.ListBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exerciseName = new System.Windows.Forms.TextBox();
+            this.searchButton = new System.Windows.Forms.Button();
+            this.deleteButton = new System.Windows.Forms.Button();
             this.usersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exercisesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.saveButton = new System.Windows.Forms.Button();
             this.Menu.SuspendLayout();
             this.SuspendLayout();
             // 
             // Menu
             // 
-            this.Menu.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.Menu.BackColor = System.Drawing.SystemColors.HotTrack;
             this.Menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.exitToolStripMenuItem});
             this.Menu.Location = new System.Drawing.Point(0, 0);
             this.Menu.Name = "Menu";
             this.Menu.Size = new System.Drawing.Size(584, 24);
@@ -57,8 +55,7 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importToolStripMenuItem,
-            this.exitToolStripMenuItem});
+            this.usersToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -66,42 +63,42 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // Rows
             // 
             this.Rows.FormattingEnabled = true;
-            this.Rows.Location = new System.Drawing.Point(299, 29);
+            this.Rows.Location = new System.Drawing.Point(299, 27);
             this.Rows.Name = "Rows";
             this.Rows.Size = new System.Drawing.Size(273, 420);
             this.Rows.TabIndex = 1;
             // 
-            // textBox1
+            // exerciseName
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 29);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(200, 20);
-            this.textBox1.TabIndex = 2;
+            this.exerciseName.Location = new System.Drawing.Point(12, 27);
+            this.exerciseName.Name = "exerciseName";
+            this.exerciseName.Size = new System.Drawing.Size(200, 20);
+            this.exerciseName.TabIndex = 2;
             // 
-            // button1
+            // searchButton
             // 
-            this.button1.Location = new System.Drawing.Point(218, 27);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Search";
-            this.button1.UseVisualStyleBackColor = true;
+            this.searchButton.Location = new System.Drawing.Point(218, 25);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(75, 23);
+            this.searchButton.TabIndex = 3;
+            this.searchButton.Text = "Search";
+            this.searchButton.UseVisualStyleBackColor = true;
             // 
-            // importToolStripMenuItem
+            // deleteButton
             // 
-            this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.usersToolStripMenuItem,
-            this.exercisesToolStripMenuItem});
-            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.importToolStripMenuItem.Text = "Import";
+            this.deleteButton.Location = new System.Drawing.Point(218, 56);
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(75, 23);
+            this.deleteButton.TabIndex = 4;
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.UseVisualStyleBackColor = true;
             // 
             // usersToolStripMenuItem
             // 
@@ -110,47 +107,24 @@
             this.usersToolStripMenuItem.Text = "Users";
             this.usersToolStripMenuItem.Click += new System.EventHandler(this.usersToolStripMenuItem_Click);
             // 
-            // exercisesToolStripMenuItem
+            // saveButton
             // 
-            this.exercisesToolStripMenuItem.Name = "exercisesToolStripMenuItem";
-            this.exercisesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.exercisesToolStripMenuItem.Text = "Exercises";
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(218, 85);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "Delete";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(218, 56);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 5;
-            this.button3.Text = "Edit";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(12, 58);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(200, 20);
-            this.textBox2.TabIndex = 6;
+            this.saveButton.Location = new System.Drawing.Point(218, 424);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.TabIndex = 5;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
             // 
             // Exercises
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 461);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.saveButton);
+            this.Controls.Add(this.deleteButton);
+            this.Controls.Add(this.searchButton);
+            this.Controls.Add(this.exerciseName);
             this.Controls.Add(this.Rows);
             this.Controls.Add(this.Menu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -168,16 +142,13 @@
 
         private System.Windows.Forms.MenuStrip Menu;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ListBox Rows;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
+        private System.Windows.Forms.TextBox exerciseName;
+        private System.Windows.Forms.Button searchButton;
+        private System.Windows.Forms.Button deleteButton;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem usersToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exercisesToolStripMenuItem;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button saveButton;
     }
 }
 

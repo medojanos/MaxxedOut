@@ -17,12 +17,15 @@ db.serialize(() => {
     db.run("CREATE TABLE workouts (id INTEGER PRIMARY KEY, user_id INTEGER, date DATETIME DEFAULT CURRENT_DATE, FOREIGN KEY (user_id) REFERENCES users(id));");
     db.run("CREATE TABLE sets (id INTEGER PRIMARY KEY, workout_id INTEGER, exercise_id INTEGER, rep INTEGER DEFAULT 0, weight INTEGER DEFAULT 0, FOREIGN KEY (workout_id) REFERENCES workouts(id), FOREIGN KEY (exercise_id) REFERENCES exercises(id));")
     db.run("CREATE TABLE exercises (id INTEGER PRIMARY KEY, name TEXT(255));");
+    db.run("CREATE TABLE muscle_groups (id INTEGER PRIMARY KEY, name TEXT(255));");
+    db.run("CREATE TABLE muscle_groups_exercises (muscle_group_id INTEGER, exercises_id INTEGER;");
 
     // Test data
     db.run("INSERT INTO users (email, nickname, password) VALUES ('johndoe@yahoo.com', 'John Doe', '" + hash("sha-512", "1234") + "');");
     db.run("INSERT INTO exercises (name) VALUES ('Squat');");
     db.run("INSERT INTO exercises (name) VALUES ('Bench');");
     db.run("INSERT INTO exercises (name) VALUES ('Deadlift');");
+    db.run("INSERT INTO muscle_groups (name) VALUES ('Chest');");
 
     console.log("Database initialized succesfully")
 });

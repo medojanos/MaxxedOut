@@ -19,14 +19,13 @@ namespace admin
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            this.Close();
         }
 
         private void usersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Users users = new Users();
-            users.Show();
-            this.Hide();
+            Users UsersForm = new Users();
+            UsersForm.Show();
         }
     }
 }
