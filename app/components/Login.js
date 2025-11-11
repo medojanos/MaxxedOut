@@ -1,10 +1,15 @@
 import { View, Text, TextInput, Pressable } from "react-native";
 import { useState } from "react";
 import Style from "../misc/Style";
+import { storeData } from "../misc/Storage";
+import { useEffect } from "react";
 
 export default function Login() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+
+    const [isLoggedIn, setLogin] = useState();
+    useEffect(() => storeData("isLoggedIn", isLoggedIn), []);
 
     function Authenticate() {
         fetch("http://localhost:4000/login", {
@@ -21,6 +26,12 @@ export default function Login() {
         .then(data => {
           if (data.status) {
             alert(data.message);
+            useEffect(() => {
+              async function set() {
+                setLogin(true)
+              }
+              set();
+            })
           } else {
             alert(data.message)
           }

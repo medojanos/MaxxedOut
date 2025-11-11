@@ -1,12 +1,26 @@
-import { View, Text } from "react-native";
+import { Pressable, View, Text} from "react-native";
+import { useEffect } from "react";
+import { useState } from "react";
+import { storeData } from "../misc/Storage";
 
 import Style from "../misc/Style";
-import Login from "../components/Login";
 
 export default function Settings() {
+    const [isLoggedIn, setLogin] = useState();
+    useEffect(() => storeData("isLoggedIn", isLoggedIn), []);
+    function logout() {
+        useEffect(() => {
+            async function set() {
+                setLogin(false);
+            }
+            set();
+        }, [])
+    }
     return (
         <View style={Style.container}>
-            <Login></Login>
+            <Pressable onPress={logout()}>
+                <Text>Logout</Text>
+            </Pressable>
         </View>
     );
 }
