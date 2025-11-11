@@ -10,22 +10,28 @@ using System.Windows.Forms;
 
 namespace admin
 {
-    public partial class Users : Form
+    public partial class Menu : Form
     {
-        public Users()
+        public Menu()
         {
             InitializeComponent();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
         }
 
         private void exercisesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Exercises ExercisesForm = new Exercises();
             ExercisesForm.ShowDialog();
+        }
+
+        private void usersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Users UsersForm = new Users();
+            UsersForm.ShowDialog();
         }
     }
 }

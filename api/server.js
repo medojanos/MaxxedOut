@@ -42,6 +42,12 @@ app.get("/exercises", (req, res) => {
   });
 })
 
+app.get("/muscle_groups", (req, res) => {
+  db.all("SELECT * FROM muscle_groups", (e, rows) => {
+    res.send(rows);
+  });
+})
+
 app.post("/register", (req, res) => {
   db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
     if (row) {
@@ -57,17 +63,11 @@ app.post("/register", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
+  db.get("SELECT * FROM users WHERE email = '" + req.body.email + "' AND password = '" + hash("sha-512", req.body.password) + "'", (e, row) => {
     if (row) {
-      db.get("SELECT * FROM users WHERE email = '" + req.body.email + "' AND password = '" + hash("sha-512", req.body.password) + "'", (e, row) => {
-        if (row) {
-          res.json({message: "Successfully logged in", status: true})
-        } else {
-          res.json({message: "Wrong password", status: false})
-        }
-      })
+      res.json({message: "Successfully logged in", status: true})
     } else {
-      res.json({message: "No email registered", status: false})
+      res.json({message: "Wrong email or password", status: false})
     }
   });
 })

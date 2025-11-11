@@ -139,8 +139,8 @@
       ],
       "indices": [],
       "id": "3eK9bzrJh0r_L4Ohya1VG",
-      "x": 337.95000000000005,
-      "y": 52.450000000000045
+      "x": 339.50132821597845,
+      "y": 143.97836474273254
     },
     {
       "name": "sets",
@@ -198,14 +198,16 @@
         {
           "id": "INJeYsn0Z_VXlB1aXN9__",
           "name": "weight",
-          "type": "VARCHAR",
+          "type": "INTEGER",
           "comment": "",
           "unique": false,
           "increment": false,
           "notNull": false,
           "primary": false,
           "default": "",
-          "check": ""
+          "check": "",
+          "size": "",
+          "values": []
         }
       ],
       "indices": [],
@@ -278,6 +280,78 @@
       "comment": "",
       "indices": [],
       "color": "#175e7a"
+    },
+    {
+      "name": "muscle_groups",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "id": "U-mDR8lYfF6tyoOM7CUns",
+          "name": "id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": true,
+          "increment": false,
+          "notNull": true,
+          "primary": true,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "u7zIElKr3CP0qw6eYhW9d",
+          "name": "name",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": ""
+        }
+      ],
+      "indices": [],
+      "id": "d05bSJvFzlYfG31ShWPZ-",
+      "x": 917.9794859682445,
+      "y": -380.5378390657267
+    },
+    {
+      "name": "muscle_groups_exercises",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "id": "U-mDR8lYfF6tyoOM7CUns",
+          "name": "muscle_group_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": true,
+          "increment": false,
+          "notNull": true,
+          "primary": true,
+          "default": "",
+          "check": ""
+        },
+        {
+          "id": "u7zIElKr3CP0qw6eYhW9d",
+          "name": "exercises_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "indices": [],
+      "id": "vbeGWsDDzyfCUgMjjCYXS",
+      "x": 619.9572016926488,
+      "y": -124.73595023699221
     }
   ],
   "relationships": [
@@ -324,6 +398,28 @@
       "deleteConstraint": "No action",
       "name": "fk_codes_user_id_users",
       "id": "vsNZt-lJ1hRfXVautplzo"
+    },
+    {
+      "startTableId": "d05bSJvFzlYfG31ShWPZ-",
+      "startFieldId": "U-mDR8lYfF6tyoOM7CUns",
+      "endTableId": "vbeGWsDDzyfCUgMjjCYXS",
+      "endFieldId": "U-mDR8lYfF6tyoOM7CUns",
+      "cardinality": "one_to_many",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_muscle_groups_id_muscle_groups_exercises",
+      "id": "kzO1Fj8Tw8n0AQOTKLTrr"
+    },
+    {
+      "startTableId": "vbeGWsDDzyfCUgMjjCYXS",
+      "startFieldId": "u7zIElKr3CP0qw6eYhW9d",
+      "endTableId": "3eK9bzrJh0r_L4Ohya1VG",
+      "endFieldId": "U-mDR8lYfF6tyoOM7CUns",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_muscle_groups_exercises_exercises_id_exercises",
+      "id": "Dd5O8hu6rnMZJ_QWSiseP"
     }
   ],
   "notes": [],
