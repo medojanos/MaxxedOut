@@ -33,5 +33,11 @@ namespace admin
             Users UsersForm = new Users();
             UsersForm.ShowDialog();
         }
+
+        private void muscleGroupsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Muscle_groups MusclegroupsForm = new Muscle_groups();
+            MusclegroupsForm.ShowDialog();
+        }
     }
 }

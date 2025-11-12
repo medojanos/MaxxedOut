@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace admin
 {
-    public partial class Users : Form
+    public partial class Muscle_groups : Form
     {
-        public Users()
+        public Muscle_groups()
         {
             InitializeComponent();
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
 
         private void exercisesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -28,10 +23,10 @@ namespace admin
             ExercisesForm.ShowDialog();
         }
 
-        private void muscleGroupsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void usersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Muscle_groups MusclegroupsForm = new Muscle_groups();
-            MusclegroupsForm.ShowDialog();
+            Users UsersForm = new Users();
+            UsersForm.Show();
         }
     }
 }

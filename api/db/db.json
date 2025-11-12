@@ -135,6 +135,20 @@
           "primary": false,
           "default": "",
           "check": ""
+        },
+        {
+          "id": "Xs4CONnmVqNZ4_xqMyhyq",
+          "name": "type",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": 255,
+          "values": []
         }
       ],
       "indices": [],
@@ -346,6 +360,19 @@
           "check": "",
           "size": "",
           "values": []
+        },
+        {
+          "id": "uAVvFnuA4WjvYug5ZF3Iq",
+          "name": "role",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": 255
         }
       ],
       "indices": [],
