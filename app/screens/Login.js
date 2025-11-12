@@ -1,36 +1,51 @@
 import { View, Text, TextInput, Pressable } from "react-native";
-import { useState } from "react";
-import Style from "../misc/Style";
+
+import Style from "../style/Style";
+
+import { useContext, useState } from "react";
+import { Context } from "../misc/Provider";
 
 export default function Login() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const [status, setStatus] = useState(); 
+
+    const { setLogin } = useContext(Context);
 
     function Authenticate() {
-        fetch("http://localhost:4000/login", {
-            method: "POST",
-            headers: {
-              "Content-Type" : "application/json"
-            },
-            body: JSON.stringify({
-              email: email,
-              password: password
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status) {
-            alert(data.message);
-          } else {
-            alert(data.message)
-          }
-        })
-        .catch(err => console.log(err))
+      if (email == "") {
+        setStatus("Enter a valid email");
+        return;
+      }
+      if (password == "") {
+        setStatus("Enter a valid password");
+        return;
+      }
+      fetch("http://localhost:4000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type" : "application/json"
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status) {
+          setLogin(true);
+        } else {
+          setStatus(data.message);
+        }
+      })
+      .catch(err => console.log(err))
     }
 
     return (
         <View style={Style.container}>
             <View>
+                <Text>{status}</Text>
                 <Text>Email:</Text>
                 <TextInput 
                   autoComplete="email"

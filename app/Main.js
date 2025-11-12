@@ -1,19 +1,21 @@
 // React
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+
+// Style
 import Ionicons from "react-native-vector-icons/Ionicons";
-import * as Var from "../misc/Variables";
+import * as Var from "./style/Variables";
 
 // Screens
-import Statistics from "../screens/Statistics";
-import Logs from "../screens/Logs";
-import Tracker from "../screens/Tracker";
-import Workouts from "../screens/Workouts";
-import Settings from "../screens/Settings";
+import Statistics from "./screens/Statistics";
+import Logs from "./screens/Logs";
+import Tracker from "./screens/Tracker";
+import Workouts from "./screens/Workouts";
+import Settings from "./screens/Settings";
 
 const Tab = createBottomTabNavigator();
 
-export default function Screens() {
+export default function Main() {
   return (
     <NavigationContainer>
       <Tab.Navigator
