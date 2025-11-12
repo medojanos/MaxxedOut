@@ -2,10 +2,10 @@
 git clone "url"
 
 #before work
-git checkout "yourbranhc"
+git checkout "yourbranch"
 git pull origin "yourbranch"
-git fetch origin
-git merge origin/main
+git checkout main
+git pull origin main
 
 #work
 git add .
