@@ -1,0 +1,22 @@
+#if project doesnt exist
+git clone "url"
+
+#before work
+git checkout "yourbranhc"
+git pull origin "yourbranch"
+git fetch origin
+git merge origin/main
+
+#work
+git add .
+git commit -m "yourcommit"
+
+
+#after work
+git push origin "yourbranch"
+
+#merge (only if you know what your doing)
+git checkout main
+git pull origin main
+git merge "yourbranch"
+git push origin main
