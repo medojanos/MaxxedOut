@@ -63,11 +63,17 @@ app.post("/register", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  db.get("SELECT * FROM users WHERE email = '" + req.body.email + "' AND password = '" + hash("sha-512", req.body.password) + "'", (e, row) => {
+  db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
     if (row) {
-      res.json({message: "Successfully logged in", status: true})
+      db.get("SELECT * FROM users WHERE password = '" + hash("sha-512", req.body.password) + "'", (e, row) => {
+        if (row) {
+          res.json({message: "Successfully logged in", status: true})
+        } else {
+          res.json({message: "Wrong password", status: false})
+        }
+      })
     } else {
-      res.json({message: "Wrong email or password", status: false})
+      res.json({message: "No email registered", status: false})
     }
   });
 })
