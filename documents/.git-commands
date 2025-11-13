@@ -4,18 +4,15 @@ git clone "url"
 #before work
 git checkout "yourbranch"
 git pull origin "yourbranch"
-git checkout main
-git pull origin main
+git fetch origin
+git merge origin/main
 
 #work
 git add .
 git commit -m "yourcommit"
-
-
-#after work
 git push origin "yourbranch"
 
-#merge (only if you know what your doing)
+#merge (only if your confident with it)
 git checkout main
 git pull origin main
 git merge "yourbranch"
