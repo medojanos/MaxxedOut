@@ -1,6 +1,6 @@
 import { Pressable, View, Text} from "react-native";
 
-import Style from "../style/Style";
+import Style from "../style/MainStyle";
 
 import { Context } from "../misc/Provider";
 import { useContext } from "react";

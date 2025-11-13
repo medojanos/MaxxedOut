@@ -1,9 +1,34 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable, ScrollView } from "react-native";
 
-import Style from "../style/Style";
+import * as Var from "../style/Variables"
+import MainStyle from "../style/MainStyle"
+import { StyleSheet } from "react-native";
+const WorkoutsStyle = StyleSheet.create({
+    newWorkout: {
+        backgroundColor: Var.paleRed,
+        width: 300,
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: 50,
+        paddingVertical: 20
+    },
+    workouts: {
+        backgroundColor: Var.white,
+        width: 300,
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: 50,
+        paddingVertical: 20,
+        marginTop: 20
+    },
+})
 
 export default function Workouts() {
     return (
-        <View style={Style.container}><Text>Workouts</Text></View>
+        <ScrollView contentContainerStyle={MainStyle.container}>
+            <Pressable style={WorkoutsStyle.newWorkout}><Text style={{color: Var.white, textAlign: "center"}}>New workout...</Text></Pressable>
+            <Pressable style={WorkoutsStyle.workouts}><Text style={{textAlign: "center"}}>Deadlift Back</Text></Pressable>
+        </ScrollView>
+        
     );
 }

@@ -1,9 +1,16 @@
-import { View, Text } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 
-import Style from "../style/Style";
+import * as Var from "../style/Variables"
+import MainStyle from "../style/MainStyle";
+import { StyleSheet } from "react-native";
+const TrackerStyle = StyleSheet.create({
+    
+})
 
 export default function Tracker() {
     return (
-        <View style={Style.container}><Text>Tracker</Text></View>
+        <ScrollView contentContainerStyle={MainStyle.container}>
+            <Pressable><Text>Start workout...</Text></Pressable>
+        </ScrollView>
     );
 }

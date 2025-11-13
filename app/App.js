@@ -11,7 +11,11 @@ export default function App() {
 
   useEffect(() => {
     async function isLogin() {
+      try {
         await getData("user").then(data => setLogin(data.login));
+      } catch {
+        setLogin(undefined);
+      }
       }
     isLogin();
   }, [])

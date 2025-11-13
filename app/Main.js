@@ -22,12 +22,12 @@ export default function Main() {
         initialRouteName="Tracker"
         screenOptions={({ route }) => ({
           headerTitle: "MaxxedOut",
-          headerStyle: { backgroundColor: Var.darkGray },
+          headerStyle: { backgroundColor: Var.black },
           headerTitleStyle: { color: Var.white },
           
           tabBarShowLabel: false,
           tabBarLabel: () => null,
-          tabBarStyle: { height: Var.tabBarSize, backgroundColor: Var.darkGray, padding: 5},
+          tabBarStyle: { height: Var.tabBarSize, backgroundColor: Var.black, padding: 5},
           tabBarActiveTintColor: Var.red,
           tabBarInactiveTintColor: Var.white,
           tabBarIconStyle: {width: Var.iconSize, height: Var.iconSize},

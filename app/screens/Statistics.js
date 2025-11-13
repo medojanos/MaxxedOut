@@ -1,9 +1,14 @@
 import { View, Text } from "react-native";
 
-import Style from "../style/Style";
+import * as Var from "../style/Variables"
+import MainStyle from "../style/MainStyle"
+import { StyleSheet } from "react-native";
+const StatisticsStyle = StyleSheet.create({
+
+})
 
 export default function Statistics() {
     return (
-        <View style={Style.container}><Text>Statistics</Text></View>
+        <View style={MainStyle.container}><Text>Statistics</Text></View>
     );
 }

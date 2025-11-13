@@ -1,6 +1,36 @@
 import { View, Text, TextInput, Pressable } from "react-native";
 
-import Style from "../style/Style";
+import * as Var from "../style/Variables"
+import MainStyle from "../style/MainStyle";
+import { StyleSheet } from "react-native";
+const LoginStyle = StyleSheet.create({
+  container : {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Var.white
+  },
+  input : {
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: Var.darkGray,
+    color: Var.white,
+    marginBottom: 15,
+    padding: 10,
+    width: 250
+  },
+  button : {
+    borderWidth: 1,
+    backgroundColor: Var.paleRed,
+    borderRadius: 5,
+    color: Var.white,
+    padding: 10
+  },
+  buttonText: {
+    color: Var.white,
+    textAlign: "center"
+  }
+})
 
 import { useContext, useState } from "react";
 import { Context } from "../misc/Provider";
@@ -43,30 +73,28 @@ export default function Login() {
     }
 
     return (
-        <View style={Style.container}>
+        <View style={LoginStyle.container}>
             <View>
                 <Text>{status}</Text>
-                <Text>Email:</Text>
                 <TextInput 
                   autoComplete="email"
                   id="email"
                   placeholder="Enter your email..."
-                  style={Style.input}
+                  style={LoginStyle.input}
                   onChangeText={setEmail}
                 />
-                <Text>Password:</Text>
                 <TextInput 
                   autoComplete="password"
                   id="password"
                   placeholder="Enter your password..."
-                  style={Style.input}
+                  style={LoginStyle.input}
                   onChangeText={setPassword}
                   secureTextEntry
                 />
                 <Pressable
                   onPress={Authenticate}
-                  style={Style.button}>
-                    <Text>Login</Text>
+                  style={LoginStyle.button}>
+                    <Text style={LoginStyle.buttonText}>Login</Text>
                 </Pressable>
             </View>
         </View>
