@@ -8,12 +8,12 @@ const WorkoutsStyle = StyleSheet.create({
         backgroundColor: Var.paleRed,
         width: 300,
         borderWidth: 1,
-        borderRadius: 10,
+        borderRadius: 5,
         paddingHorizontal: 50,
         paddingVertical: 20
     },
     workouts: {
-        backgroundColor: Var.white,
+        backgroundColor: Var.paleWhite,
         width: 300,
         borderWidth: 1,
         borderRadius: 10,
@@ -26,8 +26,8 @@ const WorkoutsStyle = StyleSheet.create({
 export default function Workouts() {
     return (
         <ScrollView contentContainerStyle={MainStyle.container}>
-            <Pressable style={WorkoutsStyle.newWorkout}><Text style={{color: Var.white, textAlign: "center"}}>New workout...</Text></Pressable>
-            <Pressable style={WorkoutsStyle.workouts}><Text style={{textAlign: "center"}}>Deadlift Back</Text></Pressable>
+            <Pressable style={WorkoutsStyle.newWorkout}><Text style={MainStyle.textLight}>New workout...</Text></Pressable>
+            <Pressable style={WorkoutsStyle.workouts}><Text style={MainStyle.textDark}>Deadlift Back</Text></Pressable>
         </ScrollView>
         
     );

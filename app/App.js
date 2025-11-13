@@ -7,12 +7,12 @@ import { getData, setData } from "./misc/Storage";
 import Loader from "./components/Loader";
 
 export default function App() {
-  const { isLoggedIn, setLogin } = useContext(Context)
+  const {isLoggedIn, setLogin} = useContext(Context);
 
   useEffect(() => {
     async function isLogin() {
       try {
-        await getData("user").then(data => setLogin(data.login));
+        await getData("isLoggedIn").then(data => setLogin(data));
       } catch {
         setLogin(undefined);
       }
@@ -21,7 +21,7 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    isLoggedIn ? setData("user", {"login" : true}) : setData("user", {"login" : false});
+    isLoggedIn === "true" ? setData("isLoggedIn", "true") : setData("isLoggedIn", "false");
   }, [isLoggedIn]);
   
   if (isLoggedIn == undefined) return <Loader/>

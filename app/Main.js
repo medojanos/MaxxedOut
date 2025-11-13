@@ -23,13 +23,13 @@ export default function Main() {
         screenOptions={({ route }) => ({
           headerTitle: "MaxxedOut",
           headerStyle: { backgroundColor: Var.black },
-          headerTitleStyle: { color: Var.white },
+          headerTitleStyle: { color: Var.white, fontSize: 30 },
           
           tabBarShowLabel: false,
           tabBarLabel: () => null,
           tabBarStyle: { height: Var.tabBarSize, backgroundColor: Var.black, padding: 5},
           tabBarActiveTintColor: Var.red,
-          tabBarInactiveTintColor: Var.white,
+          tabBarInactiveTintColor: Var.paleWhite,
           tabBarIconStyle: {width: Var.iconSize, height: Var.iconSize},
           tabBarIcon: ({ color }) => {
             const icons = {

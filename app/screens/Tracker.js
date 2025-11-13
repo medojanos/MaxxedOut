@@ -10,7 +10,7 @@ const TrackerStyle = StyleSheet.create({
 export default function Tracker() {
     return (
         <ScrollView contentContainerStyle={MainStyle.container}>
-            <Pressable><Text>Start workout...</Text></Pressable>
+            <Pressable><Text style={MainStyle.textLight}>Start workout...</Text></Pressable>
         </ScrollView>
     );
 }

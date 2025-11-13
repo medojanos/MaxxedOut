@@ -8,13 +8,12 @@ const LoginStyle = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Var.white
+    backgroundColor: Var.darkGray
   },
   input : {
     borderWidth: 1,
     borderRadius: 5,
-    backgroundColor: Var.darkGray,
-    color: Var.white,
+    backgroundColor: Var.paleWhite,
     marginBottom: 15,
     padding: 10,
     width: 250
@@ -64,12 +63,16 @@ export default function Login() {
       .then(res => res.json())
       .then(data => {
         if (data.status) {
+          setStatus(data.message);
           setLogin(true);
         } else {
           setStatus(data.message);
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        setStatus("Something went wrong!");
+        console.log(err)
+      })
     }
 
     return (

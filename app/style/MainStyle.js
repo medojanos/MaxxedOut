@@ -7,5 +7,16 @@ export default StyleSheet.create({
         flex: 1,
         alignItems: "center",
         backgroundColor: Var.darkGray
+    },
+    textLight : {
+        color: Var.white,
+        fontSize: Var.fontSize,
+        textAlign: "center"
+    },
+    textDark : {
+        color: Var.black,
+        fontSize: Var.fontSize,
+        textAlign: "center"
     }
+    
 })
