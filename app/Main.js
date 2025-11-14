@@ -25,12 +25,11 @@ export default function Main() {
           headerStyle: { backgroundColor: Var.black },
           headerTitleStyle: { color: Var.white, fontSize: 30 },
           
-          tabBarShowLabel: false,
-          tabBarLabel: () => null,
-          tabBarStyle: { height: Var.tabBarSize, backgroundColor: Var.black, padding: 5},
+          tabBarStyle: { height: 60, backgroundColor: Var.black, padding: 5},
           tabBarActiveTintColor: Var.red,
           tabBarInactiveTintColor: Var.paleWhite,
-          tabBarIconStyle: {width: Var.iconSize, height: Var.iconSize},
+          tabBarIconStyle: {width: 30, height: 30},
+          tabBarHideOnKeyboard : true,
           tabBarIcon: ({ color }) => {
             const icons = {
               Statistics: "stats-chart",
@@ -39,7 +38,7 @@ export default function Main() {
               Workouts: "list",
               Settings: "settings",
             };
-            return <Ionicons name={icons[route.name]} size={Var.iconSize} color={color}/>;
+            return <Ionicons name={icons[route.name]} size={30} color={color}/>;
           },
         })}
       >

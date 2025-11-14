@@ -4,29 +4,15 @@ import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle";
 import { StyleSheet } from "react-native";
 const LoginStyle = StyleSheet.create({
-  container : {
+  loginContainer : {
     flex: 1,
-    alignItems: "center",
+    backgroundColor: Var.black,
     justifyContent: "center",
-    backgroundColor: Var.darkGray
+    padding: 20
   },
-  input : {
-    borderWidth: 1,
-    borderRadius: 5,
-    backgroundColor: Var.paleWhite,
-    marginBottom: 15,
-    padding: 10,
-    width: 250
-  },
-  button : {
-    borderWidth: 1,
-    backgroundColor: Var.paleRed,
-    borderRadius: 5,
+  statusText : {
     color: Var.white,
-    padding: 10
-  },
-  buttonText: {
-    color: Var.white,
+    fontSize: 20,
     textAlign: "center"
   }
 })
@@ -64,7 +50,7 @@ export default function Login() {
       .then(data => {
         if (data.status) {
           setStatus(data.message);
-          setLogin(true);
+          setLogin("true");
         } else {
           setStatus(data.message);
         }
@@ -76,30 +62,27 @@ export default function Login() {
     }
 
     return (
-        <View style={LoginStyle.container}>
-            <View>
-                <Text>{status}</Text>
-                <TextInput 
-                  autoComplete="email"
-                  id="email"
-                  placeholder="Enter your email..."
-                  style={LoginStyle.input}
-                  onChangeText={setEmail}
-                />
-                <TextInput 
-                  autoComplete="password"
-                  id="password"
-                  placeholder="Enter your password..."
-                  style={LoginStyle.input}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                />
-                <Pressable
-                  onPress={Authenticate}
-                  style={LoginStyle.button}>
-                    <Text style={LoginStyle.buttonText}>Login</Text>
-                </Pressable>
-            </View>
+        <View style={LoginStyle.loginContainer}>
+          <Text style={LoginStyle.statusText}>{status}</Text>
+          <View style={MainStyle.container}>
+          <Text style={MainStyle.screenTitle}>Login</Text>
+            <TextInput 
+              placeholder="Enter your email..."
+              style={MainStyle.input}
+              onChangeText={setEmail}
+            />
+            <TextInput 
+              placeholder="Enter your password..."
+              style={MainStyle.input}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            <Pressable
+              onPress={Authenticate}
+              style={MainStyle.button}>
+              <Text style={MainStyle.buttonText}>Login</Text>
+            </Pressable>
+          </View>
         </View>
     );
 }

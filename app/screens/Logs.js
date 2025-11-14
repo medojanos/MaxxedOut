@@ -1,11 +1,11 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
 import { StyleSheet } from "react-native";
 const LogsStyle = StyleSheet.create({
     calendar : {
-        backgroundColor: Var.paleRed,
+        backgroundColor: Var.red,
         borderRadius: 10,
         height: 365
     }
@@ -15,8 +15,14 @@ import { Calendar } from "react-native-calendars"
 
 export default function Logs() {
     return (
-        <ScrollView contentContainerStyle={MainStyle.container}>
-            <View style={{width: '100%'}}>
+        <ScrollView contentContainerStyle={MainStyle.content}>
+            <View>
+                <Text style={MainStyle.screenTitle}>Logs</Text>
+                <Text style={MainStyle.screenAltTitle}>Keep track of your previous workouts</Text>
+            </View>
+
+            <View style={MainStyle.container}>
+                <Text style={MainStyle.containerTitle}>Calendar</Text>
                 <Calendar 
                     style={LogsStyle.calendar} 
                     enableSwipeMonths
@@ -29,6 +35,11 @@ export default function Logs() {
                         textDisabledColor: Var.paleRed
                     }}>
                 </Calendar>
+            </View>
+
+            <View style={MainStyle.container}>
+                <Text style={MainStyle.containerTitle}>Recent logs</Text>
+                {/*Select previous 3 workouts from db*/}
             </View>
         </ScrollView>
     );

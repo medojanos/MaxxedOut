@@ -21,10 +21,10 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    isLoggedIn === "true" ? setData("isLoggedIn", "true") : setData("isLoggedIn", "false");
+    isLoggedIn == "true" ? setData("isLoggedIn", "true") : setData("isLoggedIn", "false");
   }, [isLoggedIn]);
   
   if (isLoggedIn == undefined) return <Loader/>
   
-  return isLoggedIn ? <Main/> : <Login/>;
+  return isLoggedIn == "true" ? <Main/> : <Login/>;
 }

@@ -1,36 +1,80 @@
-import { Pressable, View, Text, ScrollView} from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle";
 import { StyleSheet } from "react-native";
 const SettingsStyle = StyleSheet.create({
-    logout : {
-        backgroundColor: Var.paleRed,
-        width: "75%",
-        borderRadius: 5,
-        padding: 10,
-        borderWidth: 1
+    profileContainer : {
+        alignItems: "center"
+    },
+    nickname : {
+        fontSize: 20,
+        color: Var.white
+    },
+    containerTitle : {
+        color: Var.white,
+        fontSize: 20,
+        textAlign: "center",
+        width: "100%"
     }
 })
 
 import { Context } from "../misc/Provider";
-import { useContext, useEffect } from "react";
-import { setData } from "../misc/Storage";
+import { useContext } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function Settings() {
-    const { setLogin } = useContext(Context);
-    const {nickname, setNickname} = useContext(Context);
+    const { setLogin, nickname, setNickname } = useContext(Context);
     return (
-        <ScrollView contentContainerStyle={MainStyle.container}>
-            <View style={{flexDirection: "row"}}>
-                <Text style={{color: Var.white, fontSize: 25}}>{nickname}Nickname</Text>
-                <Pressable><Ionicons name="pencil" size={25} color={Var.red}></Ionicons></Pressable>
+        <ScrollView contentContainerStyle={MainStyle.content}>
+            <View>
+                <Text style={MainStyle.screenTitle}>Settings</Text>
+                <Text style={MainStyle.screenAltTitle}>Manage your account and preferences</Text>
             </View>
 
-            <Pressable style={SettingsStyle.logout} onPress={() => setLogin(false)}>
-                <Text style={MainStyle.textLight}>Logout</Text>
-            </Pressable>
+            <View style={MainStyle.container}>
+                <View style={MainStyle.inlineContainer}>
+                    <Ionicons name="person-circle" color={Var.red} size={40}></Ionicons>
+                    <Text style={SettingsStyle.containerTitle}>Profile settings</Text>
+                </View>
+                
+                <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+                    <Text style={SettingsStyle.nickname}>Nickname: </Text>
+                    <Text style={SettingsStyle.nickname}>{nickname} 
+                        <Pressable onPress={() => {setNickname(prompt("Enter nickname: "))}}>
+                            <Ionicons style={{marginStart: 10}} name="create" color={Var.red} size={20}></Ionicons>
+                        </Pressable>
+                    </Text>
+                    
+                </View>
+            </View>
+
+            <View style={MainStyle.container}>
+                <View style={MainStyle.inlineContainer}>
+                    <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
+                    <Text style={SettingsStyle.containerTitle}>Preferences</Text>
+                </View>
+                
+                <View style={MainStyle.container}>
+                    
+                </View>
+            </View>
+
+            <View style={MainStyle.container}>
+                <View style={MainStyle.inlineContainer}>
+                    <Ionicons name="key" color={Var.red} size={40}></Ionicons>
+                    <Text style={SettingsStyle.containerTitle}>Account settings</Text>
+                </View>
+
+                <Text style={MainStyle.lightText}>Reset your password</Text>
+                <Pressable style={MainStyle.button}>
+                    <Text style={MainStyle.buttonText}>Password reset</Text>
+                </Pressable>
+
+                <Pressable style={MainStyle.button} onPress={() => setLogin("false")}>
+                    <Text style={MainStyle.buttonText}>Logout</Text>
+                </Pressable>
+            </View>
         </ScrollView>
     );
 }
