@@ -1,10 +1,19 @@
 export default function Footer() {
     return (
-        <div className="bg-dark">
-            <div className="container-lg d-flex align-items-center py-3">
-                <img src="src/assets/logo.svg" width={100} className="rounded me-5"></img>
-                <h3>MaxxedOut 2025 @</h3>
+        <footer className="container-lg">
+            <div className="d-flex justify-content-between">
+                <div>
+                    <h3>MaxxedOut</h3>
+                    <h5>Maxx out your workouts</h5>
+                </div>
+                <div className="d-flex flex-column">
+                    <a href="/registration">Registration</a>
+                    <a href="/download">Download</a>
+                    <a href="/about">About</a>
+                </div>
             </div>
-        </div>
+            <hr/>
+            <p>2025 @ MaxxedOut. All rights reserved.</p>
+        </footer>
     )
 }

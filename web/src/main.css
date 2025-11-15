@@ -1,44 +1,100 @@
+/*
+#000000 black
+#18181b darkgray
+#2C2E3E navyblue
+#D72323 red
+#F5EDED palewhite
+#FFFFFF white
+*/
+
+:root {
+    --black: #000000;
+    --darkGray: #18181b;
+    --navyBlue: #2C2E3E;
+    --red: #D72323;
+    --darkRed: rgba(255, 0, 0, 0.2);
+    --paleWhite: #F5EDED;
+    --white: #FFFFFF;
+}
+
+/*Main components*/
 body {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    background-color: #3E3636;
-    color: #F5EDED;
+    color: var(--white);
     scroll-behavior: smooth;
+    background-color: var(--black);
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
+nav, footer {
+    background-color: var(--black);
+    color: var(--white);
 }
-
-button {
-    background-color: #D72323;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px;
-    padding: 1rem;
+nav h3 {
+    color: var(--white);
+    transition: 0.2s;
 }
-button:hover {
-    filter: brightness(1.2);
-    transition: 0.3s;
-}
-
-#hero {
-    height: 95vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: url("assets/testhero.jpeg");
-    background-size: cover;
-    background-position: center;
+nav h3:hover {
+    color: var(--red);
+    transition: 0.2s;
 }
 
 section {
-    max-width: 50%;
-    margin: auto;
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+    background-color: var(--black);
+    padding: 5rem;
 }
 
-.navbar-brand {
-    color: inherit !important;
+.container {
+    background-color: var(--darkGray);
+    width: fit-content;
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0px 0px 100px var(--darkRed);
+    border: 1px solid var(--navyBlue);
+    text-align: center;
+}
+
+footer {
+    padding: 2rem;
+}
+footer p {
+    margin: 0;
+    text-align: center;
+}
+
+/*Components*/
+a {
+    text-decoration: none;
+    color: var(--red);
+    font-weight: bold;
+    transition: 0.2s;
+}
+a:hover {
+    filter: brightness(1.2);
+    transition: 0.2s;
+}
+
+h1 {
+    font-size: 5rem;
+}
+h2 {
+    font-size: 3rem;
+    margin-bottom: 5rem;
+    text-align: center;
+}
+h3 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+h5 {
+    font-size: 1rem;
+    color: var(--red);
+    font-weight: normal
+}
+
+button {
+    background-color: var(--red);
+    border-radius: 10px;
+    border: none;
+    padding: 1rem;
+    font-weight: bold;
+    color: var(--white);
 }

@@ -1,3 +1,5 @@
+import "./style/registration.css"
+import "./main.css"
 import { useState } from "react";
 
 export default function Registration() {
@@ -69,15 +71,14 @@ export default function Registration() {
   }
 
   return (
-    <section>
-      <form onSubmit={HandleForm}>
+    <section id="registration">
+      <form onSubmit={HandleForm} className="container">
         <h3>Registration</h3>
-        <input name="email" type="email" autoComplete="on" onInput={HandleInput} required></input><br></br>
-        <input name="password" type="password" onInput={HandleInput} required></input><br></br>
-        <input name="repassword" type="password" onInput={HandleInput} required></input><br></br>
+        <input name="email" type="email" autoComplete="on" onInput={HandleInput} required placeholder="E-mail address"></input><br></br>
+        <input name="password" type="password" onInput={HandleInput} required placeholder="Password"></input><br></br>
+        <input name="repassword" type="password" onInput={HandleInput} required placeholder="Confirm password"></input><br></br>
         <p>{pwdStrength ? "Password strength: " + pwdStrength : ""}</p>
-        <input type="submit" className="me-2"></input>
-        <input type="reset" onClick={() => {setPwdStrength(""); setStatus("");}}></input><br></br>
+        <input type="submit" value={"Register"}></input>
         {status}
       </form>
     </section>

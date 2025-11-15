@@ -1,0 +1,25 @@
+#hero {
+    height: 95vh;
+    background-image: radial-gradient(var(--darkRed), 10% ,var(--black));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+#features {
+    display: flex;
+    flex-direction: column;
+} 
+#features div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+}
+#features ion-icon {
+    font-size: 3rem;
+    color: var(--red);
+    margin-right: 2rem;
+}
