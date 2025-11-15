@@ -1,6 +1,7 @@
+import "./style/docs.css"
 import { useEffect } from "react";
 
-export default function About() {
+export default function Docs() {
     useEffect(() => {
         async function Fetch() {
             const url = "http://localhost:4000/readme";
@@ -16,6 +17,8 @@ export default function About() {
         Fetch();
     })
     return (
-        <section id="readme"></section>
+        <section id="docs">
+            <div id="readme"></div>
+        </section>
     )
 }

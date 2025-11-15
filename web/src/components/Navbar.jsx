@@ -1,12 +1,10 @@
-import { Link } from 'react-router-dom'
-
 export default function Navbar() {
     return (
-        <nav className="navbar bg-dark p-3">
+        <nav className="navbar p-3">
             <div className="container-lg">
-                <Link to="/" className='navbar-brand'>MaxxedOut</Link>
+                <a href="/"><h3>MaxxedOut</h3></a>
                 <div>
-                    <Link to="/about">About</Link>
+                    <a href="/docs">Docs</a>
                 </div>
             </div>
         </nav>

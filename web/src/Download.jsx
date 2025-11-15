@@ -1,5 +1,9 @@
+import "./style/download.css"
+
 export default function Download() {
   return (
-    <section>Download</section>
+    <section id="download">
+      
+    </section>
   )
 }
