@@ -9,7 +9,7 @@ export default function Footer() {
                 <div className="d-flex flex-column">
                     <a href="/registration">Registration</a>
                     <a href="/download">Download</a>
-                    <a href="/about">About</a>
+                    <a href="/Docs">Docs</a>
                 </div>
             </div>
             <hr/>

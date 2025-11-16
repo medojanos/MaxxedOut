@@ -10,7 +10,7 @@ export default function Home() {
       </div>
       <section id='register'>
         <h2>Ready to get started?</h2>
-        <div className="container m-auto">
+        <div className="container m-auto text-center">
           <h3>Start your fitness journey</h3>
           <h5>You need to register to use the app</h5>
           <a href="/registration"><button>Sign up now <ion-icon name="arrow-forward"></ion-icon></button></a>
@@ -19,9 +19,11 @@ export default function Home() {
       <hr></hr>
       <section id='download'>
         <h2>Download MaxxedOut</h2>
-        <div className="d-flex justify-content-evenly">
-          <img src={TestPhone} width={300}/>
-          <div>
+        <div className="row justify-content-evenly">
+          <div className="col-auto">
+            <img src={TestPhone} id="phone"/>
+          </div>
+          <div className="col-auto">
             <h3>Get the app to...</h3>
             <div id="features">
               <div>
@@ -36,7 +38,7 @@ export default function Home() {
                 <ion-icon name="analytics"></ion-icon>
                 <span>See results</span>
               </div>
-              <a href="/download" className="m-auto"><button>DOWNLOAD the APK</button></a>
+              <a href="/download"><button>DOWNLOAD the APK</button></a>
             </div>
           </div>
         </div>

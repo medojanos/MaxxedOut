@@ -5,13 +5,9 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    text-align: center;
+    padding: 1rem;
 }
 
-#features {
-    display: flex;
-    flex-direction: column;
-} 
 #features div {
     display: flex;
     align-items: center;
@@ -22,4 +18,10 @@
     font-size: 3rem;
     color: var(--red);
     margin-right: 2rem;
+}
+
+#phone {
+    width: 300px;
+    max-width: 100%;
+    padding-bottom: 2rem;
 }

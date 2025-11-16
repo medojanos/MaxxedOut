@@ -9,7 +9,7 @@ export default function Docs() {
             try {
                 const response = await fetch(url);
                 const data = await response.text();
-                readme.innerHTML = data.slice(data.search("</h2>"));
+                readme.innerHTML = data.slice(data.search("</b>"));
             } catch (e) {
                 readme.innerHTML = "Error getting information! <br> " + e;
             }
@@ -18,7 +18,7 @@ export default function Docs() {
     })
     return (
         <section id="docs">
-            <div id="readme"></div>
+            <div className="container-lg" id="readme"></div>
         </section>
     )
 }
