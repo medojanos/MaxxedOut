@@ -44,8 +44,8 @@
       ],
       "indices": [],
       "id": "F6Z5h2KSqXceRhQAheSan",
-      "x": -311.30000000000007,
-      "y": 83.20000000000002,
+      "x": -26.300000000000068,
+      "y": -8.299999999999983,
       "locked": false
     },
     {
@@ -104,8 +104,8 @@
       ],
       "indices": [],
       "id": "6fYr_azmZ6y3Y8HraOqlu",
-      "x": -578.6999999999999,
-      "y": -193.5
+      "x": -386.69999999999993,
+      "y": -439.5
     },
     {
       "name": "exercises",
@@ -153,8 +153,8 @@
       ],
       "indices": [],
       "id": "3eK9bzrJh0r_L4Ohya1VG",
-      "x": 339.50132821597845,
-      "y": 143.97836474273254
+      "x": 307.75132821597845,
+      "y": -6.521635257267462
     },
     {
       "name": "sets",
@@ -226,14 +226,14 @@
       ],
       "indices": [],
       "id": "gi5NzXARciyFqiSXd5Jwx",
-      "x": 43.05000000000007,
-      "y": -248.35
+      "x": -11.199999999999818,
+      "y": -357.6
     },
     {
       "id": "qpBB1a_AiCO9orR658RWM",
       "name": "codes",
-      "x": -674.4500000000002,
-      "y": 20.824999999999932,
+      "x": -393.20000000000016,
+      "y": -104.17500000000007,
       "locked": false,
       "fields": [
         {
@@ -266,20 +266,6 @@
           "id": "fCyZ2xUjA6efeNlI8Lpne",
           "name": "expiry",
           "type": "DATETIME",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "size": "",
-          "values": []
-        },
-        {
-          "id": "obhuQwXONEB2KSvx8tD9t",
-          "name": "used",
-          "type": "BOOLEAN",
           "default": "",
           "check": "",
           "primary": false,
@@ -327,8 +313,8 @@
       ],
       "indices": [],
       "id": "d05bSJvFzlYfG31ShWPZ-",
-      "x": 917.9794859682445,
-      "y": -380.5378390657267
+      "x": 265.9794859682445,
+      "y": -430.5378390657267
     },
     {
       "name": "muscle_groups_exercises",
@@ -377,8 +363,135 @@
       ],
       "indices": [],
       "id": "vbeGWsDDzyfCUgMjjCYXS",
-      "x": 619.9572016926488,
-      "y": -124.73595023699221
+      "x": 288.7072016926488,
+      "y": -268.4859502369922
+    },
+    {
+      "id": "WZUalkyRdSwQfazDFxUWQ",
+      "name": "plans",
+      "x": -385.5,
+      "y": 121.5,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "FvG0FZYjJOt3B9ggpuISq"
+        },
+        {
+          "id": "gC-h1gbA0EYxoODpt4th3",
+          "name": "name",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": 255
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a"
+    },
+    {
+      "id": "qli1PqXHQtzBjFcU6xfKx",
+      "name": "plans_exercises",
+      "x": 328.5,
+      "y": 246,
+      "locked": false,
+      "fields": [
+        {
+          "name": "plan_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "4sjzmeWSn61PF-wG6p2Z5"
+        },
+        {
+          "id": "4eXkbI3OcykoC-k3Gv0jA",
+          "name": "exercises_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a"
+    },
+    {
+      "id": "S2v53jVMotKWJ4v8RTts2",
+      "name": "tokens",
+      "x": -768,
+      "y": -171,
+      "locked": false,
+      "fields": [
+        {
+          "name": "token",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "agivjG9XDDsKdJ9y6H1wX"
+        },
+        {
+          "id": "38W5UqqLIvl_Gd4bJgtXi",
+          "name": "user_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "ZaymSKwf3NmhUw47tadRK",
+          "name": "expiry",
+          "type": "DATETIME",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "color": "#175e7a"
     }
   ],
   "relationships": [
@@ -447,6 +560,39 @@
       "deleteConstraint": "No action",
       "name": "fk_muscle_groups_exercises_exercises_id_exercises",
       "id": "Dd5O8hu6rnMZJ_QWSiseP"
+    },
+    {
+      "startTableId": "qli1PqXHQtzBjFcU6xfKx",
+      "startFieldId": "4sjzmeWSn61PF-wG6p2Z5",
+      "endTableId": "WZUalkyRdSwQfazDFxUWQ",
+      "endFieldId": "FvG0FZYjJOt3B9ggpuISq",
+      "cardinality": "one_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_plans_exercises_plan_id_plans",
+      "id": "w6yEUB6CbRfJlg9ity-qf"
+    },
+    {
+      "startTableId": "qli1PqXHQtzBjFcU6xfKx",
+      "startFieldId": "4eXkbI3OcykoC-k3Gv0jA",
+      "endTableId": "3eK9bzrJh0r_L4Ohya1VG",
+      "endFieldId": "U-mDR8lYfF6tyoOM7CUns",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_plans_exercises_exercises_id_exercises",
+      "id": "tTwMGlgfB6CMgh_J352oA"
+    },
+    {
+      "startTableId": "S2v53jVMotKWJ4v8RTts2",
+      "startFieldId": "38W5UqqLIvl_Gd4bJgtXi",
+      "endTableId": "6fYr_azmZ6y3Y8HraOqlu",
+      "endFieldId": "EkjVqQqmSttj2myEudqUN",
+      "cardinality": "one_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_tokens_user_id_users",
+      "id": "B8AsBkwopoBNOjPgb78H5"
     }
   ],
   "notes": [],
