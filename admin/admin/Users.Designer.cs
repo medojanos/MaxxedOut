@@ -35,19 +35,17 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savetableButton = new System.Windows.Forms.Button();
             this.deleteButton = new System.Windows.Forms.Button();
-            this.searchButton = new System.Windows.Forms.Button();
-            this.searchName = new System.Windows.Forms.TextBox();
+            this.search = new System.Windows.Forms.TextBox();
             this.Rows = new System.Windows.Forms.ListBox();
-            this.username = new System.Windows.Forms.TextBox();
-            this.password = new System.Windows.Forms.TextBox();
             this.nickname = new System.Windows.Forms.TextBox();
             this.email = new System.Windows.Forms.TextBox();
             this.addButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
-            this.usernameLabel = new System.Windows.Forms.Label();
-            this.passwordLabel = new System.Windows.Forms.Label();
             this.nicknameLabel = new System.Windows.Forms.Label();
             this.emailLabel = new System.Windows.Forms.Label();
+            this.password = new System.Windows.Forms.TextBox();
+            this.passwordLabel = new System.Windows.Forms.Label();
+            this.searchButton = new System.Windows.Forms.Button();
             this.Menu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -104,29 +102,20 @@
             // 
             // deleteButton
             // 
-            this.deleteButton.Location = new System.Drawing.Point(218, 56);
+            this.deleteButton.Location = new System.Drawing.Point(218, 316);
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.Size = new System.Drawing.Size(75, 23);
             this.deleteButton.TabIndex = 8;
             this.deleteButton.Text = "Delete";
             this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             // 
-            // searchButton
+            // search
             // 
-            this.searchButton.Location = new System.Drawing.Point(218, 25);
-            this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(75, 23);
-            this.searchButton.TabIndex = 7;
-            this.searchButton.Text = "Search";
-            this.searchButton.UseVisualStyleBackColor = true;
-            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
-            // 
-            // searchName
-            // 
-            this.searchName.Location = new System.Drawing.Point(12, 27);
-            this.searchName.Name = "searchName";
-            this.searchName.Size = new System.Drawing.Size(200, 20);
-            this.searchName.TabIndex = 6;
+            this.search.Location = new System.Drawing.Point(12, 27);
+            this.search.Name = "search";
+            this.search.Size = new System.Drawing.Size(200, 20);
+            this.search.TabIndex = 6;
             // 
             // Rows
             // 
@@ -137,74 +126,44 @@
             this.Rows.TabIndex = 10;
             this.Rows.SelectedIndexChanged += new System.EventHandler(this.Rows_SelectedIndexChanged);
             // 
-            // username
-            // 
-            this.username.Location = new System.Drawing.Point(12, 182);
-            this.username.Name = "username";
-            this.username.Size = new System.Drawing.Size(200, 20);
-            this.username.TabIndex = 11;
-            // 
-            // password
-            // 
-            this.password.Location = new System.Drawing.Point(12, 217);
-            this.password.Name = "password";
-            this.password.Size = new System.Drawing.Size(200, 20);
-            this.password.TabIndex = 12;
-            // 
             // nickname
             // 
-            this.nickname.Location = new System.Drawing.Point(12, 256);
+            this.nickname.Location = new System.Drawing.Point(12, 179);
             this.nickname.Name = "nickname";
             this.nickname.Size = new System.Drawing.Size(200, 20);
             this.nickname.TabIndex = 13;
             // 
             // email
             // 
-            this.email.Location = new System.Drawing.Point(12, 294);
+            this.email.Location = new System.Drawing.Point(12, 205);
             this.email.Name = "email";
             this.email.Size = new System.Drawing.Size(200, 20);
             this.email.TabIndex = 14;
             // 
             // addButton
             // 
-            this.addButton.Location = new System.Drawing.Point(12, 320);
+            this.addButton.Location = new System.Drawing.Point(12, 287);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(75, 23);
             this.addButton.TabIndex = 15;
             this.addButton.Text = "Add";
             this.addButton.UseVisualStyleBackColor = true;
+            this.addButton.Click += new System.EventHandler(this.addButton_Click);
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(218, 320);
+            this.saveButton.Location = new System.Drawing.Point(218, 287);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 16;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
-            // 
-            // usernameLabel
-            // 
-            this.usernameLabel.AutoSize = true;
-            this.usernameLabel.Location = new System.Drawing.Point(227, 185);
-            this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(55, 13);
-            this.usernameLabel.TabIndex = 17;
-            this.usernameLabel.Text = "Username";
-            // 
-            // passwordLabel
-            // 
-            this.passwordLabel.AutoSize = true;
-            this.passwordLabel.Location = new System.Drawing.Point(229, 220);
-            this.passwordLabel.Name = "passwordLabel";
-            this.passwordLabel.Size = new System.Drawing.Size(53, 13);
-            this.passwordLabel.TabIndex = 18;
-            this.passwordLabel.Text = "Password";
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
             // nicknameLabel
             // 
             this.nicknameLabel.AutoSize = true;
-            this.nicknameLabel.Location = new System.Drawing.Point(227, 259);
+            this.nicknameLabel.Location = new System.Drawing.Point(227, 182);
             this.nicknameLabel.Name = "nicknameLabel";
             this.nicknameLabel.Size = new System.Drawing.Size(55, 13);
             this.nicknameLabel.TabIndex = 19;
@@ -213,32 +172,56 @@
             // emailLabel
             // 
             this.emailLabel.AutoSize = true;
-            this.emailLabel.Location = new System.Drawing.Point(239, 297);
+            this.emailLabel.Location = new System.Drawing.Point(239, 208);
             this.emailLabel.Name = "emailLabel";
             this.emailLabel.Size = new System.Drawing.Size(32, 13);
             this.emailLabel.TabIndex = 20;
             this.emailLabel.Text = "Email";
+            // 
+            // password
+            // 
+            this.password.Location = new System.Drawing.Point(12, 261);
+            this.password.Name = "password";
+            this.password.Size = new System.Drawing.Size(200, 20);
+            this.password.TabIndex = 21;
+            // 
+            // passwordLabel
+            // 
+            this.passwordLabel.AutoSize = true;
+            this.passwordLabel.Location = new System.Drawing.Point(227, 264);
+            this.passwordLabel.Name = "passwordLabel";
+            this.passwordLabel.Size = new System.Drawing.Size(53, 13);
+            this.passwordLabel.TabIndex = 22;
+            this.passwordLabel.Text = "Password";
+            // 
+            // searchButton
+            // 
+            this.searchButton.Location = new System.Drawing.Point(218, 27);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(75, 23);
+            this.searchButton.TabIndex = 23;
+            this.searchButton.Text = "Search";
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
             // 
             // Users
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 461);
+            this.Controls.Add(this.searchButton);
+            this.Controls.Add(this.passwordLabel);
+            this.Controls.Add(this.password);
             this.Controls.Add(this.emailLabel);
             this.Controls.Add(this.nicknameLabel);
-            this.Controls.Add(this.passwordLabel);
-            this.Controls.Add(this.usernameLabel);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.email);
             this.Controls.Add(this.nickname);
-            this.Controls.Add(this.password);
-            this.Controls.Add(this.username);
             this.Controls.Add(this.Rows);
             this.Controls.Add(this.savetableButton);
             this.Controls.Add(this.deleteButton);
-            this.Controls.Add(this.searchButton);
-            this.Controls.Add(this.searchName);
+            this.Controls.Add(this.search);
             this.Controls.Add(this.Menu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Users";
@@ -258,19 +241,17 @@
         private System.Windows.Forms.ToolStripMenuItem exercisesToolStripMenuItem;
         private System.Windows.Forms.Button savetableButton;
         private System.Windows.Forms.Button deleteButton;
-        private System.Windows.Forms.Button searchButton;
-        private System.Windows.Forms.TextBox searchName;
+        private System.Windows.Forms.TextBox search;
         private System.Windows.Forms.ListBox Rows;
         private System.Windows.Forms.ToolStripMenuItem muscleGroupsToolStripMenuItem;
-        private System.Windows.Forms.TextBox username;
-        private System.Windows.Forms.TextBox password;
         private System.Windows.Forms.TextBox nickname;
         private System.Windows.Forms.TextBox email;
         private System.Windows.Forms.Button addButton;
         private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.Label usernameLabel;
-        private System.Windows.Forms.Label passwordLabel;
         private System.Windows.Forms.Label nicknameLabel;
         private System.Windows.Forms.Label emailLabel;
+        private System.Windows.Forms.TextBox password;
+        private System.Windows.Forms.Label passwordLabel;
+        private System.Windows.Forms.Button searchButton;
     }
 }

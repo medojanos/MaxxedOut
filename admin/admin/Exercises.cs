@@ -16,13 +16,21 @@ namespace admin
         public Exercises()
         {
             InitializeComponent();
-            Database db = new Database(@"Data source=C:\Users\tekeresdenes\repos\MaxxedOut\api\db\maxxedout.db");
+
+            // Database
+
+            Database db = new Database(@"Data source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
             var exercises = db.Query("SELECT * FROM exercises;");
 
             foreach(DataRow exercise in exercises.Rows)
             {
                 Rows.Items.Add(exercise["name"].ToString());
             }
+        }
+
+        private void Rows_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -41,5 +49,18 @@ namespace admin
             Muscle_groups MusclegroupsForm = new Muscle_groups();
             MusclegroupsForm.ShowDialog();
         }
+
+        private void exerciseName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+    }
+
+    public class ExercisesDB
+    {
+        public string Exercise { get; set; }
+        public string Type { get; set; }
+        public ListBox Musclesworked { get; set; }
     }
 }

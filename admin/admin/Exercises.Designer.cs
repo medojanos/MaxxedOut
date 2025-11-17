@@ -103,6 +103,7 @@
             this.Rows.Name = "Rows";
             this.Rows.Size = new System.Drawing.Size(273, 420);
             this.Rows.TabIndex = 1;
+            this.Rows.SelectedIndexChanged += new System.EventHandler(this.Rows_SelectedIndexChanged);
             // 
             // exerciseName
             // 
@@ -110,6 +111,7 @@
             this.exerciseName.Name = "exerciseName";
             this.exerciseName.Size = new System.Drawing.Size(200, 20);
             this.exerciseName.TabIndex = 2;
+            this.exerciseName.TextChanged += new System.EventHandler(this.exerciseName_TextChanged);
             // 
             // searchButton
             // 
