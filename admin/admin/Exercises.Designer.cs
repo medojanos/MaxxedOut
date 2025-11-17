@@ -31,26 +31,26 @@
             this.Menu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mescleGroupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Rows = new System.Windows.Forms.ListBox();
             this.exerciseName = new System.Windows.Forms.TextBox();
             this.searchButton = new System.Windows.Forms.Button();
             this.deleteButton = new System.Windows.Forms.Button();
             this.savetableButton = new System.Windows.Forms.Button();
-            this.mescleGroupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveButton = new System.Windows.Forms.Button();
             this.addButton = new System.Windows.Forms.Button();
             this.musclegroupsLabel = new System.Windows.Forms.Label();
             this.exercise = new System.Windows.Forms.TextBox();
             this.exerciseLabel = new System.Windows.Forms.Label();
             this.typeLabel = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.Musclesworked = new System.Windows.Forms.ListBox();
             this.musclegroups = new System.Windows.Forms.ComboBox();
             this.role = new System.Windows.Forms.ComboBox();
             this.roleLabel = new System.Windows.Forms.Label();
             this.musclesworkedLabel = new System.Windows.Forms.Label();
             this.addmuscleworkedButton = new System.Windows.Forms.Button();
+            this.type = new System.Windows.Forms.ComboBox();
             this.Menu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -78,9 +78,16 @@
             // usersToolStripMenuItem
             // 
             this.usersToolStripMenuItem.Name = "usersToolStripMenuItem";
-            this.usersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.usersToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.usersToolStripMenuItem.Text = "Users";
             this.usersToolStripMenuItem.Click += new System.EventHandler(this.usersToolStripMenuItem_Click);
+            // 
+            // mescleGroupsToolStripMenuItem
+            // 
+            this.mescleGroupsToolStripMenuItem.Name = "mescleGroupsToolStripMenuItem";
+            this.mescleGroupsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.mescleGroupsToolStripMenuItem.Text = "Mescle groups";
+            this.mescleGroupsToolStripMenuItem.Click += new System.EventHandler(this.mescleGroupsToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -130,13 +137,6 @@
             this.savetableButton.TabIndex = 5;
             this.savetableButton.Text = "Save table";
             this.savetableButton.UseVisualStyleBackColor = true;
-            // 
-            // mescleGroupsToolStripMenuItem
-            // 
-            this.mescleGroupsToolStripMenuItem.Name = "mescleGroupsToolStripMenuItem";
-            this.mescleGroupsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.mescleGroupsToolStripMenuItem.Text = "Mescle groups";
-            this.mescleGroupsToolStripMenuItem.Click += new System.EventHandler(this.mescleGroupsToolStripMenuItem_Click);
             // 
             // saveButton
             // 
@@ -190,13 +190,6 @@
             this.typeLabel.TabIndex = 28;
             this.typeLabel.Text = "Type";
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(12, 340);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(200, 20);
-            this.textBox1.TabIndex = 27;
-            // 
             // Musclesworked
             // 
             this.Musclesworked.FormattingEnabled = true;
@@ -248,11 +241,20 @@
             this.addmuscleworkedButton.Text = "Add muscle worked";
             this.addmuscleworkedButton.UseVisualStyleBackColor = true;
             // 
+            // type
+            // 
+            this.type.FormattingEnabled = true;
+            this.type.Location = new System.Drawing.Point(12, 335);
+            this.type.Name = "type";
+            this.type.Size = new System.Drawing.Size(200, 21);
+            this.type.TabIndex = 35;
+            // 
             // Exercises
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 461);
+            this.Controls.Add(this.type);
             this.Controls.Add(this.addmuscleworkedButton);
             this.Controls.Add(this.musclesworkedLabel);
             this.Controls.Add(this.roleLabel);
@@ -260,7 +262,6 @@
             this.Controls.Add(this.musclegroups);
             this.Controls.Add(this.Musclesworked);
             this.Controls.Add(this.typeLabel);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.exerciseLabel);
             this.Controls.Add(this.exercise);
             this.Controls.Add(this.saveButton);
@@ -301,13 +302,13 @@
         private System.Windows.Forms.TextBox exercise;
         private System.Windows.Forms.Label exerciseLabel;
         private System.Windows.Forms.Label typeLabel;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ListBox Musclesworked;
         private System.Windows.Forms.ComboBox musclegroups;
         private System.Windows.Forms.ComboBox role;
         private System.Windows.Forms.Label roleLabel;
         private System.Windows.Forms.Label musclesworkedLabel;
         private System.Windows.Forms.Button addmuscleworkedButton;
+        private System.Windows.Forms.ComboBox type;
     }
 }
 
