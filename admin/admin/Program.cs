@@ -14,6 +14,8 @@ namespace admin
         [STAThread]
         static void Main()
         {
+            SQLitePCL.Batteries_V2.Init();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Menu());

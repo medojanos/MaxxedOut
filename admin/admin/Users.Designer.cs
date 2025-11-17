@@ -31,13 +31,13 @@
             this.Menu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exercisesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.muscleGroupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savetableButton = new System.Windows.Forms.Button();
             this.deleteButton = new System.Windows.Forms.Button();
             this.searchButton = new System.Windows.Forms.Button();
             this.searchName = new System.Windows.Forms.TextBox();
             this.Rows = new System.Windows.Forms.ListBox();
-            this.muscleGroupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.username = new System.Windows.Forms.TextBox();
             this.password = new System.Windows.Forms.TextBox();
             this.nickname = new System.Windows.Forms.TextBox();
@@ -75,9 +75,16 @@
             // exercisesToolStripMenuItem
             // 
             this.exercisesToolStripMenuItem.Name = "exercisesToolStripMenuItem";
-            this.exercisesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exercisesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exercisesToolStripMenuItem.Text = "Exercises";
             this.exercisesToolStripMenuItem.Click += new System.EventHandler(this.exercisesToolStripMenuItem_Click);
+            // 
+            // muscleGroupsToolStripMenuItem
+            // 
+            this.muscleGroupsToolStripMenuItem.Name = "muscleGroupsToolStripMenuItem";
+            this.muscleGroupsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.muscleGroupsToolStripMenuItem.Text = "Muscle groups";
+            this.muscleGroupsToolStripMenuItem.Click += new System.EventHandler(this.muscleGroupsToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -112,6 +119,7 @@
             this.searchButton.TabIndex = 7;
             this.searchButton.Text = "Search";
             this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
             // 
             // searchName
             // 
@@ -127,13 +135,7 @@
             this.Rows.Name = "Rows";
             this.Rows.Size = new System.Drawing.Size(273, 420);
             this.Rows.TabIndex = 10;
-            // 
-            // muscleGroupsToolStripMenuItem
-            // 
-            this.muscleGroupsToolStripMenuItem.Name = "muscleGroupsToolStripMenuItem";
-            this.muscleGroupsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.muscleGroupsToolStripMenuItem.Text = "Muscle groups";
-            this.muscleGroupsToolStripMenuItem.Click += new System.EventHandler(this.muscleGroupsToolStripMenuItem_Click);
+            this.Rows.SelectedIndexChanged += new System.EventHandler(this.Rows_SelectedIndexChanged);
             // 
             // username
             // 
