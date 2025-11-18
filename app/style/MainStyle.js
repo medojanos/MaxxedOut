@@ -57,7 +57,7 @@ export default StyleSheet.create({
 
     input : {
         backgroundColor: Var.navyBlue,
-        borderWidth: Var.red,
+        borderColor: Var.red,
         color: Var.white,
         padding: 10,
         marginVertical: 10,
