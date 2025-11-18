@@ -1,4 +1,5 @@
-﻿using System;
+﻿using admin.Classes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,13 +20,14 @@ namespace admin
         {
             InitializeComponent();
 
-            db = new Database(@"Data source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
+            db = new Database(@"Data source=C:\Users\tekeresdenes\repos\MaxxedOut\api\db\maxxedout.db");
             var users = db.Query("SELECT * FROM users;");
 
             foreach (DataRow user in users.Rows)
             {
-                UsersList.Add(new UsersDB(user["nickname"].ToString(), user["email"].ToString()));
-                Rows.Items.Add(user["nickname"].ToString());
+                UsersDB UserObj = new UsersDB(user["nickname"].ToString(), user["email"].ToString(), user["password"].ToString());
+                UsersList.Add(UserObj);
+                Rows.Items.Add(UserObj);
             }
 
         }
@@ -53,18 +55,36 @@ namespace admin
 
         private void searchButton_Click(object sender, EventArgs e)
         {
+            Rows.Items.Clear();
+            nickname.Clear();
+            email.Clear();
+            password.Clear();
+
             if (string.IsNullOrWhiteSpace(search.Text))
             {
-                // listázás
+                foreach (var user in UsersList)
+                {
+                    Rows.Items.Add(user);
+                }
             }
-            
+            else
+            {
+                foreach(var user in UsersList.Where(user => user.Nickname.Contains(search.Text) || user.Email.Contains(search.Text)))
+                {
+                    Rows.Items.Add(user);
+                }
+            }
         }
 
         public void Rows_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Rows.SelectedIndex < 0 || Rows.SelectedIndex >= UsersList.Count()) return;
-            nickname.Text = UsersList[Rows.SelectedIndex].Nickname;
-            email.Text = UsersList[Rows.SelectedIndex].Email;
+            if (Rows.SelectedItem == null) return;
+
+            UsersDB user = Rows.SelectedItem as UsersDB;
+            if (user == null) return;
+
+            nickname.Text = user.Nickname;
+            email.Text = user.Email;
             password.Clear();
         }
 
@@ -76,27 +96,37 @@ namespace admin
                 return;
             }
 
-            if (UsersList.Any(user => user.Nickname == nickname.Text))
+            if (UsersList.Any(usernn => usernn.Nickname == nickname.Text))
             {
                 MessageBox.Show("Nickname already in database!");
                 return;
             }
 
-            if (UsersList.Any(user => user.Email == email.Text))
+            if (UsersList.Any(usermail => usermail.Email == email.Text))
             {
                 MessageBox.Show("Email already in database!");
                 return;
             }
 
-            UsersList.Add(new UsersDB(nickname.Text, email.Text));
-            Rows.Items.Add(nickname.Text);
+            UsersDB user = new UsersDB(nickname.Text, email.Text, password.Text);
+
+            UsersList.Add(user);
+            Rows.Items.Add(user);
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
             if (Rows.SelectedIndex < 0)
             {
-                MessageBox.Show("Need to select an item first to delete it!");
+                MessageBox.Show("Need to select an item first to save it!");
+                return;
+            }
+
+            UsersDB user = Rows.SelectedItem as UsersDB;
+
+            if(user == null)
+            {
+                MessageBox.Show("Invalid item!");
                 return;
             }
 
@@ -106,9 +136,11 @@ namespace admin
                 return;
             }
 
-            UsersList[Rows.SelectedIndex] = new UsersDB(nickname.Text, email.Text);
-            Rows.Items[Rows.SelectedIndex] = nickname.Text;
+            user.Email = email.Text;
+            user.Nickname = nickname.Text;
+            if(!string.IsNullOrWhiteSpace(password.Text)) user.Password = password.Text;
 
+            Rows.Items[Rows.SelectedIndex] = user;
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
@@ -119,17 +151,14 @@ namespace admin
                 return;
             }
 
-            UsersList.RemoveAt(Rows.SelectedIndex);
-            Rows.Items.RemoveAt(Rows.SelectedIndex);
+            UsersDB user = Rows.SelectedItem as UsersDB;
+
+            UsersList.Remove(user);
+            Rows.Items.Remove(user);
 
             nickname.Clear();
             email.Clear();
             password.Clear();
-        }
-
-        private void listallButton_Click(object sender, EventArgs e)
-        {
-
         }
     }
 
@@ -137,11 +166,18 @@ namespace admin
     {
         public string Nickname { get; set; }
         public string Email { get; set; }
+        public string Password { get; set; }
 
-        public UsersDB(string nickname, string email)
+        public UsersDB( string nickname, string email, string password)
         {
             Nickname = nickname;
             Email = email;
+            Password = password;
+        }
+
+        public override string ToString()
+        {
+            return Nickname;
         }
 
     }
