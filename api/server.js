@@ -31,6 +31,15 @@ app.get("/readme", (req, res) => {
   })
 })
 
+app.get("/plans", (req, res) => {
+  db.get("SELECT user_id FROM tokens WHERE token = ?", [req.header("Authorization")], (e, user_id) => {
+    db.get("SELECT * FROM plans WHERE user_id = ?", [user_id], (e, plans) => {
+      console.log(user_id.user_id);
+      res.json(plans);
+    })
+  })
+})
+
 app.get("/exercises", (req, res) => {
   db.all("SELECT * FROM exercises", (e, rows) => {
     res.json(rows);
@@ -39,7 +48,7 @@ app.get("/exercises", (req, res) => {
 
 
 app.post("/register", (req, res) => {
-  db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
+  db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
     if (row) {
       res.json({message: "Email already registered", status: false});
     } else {
@@ -53,19 +62,13 @@ app.post("/register", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
+  db.get("SELECT * FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, row) => {
     if (!row) {
-      res.json({message: "No email registered", status: false});
+      res.json({message: "Wrong credentials", status: false});
     }
-  })
-  db.get("SELECT * FROM users WHERE password = '" + hash("sha-512", req.body.password) + "'", (e, row) => {
-    if (row) {
-      let token = randomBytes(32).toString('hex');
-      db.run("INSERT INTO tokens VALUES (?, ?)", [token, row.id]);
-      res.json({message: "Successfully logged in", status: true, token : token});
-    } else {
-      res.json({message: "Wrong password", status: false});
-    }
+    let token = randomBytes(32).toString('hex');
+    db.run("INSERT INTO tokens VALUES (?, ?)", [token, row]);
+    res.json({message: "Successfully logged in", status: true, token : token});
   })
 })
 

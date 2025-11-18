@@ -13,6 +13,7 @@ db.serialize(() => {
     db.run("DROP TABLE IF EXISTS muscle_groups;");
     db.run("DROP TABLE IF EXISTS muscle_groups_exercises;");
     db.run("DROP TABLE IF EXISTS tokens;");
+    db.run("DROP TABLE IF EXISTS plans;");
 
     // Tables
     db.run("CREATE TABLE users (id INTEGER PRIMARY KEY, email TEXT, nickname TEXT(20), password TEXT(128));");
@@ -23,6 +24,7 @@ db.serialize(() => {
     db.run("CREATE TABLE muscle_groups (id INTEGER PRIMARY KEY, name TEXT(255));");
     db.run("CREATE TABLE muscle_groups_exercises (muscle_group_id INTEGER, exercises_id INTEGER);");
     db.run("CREATE TABLE tokens (token TEXT(64), user_id INTEGER);");
+    db.run("CREATE TABLE plans (id INTEGER, name TEXT(255));");
 
     // Test data
     db.run("INSERT INTO users (email, nickname, password) VALUES ('johndoe@yahoo.com', 'John Doe', '" + hash("sha-512", "1234") + "');");
@@ -31,6 +33,7 @@ db.serialize(() => {
     db.run("INSERT INTO exercises (name) VALUES ('Deadlift');");
     db.run("INSERT INTO muscle_groups (name) VALUES ('Chest');");
     db.run("INSERT INTO muscle_groups (name) VALUES ('Lats 🥴');");
+    db.run("INSERT INTO plans (name) VALUES ('Chest day 1');");
 
     console.log("Database initialized succesfully");
 });

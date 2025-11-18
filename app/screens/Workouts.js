@@ -21,19 +21,25 @@ import { getData } from "../misc/Storage";
 
 export default function Workouts() {
     const [planModal, setPlanModal] = useState(false);
+    const [token, setToken] = useState();
     useEffect(() =>{
-            async function fetchPlans() {
-                fetch("http://localhost:4000/plans", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type" : "application/json",
-                        "Authorization" : await getData("token")
-                    }
-                })
-                .then(res => res.json())
-                .then(data => setExercises(data))
-            }   
-        },[])
+        async function fetchPlans() {
+            setToken(await getData("token"))
+        }   
+        fetchPlans()
+    },[])
+    useEffect(() => {
+        fetch("http://localhost:4000/plans", {
+            method: "GET",
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization" : token
+            }
+        })
+        .then(res => res.json())
+        .then(data => setExercises(data))
+        .catch(e => console.log(e))
+    },[token])
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
             <View>

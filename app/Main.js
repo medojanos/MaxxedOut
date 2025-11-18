@@ -25,7 +25,7 @@ export default function Main() {
           headerStyle: { backgroundColor: Var.black },
           headerTitleStyle: { color: Var.white, fontSize: 30 },
           
-          tabBarStyle: { height: 60, backgroundColor: Var.black, padding: 5},
+          tabBarStyle: { height: 65, backgroundColor: Var.black, padding: 5},
           tabBarActiveTintColor: Var.red,
           tabBarInactiveTintColor: Var.paleWhite,
           tabBarIconStyle: {width: 30, height: 30},
