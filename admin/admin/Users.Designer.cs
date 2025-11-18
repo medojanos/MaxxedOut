@@ -33,7 +33,6 @@
             this.exercisesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.muscleGroupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.savetableButton = new System.Windows.Forms.Button();
             this.deleteButton = new System.Windows.Forms.Button();
             this.search = new System.Windows.Forms.TextBox();
             this.Rows = new System.Windows.Forms.ListBox();
@@ -90,15 +89,6 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-            // 
-            // savetableButton
-            // 
-            this.savetableButton.Location = new System.Drawing.Point(12, 424);
-            this.savetableButton.Name = "savetableButton";
-            this.savetableButton.Size = new System.Drawing.Size(281, 23);
-            this.savetableButton.TabIndex = 9;
-            this.savetableButton.Text = "Save table";
-            this.savetableButton.UseVisualStyleBackColor = true;
             // 
             // deleteButton
             // 
@@ -219,7 +209,6 @@
             this.Controls.Add(this.email);
             this.Controls.Add(this.nickname);
             this.Controls.Add(this.Rows);
-            this.Controls.Add(this.savetableButton);
             this.Controls.Add(this.deleteButton);
             this.Controls.Add(this.search);
             this.Controls.Add(this.Menu);
@@ -239,7 +228,6 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exercisesToolStripMenuItem;
-        private System.Windows.Forms.Button savetableButton;
         private System.Windows.Forms.Button deleteButton;
         private System.Windows.Forms.TextBox search;
         private System.Windows.Forms.ListBox Rows;
