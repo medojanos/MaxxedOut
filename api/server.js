@@ -33,9 +33,10 @@ app.get("/readme", (req, res) => {
 
 app.get("/exercises", (req, res) => {
   db.all("SELECT * FROM exercises", (e, rows) => {
-    res.send(rows);
+    res.json(rows);
   })
 })
+
 
 app.post("/register", (req, res) => {
   db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {

@@ -11,12 +11,8 @@ export default function App() {
 
   useEffect(() => {
     async function isLogin() {
-      try {
-        await getData("isLoggedIn").then(data => setLogin(data));
-      } catch {
-        setLogin(undefined);
-      }
-      }
+      await getData("isLoggedIn").then(data => setLogin(data));
+    }
     isLogin();
   }, [])
 
@@ -24,7 +20,7 @@ export default function App() {
     isLoggedIn == "true" ? setData("isLoggedIn", "true") : setData("isLoggedIn", "false");
   }, [isLoggedIn]);
   
-  if (isLoggedIn == undefined) return <Loader/>
+  if (isLoggedIn == null) return <Loader/>
   
   return isLoggedIn == "true" ? <Main/> : <Login/>;
 }
