@@ -7,11 +7,11 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Var from "./style/Variables";
 
 // Screens
-import Statistics from "./screens/Statistics";
-import Logs from "./screens/Logs";
-import Tracker from "./screens/Tracker";
-import Workouts from "./screens/Workouts";
-import Settings from "./screens/Settings";
+import Statistics from "./screens/main/Statistics";
+import Logs from "./screens/main/Logs";
+import Tracker from "./screens/main/Tracker";
+import Workouts from "./screens/main/Workouts";
+import Settings from "./screens/main/Settings";
 
 const Tab = createBottomTabNavigator();
 

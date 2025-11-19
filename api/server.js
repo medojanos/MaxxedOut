@@ -32,9 +32,9 @@ app.get("/readme", (req, res) => {
 })
 
 app.get("/plans", (req, res) => {
-  db.get("SELECT user_id FROM tokens WHERE token = ?", [req.header("Authorization")], (e, user_id) => {
-    db.get("SELECT * FROM plans WHERE user_id = ?", [user_id], (e, plans) => {
-      console.log(user_id.user_id);
+  db.get("SELECT user_id FROM tokens WHERE token = ?", [req.header("Authorization")], (e, row) => {
+    if (!row) res.json({message: "Invalid authorization", status: false});
+    db.all("SELECT * FROM plans WHERE user_id = ?", [row.user_id], (e, plans) => {
       res.json(plans);
     })
   })
@@ -62,12 +62,10 @@ app.post("/register", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  db.get("SELECT * FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, row) => {
-    if (!row) {
-      res.json({message: "Wrong credentials", status: false});
-    }
+  db.get("SELECT id FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, user) => {
+    if (!user) res.json({message: "Wrong credentials", status: false});
     let token = randomBytes(32).toString('hex');
-    db.run("INSERT INTO tokens VALUES (?, ?)", [token, row]);
+    db.run("INSERT INTO tokens VALUES (?, ?)", [token, user.id]);
     res.json({message: "Successfully logged in", status: true, token : token});
   })
 })

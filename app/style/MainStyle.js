@@ -13,7 +13,7 @@ export default StyleSheet.create({
         padding: 20,
         backgroundColor: Var.darkGray,
         borderWidth: 1,
-        borderColor: Var.red,
+        borderColor: Var.navyBlue,
         borderRadius: 10,
         width: "100%",
         marginVertical : 20
@@ -42,12 +42,12 @@ export default StyleSheet.create({
     button : {
         backgroundColor: Var.red,
         borderRadius: 10,
-        padding: 10,
         marginVertical : 10
     },
     buttonText : {
         textAlign: "center",
-        color: Var.white
+        color: Var.white,
+        margin: 10
     },
 
     lightText : {
@@ -62,5 +62,12 @@ export default StyleSheet.create({
         padding: 10,
         marginVertical: 10,
         borderRadius: 5
+    },
+
+    overlay : {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        justifyContent: "center",
+        alignItems: "center",
     }
 })

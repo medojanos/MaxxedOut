@@ -1,8 +1,8 @@
-import Login from "./screens/Login";
+import Login from "./screens/misc/Login";
 import Main from "./Main";
 
 import { useContext, useEffect } from "react";
-import { Context } from "./misc/Provider";
+import { Context } from "./components/Provider";
 import { getData, setData } from "./misc/Storage";
 import Loader from "./components/Loader";
 
@@ -20,7 +20,13 @@ export default function App() {
     isLoggedIn == "true" ? setData("isLoggedIn", "true") : setData("isLoggedIn", "false");
   }, [isLoggedIn]);
   
-  if (isLoggedIn == null) return <Loader/>
-  
-  return isLoggedIn == "true" ? <Main/> : <Login/>;
+  switch (isLoggedIn)
+  {
+    case null:
+      return <Loader/>
+    case "true":
+      return <Main/>
+    case "false":
+      return <Login/>
+  }
 }

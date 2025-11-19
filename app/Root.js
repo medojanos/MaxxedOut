@@ -1,4 +1,4 @@
-import Provider from "./misc/Provider";
+import Provider from "./components/Provider";
 import App from "./App";
 
 export default function Root() {

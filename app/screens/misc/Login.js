@@ -1,7 +1,7 @@
 import { View, Text, TextInput, Pressable } from "react-native";
 
-import * as Var from "../style/Variables"
-import MainStyle from "../style/MainStyle";
+import * as Var from "../../style/Variables"
+import MainStyle from "../../style/MainStyle";
 import { StyleSheet } from "react-native";
 const LoginStyle = StyleSheet.create({
   loginContainer : {
@@ -18,8 +18,8 @@ const LoginStyle = StyleSheet.create({
 })
 
 import { useContext, useState } from "react";
-import { Context } from "../misc/Provider";
-import { setData } from "../misc/Storage";
+import { Context } from "../../components/Provider";
+import { setData } from "../../misc/Storage";
 
 export default function Login() {
     const [email, setEmail] = useState();

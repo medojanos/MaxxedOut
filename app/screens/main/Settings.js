@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Pressable } from "react-native";
 
-import * as Var from "../style/Variables"
-import MainStyle from "../style/MainStyle";
+import * as Var from "../../style/Variables"
+import MainStyle from "../../style/MainStyle";
 import { StyleSheet } from "react-native";
 const SettingsStyle = StyleSheet.create({
     profileContainer : {
@@ -19,7 +19,7 @@ const SettingsStyle = StyleSheet.create({
     }
 })
 
-import { Context } from "../misc/Provider";
+import { Context } from "../../components/Provider";
 import { useContext } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -40,12 +40,9 @@ export default function Settings() {
                 
                 <View style={{justifyContent: "space-between", flexDirection: "row"}}>
                     <Text style={SettingsStyle.nickname}>Nickname: </Text>
-                    <Text style={SettingsStyle.nickname}>{nickname} 
-                        <Pressable onPress={() => {setNickname(prompt("Enter nickname: "))}}>
-                            <Ionicons style={{marginStart: 10}} name="create" color={Var.red} size={20}></Ionicons>
-                        </Pressable>
-                    </Text>
-                    
+                    <Pressable>
+                        <Ionicons style={{marginStart: 10}} name="create" color={Var.red} size={25}></Ionicons>
+                    </Pressable>
                 </View>
             </View>
 

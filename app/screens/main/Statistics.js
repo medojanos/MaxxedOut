@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Pressable } from "react-native";
 
-import * as Var from "../style/Variables"
-import MainStyle from "../style/MainStyle"
+import * as Var from "../../style/Variables"
+import MainStyle from "../../style/MainStyle"
 import { StyleSheet } from "react-native";
 const StatisticsStyle = StyleSheet.create({
 

@@ -1,0 +1,79 @@
+import { View, Text, ScrollView, Pressable, Modal, FlatList } from "react-native";
+
+import * as Var from "../../style/Variables"
+import MainStyle from "../../style/MainStyle"
+import { StyleSheet } from "react-native";
+const WorkoutsStyle = StyleSheet.create({
+    addPlan : {
+        borderWidth: 1,
+        backgroundColor: Var.darkGray,
+        flex: 1,
+        alignItems: "center",
+        marginVertical: 20,
+        padding: 5,
+        borderRadius: 5
+    },
+    edit : {
+        width: 100,
+        backgroundColor: Var.navyBlue,
+        borderRadius: 5
+    }
+})
+
+import Ionicons from "react-native-vector-icons/Ionicons";
+import PlanModal from "../../components/PlanModal";
+import { useState, useEffect } from "react";
+import { getData } from "../../misc/Storage";
+
+export default function Workouts() {
+    const [planModal, setPlanModal] = useState(false);
+    const [plans, setPlans] = useState();
+    const [token, setToken] = useState();
+    useEffect(() =>{
+        async function getToken() {
+            setToken(await getData("token"));
+        }   
+        getToken()
+    },[])
+    useEffect(() => {
+        if (!token) return;
+        fetch("http://localhost:4000/plans", {
+            method: "GET",
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization" : token
+            }
+        })
+        .then(res => res.json())
+        .then(data => setPlans(data))
+        .catch(e => console.log(e))
+    },[token])
+    function displayPlan(plan) {
+        return (
+            <View style={MainStyle.container}>
+                <Text style={MainStyle.containerTitle}>{plan.name}</Text>
+                <Pressable style={WorkoutsStyle.edit} onPress={() => {if (!planModal) setPlanModal(true)}}>
+                    <Text style={MainStyle.buttonText}>Edit</Text>
+                </Pressable>
+            </View>
+        )
+    }
+    return (
+        <ScrollView contentContainerStyle={MainStyle.content}>
+            <View>
+                <Text style={MainStyle.screenTitle}>Workouts</Text>
+                <Text style={MainStyle.screenAltTitle}>Create or edit your workout plans</Text>
+                <Pressable style={WorkoutsStyle.addPlan}>
+                    <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
+                </Pressable>
+                <View>
+                    <FlatList
+                        data={plans}
+                        renderItem={({item}) => displayPlan(item)}>
+                    </FlatList>
+                </View>
+                <PlanModal visible={planModal} Close={() => setPlanModal(false)}></PlanModal>
+            </View>
+        </ScrollView>
+    );
+}

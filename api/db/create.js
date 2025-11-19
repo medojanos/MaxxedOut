@@ -24,7 +24,7 @@ db.serialize(() => {
     db.run("CREATE TABLE muscle_groups (id INTEGER PRIMARY KEY, name TEXT(255));");
     db.run("CREATE TABLE muscle_groups_exercises (muscle_group_id INTEGER, exercises_id INTEGER);");
     db.run("CREATE TABLE tokens (token TEXT(64), user_id INTEGER);");
-    db.run("CREATE TABLE plans (id INTEGER, name TEXT(255));");
+    db.run("CREATE TABLE plans (id INTEGER, name TEXT(255), user_id INTEGER);");
 
     // Test data
     db.run("INSERT INTO users (email, nickname, password) VALUES ('johndoe@yahoo.com', 'John Doe', '" + hash("sha-512", "1234") + "');");
@@ -33,7 +33,7 @@ db.serialize(() => {
     db.run("INSERT INTO exercises (name) VALUES ('Deadlift');");
     db.run("INSERT INTO muscle_groups (name) VALUES ('Chest');");
     db.run("INSERT INTO muscle_groups (name) VALUES ('Lats 🥴');");
-    db.run("INSERT INTO plans (name) VALUES ('Chest day 1');");
+    db.run("INSERT INTO plans (name, user_id) VALUES ('Chest day 1', 1);");
 
     console.log("Database initialized succesfully");
 });
