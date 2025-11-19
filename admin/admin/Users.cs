@@ -10,6 +10,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Mail;
 using System.Security.Cryptography;
 
 namespace admin
@@ -22,7 +23,7 @@ namespace admin
         {
             InitializeComponent();
 
-            db = new Database(@"Data source=C:\Users\tekeresdenes\repos\MaxxedOut\api\db\maxxedout.db");
+            db = new Database(@"Data source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
             var users = db.Query("SELECT * FROM users;");
 
             foreach (DataRow user in users.Rows)
@@ -31,7 +32,6 @@ namespace admin
                 UsersList.Add(UserObj);
                 Rows.Items.Add(UserObj);
             }
-
         }
 
         // Navigation handling
@@ -82,12 +82,12 @@ namespace admin
         {
             if (Rows.SelectedItem == null) return;
 
-            UsersDB user = Rows.SelectedItem as UsersDB;
+            UsersDB userOBJ = Rows.SelectedItem as UsersDB;
 
-            if (user == null) return;
+            if (userOBJ == null) return;
 
-            nickname.Text = user.Nickname;
-            email.Text = user.Email;
+            nickname.Text = userOBJ.Nickname;
+            email.Text = userOBJ.Email;
             password.Clear();
         }
 
@@ -116,12 +116,19 @@ namespace admin
                 return;
             }
 
-            UsersDB userObj = new UsersDB(nickname.Text, email.Text, password.Text);
+            if (!IsEmailValid(email.Text))
+            {
+                return;
+            }
+
+            string hashedPwd = UsersDB.Hash(password.Text);
+            var result = db.Query($@"INSERT INTO users (nickname, email, password) VALUES ('{nickname.Text}', '{email.Text}', '{hashedPwd}') RETURNING id;");
+            int id = int.Parse(result.Rows[0]["id"].ToString());
+
+            UsersDB userObj = new UsersDB(id, nickname.Text, email.Text, hashedPwd, true);
 
             UsersList.Add(userObj);
             Rows.Items.Add(userObj);
-
-            db.Execute($"INSERT INTO users (nickname, email, password) VALUES ('{userObj.Nickname}', '{userObj.Email}', '{userObj.Password}')");
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -146,6 +153,11 @@ namespace admin
                 return;
             }
 
+            if (!IsEmailValid(email.Text))
+            {
+                return;
+            }
+
             userObj.Email = email.Text;
             userObj.Nickname = nickname.Text;
             if(!string.IsNullOrWhiteSpace(password.Text) && IsPwdValid(password.Text)) userObj.Password = userObj.PwdEncrypt(password.Text);
@@ -164,6 +176,12 @@ namespace admin
             }
 
             UsersDB userObj = Rows.SelectedItem as UsersDB;
+
+            if (userObj == null)
+            {
+                MessageBox.Show("Invalid item!");
+                return;
+            }
 
             UsersList.Remove(userObj);
             Rows.Items.Remove(userObj);
@@ -186,9 +204,18 @@ namespace admin
             return false;
         }
 
-        private void savetableButton_Click(object sender, EventArgs e)
+        public bool IsEmailValid(string email)
         {
-
+            try
+            {
+                MailAddress mailAddress = new MailAddress(email);
+                return true;
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Not valid email!");
+                return false;
+            }
         }
     }
 
@@ -199,20 +226,19 @@ namespace admin
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public UsersDB(string nickname, string email, string password)
-        {
-            Nickname = nickname;
-            Email = email;
-            Password = PwdEncrypt(password);
-        }
-
-
         public UsersDB(int id, string nickname, string email, string password)
         {
             ID = id;
             Nickname = nickname;
             Email = email;
-            Password = PwdEncrypt(password);
+            Password = password;
+        }
+        public UsersDB(int id, string nickname, string email, string password, bool isHashed)
+        {
+            ID = id;
+            Nickname = nickname;
+            Email = email;
+            Password = isHashed ? password : PwdEncrypt(password);
         }
 
         public override string ToString()
@@ -223,6 +249,7 @@ namespace admin
         public string PwdEncrypt(string pwd)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(pwd);
+
             using (SHA512 sha512 = SHA512.Create())
             {
                 byte[] hashBytes = sha512.ComputeHash(bytes);
@@ -235,6 +262,10 @@ namespace admin
 
                 return sb.ToString();
             }
+        }
+        public static string Hash(string pwd)
+        {
+            return new UsersDB(0, "", "", "").PwdEncrypt(pwd);
         }
     }
 }

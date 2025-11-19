@@ -33,12 +33,11 @@
             this.usersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exercisesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.savetableButton = new System.Windows.Forms.Button();
             this.deleteButton = new System.Windows.Forms.Button();
             this.searchButton = new System.Windows.Forms.Button();
-            this.searchName = new System.Windows.Forms.TextBox();
+            this.search = new System.Windows.Forms.TextBox();
             this.Rows = new System.Windows.Forms.ListBox();
-            this.musclegroup = new System.Windows.Forms.TextBox();
+            this.name = new System.Windows.Forms.TextBox();
             this.musclegroupLabel = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
             this.addButton = new System.Windows.Forms.Button();
@@ -69,14 +68,14 @@
             // usersToolStripMenuItem
             // 
             this.usersToolStripMenuItem.Name = "usersToolStripMenuItem";
-            this.usersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.usersToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.usersToolStripMenuItem.Text = "Users";
             this.usersToolStripMenuItem.Click += new System.EventHandler(this.usersToolStripMenuItem_Click);
             // 
             // exercisesToolStripMenuItem
             // 
             this.exercisesToolStripMenuItem.Name = "exercisesToolStripMenuItem";
-            this.exercisesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exercisesToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.exercisesToolStripMenuItem.Text = "Exercises";
             this.exercisesToolStripMenuItem.Click += new System.EventHandler(this.exercisesToolStripMenuItem_Click);
             // 
@@ -85,24 +84,17 @@
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
             this.exitToolStripMenuItem.Text = "Exit";
-            // 
-            // savetableButton
-            // 
-            this.savetableButton.Location = new System.Drawing.Point(12, 424);
-            this.savetableButton.Name = "savetableButton";
-            this.savetableButton.Size = new System.Drawing.Size(281, 23);
-            this.savetableButton.TabIndex = 10;
-            this.savetableButton.Text = "Save table";
-            this.savetableButton.UseVisualStyleBackColor = true;
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // deleteButton
             // 
-            this.deleteButton.Location = new System.Drawing.Point(218, 56);
+            this.deleteButton.Location = new System.Drawing.Point(218, 285);
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.Size = new System.Drawing.Size(75, 23);
             this.deleteButton.TabIndex = 9;
             this.deleteButton.Text = "Delete";
             this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             // 
             // searchButton
             // 
@@ -112,13 +104,14 @@
             this.searchButton.TabIndex = 8;
             this.searchButton.Text = "Search";
             this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
             // 
-            // searchName
+            // search
             // 
-            this.searchName.Location = new System.Drawing.Point(12, 27);
-            this.searchName.Name = "searchName";
-            this.searchName.Size = new System.Drawing.Size(200, 20);
-            this.searchName.TabIndex = 7;
+            this.search.Location = new System.Drawing.Point(12, 27);
+            this.search.Name = "search";
+            this.search.Size = new System.Drawing.Size(200, 20);
+            this.search.TabIndex = 7;
             // 
             // Rows
             // 
@@ -127,13 +120,14 @@
             this.Rows.Name = "Rows";
             this.Rows.Size = new System.Drawing.Size(273, 420);
             this.Rows.TabIndex = 6;
+            this.Rows.SelectedIndexChanged += new System.EventHandler(this.Rows_SelectedIndexChanged);
             // 
-            // musclegroup
+            // name
             // 
-            this.musclegroup.Location = new System.Drawing.Point(12, 221);
-            this.musclegroup.Name = "musclegroup";
-            this.musclegroup.Size = new System.Drawing.Size(200, 20);
-            this.musclegroup.TabIndex = 11;
+            this.name.Location = new System.Drawing.Point(12, 221);
+            this.name.Name = "name";
+            this.name.Size = new System.Drawing.Size(200, 20);
+            this.name.TabIndex = 11;
             // 
             // musclegroupLabel
             // 
@@ -152,6 +146,7 @@
             this.saveButton.TabIndex = 20;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
             // addButton
             // 
@@ -161,6 +156,7 @@
             this.addButton.TabIndex = 19;
             this.addButton.Text = "Add";
             this.addButton.UseVisualStyleBackColor = true;
+            this.addButton.Click += new System.EventHandler(this.addButton_Click);
             // 
             // Muscle_groups
             // 
@@ -170,11 +166,10 @@
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.musclegroupLabel);
-            this.Controls.Add(this.musclegroup);
-            this.Controls.Add(this.savetableButton);
+            this.Controls.Add(this.name);
             this.Controls.Add(this.deleteButton);
             this.Controls.Add(this.searchButton);
-            this.Controls.Add(this.searchName);
+            this.Controls.Add(this.search);
             this.Controls.Add(this.Rows);
             this.Controls.Add(this.Menu);
             this.Name = "Muscle_groups";
@@ -193,12 +188,11 @@
         private System.Windows.Forms.ToolStripMenuItem usersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exercisesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.Button savetableButton;
         private System.Windows.Forms.Button deleteButton;
         private System.Windows.Forms.Button searchButton;
-        private System.Windows.Forms.TextBox searchName;
+        private System.Windows.Forms.TextBox search;
         private System.Windows.Forms.ListBox Rows;
-        private System.Windows.Forms.TextBox musclegroup;
+        private System.Windows.Forms.TextBox name;
         private System.Windows.Forms.Label musclegroupLabel;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button addButton;
