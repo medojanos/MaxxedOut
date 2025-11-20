@@ -38,7 +38,7 @@ export default function Settings() {
                     <Text style={SettingsStyle.containerTitle}>Profile settings</Text>
                 </View>
                 
-                <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+                <View style={MainStyle.inlineContainer}>
                     <Text style={SettingsStyle.nickname}>Nickname: </Text>
                     <Pressable>
                         <Ionicons style={{marginStart: 10}} name="create" color={Var.red} size={25}></Ionicons>

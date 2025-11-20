@@ -12,11 +12,6 @@ const WorkoutsStyle = StyleSheet.create({
         marginVertical: 20,
         padding: 5,
         borderRadius: 5
-    },
-    edit : {
-        width: 100,
-        backgroundColor: Var.navyBlue,
-        borderRadius: 5
     }
 })
 
@@ -25,6 +20,7 @@ import PlanModal from "../../components/PlanModal";
 import { useState, useEffect } from "react";
 import { getData } from "../../misc/Storage";
 import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Workouts() {
     const [planModal, setPlanModal] = useState(false);
@@ -51,18 +47,21 @@ export default function Workouts() {
         .then(data => setPlans(data))
         .catch(e => console.log(e))
     },[token])
+
     function displayPlan(plan) {
         return (
             <View style={MainStyle.container}>
                 <Text style={MainStyle.containerTitle}>{plan.name}</Text>
-                <Pressable style={WorkoutsStyle.edit} onPress={() => {if (!planModal) setPlanModal(true)}}>
+                <Pressable style={MainStyle.secondaryButton} onPress={() => {if (!planModal) setPlanModal(true)}}>
                     <Text style={MainStyle.buttonText}>Edit</Text>
                 </Pressable>
             </View>
         )
     }
+
     return (
-        <ScrollView contentContainerStyle={MainStyle.content}>
+        <SafeAreaView style={MainStyle.content}>
+            <ScrollView>
             <View>
                 <Text style={MainStyle.screenTitle}>Workouts</Text>
                 <Text style={MainStyle.screenAltTitle}>Create or edit your workout plans</Text>
@@ -78,5 +77,6 @@ export default function Workouts() {
                 <PlanModal visible={planModal} Close={() => setPlanModal(false)} navigation={navigation}></PlanModal>
             </View>
         </ScrollView>
+        </SafeAreaView>
     );
 }

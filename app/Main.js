@@ -21,7 +21,7 @@ import CreateWorkout from "./screens/misc/CreateWorkout"
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-function Tabs() {
+function Home() {
   return (
     <Tab.Navigator
         initialRouteName="Tracker"
@@ -61,10 +61,12 @@ export default function Main() {
       <Stack.Navigator
       screenOptions={() => ({
         headerStyle : {backgroundColor: Var.darkGray},
-        headerTitleStyle : {color: Var.red}
+        headerTitleStyle : {color: Var.red},
+        headerBackButtonDisplayMode : "generic",
+        headerTintColor: Var.white
       })}>
-        <Stack.Screen name="Tabs" component={Tabs} options={{header: () => null}}/>
-        <Stack.Screen name="CreateWorkout" component={CreateWorkout}/>
+        <Stack.Screen name="Home" component={Home} options={{header: () => null}}/>
+        <Stack.Screen name="CreateWorkout" component={CreateWorkout} options={{headerTitle: "Create new workout"}}/>
         <Stack.Screen name="Workout" component={Workout}/>
       </Stack.Navigator>
     </NavigationContainer>

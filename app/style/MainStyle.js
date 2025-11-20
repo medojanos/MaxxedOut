@@ -27,6 +27,7 @@ export default StyleSheet.create({
     inlineContainer : {
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "space-between",
         paddingBottom: 10
     },
 
@@ -39,9 +40,17 @@ export default StyleSheet.create({
         fontSize : 15
     },
     
+    buttonBlock : {
+        width : 100
+    },
     button : {
         backgroundColor: Var.red,
         borderRadius: 10,
+        marginVertical : 10
+    },
+    secondaryButton : {
+        backgroundColor : Var.navyBlue,
+        borderRadius : 10,
         marginVertical : 10
     },
     buttonText : {

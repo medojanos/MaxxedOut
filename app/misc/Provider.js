@@ -4,10 +4,10 @@ export const Context = createContext();
 
 export default function Provider({children}) {
     const [isLoggedIn, setLogin] = useState();
-    const [nickname, setNickname] = useState("JohnDoe");
+    const [draftPlan, setDraftPlan] = useState();
     
     return (
-        <Context.Provider value={{isLoggedIn, setLogin, nickname, setNickname}}>
+        <Context.Provider value={{isLoggedIn, setLogin, draftPlan, setDraftPlan}}>
             {children}
         </Context.Provider>
     );
