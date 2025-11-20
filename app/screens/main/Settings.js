@@ -19,7 +19,7 @@ const SettingsStyle = StyleSheet.create({
     }
 })
 
-import { Context } from "../../components/Provider";
+import { Context } from "../../misc/Provider";
 import { useContext } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 

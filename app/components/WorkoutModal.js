@@ -14,29 +14,31 @@ const ModalStyle = StyleSheet.create({
 })
 import { useEffect, useState } from "react";
 import { getData } from "../misc/Storage";
+import { useNavigation } from "@react-navigation/native";
 
 export default function WorkoutModal({Close, visible}) {
+    const navigation = useNavigation();
     const [plans, setPlans] = useState();
-        const [token, setToken] = useState();
-        useEffect(() =>{
-            async function getToken() {
-                setToken(await getData("token"));
-            }   
-            getToken()
-        },[])
-        useEffect(() => {
-            if (!token) return;
-            fetch("http://localhost:4000/plans", {
-                method: "GET",
-                headers: {
-                    "Content-Type" : "application/json",
-                    "Authorization" : token
-                }
-            })
-            .then(res => res.json())
-            .then(data => setPlans(data))
-            .catch(e => console.log(e))
-        },[token])
+    const [token, setToken] = useState();
+    useEffect(() =>{
+        async function getToken() {
+            setToken(await getData("token"));
+        }   
+        getToken()
+    },[])
+    useEffect(() => {
+        if (!token) return;
+        fetch("http://localhost:4000/plans", {
+            method: "GET",
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization" : token
+            }
+        })
+        .then(res => res.json())
+        .then(data => setPlans(data))
+        .catch(e => console.log(e))
+        },[token])  
     return (
         <Modal 
             animationType="fade"
@@ -49,7 +51,11 @@ export default function WorkoutModal({Close, visible}) {
                     <View>
                         <FlatList
                             data={plans}
-                            renderItem={({item}) => <Text style={MainStyle.lightText}>{item.name}</Text>}>
+                            renderItem={({item}) => <Pressable onPress={() => {
+                                navigation.navigate("Workout");
+                                Close();
+                            }}>
+                            <Text style={MainStyle.lightText}>{item.name}</Text></Pressable>}>
                         </FlatList>
                     </View>
                     <Pressable style={MainStyle.button} onPress={Close}><Text style={MainStyle.buttonText}>Close</Text></Pressable>

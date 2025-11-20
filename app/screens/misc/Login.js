@@ -18,7 +18,7 @@ const LoginStyle = StyleSheet.create({
 })
 
 import { useContext, useState } from "react";
-import { Context } from "../../components/Provider";
+import { Context } from "../../misc/Provider";
 import { setData } from "../../misc/Storage";
 
 export default function Login() {

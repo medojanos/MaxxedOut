@@ -2,7 +2,7 @@ import Login from "./screens/misc/Login";
 import Main from "./Main";
 
 import { useContext, useEffect } from "react";
-import { Context } from "./components/Provider";
+import { Context } from "./misc/Provider";
 import { getData, setData } from "./misc/Storage";
 import Loader from "./components/Loader";
 

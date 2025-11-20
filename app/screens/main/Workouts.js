@@ -24,11 +24,14 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import PlanModal from "../../components/PlanModal";
 import { useState, useEffect } from "react";
 import { getData } from "../../misc/Storage";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Workouts() {
     const [planModal, setPlanModal] = useState(false);
     const [plans, setPlans] = useState();
     const [token, setToken] = useState();
+    const navigation = useNavigation();
+
     useEffect(() =>{
         async function getToken() {
             setToken(await getData("token"));
@@ -63,7 +66,7 @@ export default function Workouts() {
             <View>
                 <Text style={MainStyle.screenTitle}>Workouts</Text>
                 <Text style={MainStyle.screenAltTitle}>Create or edit your workout plans</Text>
-                <Pressable style={WorkoutsStyle.addPlan}>
+                <Pressable style={WorkoutsStyle.addPlan} onPress={() => {navigation.navigate("CreateWorkout")}}>
                     <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
                 </Pressable>
                 <View>
@@ -72,7 +75,7 @@ export default function Workouts() {
                         renderItem={({item}) => displayPlan(item)}>
                     </FlatList>
                 </View>
-                <PlanModal visible={planModal} Close={() => setPlanModal(false)}></PlanModal>
+                <PlanModal visible={planModal} Close={() => setPlanModal(false)} navigation={navigation}></PlanModal>
             </View>
         </ScrollView>
     );

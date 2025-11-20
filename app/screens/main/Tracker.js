@@ -12,6 +12,7 @@ const TrackerStyle = StyleSheet.create({
 import WorkoutModal from "../../components/WorkoutModal";
 import { useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Tracker() {
     const [workoutModal, setWorkoutModal] = useState(false);
