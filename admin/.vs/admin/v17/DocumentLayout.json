@@ -3,28 +3,28 @@
   "WorkspaceRootPath": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\exercises.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|d:\\projektek\\maxxedout\\maxxedout\\admin\\admin\\exercises.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\exercises.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|d:\\projektek\\maxxedout\\maxxedout\\admin\\admin\\muscle groups.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\muscle groups.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|d:\\projektek\\maxxedout\\maxxedout\\admin\\admin\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|d:\\projektek\\maxxedout\\maxxedout\\admin\\admin\\musclegroupslist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\musclegroupslist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|d:\\projektek\\maxxedout\\maxxedout\\admin\\admin\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\exercises.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\exercises.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\muscle groups.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\muscle groups.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\musclegroupslist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\musclegroupslist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,7 +46,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Users.cs [Design]",
               "DocumentMoniker": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\Users.cs",
               "RelativeDocumentMoniker": "admin\\Users.cs",
@@ -58,7 +58,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "MuscleGroupsList.cs",
               "DocumentMoniker": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\MuscleGroupsList.cs",
               "RelativeDocumentMoniker": "admin\\MuscleGroupsList.cs",
@@ -71,28 +71,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Muscle groups.cs",
-              "DocumentMoniker": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\Muscle groups.cs",
-              "RelativeDocumentMoniker": "admin\\Muscle groups.cs",
-              "ToolTip": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\Muscle groups.cs",
-              "RelativeToolTip": "admin\\Muscle groups.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAQwBEAAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-21T17:07:20.797Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Users.cs",
               "DocumentMoniker": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\Users.cs",
               "RelativeDocumentMoniker": "admin\\Users.cs",
               "ToolTip": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\Users.cs",
               "RelativeToolTip": "admin\\Users.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFIAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAABQAAAAAAAAAAAAwwFIAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-21T17:43:38.683Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Muscle groups.cs",
+              "DocumentMoniker": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\Muscle groups.cs",
+              "RelativeDocumentMoniker": "admin\\Muscle groups.cs",
+              "ToolTip": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\Muscle groups.cs",
+              "RelativeToolTip": "admin\\Muscle groups.cs",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAYwBMAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-21T17:07:20.797Z",
               "EditorCaption": ""
             },
             {
@@ -103,14 +103,14 @@
               "RelativeDocumentMoniker": "admin\\Exercises.cs",
               "ToolTip": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\Exercises.cs",
               "RelativeToolTip": "admin\\Exercises.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAQwCMAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-19T16:50:42.605Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "Exercises.cs [Design]",
               "DocumentMoniker": "D:\\Projektek\\MaxxedOut\\MaxxedOut\\admin\\admin\\Exercises.cs",
               "RelativeDocumentMoniker": "admin\\Exercises.cs",

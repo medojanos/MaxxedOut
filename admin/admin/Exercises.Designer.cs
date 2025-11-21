@@ -51,6 +51,7 @@
             this.addmuscleworkedButton = new System.Windows.Forms.Button();
             this.type = new System.Windows.Forms.ComboBox();
             this.deletemuscleworkedButton = new System.Windows.Forms.Button();
+            this.savemuscleworkedButton = new System.Windows.Forms.Button();
             this.Menu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -155,7 +156,7 @@
             // musclegroupsLabel
             // 
             this.musclegroupsLabel.AutoSize = true;
-            this.musclegroupsLabel.Location = new System.Drawing.Point(217, 214);
+            this.musclegroupsLabel.Location = new System.Drawing.Point(217, 196);
             this.musclegroupsLabel.Name = "musclegroupsLabel";
             this.musclegroupsLabel.Size = new System.Drawing.Size(76, 13);
             this.musclegroupsLabel.TabIndex = 22;
@@ -189,15 +190,16 @@
             // Musclesworked
             // 
             this.Musclesworked.FormattingEnabled = true;
-            this.Musclesworked.Location = new System.Drawing.Point(12, 84);
+            this.Musclesworked.Location = new System.Drawing.Point(12, 66);
             this.Musclesworked.Name = "Musclesworked";
             this.Musclesworked.Size = new System.Drawing.Size(200, 121);
             this.Musclesworked.TabIndex = 29;
+            this.Musclesworked.SelectedIndexChanged += new System.EventHandler(this.Musclesworked_SelectedIndexChanged);
             // 
             // musclegroups
             // 
             this.musclegroups.FormattingEnabled = true;
-            this.musclegroups.Location = new System.Drawing.Point(12, 211);
+            this.musclegroups.Location = new System.Drawing.Point(12, 193);
             this.musclegroups.Name = "musclegroups";
             this.musclegroups.Size = new System.Drawing.Size(200, 21);
             this.musclegroups.TabIndex = 30;
@@ -205,7 +207,7 @@
             // role
             // 
             this.role.FormattingEnabled = true;
-            this.role.Location = new System.Drawing.Point(12, 238);
+            this.role.Location = new System.Drawing.Point(12, 220);
             this.role.Name = "role";
             this.role.Size = new System.Drawing.Size(200, 21);
             this.role.TabIndex = 31;
@@ -213,7 +215,7 @@
             // roleLabel
             // 
             this.roleLabel.AutoSize = true;
-            this.roleLabel.Location = new System.Drawing.Point(239, 241);
+            this.roleLabel.Location = new System.Drawing.Point(239, 223);
             this.roleLabel.Name = "roleLabel";
             this.roleLabel.Size = new System.Drawing.Size(29, 13);
             this.roleLabel.TabIndex = 32;
@@ -222,7 +224,7 @@
             // musclesworkedLabel
             // 
             this.musclesworkedLabel.AutoSize = true;
-            this.musclesworkedLabel.Location = new System.Drawing.Point(215, 84);
+            this.musclesworkedLabel.Location = new System.Drawing.Point(215, 66);
             this.musclesworkedLabel.Name = "musclesworkedLabel";
             this.musclesworkedLabel.Size = new System.Drawing.Size(84, 13);
             this.musclesworkedLabel.TabIndex = 33;
@@ -230,7 +232,7 @@
             // 
             // addmuscleworkedButton
             // 
-            this.addmuscleworkedButton.Location = new System.Drawing.Point(12, 265);
+            this.addmuscleworkedButton.Location = new System.Drawing.Point(12, 247);
             this.addmuscleworkedButton.Name = "addmuscleworkedButton";
             this.addmuscleworkedButton.Size = new System.Drawing.Size(200, 23);
             this.addmuscleworkedButton.TabIndex = 34;
@@ -248,7 +250,7 @@
             // 
             // deletemuscleworkedButton
             // 
-            this.deletemuscleworkedButton.Location = new System.Drawing.Point(218, 265);
+            this.deletemuscleworkedButton.Location = new System.Drawing.Point(218, 276);
             this.deletemuscleworkedButton.Name = "deletemuscleworkedButton";
             this.deletemuscleworkedButton.Size = new System.Drawing.Size(75, 23);
             this.deletemuscleworkedButton.TabIndex = 36;
@@ -256,11 +258,22 @@
             this.deletemuscleworkedButton.UseVisualStyleBackColor = true;
             this.deletemuscleworkedButton.Click += new System.EventHandler(this.deletemuscleworkedButton_Click);
             // 
+            // savemuscleworkedButton
+            // 
+            this.savemuscleworkedButton.Location = new System.Drawing.Point(218, 247);
+            this.savemuscleworkedButton.Name = "savemuscleworkedButton";
+            this.savemuscleworkedButton.Size = new System.Drawing.Size(75, 23);
+            this.savemuscleworkedButton.TabIndex = 37;
+            this.savemuscleworkedButton.Text = "Save";
+            this.savemuscleworkedButton.UseVisualStyleBackColor = true;
+            this.savemuscleworkedButton.Click += new System.EventHandler(this.savemuscleworkedButton_Click);
+            // 
             // Exercises
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 461);
+            this.Controls.Add(this.savemuscleworkedButton);
             this.Controls.Add(this.deletemuscleworkedButton);
             this.Controls.Add(this.type);
             this.Controls.Add(this.addmuscleworkedButton);
@@ -316,6 +329,7 @@
         private System.Windows.Forms.Button addmuscleworkedButton;
         private System.Windows.Forms.ComboBox type;
         private System.Windows.Forms.Button deletemuscleworkedButton;
+        private System.Windows.Forms.Button savemuscleworkedButton;
     }
 }
 

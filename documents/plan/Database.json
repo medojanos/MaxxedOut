@@ -144,7 +144,7 @@
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": false,
+          "notNull": true,
           "increment": false,
           "comment": "",
           "size": 255,
@@ -323,13 +323,13 @@
       "fields": [
         {
           "id": "U-mDR8lYfF6tyoOM7CUns",
-          "name": "muscle_group_id",
+          "name": "muscle_groups_id",
           "type": "INTEGER",
           "comment": "",
           "unique": true,
           "increment": false,
           "notNull": true,
-          "primary": true,
+          "primary": false,
           "default": "",
           "check": ""
         },
@@ -355,7 +355,7 @@
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": false,
+          "notNull": true,
           "increment": false,
           "comment": "",
           "size": 255
