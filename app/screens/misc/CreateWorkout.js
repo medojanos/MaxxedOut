@@ -16,12 +16,8 @@ export default function CreateWorkout() {
     const [exercises, setExercises] = useState();
     const {draftPlan, setDraftPlan} = useContext(Context);
     const [exercisesDraft, setExercisesDraft] = useState(
-        draftPlan == null ? [{id: null,set: null}] : draftPlan
+        draftPlan || [{id: null, set: null}]
     );
-
-    useEffect(() => {
-        setDraftPlan(exercisesDraft);
-    }, [exercisesDraft])
 
     useEffect(() => {
         fetch("http://localhost:4000/exercises")
@@ -29,29 +25,20 @@ export default function CreateWorkout() {
         .then(data => setExercises(data))
     },[])
 
-    /*function displayDraft(draft) {
-        return draft.map((exercise, index) => (
-                <View key={index} style={MainStyle.container}>
-                    <View style={MainStyle.inlineContainer}>
-                        <Text style={MainStyle.containerTitle}>
-                        {exercise.id == null ? "New workout " + index :
-                        exercises[exercise.id].name}
-                        </Text>
-                        <TextInput style={MainStyle.input}></TextInput>
-                        <Pressable onPress={() => {
-                            setExercisesDraft(prev => {
-                                const copy = [...prev];
-                                copy.splice(index, 1);
-                                return copy;
-                            })
-                        }}>
-                            <Ionicons name="trash" color={Var.red} size={20}></Ionicons>
-                        </Pressable>
-                    </View>
+    useEffect(() => {
+        setDraftPlan(exercisesDraft);
+    }, [exercisesDraft])
+
+    function displayExercises(exercises, exercisesDraft) {
+            return (exercisesDraft.map(exerciseDraft => {
+                const text = exerciseDraft.id != null ? exercises[exerciseDraft.id].name : "New exercise " + exerciseDraft.id;
+                <View key={exerciseDraft.id} style={MainStyle.container}>
+                    <Text style={MainStyle.containerTitle}>{text}</Text>
+                    <TextInput onChange={value => exercisesDraft.id = value} placeholder="Enter exercise id"></TextInput>
                 </View>
-            ))
-    }*/
-    
+            }))
+    }
+
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
@@ -61,7 +48,7 @@ export default function CreateWorkout() {
                 onPress={() => setExercisesDraft(prev => ([...prev, {id: null, set: null}]))}>
                 <Text style={MainStyle.buttonText}>Add exercise</Text>
             </Pressable>
-            {/*displayDraft(exercisesDraft)*/}
+            {displayExercises(exercises, exercisesDraft)}
             <View style={MainStyle.inlineContainer}>
                 <Pressable style={[MainStyle.button, MainStyle.buttonBlock]}>
                     <Text style={MainStyle.buttonText}>Save</Text>
