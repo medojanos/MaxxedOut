@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
 import { hash } from 'crypto'
+import { randomBytes } from 'crypto'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -30,23 +31,12 @@ app.get("/readme", (req, res) => {
   })
 })
 
-app.get("/users", (req, res) => {
-  db.all("SELECT * FROM users", (e, rows) => {
-    res.send(rows);
-  });
-})
-
 app.get("/exercises", (req, res) => {
   db.all("SELECT * FROM exercises", (e, rows) => {
-    res.send(rows);
-  });
+    res.json(rows);
+  })
 })
 
-app.get("/muscle_groups", (req, res) => {
-  db.all("SELECT * FROM muscle_groups", (e, rows) => {
-    res.send(rows);
-  });
-})
 
 app.post("/register", (req, res) => {
   db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
@@ -64,18 +54,19 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {
   db.get("SELECT * FROM users WHERE email = '" + req.body.email + "'", (e, row) => {
-    if (row) {
-      db.get("SELECT * FROM users WHERE password = '" + hash("sha-512", req.body.password) + "'", (e, row) => {
-        if (row) {
-          res.json({message: "Successfully logged in", status: true})
-        } else {
-          res.json({message: "Wrong password", status: false})
-        }
-      })
-    } else {
-      res.json({message: "No email registered", status: false})
+    if (!row) {
+      res.json({message: "No email registered", status: false});
     }
-  });
+  })
+  db.get("SELECT * FROM users WHERE password = '" + hash("sha-512", req.body.password) + "'", (e, row) => {
+    if (row) {
+      let token = randomBytes(32).toString('hex');
+      db.run("INSERT INTO tokens VALUES (?, ?)", [token, row.id]);
+      res.json({message: "Successfully logged in", status: true, token : token});
+    } else {
+      res.json({message: "Wrong password", status: false});
+    }
+  })
 })
 
 const PORT = 4000
