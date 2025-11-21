@@ -14,22 +14,18 @@ namespace admin
     public partial class Muscle_groups : Form
     {
         private Database db;
-        private List<MuscleGroupsDB> MGList = new List<MuscleGroupsDB>();
+        private BindingList<MuscleGroupsDB> MGList = MuscleGroupsList.MuscleGroups;
+        private BindingSource mgSource = new BindingSource();
 
         public Muscle_groups()
         {
             InitializeComponent();
 
             db = new Database(@"Data source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
-            var musclegroups = db.Query("SELECT * FROM muscle_groups;");
-
-            foreach (DataRow mg in musclegroups.Rows)
-            {
-                MuscleGroupsDB MGObj = new MuscleGroupsDB(int.Parse(mg["id"].ToString()), mg["name"].ToString());
-                MGList.Add(MGObj);
-                Rows.Items.Add(MGObj);
-            }
-
+            
+            mgSource.DataSource = MGList;
+            Rows.DataSource = mgSource;
+            Rows.DisplayMember = "Name";
         }
 
         // Navigation handling
@@ -55,22 +51,15 @@ namespace admin
 
         private void searchButton_Click(object sender, EventArgs e)
         {
-            Rows.Items.Clear();
             name.Clear();
 
             if (string.IsNullOrWhiteSpace(search.Text))
             {
-                foreach(var mg in MGList)
-                {
-                    Rows.Items.Add(mg);
-                }
+                mgSource.DataSource = MGList;
             }
             else
             {
-                foreach(var mg in MGList.Where(musclegroup => musclegroup.Name.Contains(search.Text)))
-                {
-                    Rows.Items.Add(mg);
-                }
+                mgSource.DataSource = MGList.Where(musclegroup => musclegroup.Name.ToLower().Contains(search.Text.ToLower())).ToList();
             }
         }
 
@@ -104,7 +93,6 @@ namespace admin
 
             MuscleGroupsDB mgObj = new MuscleGroupsDB(id, name.Text);
 
-            Rows.Items.Add(mgObj);
             MGList.Add(mgObj);
         }
 
@@ -132,7 +120,8 @@ namespace admin
 
             mgObj.Name = name.Text;
 
-            Rows.Items[Rows.SelectedIndex] = mgObj;
+            Rows.DisplayMember = null;
+            Rows.DisplayMember = "Name";
 
             db.Execute($"UPDATE muscle_groups SET name='{mgObj.Name}' WHERE id={mgObj.ID}");
         }
@@ -154,7 +143,6 @@ namespace admin
             }
 
             MGList.Remove(mgObj);
-            Rows.Items.Remove(mgObj);
 
             name.Clear();
 

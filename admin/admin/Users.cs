@@ -71,7 +71,7 @@ namespace admin
             }
             else
             {
-                foreach(var user in UsersList.Where(user => user.Nickname.Contains(search.Text) || user.Email.Contains(search.Text)))
+                foreach(var user in UsersList.Where(user => user.Nickname.Contains(search.Text.ToLower()) || user.Email.Contains(search.Text.ToLower())))
                 {
                     Rows.Items.Add(user);
                 }
