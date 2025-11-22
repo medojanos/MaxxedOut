@@ -64,6 +64,14 @@ export default StyleSheet.create({
         fontSize: Var.fontSize
     },
 
+    modal: {
+            backgroundColor: Var.darkGray,
+            width: "90%",
+            margin: "auto",
+            padding: 20,
+            borderRadius: 10
+        },
+
     input : {
         backgroundColor: Var.navyBlue,
         borderColor: Var.red,

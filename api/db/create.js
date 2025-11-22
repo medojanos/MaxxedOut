@@ -40,6 +40,7 @@ db.serialize(() => {
     db.run("INSERT INTO muscle_groups_exercises (muscle_groups_id, exercises_id, role) VALUES (3, 2, 'Secondary');");
     db.run("INSERT INTO muscle_groups_exercises (muscle_groups_id, exercises_id, role) VALUES (4, 2, 'Stabilizer');");
     db.run("INSERT INTO muscle_groups_exercises (muscle_groups_id, exercises_id, role) VALUES (4, 3, 'Secondary');");
+    db.run("INSERT INTO plans (name, user_id) VALUES ('Chest day', 1);");
 
     console.log("Database initialized succesfully");
 });
