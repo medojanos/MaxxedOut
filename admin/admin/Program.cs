@@ -14,6 +14,7 @@ namespace admin
         [STAThread]
         static void Main()
         {
+            var _ = AppData.db;
             SQLitePCL.Batteries_V2.Init();
 
             Application.EnableVisualStyles();

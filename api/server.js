@@ -46,6 +46,26 @@ app.get("/exercises", (req, res) => {
   })
 })
 
+// HAGYDMARITTGECI2PERCIGNA 
+
+app.get("/users", (req, res) => {
+  db.all("SELECT * FROM users", (e, rows) => {
+    res.json(rows);
+  })
+})
+
+app.get("/muscle_groups", (req, res) => {
+  db.all("SELECT * FROM muscle_groups", (e, rows) => {
+    res.json(rows);
+  })
+})
+
+app.get("/muscle_groups_exercises", (req, res) => {
+  db.all("SELECT * FROM muscle_groups_exercises", (e, rows) => {
+    res.json(rows);
+  })
+})
+
 
 app.post("/register", (req, res) => {
   db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
