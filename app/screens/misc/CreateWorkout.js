@@ -7,19 +7,22 @@ import { useState, useEffect, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Context } from "../../misc/Provider";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { use } from "react";
-const WorkoutStyle = StyleSheet.create({
-
+import { useNavigation } from "@react-navigation/native";
+const CreateWorkoutStyle = StyleSheet.create({
+    setInput : {
+        width : 50
+    }
 })
 
 export default function CreateWorkout() {
-    const [planName, setPlanName] = useState();
-    const [exercises, setExercises] = useState();
-    const {draftPlan, setDraftPlan} = useContext(Context);
-    const [index, setIndex] = useState(1);
     const [searchModal, setSearchModal] = useState();
-    const [exercisesDraft, setExercisesDraft] = useState(
-        draftPlan || [{id: "own1", name : "Own exercise 1", set: null}]
+    const [exercises, setExercises] = useState();
+    const navigation = useNavigation();
+
+    const {planDraftSave, setPlanDraftSave} = useContext(Context);
+
+    const [planDraft, setPlanDraft] = useState(planDraftSave ||
+        {planName : "", ownIndex : 0, exercises : []}
     );
 
     useEffect(() => {
@@ -29,32 +32,59 @@ export default function CreateWorkout() {
 
 
     useEffect(() => {
-        setDraftPlan(exercisesDraft);
-    }, [exercisesDraft])
+        setPlanDraftSave(planDraft);
+    }, [planDraft])
 
-    function addExercise(type, exerciseId) {
-        function setid() {
-            if (type == "own") {
-                setIndex(index + 1);
-                return index + 1;
+    function addExercise(id) {
+        setPlanDraft(prev => {
+            let exerciseName = "";
+            let newIndex = prev.ownIndex + 1;
+            if (typeof id == "string") {
+                exerciseName = "Own exercise " + newIndex;
             } else {
-                return exerciseId
+                exercises[id];
             }
-        }
-        const id = setid();
-        setExercisesDraft(prev => [...prev, {id : id, name: "Own exercise " + id, set : 0}]);
+            return {
+                ...prev,
+                ownIndex : newIndex,
+                exercises : [
+                    ...prev.exercises,
+                    {id : id, name : exerciseName, set : 0}
+                ]
+            }
+        }) ;
         setSearchModal(false);
     }
 
     function deleteExercise(index) {
-        const copy = exercisesDraft.filter((_, i) => i != index);
-        setExercisesDraft(copy);
+        const copy = planDraft.exercises.filter((_, i) => index != i);
+        setPlanDraft(prev => ({...prev, exercises : copy}))
+    }
+
+    function updateExercise(index, text, prop) {
+        setPlanDraft(prev => ({
+            ...prev,
+            exercises : prev.exercises.map((exercise, i) => {
+                if (index == i) {
+                    switch (prop) {
+                        case "name":
+                            return {...exercise, name : text}
+                        case "set":
+                            return {...exercise, set : text}
+                    }
+                }
+            })
+        }))
     }
 
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
-            <TextInput placeholder="Enter workout name" style={MainStyle.input} onChangeText={setPlanName}></TextInput>
+            <TextInput 
+                placeholder="Enter workout name" 
+                style={MainStyle.input} 
+                onChangeText={text => setPlanDraft(prev => ({...prev, planName : text}))}>
+            </TextInput>
             <Pressable
                 style={MainStyle.button}
                 onPress={() => setSearchModal(true)}>
@@ -66,25 +96,46 @@ export default function CreateWorkout() {
                 visible={searchModal}>
                 <View style={MainStyle.overlay}>
                     <View style={MainStyle.modal}>
-                        <Text style={MainStyle.screenTitle}>Search for exercises</Text>
-                        <Pressable onPress={() => addExercise("own")} style={MainStyle.secondaryButton}>
+                        <Text style={MainStyle.screenTitle}>Search for an exercise</Text>
+                        <Pressable 
+                            onPress={() => addExercise("own" + (planDraft.ownIndex + 1))}
+                            style={MainStyle.secondaryButton}>
                             <Text style={MainStyle.buttonText}>Add own exercise</Text>
                         </Pressable>
-                        <Pressable style={MainStyle.button} onPress={() => setSearchModal(false)}>
+                        <Pressable
+                            style={MainStyle.button}
+                            onPress={() => setSearchModal(false)}>
                             <Text style={MainStyle.buttonText}>Close</Text>
                         </Pressable>
                     </View>
                 </View>
             </Modal>    
             {
-                exercisesDraft.map((exercise, index) => {
+                planDraft.exercises.map((exercise, index) => {
                     return (
                         <View key={exercise.id} style={MainStyle.container}>
-                            <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                            <View style={MainStyle.inlineContainer}>
+                                <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                                <Text style={MainStyle.lightText}>X</Text>
+                                <TextInput
+                                    keyboardType="numeric"
+                                    style={[MainStyle.input, CreateWorkoutStyle.setInput]}
+                                    value={planDraft.exercises[index].set}
+                                    onChangeText={text => {
+                                        if (!/^\d*$/.test(text)) return;
+                                        updateExercise(index, text, "set");
+                                    }}>
+                                </TextInput>
+                            </View>
+                            {typeof exercise.id == "string" ? 
+                                <TextInput
+                                    style={MainStyle.input}
+                                    placeholder="Enter exercise name"
+                                    onChangeText={text => updateExercise(index, text, "name")}>
+                                </TextInput> : ""}
                             <Pressable onPress={() => deleteExercise(index)}>
                                 <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
                             </Pressable>
-                            <TextInput style={MainStyle.input}></TextInput>
                         </View>
                     )
                 })
@@ -93,7 +144,9 @@ export default function CreateWorkout() {
                 <Pressable style={[MainStyle.button, MainStyle.buttonBlock]}>
                     <Text style={MainStyle.buttonText}>Save</Text>
                 </Pressable>
-                <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}>
+                <Pressable
+                    onPress={() => {setPlanDraftSave(null); navigation.navigate("Home")}}
+                    style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}>
                     <Text style={MainStyle.buttonText}>Cancel</Text>
                 </Pressable>
             </View>
