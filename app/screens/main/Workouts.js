@@ -1,8 +1,17 @@
-import { View, Text, ScrollView, Pressable, Modal, FlatList } from "react-native";
+// React
+import { View, Text, ScrollView, Pressable, FlatList, StyleSheet } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+// Misc
+import PlanModal from "../../components/PlanModal";
+import { getData } from "../../misc/Storage";
+
+//Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
-import { StyleSheet } from "react-native";
 const WorkoutsStyle = StyleSheet.create({
     addPlan : {
         borderWidth: 1,
@@ -14,13 +23,6 @@ const WorkoutsStyle = StyleSheet.create({
         borderRadius: 5
     }
 })
-
-import Ionicons from "react-native-vector-icons/Ionicons";
-import PlanModal from "../../components/PlanModal";
-import { useState, useEffect } from "react";
-import { getData } from "../../misc/Storage";
-import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Workouts() {
     const [planModal, setPlanModal] = useState(false);
@@ -62,21 +64,21 @@ export default function Workouts() {
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
-            <View>
-                <Text style={MainStyle.screenTitle}>Workouts</Text>
-                <Text style={MainStyle.screenAltTitle}>Create or edit your workout plans</Text>
-                <Pressable style={WorkoutsStyle.addPlan} onPress={() => {navigation.navigate("CreateWorkout")}}>
-                    <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
-                </Pressable>
                 <View>
-                    <FlatList
-                        data={plans}
-                        renderItem={({item}) => displayPlan(item)}>
-                    </FlatList>
+                    <Text style={MainStyle.screenTitle}>Workouts</Text>
+                    <Text style={MainStyle.screenAltTitle}>Create or edit your workout plans</Text>
+                    <Pressable style={WorkoutsStyle.addPlan} onPress={() => {navigation.navigate("CreateWorkout")}}>
+                        <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
+                    </Pressable>
+                    <View>
+                        <FlatList
+                            data={plans}
+                            renderItem={({item}) => displayPlan(item)}>
+                        </FlatList>
+                    </View>
+                    <PlanModal visible={planModal} Close={() => setPlanModal(false)} navigation={navigation}></PlanModal>
                 </View>
-                <PlanModal visible={planModal} Close={() => setPlanModal(false)} navigation={navigation}></PlanModal>
-            </View>
-        </ScrollView>
+            </ScrollView>
         </SafeAreaView>
     );
 }

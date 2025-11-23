@@ -1,18 +1,22 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
+// React
+import { View, ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+// Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
-import { StyleSheet } from "react-native";
 const WorkoutStyle = StyleSheet.create({
 
 })
 
 export default function Workout() {
     return (
-        <ScrollView contentContainerStyle={MainStyle.content}>
-            <View>
-                
-            </View>
-        </ScrollView>
+        <SafeAreaView style={MainStyle.content}>
+            <ScrollView>
+                <View>
+                    
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 }

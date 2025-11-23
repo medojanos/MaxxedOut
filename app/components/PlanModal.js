@@ -1,16 +1,11 @@
-import { View, Text, Pressable, TextInput, Modal, FlatList} from "react-native";
+// React
+import { View, Text, Pressable, Modal, StyleSheet} from "react-native";
 
+// Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
-import { StyleSheet } from "react-native";
 const ModalStyle = StyleSheet.create({
-    modal: {
-        backgroundColor: Var.darkGray,
-        width: "90%",
-        margin: "auto",
-        padding: 20,
-        borderRadius: 10
-    }
+
 })
 
 export default function PlanModal({Close, visible}) {
@@ -21,7 +16,7 @@ export default function PlanModal({Close, visible}) {
             transparent={true}
             visible={visible}>
             <View style={MainStyle.overlay}>
-                <View style={ModalStyle.modal}>
+                <View style={MainStyle.modal}>
                     <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
                     <Pressable style={MainStyle.button} onPress={Close}><Text style={MainStyle.buttonText}>Close</Text></Pressable>
                 </View>

@@ -1,13 +1,17 @@
+// React
 import { View, Text, ScrollView, Pressable, TextInput, Modal } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useState, useEffect, useContext } from "react";
 
+// Misc
+import { Context } from "../../misc/Provider";
+
+// Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 import { StyleSheet } from "react-native";
-import { useState, useEffect, useContext } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Context } from "../../misc/Provider";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
 const CreateWorkoutStyle = StyleSheet.create({
     setInput : {
         width : 50
@@ -80,77 +84,77 @@ export default function CreateWorkout() {
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
-            <TextInput 
-                placeholder="Enter workout name" 
-                style={MainStyle.input} 
-                onChangeText={text => setPlanDraft(prev => ({...prev, planName : text}))}>
-            </TextInput>
-            <Pressable
-                style={MainStyle.button}
-                onPress={() => setSearchModal(true)}>
-                <Text style={MainStyle.buttonText}>Add exercise</Text>
-            </Pressable>
-            <Modal 
-                animationType="fade"
-                transparent={true}
-                visible={searchModal}>
-                <View style={MainStyle.overlay}>
-                    <View style={MainStyle.modal}>
-                        <Text style={MainStyle.screenTitle}>Search for an exercise</Text>
-                        <Pressable 
-                            onPress={() => addExercise("own" + (planDraft.ownIndex + 1))}
-                            style={MainStyle.secondaryButton}>
-                            <Text style={MainStyle.buttonText}>Add own exercise</Text>
-                        </Pressable>
-                        <Pressable
-                            style={MainStyle.button}
-                            onPress={() => setSearchModal(false)}>
-                            <Text style={MainStyle.buttonText}>Close</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </Modal>    
-            {
-                planDraft.exercises.map((exercise, index) => {
-                    return (
-                        <View key={exercise.id} style={MainStyle.container}>
-                            <View style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
-                                <Text style={MainStyle.lightText}>X</Text>
-                                <TextInput
-                                    keyboardType="numeric"
-                                    style={[MainStyle.input, CreateWorkoutStyle.setInput]}
-                                    value={planDraft.exercises[index].set}
-                                    onChangeText={text => {
-                                        if (!/^\d*$/.test(text)) return;
-                                        updateExercise(index, text, "set");
-                                    }}>
-                                </TextInput>
-                            </View>
-                            {typeof exercise.id == "string" ? 
-                                <TextInput
-                                    style={MainStyle.input}
-                                    placeholder="Enter exercise name"
-                                    onChangeText={text => updateExercise(index, text, "name")}>
-                                </TextInput> : ""}
-                            <Pressable onPress={() => deleteExercise(index)}>
-                                <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
+                <TextInput 
+                    placeholder="Enter workout name" 
+                    style={MainStyle.input} 
+                    onChangeText={text => setPlanDraft(prev => ({...prev, planName : text}))}>
+                </TextInput>
+                <Pressable
+                    style={MainStyle.button}
+                    onPress={() => setSearchModal(true)}>
+                    <Text style={MainStyle.buttonText}>Add exercise</Text>
+                </Pressable>
+                <Modal 
+                    animationType="fade"
+                    transparent={true}
+                    visible={searchModal}>
+                    <View style={MainStyle.overlay}>
+                        <View style={MainStyle.modal}>
+                            <Text style={MainStyle.screenTitle}>Search for an exercise</Text>
+                            <Pressable 
+                                onPress={() => addExercise("own" + (planDraft.ownIndex + 1))}
+                                style={MainStyle.secondaryButton}>
+                                <Text style={MainStyle.buttonText}>Add own exercise</Text>
+                            </Pressable>
+                            <Pressable
+                                style={MainStyle.button}
+                                onPress={() => setSearchModal(false)}>
+                                <Text style={MainStyle.buttonText}>Close</Text>
                             </Pressable>
                         </View>
-                    )
-                })
-            }
-            <View style={MainStyle.inlineContainer}>
-                <Pressable style={[MainStyle.button, MainStyle.buttonBlock]}>
-                    <Text style={MainStyle.buttonText}>Save</Text>
-                </Pressable>
-                <Pressable
-                    onPress={() => {setPlanDraftSave(null); navigation.navigate("Home")}}
-                    style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}>
-                    <Text style={MainStyle.buttonText}>Cancel</Text>
-                </Pressable>
-            </View>
-        </ScrollView>
+                    </View>
+                </Modal>    
+                {
+                    planDraft.exercises.map((exercise, index) => {
+                        return (
+                            <View key={exercise.id} style={MainStyle.container}>
+                                <View style={MainStyle.inlineContainer}>
+                                    <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                                    <Text style={MainStyle.lightText}>X</Text>
+                                    <TextInput
+                                        keyboardType="numeric"
+                                        style={[MainStyle.input, CreateWorkoutStyle.setInput]}
+                                        value={planDraft.exercises[index].set}
+                                        onChangeText={text => {
+                                            if (!/^\d*$/.test(text)) return;
+                                            updateExercise(index, text, "set");
+                                        }}>
+                                    </TextInput>
+                                </View>
+                                {typeof exercise.id == "string" ? 
+                                    <TextInput
+                                        style={MainStyle.input}
+                                        placeholder="Enter exercise name"
+                                        onChangeText={text => updateExercise(index, text, "name")}>
+                                    </TextInput> : ""}
+                                <Pressable onPress={() => deleteExercise(index)}>
+                                    <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
+                                </Pressable>
+                            </View>
+                        )
+                    })
+                }
+                <View style={MainStyle.inlineContainer}>
+                    <Pressable style={[MainStyle.button, MainStyle.buttonBlock]}>
+                        <Text style={MainStyle.buttonText}>Save</Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => {setPlanDraftSave(null); navigation.navigate("Home")}}
+                        style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}>
+                        <Text style={MainStyle.buttonText}>Cancel</Text>
+                    </Pressable>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }

@@ -3,11 +3,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-// Style
-import Ionicons from "react-native-vector-icons/Ionicons";
-import * as Var from "./style/Variables";
-import MainStyle from "./style/MainStyle";
-
 // Main Screens
 import Statistics from "./screens/main/Statistics";
 import Logs from "./screens/main/Logs";
@@ -17,6 +12,11 @@ import Settings from "./screens/main/Settings";
 // Misc Screens
 import Workout from "./screens/misc/Workout"
 import CreateWorkout from "./screens/misc/CreateWorkout"
+
+// Style
+import Ionicons from "react-native-vector-icons/Ionicons";
+import * as Var from "./style/Variables";
+import MainStyle from "./style/MainStyle";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();

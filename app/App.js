@@ -1,10 +1,15 @@
+// React
+import { useContext, useEffect } from "react";
+
+// Screens
 import Login from "./screens/misc/Login";
 import Main from "./Main";
+import Loader from "./components/Loader";
 
-import { useContext, useEffect } from "react";
+// Misc
 import { Context } from "./misc/Provider";
 import { getData, setData } from "./misc/Storage";
-import Loader from "./components/Loader";
+
 
 export default function App() {
   const {isLoggedIn, setLogin} = useContext(Context);
@@ -22,7 +27,7 @@ export default function App() {
   
   switch (isLoggedIn)
   {
-    case null:
+    case undefined:
       return <Loader/>
     case "true":
       return <Main/>

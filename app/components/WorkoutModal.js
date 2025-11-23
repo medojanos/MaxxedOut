@@ -1,8 +1,12 @@
-import { View, Text, Pressable, TextInput, Modal, FlatList} from "react-native";
+// React
+import { View, Text, Pressable, Modal, FlatList, StyleSheet} from "react-native";
+import { useEffect, useState } from "react";
+import { getData } from "../misc/Storage";
+import { useNavigation } from "@react-navigation/native";
 
+// Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
-import { StyleSheet } from "react-native";
 const ModalStyle = StyleSheet.create({
     modal: {
         backgroundColor: Var.darkGray,
@@ -12,9 +16,6 @@ const ModalStyle = StyleSheet.create({
         borderRadius: 10
     }
 })
-import { useEffect, useState } from "react";
-import { getData } from "../misc/Storage";
-import { useNavigation } from "@react-navigation/native";
 
 export default function WorkoutModal({Close, visible}) {
     const navigation = useNavigation();

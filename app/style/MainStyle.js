@@ -5,8 +5,7 @@ export default StyleSheet.create({
     content: {
         padding: 20,
         flex: 1,
-        backgroundColor: Var.black,
-        width : "100%"
+        backgroundColor: Var.black
     },
 
     container : {
