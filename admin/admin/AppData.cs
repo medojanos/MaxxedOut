@@ -10,7 +10,7 @@ namespace admin
 {
     public static class AppData
     {
-        public static Database db = new Database(@"Data source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
+        public static Database db = new Database(@"Data source=C:\Users\tekeresdenes\repos\MaxxedOut\api\db\maxxedout.db");
 
         static AppData()
         {

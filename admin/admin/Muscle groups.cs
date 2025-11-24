@@ -21,7 +21,7 @@ namespace admin
         {
             InitializeComponent();
 
-            db = new Database(@"Data source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
+            db = new Database(@"Data source=C:\Users\tekeresdenes\repos\MaxxedOut\api\db\maxxedout.db");
             
             mgSource.DataSource = MGList;
             Rows.DataSource = mgSource;
