@@ -264,33 +264,21 @@ namespace admin
                 return;
             }
 
+            db.Execute($@"DELETE FROM muscle_groups_exercises WHERE exercises_id = '{Exercise.ID}'");
+
             List<MusclesworkedDB> mgworkedList = new List<MusclesworkedDB>();
 
             foreach (MusclesworkedDB mgworkedObj in Musclesworked.Items)
             {
-                MusclesworkedDB mgworked = Exercise.Musclesworked.FirstOrDefault(mgw => mgw.MuscleGroup.ID.Equals(mgworkedObj.MuscleGroup.ID));
-                
-                if (mgworked == null)
-                {
-                    db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_groups_id, exercises_id, role) VALUES ('{mgworkedObj.MuscleGroup.ID}', '{Exercise.ID}', '{mgworkedObj.Role}');");
-                }
-                else
-                {
-                    if (mgworked.Role != mgworkedObj.Role)
-                    {
-                        db.Execute($@"UPDATE muscle_groups_exercises SET role = '{mgworkedObj.Role}' WHERE muscle_groups_id = '{mgworkedObj.MuscleGroup.ID}' AND exercises_id = '{Exercise.ID}';");
-                    }
-                }
-
-                mgworkedList.Add(mgworked);
+                mgworkedList.Add(mgworkedObj);
+                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_groups_id, exercises_id, role) VALUES ('{mgworkedObj.MuscleGroup.ID}', '{Exercise.ID}', '{mgworkedObj.Role}');");
             }
-
 
             Exercise.Exercise = exercise.Text;
             Exercise.Type = type.Text;
             Exercise.Musclesworked = mgworkedList;
 
-            db.Execute($@"UPDATE exercises SET name = '{Exercise.Exercise}', type = '{Exercise.Type}';");
+            db.Execute($@"UPDATE exercises SET name = '{Exercise.Exercise}', type = '{Exercise.Type}' WHERE id = '{Exercise.ID}';");
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
@@ -303,12 +291,10 @@ namespace admin
                 return;
             }
 
-            foreach (MusclesworkedDB mgworkedObj in Exercise.Musclesworked)
-            {
-                db.Execute($@"DELETE FROM muscle_groups_exercises WHERE muscle_groups = '{mgworkedObj.MuscleGroup.ID}' AND exercises_id = '{Exercise.ID}'");
-            }
+            db.Execute($@"DELETE FROM muscle_groups_exercises WHERE exercises_id = '{Exercise.ID}'");
 
             ExercisesList.Remove(Exercise);
+            Rows.Items.Remove(Exercise);
             db.Execute($@"DELETE FROM exercises WHERE id = '{Exercise.ID}';");
         }
     }
