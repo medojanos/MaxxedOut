@@ -8,3 +8,6 @@ obj/
 *.dbmdl
 *.log
 .vs
+
+# Packages
+packages/
