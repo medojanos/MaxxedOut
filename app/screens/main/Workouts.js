@@ -39,9 +39,7 @@ export default function Workouts() {
     useEffect(() => {
         if (!token) return;
         fetch("http://localhost:4000/plans", {
-            method: "GET",
             headers: {
-                "Content-Type" : "application/json",
                 "Authorization" : token
             }
         })

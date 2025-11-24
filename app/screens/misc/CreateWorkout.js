@@ -14,7 +14,8 @@ import MainStyle from "../../style/MainStyle"
 import { StyleSheet } from "react-native";
 const CreateWorkoutStyle = StyleSheet.create({
     setInput : {
-        width : 50
+        width : 50,
+        marginVertical : 0
     }
 })
 
@@ -85,7 +86,7 @@ export default function CreateWorkout() {
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
                 <TextInput 
-                    placeholder="Enter workout name" 
+                    placeholder="Enter workout name..." 
                     style={MainStyle.input} 
                     onChangeText={text => setPlanDraft(prev => ({...prev, planName : text}))}>
                 </TextInput>
@@ -119,7 +120,7 @@ export default function CreateWorkout() {
                         return (
                             <View key={exercise.id} style={MainStyle.container}>
                                 <View style={MainStyle.inlineContainer}>
-                                    <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                                    <Text style={[MainStyle.containerTitle, {margin : 0}]}>{exercise.name}</Text>
                                     <Text style={MainStyle.lightText}>X</Text>
                                     <TextInput
                                         keyboardType="numeric"

@@ -1,5 +1,5 @@
 // React
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // Screens
 import Login from "./screens/misc/Login";
@@ -15,23 +15,23 @@ export default function App() {
   const {isLoggedIn, setLogin} = useContext(Context);
 
   useEffect(() => {
-    async function isLogin() {
-      await getData("isLoggedIn").then(data => setLogin(data));
+    async function load() {
+      setLogin(await getData("isLoggedIn").then(data => {return data == "true" ? "true" : "false"}));
     }
-    isLogin();
+    load();
   }, [])
 
   useEffect(() => {
     isLoggedIn == "true" ? setData("isLoggedIn", "true") : setData("isLoggedIn", "false");
   }, [isLoggedIn]);
-  
+
   switch (isLoggedIn)
   {
-    case undefined:
-      return <Loader/>
     case "true":
       return <Main/>
     case "false":
       return <Login/>
+    default:
+      return <Loader/>
   }
 }

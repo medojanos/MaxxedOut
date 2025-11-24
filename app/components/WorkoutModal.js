@@ -30,9 +30,7 @@ export default function WorkoutModal({Close, visible}) {
     useEffect(() => {
         if (!token) return;
         fetch("http://localhost:4000/plans", {
-            method: "GET",
             headers: {
-                "Content-Type" : "application/json",
                 "Authorization" : token
             }
         })
@@ -48,17 +46,26 @@ export default function WorkoutModal({Close, visible}) {
             visible={visible}>
             <View style={MainStyle.overlay}>
                 <View style={ModalStyle.modal}>
-                    <Text style={MainStyle.containerTitle}>Select a workout or start a new one</Text>
+                    <Text style={MainStyle.screenTitle}>Select a workout</Text>
                     <View>
                         <FlatList
                             data={plans}
-                            renderItem={({item}) => <Pressable onPress={() => {
+                            renderItem={({item}) => 
+                            <Pressable onPress={() => {
                                 navigation.navigate("Workout");
                                 Close();
                             }}>
                             <Text style={MainStyle.lightText}>{item.name}</Text></Pressable>}>
                         </FlatList>
                     </View>
+                    <Pressable
+                        style={MainStyle.secondaryButton}
+                        onPress={() => {
+                            navigation.navigate("Workout");
+                            Close();
+                        }}>
+                        <Text style={MainStyle.buttonText}>Start a new one</Text>
+                    </Pressable>
                     <Pressable style={MainStyle.button} onPress={Close}><Text style={MainStyle.buttonText}>Close</Text></Pressable>
                 </View>
             </View>

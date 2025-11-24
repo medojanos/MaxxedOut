@@ -8,6 +8,17 @@ export default StyleSheet.create({
         backgroundColor: Var.black
     },
 
+    screenTitle : {
+        color: Var.white,
+        fontSize : 25,
+        fontWeight: "bold"
+    },
+    screenAltTitle : {
+        color: Var.paleWhite,
+        fontSize : 15,
+        fontWeight: "bold"
+    },
+
     container : {
         padding: 20,
         backgroundColor: Var.darkGray,
@@ -29,15 +40,6 @@ export default StyleSheet.create({
         justifyContent: "space-between",
         paddingBottom: 10
     },
-
-    screenTitle : {
-        color: Var.white,
-        fontSize : 25
-    },
-    screenAltTitle : {
-        color: Var.paleWhite,
-        fontSize : 15
-    },
     
     buttonBlock : {
         width : 100
@@ -55,7 +57,8 @@ export default StyleSheet.create({
     buttonText : {
         textAlign: "center",
         color: Var.white,
-        margin: 10
+        margin: 10,
+        fontWeight: "bold"
     },
 
     lightText : {

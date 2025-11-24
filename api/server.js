@@ -59,11 +59,11 @@ app.post("/register", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-    db.get("SELECT id FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, user) => {
+    db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, user) => {
         if (!user) res.json({message: "Wrong credentials", status: false});
         let token = randomBytes(32).toString('hex');
         db.run("INSERT INTO tokens VALUES (?, ?)", [token, user.id]);
-        res.json({message: "Successfully logged in", status: true, token : token});
+        res.json({message: "Successfully logged in", status: true, token : token, userData : {email : user.email, nickname : user.nickname}});
     })
 })
 
@@ -125,8 +125,9 @@ app.patch("/users", (req, res) => {
         
     const query = "UPDATE users SET " + columns.map((col) => col + " = ?").join(", ") + " WHERE id = ?";
     db.run(query, columnsData, (e) => {
-        if (e) return res.json({message : "Something went wrong", status: false})
-        res.json({message: "Succesfull profile update", status: true})
+        db.get("SELECT email, nickname FROM users WHERE id = ?", [req.user], (e, row) => {
+            res.json({message : "Profile updated succesfully", status : true, userData : row});
+        })
     })
 })
 

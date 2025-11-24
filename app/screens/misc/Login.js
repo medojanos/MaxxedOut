@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import { Context } from "../../misc/Provider";
-import { setData } from "../../misc/Storage";
+import { setData, setJson } from "../../misc/Storage";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -47,11 +47,12 @@ export default function Login() {
         .then(res => res.json())
         .then(data => {
             if (data.status) {
-            setStatus(data.message);
-            setData("token", data.token);
-            setLogin("true");
+                setStatus(data.message);
+                setData("token", data.token);
+                setJson("user", data.userData);
+                setLogin("true");
             } else {
-            setStatus(data.message);
+                setStatus(data.message);
             }
         })
         .catch(err => {
