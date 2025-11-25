@@ -21,8 +21,8 @@ namespace admin
         {
             InitializeComponent();
 
-            db = new Database(@"Data source=C:\Users\tekeresdenes\repos\MaxxedOut\api\db\maxxedout.db");
-            
+            db = new Database($@"Data Source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
+
             mgSource.DataSource = MGList;
             Rows.DataSource = mgSource;
             Rows.DisplayMember = "Name";
@@ -147,6 +147,11 @@ namespace admin
             name.Clear();
 
             db.Execute($"DELETE FROM muscle_groups WHERE id='{mgObj.ID}'");
+        }
+
+        private void search_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 

@@ -23,7 +23,7 @@ namespace admin
         {
             InitializeComponent();
 
-            db = new Database(@"Data source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
+            db = new Database($@"Data Source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
             var users = db.Query("SELECT * FROM users;");
 
             foreach (DataRow user in users.Rows)
