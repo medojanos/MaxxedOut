@@ -29,14 +29,15 @@ const SettingsStyle = StyleSheet.create({
 
 export default function Settings() {
     const { setLogin } = useContext(Context);
+    const {userData, setUserData} = useContext(Context);
+
     const [nicknameModal, setNicknameModal] = useState(false);
-    const [userData, setUserData] = useState();
     const [token, setToken] = useState();
     const [newNickname, setNewNickname] = useState();
+
     useEffect(() => {
         async function load() {
             setToken(await getData("token"));
-            setUserData(await getJson("user"));
         }
         load();
     },[])
@@ -87,7 +88,6 @@ export default function Settings() {
                                     .then(res => res.json())
                                     .then(data => {
                                         if (data.status) {
-                                            setJson("user", data.userData);
                                             setUserData(data.userData);
                                             setNicknameModal(false);
                                         }
