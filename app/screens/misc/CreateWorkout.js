@@ -24,21 +24,13 @@ export default function CreateWorkout() {
     const [exercises, setExercises] = useState();
     const navigation = useNavigation();
 
-    const {planDraftSave, setPlanDraftSave} = useContext(Context);
-
-    const [planDraft, setPlanDraft] = useState(planDraftSave ||
-        {planName : "", ownIndex : 0, exercises : []}
-    );
+    const {planDraft, setPlanDraft} = useContext(Context);
 
     useEffect(() => {
         fetch("http://localhost:4000/exercises")
-        .then(res => setExercises(res.json()))
+        .then(res => res.json())
+        .then(data => setExercises(data))
     },[])
-
-
-    useEffect(() => {
-        setPlanDraftSave(planDraft);
-    }, [planDraft])
 
     function addExercise(id) {
         setPlanDraft(prev => {
@@ -47,7 +39,7 @@ export default function CreateWorkout() {
             if (typeof id == "string") {
                 exerciseName = "Own exercise " + newIndex;
             } else {
-                exercises[id];
+                exerciseName = exercises[id].name;
             }
             return {
                 ...prev,
@@ -88,13 +80,14 @@ export default function CreateWorkout() {
                 <TextInput 
                     placeholder="Enter workout name..." 
                     style={MainStyle.input} 
-                    onChangeText={text => setPlanDraft(prev => ({...prev, planName : text}))}>
+                    onChangeText={text => setPlanDraft(prev => ({...prev, name : text}))}>
                 </TextInput>
                 <Pressable
                     style={MainStyle.button}
                     onPress={() => setSearchModal(true)}>
                     <Text style={MainStyle.buttonText}>Add exercise</Text>
                 </Pressable>
+                {planDraft.name != "" ? <Text style={MainStyle.screenTitle}>{planDraft.name}</Text> : null}
                 <Modal 
                     animationType="fade"
                     transparent={true}
@@ -150,7 +143,7 @@ export default function CreateWorkout() {
                         <Text style={MainStyle.buttonText}>Save</Text>
                     </Pressable>
                     <Pressable
-                        onPress={() => {setPlanDraftSave(null); navigation.navigate("Home")}}
+                        onPress={() => {setPlanDraft({name : "", ownIndex : 0, exercises : []}); navigation.navigate("Home")}}
                         style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}>
                         <Text style={MainStyle.buttonText}>Cancel</Text>
                     </Pressable>

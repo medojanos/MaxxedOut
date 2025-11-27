@@ -1,12 +1,12 @@
 // React
 import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useContext } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import WorkoutModal from "../../components/WorkoutModal";
-import { getJson } from "../../misc/Storage";
+import { Context } from "../../misc/Provider";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -21,13 +21,7 @@ const TrackerStyle = StyleSheet.create({
 
 export default function Tracker() {
     const [workoutModal, setWorkoutModal] = useState(false);
-    const [userData, setUserData] = useState();
-    useEffect(() => {
-        async function load() {
-            setUserData(await getJson("user"));
-        }
-        load();
-    },[])
+    const { userData } = useContext(Context);
     return (
         <SafeAreaView style={{flex : 1}}>
             <ScrollView contentContainerStyle={{flex : 1}}>
