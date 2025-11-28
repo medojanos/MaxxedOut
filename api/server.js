@@ -3,7 +3,7 @@ import sqlite3 from 'sqlite3'
 import cors from 'cors'
 import { fileURLToPath } from 'url'
 import path from 'path'
-import fs, { stat } from 'fs'
+import fs from 'fs'
 import { hash } from 'crypto'
 import { randomBytes } from 'crypto'
 
