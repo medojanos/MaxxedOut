@@ -1,5 +1,5 @@
 // React
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // Screens
 import Login from "./screens/misc/Login";
@@ -8,33 +8,35 @@ import Loader from "./components/Loader";
 
 // Misc
 import { Context } from "./misc/Provider";
-import { getData, setData, setJson } from "./misc/Storage";
+import { getData, getJson, setJson } from "./misc/Storage";
+import RandomName from "./misc/RandomName";
 
 
 export default function App() {
-  const {isLoggedIn, setLogin} = useContext(Context);
   const {userData, setUserData} = useContext(Context);
+  const {isLoggedIn, setLogin} = useContext(Context);
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
-      setLogin(await getData("isLoggedIn").then(data => {return data == "true" ? "true" : "false"}));
-      setUserData(await getData("userData"));
+      const token = await getData("token");
+      if (!token) setLogin(false);
+      fetch("http://localhost:4000/auth", {headers: {"Authorization" : token}})
+      .then(res => res.json())
+      .then(data => data.success ? setLogin(true) : setLogin(false))
+      .finally(() => setLoading(false))
+      setUserData(await getJson("user"));
     }
     load();
   }, [])
 
   useEffect(() => {
-    isLoggedIn == "true" ? setData("isLoggedIn", "true") : setData("isLoggedIn", "false");
+    if (!userData) return;
+    if (userData.nickname == null) setUserData(prev => ({...prev, nickname: RandomName()}));
     setJson("user", userData);
-  }, [isLoggedIn, userData]);
+  }, [userData]);
 
-  switch (isLoggedIn)
-  {
-    case "true":
-      return <Main/>
-    case "false":
-      return <Login/>
-    default:
-      return <Loader/>
-  }
+  if (loading) return <Loader/>;
+  return isLoggedIn ? <Main/> : <Login/>
 }

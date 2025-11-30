@@ -32,38 +32,27 @@ app.get("/readme", (req, res) => {
     })
 })
 
-app.get("/muscle_groups_exercises", (req, res) => {
-    db.all("SELECT * FROM muscle_groups_exercises", (e, rows) => {
-        res.json(rows);
-    })
-})
-
-app.get("/users", (req, res) => {
-    db.all("SELECT * FROM users", (e, rows) => {
-        res.json(rows);
-    })
-})
-
 app.post("/register", (req, res) => {
     db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
-        if (row) {
-        res.json({message: "Email already registered", status: false});
-        } else {
-        db.run(
-            "INSERT INTO users (email, password) VALUES (?, ?)",
-            [req.body.email, hash('sha-512', req.body.password)]
-        )
-        res.json({message : "Successfully registered", status: true});
-        }
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        if (row) return res.status(400).json({success: false, message: "Email already registered"});
+        db.run("INSERT INTO users (email, password) VALUES (?, ?)", [req.body.email, hash('sha-512', req.body.password)], (e) => {
+            if (e) return res.status(500).json({ success: false, message: "Database error"});
+            res.json({success: true, message : "Successfully registered"});
+        })
     })
+    
 })
 
 app.post("/login", (req, res) => {
-    db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, user) => {
-        if (!user) res.json({message: "Wrong credentials", status: false});
+    db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, row) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        if (!row) return res.status(401).json({success: false, message: "Invalid credentials"});
         let token = randomBytes(32).toString('hex');
-        db.run("INSERT INTO tokens VALUES (?, ?)", [token, user.id]);
-        res.json({message: "Successfully logged in", status: true, token : token, userData : {email : user.email, nickname : user.nickname}});
+        db.run("INSERT INTO tokens (token, user_id) VALUES (?, ?)", [token, row.id], (e) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"});
+            res.json({success: true, message: "Successfully logged in", data : {token : token, userData: {email : row.email, nickname : row.nickname}}});
+        });
     })
 })
 
@@ -75,6 +64,16 @@ app.get("/exercises", (req, res) => {
 })
 app.get("/muscle_groups", (req, res) => {
     db.all("SELECT * FROM muscle_groups", (e, rows) => {
+        res.json(rows);
+    })
+})
+app.get("/users", (req, res) => {
+    db.all("SELECT * FROM users", (e, rows) => {
+        res.json(rows);
+    })
+})
+app.get("/muscle_groups_exercises", (req, res) => {
+    db.all("SELECT * FROM muscle_groups_exercises", (e, rows) => {
         res.json(rows);
     })
 })
@@ -91,7 +90,7 @@ async function Auth(token) {
 
 async function AuthMiddleWare(req, res, next) {
     const auth = await Auth(req.headers["authorization"]);
-    if (!auth) return res.json({error : "Invalid token"});
+    if (!auth) return res.status(401).json({success: false, message: "Invalid token"});
     req.user = auth.user_id;
     next(); 
 }
@@ -101,34 +100,36 @@ app.use(AuthMiddleWare);
 
 app.get("/plans", (req, res) => {
     db.all("SELECT * FROM plans WHERE user_id = ?", [req.user], (e, rows) => {
-        res.json(rows);
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        res.json({success: true, data: rows});
     })
 })
 
-app.patch("/users", (req, res) => {
-    let columns = [];
-    let columnsData = [];
-    if (req.body.nickname) {
-        columns.push("nickname");
-        columnsData.push(req.body.nickname);
-    }
-    if (req.body.email) {
-        columns.push("email");
-        columnsData.push(req.body.email);
-    }
-    if (req.body.password) {
-        columns.push("password");
-        columnsData.push(hash("sha-512", req.body.password));
-    }
-    if (columns.length == 0) res.json({message : "No changes made", status : false})
-    columnsData.push(req.user);
-        
-    const query = "UPDATE users SET " + columns.map((col) => col + " = ?").join(", ") + " WHERE id = ?";
-    db.run(query, columnsData, (e) => {
-        db.get("SELECT email, nickname FROM users WHERE id = ?", [req.user], (e, row) => {
-            res.json({message : "Profile updated succesfully", status : true, userData : row});
+app.patch("/user", (req, res) => {
+    function update(column, columnData) {
+        db.run("UPDATE users SET " + column + " = ? WHERE id = ?", [columnData, req.user], (e) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"});
+            db.get("SELECT email, nickname FROM users WHERE id = ?", [req.user], (e, row) => {
+                if (e) return res.status(500).json({success: false, message: "Database error"});
+                res.json({success : true, message : "Profile updated succesfully", data : row});
+            })
         })
-    })
+    }
+    if (req.body.nickname) return update("nickname", req.body.nickname);
+    if (req.body.email) return update("email", req.body.email);
+    if (req.body.password) {
+        return db.get("SELECT id FROM users WHERE password = ?", [hash("sha-512", req.body.currentPassword)], (e, row) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"});
+            if (!row) return res.status(401).json({success: false, message: "Invalid credentials"});
+            update("password", hash("sha-512", req.body.password))
+        })
+    }
+    return res.status(400).json({success: false, message: "No changes made"});
+})
+
+app.get("/auth", (req, res) => {
+    if (!req.user) return res.status(401).json({success: false, message: "Invalid token"})
+    res.json({success: true})
 })
 
 const PORT = 4000

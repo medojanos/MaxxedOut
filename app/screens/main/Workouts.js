@@ -38,13 +38,9 @@ export default function Workouts() {
     },[])
     useEffect(() => {
         if (!token) return;
-        fetch("http://localhost:4000/plans", {
-            headers: {
-                "Authorization" : token
-            }
-        })
+        fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
         .then(res => res.json())
-        .then(data => setPlans(data))
+        .then(data => setPlans(data.data))
         .catch(e => console.log(e))
     },[token])
 

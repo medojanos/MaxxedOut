@@ -1,7 +1,14 @@
 import sqlite3 from 'sqlite3'
 import fs from 'fs'
 
-const db = new sqlite3.Database("maxxedout.db");
+const dbFile = "maxxedout.db";
+
+if (fs.existsSync(dbFile)) {
+    fs.unlinkSync(dbFile);
+    console.log("Existing database removed");
+}
+
+const db = new sqlite3.Database(dbFile);
 
 db.serialize(() => {
     const schema = fs.readFileSync("./schema.sql", "utf-8");

@@ -47,18 +47,17 @@ export default function Login() {
         })
         .then(res => res.json())
         .then(data => {
-            if (data.status) {
+            if (data.success) {
                 setStatus(data.message);
-                setData("token", data.token);
-                setUserData(data.userData);
-                setLogin("true");
+                setData("token", data.data.token);
+                setUserData(data.data.userData);
+                setLogin(true);
             } else {
                 setStatus(data.message);
             }
         })
-        .catch(err => {
-            setStatus("Something went wrong!");
-            console.log(err)
+        .catch(e => {
+            console.log(e)
         })
     }
 
