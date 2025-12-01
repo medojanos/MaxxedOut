@@ -16,7 +16,7 @@ CREATE TABLE workouts (
 CREATE TABLE exercises (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    type BOOLEAN NOT NULL
+    type TEXT NOT NULL CHECK (type IN ('Compound', 'Isolation'))
 );
 
 CREATE TABLE sets (
@@ -39,7 +39,7 @@ CREATE TABLE muscle_groups (
 CREATE TABLE muscle_groups_exercises (
     muscle_group_id INTEGER NOT NULL,
     exercise_id INTEGER NOT NULL,
-    role TEXT NOT NULL,
+    role TEXT NOT NULL CHECK (role IN ('Primary', 'Secondary', 'Stabilizer')),
     PRIMARY KEY (muscle_group_id, exercise_id),
     FOREIGN KEY (muscle_group_id) REFERENCES muscle_groups(id)
     ON DELETE CASCADE,
