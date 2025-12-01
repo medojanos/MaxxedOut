@@ -6,12 +6,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import { Context } from "../../misc/Provider";
+import RandomName from "../../misc/RandomName";
 
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
-import { getData } from "../../misc/Storage";
-import RandomName from "../../misc/RandomName";
 const SettingsStyle = StyleSheet.create({
     profileContainer : {
         alignItems: "center"
@@ -32,7 +31,7 @@ export default function Settings() {
     const { setLogin } = useContext(Context);
     const {userData, setUserData} = useContext(Context);
 
-    const [token, setToken] = useState();
+    const { token } = useContext(Context);
 
     const [nicknameModal, setNicknameModal] = useState(false);
     const [newNickname, setNewNickname] = useState("");
@@ -62,12 +61,6 @@ export default function Settings() {
         setNewPassword(password)
     }
 
-    useEffect(() => {
-        async function load() {
-            setToken(await getData("token"));
-        }
-        load();
-    },[])
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>

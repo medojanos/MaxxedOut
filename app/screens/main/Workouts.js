@@ -1,13 +1,14 @@
 // React
 import { View, Text, ScrollView, Pressable, FlatList, StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import PlanModal from "../../components/PlanModal";
 import { getData } from "../../misc/Storage";
+import { Context } from "../../misc/Provider";
 
 //Style
 import * as Var from "../../style/Variables"
@@ -26,29 +27,27 @@ const WorkoutsStyle = StyleSheet.create({
 
 export default function Workouts() {
     const [planModal, setPlanModal] = useState(false);
-    const [plans, setPlans] = useState();
-    const [token, setToken] = useState();
+    const [plans, setPlans] = useState([]);
+    const [planId, setPlanId] = useState();
+
+    const {token} = useContext(Context);
+    
     const navigation = useNavigation();
 
-    useEffect(() =>{
-        async function getToken() {
-            setToken(await getData("token"));
-        }   
-        getToken()
-    },[])
     useEffect(() => {
-        if (!token) return;
         fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => setPlans(data.data))
-        .catch(e => console.log(e))
-    },[token])
+    }, [])
 
     function displayPlan(plan) {
         return (
             <View style={MainStyle.container}>
-                <Text style={MainStyle.containerTitle}>{plan.name}</Text>
-                <Pressable style={MainStyle.secondaryButton} onPress={() => {if (!planModal) setPlanModal(true)}}>
+                <Text style={MainStyle.containerTitle}>{plan ? plan.name : ""}</Text>
+                <Pressable style={MainStyle.secondaryButton} onPress={() => {
+                    setPlanId(plan.id);
+                    setPlanModal(true);
+                }}>
                     <Text style={MainStyle.buttonText}>Edit</Text>
                 </Pressable>
             </View>
@@ -70,7 +69,7 @@ export default function Workouts() {
                             renderItem={({item}) => displayPlan(item)}>
                         </FlatList>
                     </View>
-                    <PlanModal visible={planModal} Close={() => setPlanModal(false)} navigation={navigation}></PlanModal>
+                    <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId}></PlanModal>
                 </View>
             </ScrollView>
         </SafeAreaView>

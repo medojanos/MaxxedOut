@@ -22,9 +22,12 @@ const CreateWorkoutStyle = StyleSheet.create({
 export default function CreateWorkout() {
     const [searchModal, setSearchModal] = useState();
     const [exercises, setExercises] = useState();
+    const [status, setStatus] = useState();
+
     const navigation = useNavigation();
 
     const {planDraft, setPlanDraft} = useContext(Context);
+    const {token} = useContext(Context);
 
     useEffect(() => {
         fetch("http://localhost:4000/exercises")
@@ -46,7 +49,7 @@ export default function CreateWorkout() {
                 ownIndex : newIndex,
                 exercises : [
                     ...prev.exercises,
-                    {id : id, name : exerciseName, set : 0}
+                    {id : id, name : exerciseName, sets : 0}
                 ]
             }
         }) ;
@@ -66,10 +69,11 @@ export default function CreateWorkout() {
                     switch (prop) {
                         case "name":
                             return {...exercise, name : text}
-                        case "set":
-                            return {...exercise, set : text}
+                        case "sets":
+                            return {...exercise, sets : text}
                     }
                 }
+                return exercise;
             })
         }))
     }
@@ -87,7 +91,8 @@ export default function CreateWorkout() {
                     onPress={() => setSearchModal(true)}>
                     <Text style={MainStyle.buttonText}>Add exercise</Text>
                 </Pressable>
-                {planDraft.name != "" ? <Text style={MainStyle.screenTitle}>{planDraft.name}</Text> : null}
+                <Text style={MainStyle.screenTitle}>{planDraft.name}</Text>
+                <Text style={MainStyle.screenAltTitle}>{status}</Text>
                 <Modal 
                     animationType="fade"
                     transparent={true}
@@ -118,10 +123,10 @@ export default function CreateWorkout() {
                                     <TextInput
                                         keyboardType="numeric"
                                         style={[MainStyle.input, CreateWorkoutStyle.setInput]}
-                                        value={planDraft.exercises[index].set}
+                                        value={planDraft.exercises[index].sets.toString()}
                                         onChangeText={text => {
                                             if (!/^\d*$/.test(text)) return;
-                                            updateExercise(index, text, "set");
+                                            updateExercise(index, text, "sets");
                                         }}>
                                     </TextInput>
                                 </View>
@@ -139,7 +144,30 @@ export default function CreateWorkout() {
                     })
                 }
                 <View style={MainStyle.inlineContainer}>
-                    <Pressable style={[MainStyle.button, MainStyle.buttonBlock]}>
+                    <Pressable
+                        style={[MainStyle.button, MainStyle.buttonBlock]}
+                        onPress={() => {
+                            fetch("http://localhost:4000/plans", {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type" : "application/json",
+                                    "Authorization" : token
+                                },
+                                body: JSON.stringify({
+                                    name: planDraft.name,
+                                    exercises: planDraft.exercises
+                                })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    setPlanDraft({name : "", ownIndex : 0, exercises : []});
+                                    navigation.navigate("Home");
+                                } else {
+                                    setStatus(data.message);
+                                }
+                            })
+                        }}>
                         <Text style={MainStyle.buttonText}>Save</Text>
                     </Pressable>
                     <Pressable

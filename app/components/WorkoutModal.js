@@ -1,43 +1,28 @@
 // React
 import { View, Text, Pressable, Modal, FlatList, StyleSheet} from "react-native";
-import { useEffect, useState } from "react";
-import { getData } from "../misc/Storage";
+import { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+
+// Misc
+import { Context } from "../misc/Provider";
 
 // Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
-const ModalStyle = StyleSheet.create({
-    modal: {
-        backgroundColor: Var.darkGray,
-        width: "90%",
-        margin: "auto",
-        padding: 20,
-        borderRadius: 10
-    }
+const WorkoutModalStyle = StyleSheet.create({
+    
 })
 
 export default function WorkoutModal({Close, visible}) {
     const navigation = useNavigation();
     const [plans, setPlans] = useState();
-    const [token, setToken] = useState();
-    useEffect(() =>{
-        async function getToken() {
-            setToken(await getData("token"));
-        }   
-        getToken()
-    },[])
+    const { token } = useContext(Context);
+
     useEffect(() => {
-        if (!token) return;
-        fetch("http://localhost:4000/plans", {
-            headers: {
-                "Authorization" : token
-            }
-        })
+        fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
         .then(res => res.json())
-        .then(data => setPlans(data))
-        .catch(e => console.log(e))
-        },[token])  
+        .then(data => setPlans(data.data))
+        }, [])  
     return (
         <Modal 
             animationType="fade"
@@ -45,7 +30,7 @@ export default function WorkoutModal({Close, visible}) {
             transparent={true}
             visible={visible}>
             <View style={MainStyle.overlay}>
-                <View style={ModalStyle.modal}>
+                <View style={MainStyle.modal}>
                     <Text style={MainStyle.screenTitle}>Select a workout</Text>
                     <View>
                         <FlatList

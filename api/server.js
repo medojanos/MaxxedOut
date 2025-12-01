@@ -99,9 +99,37 @@ async function AuthMiddleWare(req, res, next) {
 app.use(AuthMiddleWare);
 
 app.get("/plans", (req, res) => {
-    db.all("SELECT * FROM plans WHERE user_id = ?", [req.user], (e, rows) => {
+    db.all("SELECT id, user_id, name FROM plans WHERE user_id = ?", [req.user], (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
         res.json({success: true, data: rows});
+    })
+})
+app.get("/plans/:id", (req, res) => {
+    db.all("SELECT COALESCE(pe.exercise_name, e.name) as name FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        res.json({success: true, data: rows});
+    })
+})
+app.put("/plans", (req, res) => {
+    db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+        let completed = 0;
+        const id = this.lastID;
+
+        function Check(err) {
+            if (err) return res.status(500).json({success: false, message: "Database error"}); 
+            completed++;
+            if (completed == req.body.exercises.length) res.json({success: true, message: "Workout created succesfully"})
+        }
+
+        req.body.exercises.forEach(exercise => {
+            if (typeof exercise.id == "string") {
+                db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets) VALUES (?, ?, ?)", [id, exercise.name, exercise.sets], (e) => Check(e))
+            } else {
+                db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets) VALUES (?, ?, ?)", [id, exercise.id, exercise.sets], (e) => Check(e))
+            }
+        });
     })
 })
 

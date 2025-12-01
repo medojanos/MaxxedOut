@@ -40,7 +40,6 @@ CREATE TABLE muscle_groups_exercises (
     muscle_group_id INTEGER NOT NULL,
     exercise_id INTEGER NOT NULL,
     role TEXT NOT NULL CHECK (role IN ('Primary', 'Secondary', 'Stabilizer')),
-    PRIMARY KEY (muscle_group_id, exercise_id),
     FOREIGN KEY (muscle_group_id) REFERENCES muscle_groups(id)
     ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
@@ -55,8 +54,9 @@ CREATE TABLE plans (
 
 CREATE TABLE plans_exercises (
     plan_id INTEGER NOT NULL,
-    exercise_id INTEGER NOT NULL,
-    PRIMARY KEY (plan_id, exercise_id),
+    exercise_id INTEGER,
+    exercise_name TEXT,
+    sets INTEGER,
     FOREIGN KEY (plan_id) REFERENCES plans(id)
     ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)

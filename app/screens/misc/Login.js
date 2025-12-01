@@ -25,6 +25,7 @@ export default function Login() {
 
     const { setLogin } = useContext(Context);
     const { setUserData } = useContext(Context);
+    const { setToken } = useContext(Context);
 
     function Authenticate() {
         if (email == "") {
@@ -49,7 +50,7 @@ export default function Login() {
         .then(data => {
             if (data.success) {
                 setStatus(data.message);
-                setData("token", data.data.token);
+                setToken(data.data.token);
                 setUserData(data.data.userData);
                 setLogin(true);
             } else {
