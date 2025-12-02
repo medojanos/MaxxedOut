@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Mail;
 using System.Security.Cryptography;
+using System.IO;
 
 namespace admin
 {
@@ -23,7 +24,11 @@ namespace admin
         {
             InitializeComponent();
 
-            db = new Database($@"Data Source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
+            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
+            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
+
+            db = new Database($@"Data Source={dbPath}");
+
             var users = db.Query("SELECT * FROM users;");
 
             foreach (DataRow user in users.Rows)
@@ -165,6 +170,7 @@ namespace admin
             Rows.Items[Rows.SelectedIndex] = userObj;
 
             db.Execute($"UPDATE users SET nickname='{userObj.Nickname}', email='{userObj.Email}', password='{userObj.Password}' WHERE id='{userObj.ID}'");
+            db.Execute($"DELETE * FROM tokens WHERE user_id={userObj.ID}");
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
@@ -191,6 +197,8 @@ namespace admin
             password.Clear();
 
             db.Execute($"DELETE FROM users WHERE id='{userObj.ID}'");
+            db.Execute($"DELETE * FROM tokens WHERE user_id={userObj.ID}");
+            db.Execute($"DELETE * FROM workouts WHERE user_id={userObj.ID}");
         }
 
         public bool IsPwdValid(string pwd)
