@@ -10,7 +10,7 @@ import { Context } from "../misc/Provider";
 // Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
-const ModalStyle = StyleSheet.create({
+const PlanModalStyle = StyleSheet.create({
 
 })
 
@@ -33,7 +33,7 @@ export default function PlanModal({Close, visible, id}) {
                     <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
                     <FlatList
                         data={plan}
-                        renderItem={({item}) => <Text style={MainStyle.lightText}>{item.name}</Text>}>
+                        renderItem={({item}) => <Text style={MainStyle.lightText}>{item.name}{item.sets}</Text>}>
                     </FlatList>
                     <Pressable style={MainStyle.button} onPress={Close}><Text style={MainStyle.buttonText}>Close</Text></Pressable>
                 </View>

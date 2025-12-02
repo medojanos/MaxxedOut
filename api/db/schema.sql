@@ -1,80 +1,80 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
     email TEXT NOT NULL,
     nickname TEXT,
     password TEXT NOT NULL
 );
 
-CREATE TABLE workouts (
+CREATE TABLE IF NOT EXISTS workouts (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
     date DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
-    ON DELETE CASCADE
+        ON DELETE CASCADE
 );
 
-CREATE TABLE exercises (
+CREATE TABLE IF NOT EXISTS exercises (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     type TEXT NOT NULL CHECK (type IN ('Compound', 'Isolation'))
 );
 
-CREATE TABLE sets (
+CREATE TABLE IF NOT EXISTS sets (
     id INTEGER PRIMARY KEY,
     workout_id INTEGER NOT NULL,
     exercise_id INTEGER NOT NULL,
     rep INTEGER,
     weight INTEGER,
     FOREIGN KEY (workout_id) REFERENCES workouts(id)
-    ON DELETE CASCADE,
+        ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
-    ON DELETE CASCADE
+        ON DELETE CASCADE
 );
 
-CREATE TABLE muscle_groups (
+CREATE TABLE IF NOT EXISTS muscle_groups (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL
 );
 
-CREATE TABLE muscle_groups_exercises (
+CREATE TABLE IF NOT EXISTS muscle_groups_exercises (
     muscle_group_id INTEGER NOT NULL,
     exercise_id INTEGER NOT NULL,
     role TEXT NOT NULL CHECK (role IN ('Primary', 'Secondary', 'Stabilizer')),
     FOREIGN KEY (muscle_group_id) REFERENCES muscle_groups(id)
-    ON DELETE CASCADE,
+        ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
-    ON DELETE CASCADE
+        ON DELETE CASCADE
 );
 
-CREATE TABLE plans (
+CREATE TABLE IF NOT EXISTS plans (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
     name TEXT NOT NULL
 );
 
-CREATE TABLE plans_exercises (
+CREATE TABLE IF NOT EXISTS plans_exercises (
     plan_id INTEGER NOT NULL,
     exercise_id INTEGER,
     exercise_name TEXT,
     sets INTEGER,
     FOREIGN KEY (plan_id) REFERENCES plans(id)
-    ON DELETE CASCADE,
+        ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
-    ON DELETE CASCADE
+        ON DELETE CASCADE
 );
 
-CREATE TABLE codes (
+CREATE TABLE IF NOT EXISTS codes (
     code TEXT PRIMARY KEY,
     user_id INTEGER NOT NULL,
     expiry DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
-    ON DELETE CASCADE
+        ON DELETE CASCADE
 );
 
-CREATE TABLE tokens (
+CREATE TABLE IF NOT EXISTS tokens (
     token TEXT PRIMARY KEY,
     user_id INTEGER NOT NULL,
     expiry DATETIME DEFAULT (DATETIME('now', '+7 days')),
     FOREIGN KEY (user_id) REFERENCES users(id)
-    ON DELETE CASCADE
+        ON DELETE CASCADE
 );

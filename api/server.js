@@ -105,7 +105,7 @@ app.get("/plans", (req, res) => {
     })
 })
 app.get("/plans/:id", (req, res) => {
-    db.all("SELECT COALESCE(pe.exercise_name, e.name) as name FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
+    db.all("SELECT COALESCE(pe.exercise_name, e.name) as name, pe.sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
         res.json({success: true, data: rows});
     })
