@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
@@ -22,7 +23,11 @@ namespace admin
         {
             InitializeComponent();
 
-            db = new Database($@"Data Source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
+            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
+            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
+
+            db = new Database($@"Data Source={dbPath}");
+
             var exercises = db.Query("SELECT * FROM exercises;");
 
             foreach (DataRow exercise in exercises.Rows)

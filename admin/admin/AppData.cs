@@ -17,7 +17,10 @@ namespace admin
 
         static AppData()
         {
-            db = new Database($@"Data Source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
+            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
+            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
+
+            db = new Database($@"Data Source={dbPath}");
 
             var musclegroups = db.Query("SELECT * FROM muscle_groups;");
 
