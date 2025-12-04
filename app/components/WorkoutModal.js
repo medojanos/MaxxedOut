@@ -10,7 +10,11 @@ import { Context } from "../misc/Provider";
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
 const WorkoutModalStyle = StyleSheet.create({
-    
+    workoutButton:{
+        backgroundColor: Var.black,
+        borderColor: Var.navyBlue,
+        borderWidth: 2
+    }
 })
 
 export default function WorkoutModal({Close, visible}) {
@@ -36,17 +40,20 @@ export default function WorkoutModal({Close, visible}) {
                         <FlatList
                             data={plans}
                             renderItem={({item}) => 
-                            <Pressable onPress={() => {
-                                navigation.navigate("Workout");
-                                Close();
-                            }}>
-                            <Text style={MainStyle.lightText}>{item.name}</Text></Pressable>}>
+                            <Pressable
+                                style={[MainStyle.button, WorkoutModalStyle.workoutButton]}
+                                onPress={() => {
+                                    navigation.navigate("Workout", {text: item.name, id: item.id});
+                                    Close();
+                                }}>
+                                <Text style={MainStyle.buttonText}>{item.name}</Text>
+                            </Pressable>}>
                         </FlatList>
                     </View>
                     <Pressable
                         style={MainStyle.secondaryButton}
                         onPress={() => {
-                            navigation.navigate("Workout");
+                            navigation.navigate("Workout", {text: "Workout"});
                             Close();
                         }}>
                         <Text style={MainStyle.buttonText}>Start a new one</Text>

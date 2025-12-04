@@ -11,7 +11,7 @@ const Nouns = [
   "Pump", "Crusher", "Lifter", "Jugger", "Atlas", "Goliath", "Predator", "Hulkster",
   "Ironman", "Berserker", "Barbarian", "Tank", "Colossus", "Rager", "Anvil", "Muscleman",
   "Jugger", "Behemoth", "Hammer", "Macho", "Flexer", "Beastlord", "Musclelord", "Ironlord",
-  "Pumpking", "Bulkzilla", "Flexzilla", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger", "Nigger"
+  "Pumpking", "Bulkzilla", "Flexzilla"
 ];
 
 function RandomNumber(max) {
