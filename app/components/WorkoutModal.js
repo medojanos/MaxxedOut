@@ -20,6 +20,7 @@ const WorkoutModalStyle = StyleSheet.create({
 export default function WorkoutModal({Close, visible}) {
     const navigation = useNavigation();
     const [plans, setPlans] = useState();
+
     const { token } = useContext(Context);
 
     useEffect(() => {
@@ -27,6 +28,7 @@ export default function WorkoutModal({Close, visible}) {
         .then(res => res.json())
         .then(data => setPlans(data.data))
         }, [])  
+
     return (
         <Modal 
             animationType="fade"

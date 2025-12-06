@@ -114,6 +114,7 @@ app.put("/plans", (req, res) => {
     db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
 
+
         let completed = 0;
         const id = this.lastID;
 
