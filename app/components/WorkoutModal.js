@@ -17,7 +17,7 @@ const WorkoutModalStyle = StyleSheet.create({
     }
 })
 
-export default function WorkoutModal({Close, visible}) {
+export default function WorkoutModal({Close, visible, onSelectWorkout}) {
     const navigation = useNavigation();
     const [plans, setPlans] = useState();
 
@@ -45,8 +45,7 @@ export default function WorkoutModal({Close, visible}) {
                             <Pressable
                                 style={[MainStyle.button, WorkoutModalStyle.workoutButton]}
                                 onPress={() => {
-                                    navigation.navigate("Workout", {text: item.name, id: item.id});
-                                    Close();
+                                    if (onSelectWorkout) onSelectWorkout(item);
                                 }}>
                                 <Text style={MainStyle.buttonText}>{item.name}</Text>
                             </Pressable>}>

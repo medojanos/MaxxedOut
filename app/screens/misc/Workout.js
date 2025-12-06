@@ -4,7 +4,6 @@ import { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
-import { Context } from "../../misc/Provider";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -16,31 +15,24 @@ const WorkoutStyle = StyleSheet.create({
     input : {
         width: 70,
         marginVertical: 0
+    },
+
+    title : {
+        fontSize: 25,
+        textAlign: "center",
+        color: Var.white
     }
 })
 
-export default function Workout({route, navigation}) {
+export default function Workout({workout, token, onDone}) {
 
-    const { token } = useContext(Context);
     const [exercises, SetExercises] = useState([]);
 
     useEffect(() => {
-        navigation.setOptions({
-            headerTitle: route.params.text,
-            headerTitleAlign: "center",
-            headerTitleStyle: {
-                fontSize: 20,
-                fontWeight: "bold",
-                color: Var.paleWhite
-            }
-        });
-    }, [route, navigation]);
-
-    useEffect(() => {
-        fetch("http://localhost:4000/plans/" + route.params.id, {headers: {"Authorization" : token}})
-        .then(res => res.json())
-        .then(data => SetExercises(data.data || []))
-    }, []);
+        fetch("http://localhost:4000/plans/" + workout.id, { headers: { Authorization: token } })
+            .then(res => res.json())
+            .then(data => SetExercises(data.data || []));
+    }, [workout, token]);
 
     function renderExercise(exercise, index){
         return(
@@ -61,10 +53,6 @@ export default function Workout({route, navigation}) {
         )
     }
 
-    function setWorkout(){
-
-    }
-
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
@@ -75,8 +63,11 @@ export default function Workout({route, navigation}) {
                     </FlatList>
                 </View>
             </ScrollView>
+            <Text style={WorkoutStyle.title}>
+                {workout?.name}
+            </Text>
             <Pressable
-                onPress={() => {setWorkout()}}
+                onPress={onDone}
                 style={[MainStyle.button]}>
                 <Text style={MainStyle.buttonText}>Done</Text>
             </Pressable>

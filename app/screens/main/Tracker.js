@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import WorkoutModal from "../../components/WorkoutModal";
+import Workout from "../misc/Workout";
 import { Context } from "../../misc/Provider";
 
 // Style
@@ -22,18 +23,37 @@ const TrackerStyle = StyleSheet.create({
 export default function Tracker() {
     const [workoutModal, setWorkoutModal] = useState(false);
     const { userData } = useContext(Context);
+    const { token } = useContext(Context)
+    const [selectedWorkout, setSelectedWorkout] = useState(null);
+
     return (
         <SafeAreaView style={{flex : 1}}>
             <ScrollView contentContainerStyle={{flex : 1}}>
                 <View style={MainStyle.content}>
-                    <Text style={TrackerStyle.welcome}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
-                    <Text style={MainStyle.screenTitle}>Tracker</Text>
-                    <Pressable 
-                        style={MainStyle.button}
-                        onPress={() => {if (!workoutModal) setWorkoutModal(true)}}>
-                        <Ionicons style={{margin: "auto"}} name="add-circle" size={50} color={Var.black}></Ionicons>
-                    </Pressable>
-                    <WorkoutModal visible={workoutModal} Close={() => setWorkoutModal(false)}></WorkoutModal>
+                    { selectedWorkout ? (
+                        <Workout 
+                            workout={selectedWorkout}
+                            token={token} 
+                            onDone={() => setSelectedWorkout(null)} 
+                        />
+                    ) : (
+                    <>
+                        <Text style={TrackerStyle.welcome}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
+                        <Text style={MainStyle.screenTitle}>Tracker</Text>
+                        <Pressable 
+                            style={MainStyle.button}
+                            onPress={() => {if (!workoutModal) setWorkoutModal(true)}}>
+                            <Ionicons style={{margin: "auto"}} name="add-circle" size={50} color={Var.black}></Ionicons>
+                        </Pressable> 
+                    </>)}
+                    <WorkoutModal 
+                        visible={workoutModal} 
+                        Close={() => setWorkoutModal(false)}
+                        onSelectWorkout={(workout) => {
+                            setSelectedWorkout(workout);
+                            setWorkoutModal(false);
+                        }}
+                    ></WorkoutModal>
                 </View>
             </ScrollView>
         </SafeAreaView>
