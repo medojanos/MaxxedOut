@@ -57,15 +57,15 @@ export default function Workout({workout, token, onDone}) {
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
                 <View>
+                    <Text style={WorkoutStyle.title}>
+                        {workout?.name}
+                    </Text>
                     <FlatList 
                         data={exercises}
                         renderItem={({item, index}) => renderExercise(item, index)}>
                     </FlatList>
                 </View>
             </ScrollView>
-            <Text style={WorkoutStyle.title}>
-                {workout?.name}
-            </Text>
             <Pressable
                 onPress={onDone}
                 style={[MainStyle.button]}>
