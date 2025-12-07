@@ -16,8 +16,6 @@ import CreateWorkout from "./screens/misc/CreateWorkout"
 // Style
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Var from "./style/Variables";
-import MainStyle from "./style/MainStyle";
-import { useState } from "react";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -57,7 +55,6 @@ function Home() {
 }
 
 export default function Main() {
-  const [header, setHeader] = useState();
   return (
     <NavigationContainer>
       <Stack.Navigator

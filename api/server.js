@@ -32,6 +32,29 @@ app.get("/readme", (req, res) => {
     })
 })
 
+app.get("/exercises", (req, res) => {
+    db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group FROM muscle_groups_exercises mge JOIN exercises e ON e.id=mge.exercise_id JOIN muscle_groups mg ON mg.id=mge.muscle_group_id ", (e, rows) => {
+        const map = {};
+        rows.forEach(row => {
+            if (!map[row.id]) {
+                map[row.id] = {
+                    name: row.name,
+                    type: row.type,
+                    muscle_groups: []
+                };
+            }
+            map[row.id].muscle_groups.push(row.muscle_group);
+        });
+        res.json(map);
+    })
+})
+
+app.get("/muscle_groups", (req, res) => {
+    db.all("SELECT * FROM muscle_groups", (e, rows) => {
+        res.json(rows);
+    })
+})
+
 app.post("/register", (req, res) => {
     db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
@@ -62,35 +85,9 @@ app.post("/login", (req, res) => {
         res.json(rows);
     })
 })*/
-app.get("/muscle_groups", (req, res) => {
-    db.all("SELECT * FROM muscle_groups", (e, rows) => {
-        res.json(rows);
-    })
-})
 app.get("/users", (req, res) => {
     db.all("SELECT * FROM users", (e, rows) => {
         res.json(rows);
-    })
-})
-app.get("/exercises", (req, res) => {
-    db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group FROM muscle_groups_exercises mge JOIN exercises e ON e.id=mge.exercise_id JOIN muscle_groups mg ON mg.id=mge.muscle_group_id ", (e, rows) => {
-        
-        const map = {};
-
-        rows.forEach(row => {
-            if (!map[row.id]) {
-                map[row.id] = {
-                    id: row.id,
-                    name: row.name,
-                    type: row.type,
-                    muscle_groups: []
-                };
-            }
-
-            map[row.id].muscle_groups.push(row.muscle_group);
-        });
-
-        res.json(Object.values(map));
     })
 })
 
