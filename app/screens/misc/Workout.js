@@ -1,15 +1,14 @@
 // React
-import { View, ScrollView, StyleSheet, Text, Pressable } from "react-native";
-import { useContext, useState } from "react";
+import { View, ScrollView, StyleSheet, Text, Pressable, TextInput } from "react-native";
+import { useContext, useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
+import { Context } from "../../misc/Provider";
 
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
-import { useEffect } from "react";
-import { Button, FlatList, TextInput } from "react-native-web";
 
 const WorkoutStyle = StyleSheet.create({
     input : {
@@ -24,52 +23,42 @@ const WorkoutStyle = StyleSheet.create({
     }
 })
 
-export default function Workout({workout, token, onDone}) {
-
-    const [exercises, SetExercises] = useState([]);
+export default function Workout() {
+    const {token, workout, setWorkout} = useContext(Context);
 
     useEffect(() => {
-        fetch("http://localhost:4000/plans/" + workout.id, { headers: { Authorization: token } })
+        fetch("http://localhost:4000/plans/" + workout, { headers: { Authorization: token } })
             .then(res => res.json())
-            .then(data => SetExercises(data.data || []));
-    }, [workout, token]);
-
-    function renderExercise(exercise, index){
-        return(
-            <View style={MainStyle.container}>
-                <Text style={MainStyle.containerTitle}>{index + 1}. {exercise ? exercise.name : ""}</Text>
-                {[...Array(exercise.sets)].map((_ , index) => (
-                    <View 
-                        style={MainStyle.inlineContainer} 
-                        key={index}
-                    >            
-                        <Text style={MainStyle.lightText}>{index+1}</Text>
-                        <TextInput keyboardType="numeric" style={[MainStyle.input, WorkoutStyle.input]} placeholder="kg"/>
-                        <Text style={MainStyle.lightText}>X</Text>
-                        <TextInput keyboardType="numeric" style={[MainStyle.input, WorkoutStyle.input]} placeholder="rep"/>
-                    </View>
-                ))}
-            </View>
-        )
-    }
+            .then(data => {
+                if (data.success) setWorkout(data.data);
+            });
+    }, [id]);
 
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
-                <View>
-                    <Text style={WorkoutStyle.title}>
-                        {workout?.name}
-                    </Text>
-                    <FlatList 
-                        data={exercises}
-                        renderItem={({item, index}) => renderExercise(item, index)}>
-                    </FlatList>
-                </View>
+                {workout.sets.map((exercise, index) => (
+                    <View 
+                        style={MainStyle.inlineContainer} 
+                        key={exercise.id}>            
+                        <Text style={MainStyle.lightText}>{index+1}</Text>
+                        <TextInput 
+                            keyboardType="numeric"
+                            style={MainStyle.setInput}
+                            placeholder="kg"/>
+                        <Text style={MainStyle.lightText}>X</Text>
+                        <TextInput keyboardType="numeric" style={[MainStyle.input, WorkoutStyle.input]} placeholder="rep"/>
+                    </View>
+                ))}
             </ScrollView>
             <Pressable
-                onPress={onDone}
-                style={[MainStyle.button]}>
-                <Text style={MainStyle.buttonText}>Done</Text>
+                style={MainStyle.button}>
+                <Text style={MainStyle.buttonText}>Save</Text>
+            </Pressable>
+            <Pressable
+                style={MainStyle.secondaryButton}
+                onPress={() => setWorkout(null)}>
+                <Text style={MainStyle.buttonText}>Cancel</Text>
             </Pressable>
         </SafeAreaView>
     );

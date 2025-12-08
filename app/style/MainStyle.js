@@ -82,6 +82,10 @@ export default StyleSheet.create({
         marginVertical: 10,
         borderRadius: 5
     },
+    setInput : {
+        width : 50,
+        marginVertical : 0
+    },
 
     overlay : {
         flex: 1,

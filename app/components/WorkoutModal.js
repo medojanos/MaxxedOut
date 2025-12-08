@@ -17,9 +17,11 @@ const WorkoutModalStyle = StyleSheet.create({
     }
 })
 
-export default function WorkoutModal({Close, visible, onSelectWorkout}) {
+export default function WorkoutModal({Close, visible}) {
     const navigation = useNavigation();
     const [plans, setPlans] = useState();
+    
+    const {workout, setWorkout} = useContext(Context);
 
     const { token } = useContext(Context);
 
@@ -39,22 +41,24 @@ export default function WorkoutModal({Close, visible, onSelectWorkout}) {
                 <View style={MainStyle.modal}>
                     <Text style={MainStyle.screenTitle}>Select a workout</Text>
                     <View>
-                        <FlatList
-                            data={plans}
-                            renderItem={({item}) => 
-                            <Pressable
-                                style={[MainStyle.button, WorkoutModalStyle.workoutButton]}
-                                onPress={() => {
-                                    if (onSelectWorkout) onSelectWorkout(item);
+                        {
+                            plans?.map((plan) => (
+                                <Pressable 
+                                    key={plan.id}
+                                    style={WorkoutModalStyle.workoutButton} 
+                                    onPress={() => {
+                                        setWorkout(plan.id);
+                                        Close();
                                 }}>
-                                <Text style={MainStyle.buttonText}>{item.name}</Text>
-                            </Pressable>}>
-                        </FlatList>
+                                    <Text style={MainStyle.buttonText}>{plan.name}</Text>
+                                </Pressable>
+                            )
+                        )}
                     </View>
                     <Pressable
                         style={MainStyle.secondaryButton}
                         onPress={() => {
-                            navigation.navigate("Workout", {text: "Workout"});
+                            setWorkout();
                             Close();
                         }}>
                         <Text style={MainStyle.buttonText}>Start a new one</Text>

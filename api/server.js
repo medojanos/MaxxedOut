@@ -38,6 +38,7 @@ app.get("/exercises", (req, res) => {
         rows.forEach(row => {
             if (!map[row.id]) {
                 map[row.id] = {
+                    id: row.id,
                     name: row.name,
                     type: row.type,
                     muscle_groups: []
@@ -76,18 +77,6 @@ app.post("/login", (req, res) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
             res.json({success: true, message: "Successfully logged in", data : {token : token, userData: {email : row.email, nickname : row.nickname}}});
         });
-    })
-})
-
-// Temp
-/*app.get("/exercises", (req, res) => {
-    db.all("SELECT * FROM exercises", (e, rows) => {
-        res.json(rows);
-    })
-})*/
-app.get("/users", (req, res) => {
-    db.all("SELECT * FROM users", (e, rows) => {
-        res.json(rows);
     })
 })
 

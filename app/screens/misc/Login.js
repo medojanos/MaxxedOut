@@ -19,8 +19,8 @@ const LoginStyle = StyleSheet.create({
 })
 
 export default function Login() {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [status, setStatus] = useState(); 
 
     const { setLogin } = useContext(Context);
@@ -28,11 +28,11 @@ export default function Login() {
     const { setToken } = useContext(Context);
 
     function Authenticate() {
-        if (email == "") {
+        if (!email) {
             setStatus("Enter a valid email");
             return;
         }
-        if (password == "") {
+        if (!password) {
             setStatus("Enter a valid password");
             return;
         }

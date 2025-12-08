@@ -58,15 +58,14 @@ export default function Main() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-      screenOptions={() => ({
-        headerStyle : {backgroundColor: Var.darkGray},
-        headerTitleStyle : {color: Var.red},
-        headerBackButtonDisplayMode : "generic",
-        headerTintColor: Var.white
-      })}>
+        screenOptions={() => ({
+          headerStyle : {backgroundColor: Var.darkGray},
+          headerTitleStyle : {color: Var.red},
+          headerBackButtonDisplayMode : "generic",
+          headerTintColor: Var.white
+        })}>
         <Stack.Screen name="Home" component={Home} options={{header: () => null}}/>
         <Stack.Screen name="CreateWorkout" component={CreateWorkout} options={{headerTitle: "Create new workout"}}/>
-        <Stack.Screen name="Workout" component={Workout}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

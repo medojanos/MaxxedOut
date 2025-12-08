@@ -15,10 +15,7 @@ import MainStyle from "../../style/MainStyle"
 import { StyleSheet } from "react-native";
 import AddExercise from "../../components/AddExercise";
 const CreateWorkoutStyle = StyleSheet.create({
-    setInput : {
-        width : 50,
-        marginVertical : 0
-    }
+   
 })
 
 export default function CreateWorkout() {
@@ -99,7 +96,7 @@ export default function CreateWorkout() {
                                     <Text style={MainStyle.lightText}>X</Text>
                                     <TextInput
                                         keyboardType="numeric"
-                                        style={[MainStyle.input, CreateWorkoutStyle.setInput]}
+                                        style={[MainStyle.input, MainStyle.setInput]}
                                         value={planDraft.exercises[index].sets.toString()}
                                         onChangeText={text => {
                                             if (!/^\d*$/.test(text)) return;

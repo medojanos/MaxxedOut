@@ -40,20 +40,6 @@ export default function Workouts() {
         .then(data => setPlans(data.data))
     }, [])
 
-    function displayPlan(plan) {
-        return (
-            <View style={MainStyle.container}>
-                <Text style={MainStyle.containerTitle}>{plan ? plan.name : ""}</Text>
-                <Pressable style={MainStyle.secondaryButton} onPress={() => {
-                    setPlanId(plan.id);
-                    setPlanModal(true);
-                }}>
-                    <Text style={MainStyle.buttonText}>Edit</Text>
-                </Pressable>
-            </View>
-        )
-    }
-
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
@@ -64,10 +50,19 @@ export default function Workouts() {
                         <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
                     </Pressable>
                     <View>
-                        <FlatList
-                            data={plans}
-                            renderItem={({item}) => displayPlan(item)}>
-                        </FlatList>
+                        {
+                            plans.map((plan) => {
+                                <View style={MainStyle.container}>
+                                    <Text style={MainStyle.containerTitle}>{plan ? plan.name : ""}</Text>
+                                    <Pressable style={MainStyle.secondaryButton} onPress={() => {
+                                        setPlanId(plan.id);
+                                        setPlanModal(true);
+                                    }}>
+                                        <Text style={MainStyle.buttonText}>Edit</Text>
+                                    </Pressable>
+                                </View>
+                            })
+                        }
                     </View>
                     <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId}></PlanModal>
                 </View>
