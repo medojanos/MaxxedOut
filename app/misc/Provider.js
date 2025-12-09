@@ -15,6 +15,11 @@ export default function Provider({children}) {
         setData("token", token);
     }, [token])
 
+    useEffect( () => {
+        if (!workout) return;
+        setJson("workout", workout);
+    }, [workout])
+
     useEffect(() => {
         if (!userData) return;
         if (userData.nickname == null) setUserData(prev => ({...prev, nickname: RandomName()}));

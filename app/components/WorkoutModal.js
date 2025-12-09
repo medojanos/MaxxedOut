@@ -18,11 +18,10 @@ const WorkoutModalStyle = StyleSheet.create({
     }
 })
 
-export default function WorkoutModal({Close, visible, setPlanId}) {
-    const navigation = useNavigation();
+export default function WorkoutModal({Close, visible}) {
     const [plans, setPlans] = useState();
 
-    const { token } = useContext(Context);
+    const { token, setWorkout } = useContext(Context);
 
     useEffect(() => {
         fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
@@ -46,7 +45,7 @@ export default function WorkoutModal({Close, visible, setPlanId}) {
                                     key={plan.id}
                                     style={[MainStyle.button, WorkoutModalStyle.workoutButton]} 
                                     onPress={() => {
-                                        setPlanId(plan.id);
+                                        setWorkout({id: plan.id, name: plan.name, plan: []});
                                         Close();
                                 }}>
                                     <Text style={MainStyle.buttonText}>{plan.name}</Text>

@@ -12,9 +12,7 @@ import { getData, getJson, } from "./misc/Storage";
 
 
 export default function App() {
-  const {setUserData} = useContext(Context);
-  const {isLoggedIn, setLogin} = useContext(Context);
-  const {setToken} = useContext(Context);
+  const {setToken, setUserData, setWorkout, isLoggedIn, setLogin} = useContext(Context);
 
   const [loading, setLoading] = useState(true);
 
@@ -27,6 +25,7 @@ export default function App() {
             if (data.success) {
                 setToken(token);
                 setUserData(await getJson("user"));
+                setWorkout(await getJson("workout"));
                 setLogin(true);
             } else {
                 setLogin(false);
