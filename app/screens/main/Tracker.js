@@ -24,12 +24,13 @@ export default function Tracker() {
     const [workoutModal, setWorkoutModal] = useState(false);
     const { userData } = useContext(Context);
     const {workout, setWorkout} = useContext(Context);
+    const [planId, setPlanId] = useState(); 
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
-                    {workout ?
+                    {planId ?
                         <View>
-                            <Workout></Workout>
+                            <Workout planId={planId}></Workout>
                         </View>
                         : 
                         <View>
@@ -44,7 +45,8 @@ export default function Tracker() {
                     }
                     <WorkoutModal 
                         visible={workoutModal} 
-                        Close={() => setWorkoutModal(false)}>
+                        Close={() => setWorkoutModal(false)}
+                        setPlanId={setPlanId}>
                     </WorkoutModal>
             </ScrollView>
         </SafeAreaView>

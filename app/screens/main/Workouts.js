@@ -49,21 +49,19 @@ export default function Workouts() {
                     <Pressable style={WorkoutsStyle.addPlan} onPress={() => {navigation.navigate("CreateWorkout")}}>
                         <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
                     </Pressable>
-                    <View>
-                        {
-                            plans.map((plan) => {
-                                <View style={MainStyle.container}>
-                                    <Text style={MainStyle.containerTitle}>{plan ? plan.name : ""}</Text>
-                                    <Pressable style={MainStyle.secondaryButton} onPress={() => {
-                                        setPlanId(plan.id);
-                                        setPlanModal(true);
-                                    }}>
-                                        <Text style={MainStyle.buttonText}>Edit</Text>
-                                    </Pressable>
-                                </View>
-                            })
-                        }
-                    </View>
+                    {
+                        plans.map(plan => (
+                            <View key={plan.id} style={MainStyle.container}>
+                                <Text style={MainStyle.containerTitle}>{plan.name}</Text>
+                                <Pressable style={MainStyle.secondaryButton} onPress={() => {
+                                    setPlanId(plan.id);
+                                    setPlanModal(true);
+                                }}>
+                                    <Text style={MainStyle.buttonText}>Edit</Text>
+                                </Pressable>
+                            </View>
+                        ))
+                    }
                     <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId}></PlanModal>
                 </View>
             </ScrollView>

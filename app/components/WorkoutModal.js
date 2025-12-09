@@ -17,11 +17,9 @@ const WorkoutModalStyle = StyleSheet.create({
     }
 })
 
-export default function WorkoutModal({Close, visible}) {
+export default function WorkoutModal({Close, visible, setPlanId}) {
     const navigation = useNavigation();
     const [plans, setPlans] = useState();
-    
-    const {workout, setWorkout} = useContext(Context);
 
     const { token } = useContext(Context);
 
@@ -29,7 +27,7 @@ export default function WorkoutModal({Close, visible}) {
         fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => setPlans(data.data))
-        }, [])  
+    }, [])  
 
     return (
         <Modal 
@@ -42,12 +40,12 @@ export default function WorkoutModal({Close, visible}) {
                     <Text style={MainStyle.screenTitle}>Select a workout</Text>
                     <View>
                         {
-                            plans?.map((plan) => (
+                            plans?.map(plan => (
                                 <Pressable 
                                     key={plan.id}
                                     style={WorkoutModalStyle.workoutButton} 
                                     onPress={() => {
-                                        setWorkout(plan.id);
+                                        setPlanId(plan.id);
                                         Close();
                                 }}>
                                     <Text style={MainStyle.buttonText}>{plan.name}</Text>
