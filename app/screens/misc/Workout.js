@@ -30,31 +30,31 @@ export default function Workout({planId}) {
         fetch("http://localhost:4000/plans/" + planId, { headers: { Authorization: token } })
             .then(res => res.json())
             .then(data => {
-                if (data.success) setWorkout(data.data);
+                if (data.success) setWorkout(Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"kg": 0, "rep": 0}))})));
             });
     }, [planId]);
 
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
-                {workout ? console.log(Array.from(workout, exercise => ({name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"kg": 0, "rep": 0}))}))) : null};
+                {workout ? console.log(workout) : null}
                 {workout?.map(exercise => (
                     <View key={exercise.id} style={MainStyle.container}>
                         <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
                         {
-                            workout.sets?.map((set, index) => {
+                            exercise.sets?.map((_, index) => (
                                 <View 
-                                    key={set}
+                                    key={exercise.id}
                                     style={MainStyle.inlineContainer}>            
                                     <Text style={MainStyle.lightText}>{index+1}</Text>
                                     <TextInput 
                                         keyboardType="numeric"
-                                        style={MainStyle.setInput}
+                                        style={[MainStyle.input, MainStyle.setInput]}
                                         placeholder="kg"/>
                                     <Text style={MainStyle.lightText}>X</Text>
-                                    <TextInput keyboardType="numeric" style={MainStyle.input} placeholder="rep"/>
+                                    <TextInput keyboardType="numeric" style={[MainStyle.input, MainStyle.setInput]} placeholder="rep"/>
                                 </View>
-                            })
+                            ))
                         }
                     </View>
                 ))}

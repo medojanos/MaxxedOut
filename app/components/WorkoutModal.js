@@ -13,7 +13,8 @@ const WorkoutModalStyle = StyleSheet.create({
     workoutButton:{
         backgroundColor: Var.black,
         borderColor: Var.navyBlue,
-        borderWidth: 2
+        borderWidth: 2,
+        marginBottom: 2
     }
 })
 
@@ -43,7 +44,7 @@ export default function WorkoutModal({Close, visible, setPlanId}) {
                             plans?.map(plan => (
                                 <Pressable 
                                     key={plan.id}
-                                    style={WorkoutModalStyle.workoutButton} 
+                                    style={[MainStyle.button, WorkoutModalStyle.workoutButton]} 
                                     onPress={() => {
                                         setPlanId(plan.id);
                                         Close();
