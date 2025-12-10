@@ -25,33 +25,70 @@ const WorkoutStyle = StyleSheet.create({
 export default function Workout() {
     const {token, workout, setWorkout} = useContext(Context);
 
-    useEffect(() => {
-        fetch("http://localhost:4000/plans/" + workout.id, { headers: { Authorization: token } })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) setWorkout(prev => ({...prev, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"kg": 0, "rep": 0}))}))}));
-            });
-    }, [workout.id]);
+    function updateExercise (exerciseIndex, setIndex, prop, value) {
+        setWorkout(prev => ({
+            ...prev,
+            plan: Array.from(prev.plan, (ex, exi) => {
+                if(exerciseIndex == exi){
+                    return {...ex, sets: Array.from(ex.sets, (set, seti) => {
+                        if (setIndex == seti){
+                            switch(prop){
+                                case "kg":
+                                    return {...set, kg: value}
+                                case "rep":
+                                    return {...set, rep: value}
+                            }  
+                        }
+                        else {
+                            return set
+                        }
+                    })}
+                }
+                else {
+                    return ex
+                }
+            })
+        }))
+    }
+
+    /*useEffect(() => {
+        console.log(workout);
+    }, [workout]);*/
 
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
                 <Text style={MainStyle.screenTitle}>{workout.name}</Text>
-                {workout.plan?.map((exercise, index) => (
-                    <View key={`${exercise}${index}`} style={MainStyle.container}>
+                {workout.plan?.map((exercise, exerciseIndex) => (
+                    <View key={`${exercise}${exerciseIndex}`} style={MainStyle.container}>
                         <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
                         {
-                            exercise.sets?.map((_, index) => (
+                            exercise.sets?.map((_, setIndex) => (
                                 <View 
-                                    key={index}
+                                    key={setIndex}
                                     style={MainStyle.inlineContainer}>            
-                                    <Text style={MainStyle.lightText}>{index+1}</Text>
+                                    <Text style={MainStyle.lightText}>{setIndex+1}</Text>
                                     <TextInput 
+                                        value={workout.plan[exerciseIndex].sets[setIndex].kg ? workout.plan[exerciseIndex].sets[setIndex].kg.toString() : ""}
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
-                                        placeholder="kg"/>
+                                        placeholder="kg"
+                                        onChangeText={text => { 
+                                            if (!/^\d*$/.test(text)) return;
+                                            updateExercise(exerciseIndex, setIndex, "kg", text) 
+                                        }}
+                                    />
                                     <Text style={MainStyle.lightText}>X</Text>
-                                    <TextInput keyboardType="numeric" style={[MainStyle.input, MainStyle.setInput]} placeholder="rep"/>
+                                    <TextInput 
+                                        value={workout.plan[exerciseIndex].sets[setIndex].rep ? workout.plan[exerciseIndex].sets[setIndex].rep.toString() : ""}
+                                        keyboardType="numeric"
+                                        style={[MainStyle.input, MainStyle.setInput]}
+                                        placeholder="rep"
+                                        onChangeText={text => { 
+                                            if (!/^\d*$/.test(text)) return;
+                                            updateExercise(exerciseIndex, setIndex, "rep", text) 
+                                        }}
+                                    />
                                 </View>
                             ))
                         }
