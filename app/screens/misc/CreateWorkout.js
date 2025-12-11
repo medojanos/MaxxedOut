@@ -1,10 +1,9 @@
 // React
-import { View, Text, ScrollView, Pressable, TextInput, Modal } from "react-native";
-import { Picker } from '@react-native-picker/picker';
+import { View, Text, ScrollView, Pressable, TextInput } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 
 // Misc
 import { Context } from "../../misc/Provider";
@@ -45,8 +44,7 @@ export default function CreateWorkout() {
     }
 
     function deleteExercise(index) {
-        const copy = planDraft.exercises.filter((_, i) => index != i);
-        setPlanDraft(prev => ({...prev, exercises : copy}))
+        setPlanDraft(prev => ({...prev, exercises : prev.exercises.filter((_, i) => index != i)}))
     }
 
     function updateExercise(index, text, prop) {

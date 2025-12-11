@@ -7,7 +7,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import PlanModal from "../../components/PlanModal";
-import { getData } from "../../misc/Storage";
 import { Context } from "../../misc/Provider";
 
 //Style

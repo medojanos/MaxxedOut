@@ -1,6 +1,7 @@
 // React
 import { View, ScrollView, StyleSheet, Text, Pressable, TextInput } from "react-native";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
@@ -9,6 +10,7 @@ import { Context } from "../../misc/Provider";
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
+import AddExercise from "../../components/AddExercise";
 
 const WorkoutStyle = StyleSheet.create({
     input : {
@@ -24,6 +26,24 @@ const WorkoutStyle = StyleSheet.create({
 })
 export default function Workout() {
     const {token, workout, setWorkout} = useContext(Context);
+
+    const [searchModal, setSearchModal] = useState(false);
+
+    function addExercise(id, name) {
+        setWorkout(prev => ({
+                ...prev,
+                ownIndex: typeof id == "string" ? prev.ownIndex + 1 : prev.ownIndex,
+                plan: [
+                    ...prev.plan, 
+                    {
+                        id: id,
+                        name: name,
+                        sets: [{ kg: 0, rep: 0}]
+                    }
+                ]
+            }));
+        setSearchModal(false);
+    }
 
     function updateExercise (exerciseIndex, setIndex, prop, value) {
         setWorkout(prev => ({
@@ -51,23 +71,80 @@ export default function Workout() {
         }))
     }
 
-    /*useEffect(() => {
-        console.log(workout);
-    }, [workout]);*/
+    function updateExerciseName(exerciseIndex, text) {
+        setWorkout(prev => ({
+            ...prev,
+            plan : prev.plan.map((ex, exi) => {
+                if (exerciseIndex == exi) {
+                    return {...ex, name : text}
+                }
+                return ex;
+            })
+        }))
+    }
+
+    function deleteExercise(exerciseIndex) {
+        const copy = workout.plan.filter((_, index) => exerciseIndex != index);
+        setWorkout(prev => ({...prev, plan : copy}))
+    }
+
+    function addSet(exerciseIndex) {
+        setWorkout(prev => ({
+            ...prev,
+            plan: prev.plan.map((ex, exi) => {
+                if (exerciseIndex == exi) return {
+                    ...ex,
+                    sets: [
+                        ...ex.sets,
+                        {
+                            kg: 0, rep: 0
+                        }
+                    ]
+                }
+                else return ex;
+            })
+        }))
+    }
+
+    function deleteSet(exerciseIndex, setIndex) {
+        setWorkout(prev => ({
+            ...prev,
+            plan: prev.plan.map((ex, exi) => {
+                if (exerciseIndex == exi) return {
+                    ...ex,
+                    sets: ex.sets.filter((_, seti) => setIndex != seti)
+                }
+                else return ex;
+            })
+        }));
+    }
 
     return (
         <SafeAreaView style={MainStyle.content}>
+        {console.log(workout)}
             <ScrollView>
                 <Text style={MainStyle.screenTitle}>{workout.name}</Text>
                 {workout.plan?.map((exercise, exerciseIndex) => (
                     <View key={`${exercise}${exerciseIndex}`} style={MainStyle.container}>
-                        <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                        <View style={MainStyle.inlineContainer}>
+                            {typeof exercise.id == "string" ? 
+                            <TextInput
+                                style={MainStyle.input}
+                                value={exercise.name}
+                                onChangeText={text => updateExerciseName(exerciseIndex, text)}>
+                            </TextInput>
+                            :  
+                            <Text style={MainStyle.containerTitle}>{exercise.name}</Text>}
+                            <Pressable onPress={() => deleteExercise(exerciseIndex)}>
+                                <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
+                            </Pressable>
+                        </View>
                         {
                             exercise.sets?.map((_, setIndex) => (
                                 <View 
                                     key={setIndex}
                                     style={MainStyle.inlineContainer}>            
-                                    <Text style={MainStyle.lightText}>{setIndex+1}</Text>
+                                    <Text style={MainStyle.lightText}>{`${setIndex+1}.`}</Text>
                                     <TextInput 
                                         value={workout.plan[exerciseIndex].sets[setIndex].kg ? workout.plan[exerciseIndex].sets[setIndex].kg.toString() : ""}
                                         keyboardType="numeric"
@@ -89,11 +166,30 @@ export default function Workout() {
                                             updateExercise(exerciseIndex, setIndex, "rep", text) 
                                         }}
                                     />
+                                    <Pressable
+                                        onPress={() => deleteSet(exerciseIndex, setIndex)}>
+                                        <Ionicons name="close" color={Var.paleWhite} size={30}></Ionicons>
+                                    </Pressable>
                                 </View>
                             ))
                         }
+                        <Pressable
+                            onPress={() => addSet(exerciseIndex)}>
+                            <Ionicons name="add-circle-outline" color={Var.red} size={25} style={{margin: "auto"}}></Ionicons>
+                        </Pressable>
                     </View>
                 ))}
+                <AddExercise
+                    visible={searchModal}
+                    addExercise={addExercise}
+                    ownIndex={workout.ownIndex || 0}
+                    Close={() => setSearchModal(false)}>
+                </AddExercise> 
+                <Pressable
+                    style={MainStyle.secondaryButton}
+                    onPress={() => setSearchModal(true)}>
+                    <Text style={MainStyle.buttonText}>Add exercise</Text>
+                </Pressable>
                 <Pressable
                     style={MainStyle.button}>
                     <Text style={MainStyle.buttonText}>Save</Text>
