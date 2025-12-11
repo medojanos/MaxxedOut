@@ -116,7 +116,6 @@ app.put("/plans", (req, res) => {
     db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
 
-
         let completed = 0;
         const id = this.lastID;
 
@@ -133,6 +132,39 @@ app.put("/plans", (req, res) => {
                 db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets) VALUES (?, ?, ?)", [id, exercise.id, exercise.sets], (e) => Check(e))
             }
         });
+    })
+})
+
+app.get("/sets", (req, res) => {
+    db.all("SELECT * FROM sets", (e, rows) => {
+        res.json(rows);
+    })
+})
+
+app.put("/workout", (req, res) => {
+    db.run("INSERT INTO workouts (user_id) VALUES (?)", [req.user], function(e) {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+        let completed = 0;
+        const id = this.lastID;
+
+        function Check(err) {
+            if (err) return res.status(500).json({success: false, message: "Database error"}); 
+            completed++;
+            if (completed == req.body.plan.length) res.json({success: true, message: "Workout stored succesfully"})
+        }
+    
+        req.body.plan.forEach(exercise => {
+            if(exercise.id == null || typeof exercise.id == "string"){
+                exercise.sets.forEach(set => {
+                    db.run("INSERT INTO sets (workout_id, exercise_name, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.name, set.rep, set.kg], (e) => Check(e));
+                })          
+            } else {
+                exercise.sets.forEach(set => {
+                    db.run("INSERT INTO sets (workout_id, exercise_id, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.id, set.rep, set.kg], (e) => Check(e));
+                })  
+            }
+        })
     })
 })
 
