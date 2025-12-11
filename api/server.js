@@ -144,7 +144,6 @@ app.get("/sets", (req, res) => {
 app.put("/workout", (req, res) => {
     db.run("INSERT INTO workouts (user_id) VALUES (?)", [req.user], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
-
         let completed = 0;
         const id = this.lastID;
 
@@ -155,7 +154,7 @@ app.put("/workout", (req, res) => {
         }
     
         req.body.plan.forEach(exercise => {
-            if(exercise.id == null || typeof exercise.id == "string"){
+            if(!exercise.id|| isNaN(Number(exercise.id))){
                 exercise.sets.forEach(set => {
                     db.run("INSERT INTO sets (workout_id, exercise_name, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.name, set.rep, set.kg], (e) => Check(e));
                 })          

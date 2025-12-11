@@ -1,11 +1,18 @@
 // React
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet} from "react-native";
+import { useState, useEffect, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Calendar } from "react-native-calendars"
+import { Calendar } from "react-native-calendars";
+
+// Misc
+
+import { Context } from "../../misc/Provider";
 
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
+import react from "react";
+
 const LogsStyle = StyleSheet.create({
     calendar : {
         backgroundColor: Var.red,
@@ -15,6 +22,20 @@ const LogsStyle = StyleSheet.create({
 })
 
 export default function Logs() {
+    const [selectedWorkout, setSelectedWorkout] = useState();
+    const [date, setDate] = useState();
+    const { token } = useContext(Context);
+
+    /*useEffect(() => {
+        fetch("http://localhost:4000/workout/" + date, {headers: {"Authorization" : token}})
+        .then(res => res.json())
+        .then(data => setSelectedWorkout(data.data))
+    }, [date])  */
+
+    useEffect(() => {
+        console.log(date);
+    }, [date])
+
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
@@ -28,6 +49,7 @@ export default function Logs() {
                     <Calendar 
                         style={LogsStyle.calendar} 
                         enableSwipeMonths
+                        onChange={(value, e) => setDate(value)}
                         theme={{
                             todayTextColor : Var.red,
                             monthTextColor: Var.white,

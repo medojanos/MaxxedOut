@@ -118,7 +118,6 @@ export default function Workout() {
             })
         }));
     }
-
     return (
         <SafeAreaView style={MainStyle.content}>
         {console.log(workout)}
@@ -191,7 +190,34 @@ export default function Workout() {
                     <Text style={MainStyle.buttonText}>Add exercise</Text>
                 </Pressable>
                 <Pressable
-                    style={MainStyle.button}>
+                    style={MainStyle.button}
+                    onPress={() => 
+                        fetch("http://localhost:4000/workout", {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type" : "application/json",
+                                    "Authorization" : token
+                                },
+                                body: JSON.stringify({
+                                    id: workout.id,
+                                    name: workout.name,
+                                    plan: workout.plan.map(ex => ({
+                                        id: ex.id,
+                                        name: ex.name,
+                                        sets: ex.sets.map(set => ({
+                                            kg: set.kg,
+                                            rep: set.rep
+                                        }))
+                                    }))
+                                })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    console.log("Workout added succesfully!");
+                                    setWorkout();
+                                }
+                    })}>
                     <Text style={MainStyle.buttonText}>Save</Text>
                 </Pressable>
                 <Pressable
