@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS workouts (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    date DATETIME NOT NULL,
+    date DATETIME DEFAULT (DATETIME('now')),
     FOREIGN KEY (user_id) REFERENCES users(id)
         ON DELETE CASCADE
 );
@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS exercises (
 CREATE TABLE IF NOT EXISTS sets (
     id INTEGER PRIMARY KEY,
     workout_id INTEGER NOT NULL,
-    exercise_id INTEGER NOT NULL,
+    exercise_id INTEGER,
+    exercise_name TEXT,
     rep INTEGER,
     weight INTEGER,
     FOREIGN KEY (workout_id) REFERENCES workouts(id)
@@ -49,7 +50,9 @@ CREATE TABLE IF NOT EXISTS muscle_groups_exercises (
 CREATE TABLE IF NOT EXISTS plans (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS plans_exercises (
