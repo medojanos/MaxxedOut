@@ -12,6 +12,7 @@ import { Context } from "../../misc/Provider";
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 import react from "react";
+import LogModal from "../../components/LogModal";
 
 const LogsStyle = StyleSheet.create({
     calendar : {
@@ -22,19 +23,10 @@ const LogsStyle = StyleSheet.create({
 })
 
 export default function Logs() {
-    const [selectedWorkout, setSelectedWorkout] = useState();
-    const [date, setDate] = useState();
+    const [workout, setWorkout] = useState();
+    const [logModal, setLogModal] = useState(false);
+    const [status, setStatus] = useState();
     const { token } = useContext(Context);
-
-    /*useEffect(() => {
-        fetch("http://localhost:4000/workout/" + date, {headers: {"Authorization" : token}})
-        .then(res => res.json())
-        .then(data => setSelectedWorkout(data.data))
-    }, [date])  */
-
-    useEffect(() => {
-        console.log(date);
-    }, [date])
 
     return (
         <SafeAreaView style={MainStyle.content}>
@@ -43,13 +35,21 @@ export default function Logs() {
                     <Text style={MainStyle.screenTitle}>Logs</Text>
                     <Text style={MainStyle.screenAltTitle}>Keep track of your previous workouts</Text>
                 </View>
-
                 <View style={MainStyle.container}>
                     <Text style={MainStyle.containerTitle}>Calendar</Text>
                     <Calendar 
                         style={LogsStyle.calendar} 
                         enableSwipeMonths
-                        onChange={(value, e) => setDate(value)}
+                        onDayPress={day => {
+                            fetch("http://localhost:4000/workout/" + day.dateString, {headers: {"Authorization" : token}})
+                            .then(res => res.json())
+                            .then(data => {
+                                setStatus();
+                                setWorkout();
+                                data.success ? setWorkout(data.data) : setStatus(data.message);
+                                setLogModal(true);
+                            })
+                        }}
                         theme={{
                             todayTextColor : Var.red,
                             monthTextColor: Var.white,
@@ -60,10 +60,15 @@ export default function Logs() {
                         }}>
                     </Calendar>
                 </View>
-
+                <LogModal
+                    visible={logModal}
+                    status={status}
+                    Close={() => setLogModal(false)}
+                    workout={workout}>
+                </LogModal>
                 <View style={MainStyle.container}>
                     <Text style={MainStyle.containerTitle}>Recent logs</Text>
-                    {/*Select previous 3 workouts from db*/}
+
                 </View>
             </ScrollView>
         </SafeAreaView>

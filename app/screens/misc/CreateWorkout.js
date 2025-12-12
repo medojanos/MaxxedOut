@@ -119,7 +119,7 @@ export default function CreateWorkout() {
                     <Pressable
                         style={[MainStyle.button, MainStyle.buttonBlock]}
                         onPress={() => {
-                            fetch("http://localhost:4000/plans", {
+                            fetch("http://localhost:4000/plan", {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type" : "application/json",

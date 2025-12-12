@@ -45,7 +45,7 @@ export default function WorkoutModal({Close, visible}) {
                                     key={plan.id}
                                     style={[MainStyle.button, WorkoutModalStyle.workoutButton]} 
                                     onPress={() => {
-                                        fetch("http://localhost:4000/plans/" + plan.id, { headers: { Authorization: token } })
+                                        fetch("http://localhost:4000/plan/" + plan.id, { headers: { Authorization: token } })
                                         .then(res => res.json())
                                         .then(data => {
                                             if (data.success) setWorkout({id: plan.id, name: plan.name, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"kg": 0, "rep": 0}))}))});
@@ -60,7 +60,7 @@ export default function WorkoutModal({Close, visible}) {
                     <Pressable
                         style={MainStyle.secondaryButton}
                         onPress={() => {
-                            setWorkout();
+                            setWorkout({name: "New workout", plan: []});
                             Close();
                         }}>
                         <Text style={MainStyle.buttonText}>Start a new one</Text>

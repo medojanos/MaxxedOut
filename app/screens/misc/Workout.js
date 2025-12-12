@@ -13,16 +13,7 @@ import MainStyle from "../../style/MainStyle"
 import AddExercise from "../../components/AddExercise";
 
 const WorkoutStyle = StyleSheet.create({
-    input : {
-        width: 70,
-        marginVertical: 0
-    },
-
-    title : {
-        fontSize: 25,
-        textAlign: "center",
-        color: Var.white
-    }
+    
 })
 export default function Workout() {
     const {token, workout, setWorkout} = useContext(Context);
@@ -214,15 +205,14 @@ export default function Workout() {
                             .then(res => res.json())
                             .then(data => {
                                 if (data.success) {
-                                    console.log("Workout added succesfully!");
-                                    setWorkout();
+                                    setWorkout(null);
                                 }
                     })}>
                     <Text style={MainStyle.buttonText}>Save</Text>
                 </Pressable>
                 <Pressable
                     style={MainStyle.secondaryButton}
-                    onPress={() => setWorkout()}>
+                    onPress={() => setWorkout(null)}>
                     <Text style={MainStyle.buttonText}>Cancel</Text>
                 </Pressable>
             </ScrollView>

@@ -106,13 +106,13 @@ app.get("/plans", (req, res) => {
         res.json({success: true, data: rows});
     })
 })
-app.get("/plans/:id", (req, res) => {
+app.get("/plan/:id", (req, res) => {
     db.all("SELECT e.id as id, COALESCE(pe.exercise_name, e.name) as name, pe.sets as sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
         res.json({success: true, data: rows});
     })
 })
-app.put("/plans", (req, res) => {
+app.put("/plan", (req, res) => {
     db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
 
@@ -135,14 +135,8 @@ app.put("/plans", (req, res) => {
     })
 })
 
-app.get("/sets", (req, res) => {
-    db.all("SELECT * FROM sets", (e, rows) => {
-        res.json(rows);
-    })
-})
-
 app.put("/workout", (req, res) => {
-    db.run("INSERT INTO workouts (user_id) VALUES (?)", [req.user], function(e) {
+    db.run("INSERT INTO workouts (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
         let completed = 0;
         const id = this.lastID;
@@ -154,7 +148,7 @@ app.put("/workout", (req, res) => {
         }
     
         req.body.plan.forEach(exercise => {
-            if(!exercise.id|| isNaN(Number(exercise.id))){
+            if(!exercise.id || typeof exercise.id == "string"){
                 exercise.sets.forEach(set => {
                     db.run("INSERT INTO sets (workout_id, exercise_name, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.name, set.rep, set.kg], (e) => Check(e));
                 })          
@@ -163,6 +157,16 @@ app.put("/workout", (req, res) => {
                     db.run("INSERT INTO sets (workout_id, exercise_id, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.id, set.rep, set.kg], (e) => Check(e));
                 })  
             }
+        })
+    })
+})
+app.get("/workout/:date", (req, res) => {
+    db.get("SELECT id, name FROM workouts WHERE DATE(date) = ?", [req.params.date], (e, row) => {
+        if (!row) return res.status(404).json({success: false, message: "No workout that day"});
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        db.all("SELECT e.id as id, COALESCE(sets.exercise_name, e.name) as name, rep, weight FROM sets LEFT JOIN exercises e ON sets.exercise_id = e.id WHERE sets.workout_id = ?", [row.id], (e, rows) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"}); 
+            res.json({success: true, data: {name: row.name, workout: rows}});
         })
     })
 })

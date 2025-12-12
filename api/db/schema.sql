@@ -1,39 +1,40 @@
 CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY NOT NULL,
     email TEXT NOT NULL,
     nickname TEXT,
     password TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS workouts (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY NOT NULL,
     user_id INTEGER NOT NULL,
     date DATETIME DEFAULT (DATETIME('now')),
+    name TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id)
-        ON DELETE CASCADE
+    ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS exercises (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
     type TEXT NOT NULL CHECK (type IN ('Compound', 'Isolation'))
 );
 
 CREATE TABLE IF NOT EXISTS sets (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY NOT NULL,
     workout_id INTEGER NOT NULL,
     exercise_id INTEGER,
     exercise_name TEXT,
     rep INTEGER,
     weight INTEGER,
     FOREIGN KEY (workout_id) REFERENCES workouts(id)
-        ON DELETE CASCADE,
+    ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
-        ON DELETE CASCADE
+    ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS muscle_groups (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY NOT NULL,
     name TEXT NOT NULL
 );
 
@@ -48,7 +49,7 @@ CREATE TABLE IF NOT EXISTS muscle_groups_exercises (
 );
 
 CREATE TABLE IF NOT EXISTS plans (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY NOT NULL,
     user_id INTEGER NOT NULL,
     name TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
@@ -67,7 +68,7 @@ CREATE TABLE IF NOT EXISTS plans_exercises (
 );
 
 CREATE TABLE IF NOT EXISTS codes (
-    code TEXT PRIMARY KEY,
+    code TEXT PRIMARY KEY NOT NULL,
     user_id INTEGER NOT NULL,
     expiry DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
@@ -75,7 +76,7 @@ CREATE TABLE IF NOT EXISTS codes (
 );
 
 CREATE TABLE IF NOT EXISTS tokens (
-    token TEXT PRIMARY KEY,
+    token TEXT PRIMARY KEY NOT NULL,
     user_id INTEGER NOT NULL,
     expiry DATETIME DEFAULT (DATETIME('now', '+7 days')),
     FOREIGN KEY (user_id) REFERENCES users(id)

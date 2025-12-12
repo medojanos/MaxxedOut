@@ -18,7 +18,7 @@ export default function PlanModal({Close, visible, id}) {
     const [plan, setPlan] = useState();
     const {token} = useContext(Context);
     useEffect(() => {
-        fetch("http://localhost:4000/plans/" + id, {headers: {"Authorization" : token}})
+        fetch("http://localhost:4000/plan/" + id, {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => setPlan(data.data))
     }, [id])

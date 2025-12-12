@@ -16,12 +16,12 @@ export default function Provider({children}) {
     }, [token])
 
     useEffect( () => {
-        if (!workout) return;
+        if (workout === undefined) return;
         setJson("workout", workout);
     }, [workout])
 
     useEffect(() => {
-        if (!userData) return;
+        if (userData === undefined) return;
         if (userData.nickname == null) setUserData(prev => ({...prev, nickname: RandomName()}));
         setJson("user", userData);
     }, [userData]);

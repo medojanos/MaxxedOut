@@ -1,12 +1,13 @@
 // React
 import { View, Text, ScrollView, Pressable, TextInput, Modal } from "react-native";
 import { Picker } from '@react-native-picker/picker';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 // Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
 import { StyleSheet } from "react-native";
+import { Context } from "../misc/Provider";
 const AddExerciseStyle = StyleSheet.create({
     listItems : {
         backgroundColor: Var.navyBlue,
@@ -32,6 +33,8 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const [searchText, setSearchText] = useState("");
     const [type, setType] = useState("");
     const [musclegroup, setMuscleGroup] = useState("");
+
+    const {setWorkout} = useContext(Context);
 
     useEffect(() => {
         fetch("http://localhost:4000/exercises")
@@ -97,7 +100,13 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                         ))}
                     </ScrollView>
                     <Pressable 
-                        onPress={() => addExercise("own" + (ownIndex + 1), "Own exercise " + (ownIndex + 1))}
+                        onPress={() => {
+                            setWorkout(prev => ({
+                                ...prev,
+                                ownIndex: prev.ownIndex+1
+                            }))
+                            addExercise("own" + (ownIndex + 1), "Own exercise " + (ownIndex + 1));
+                        }}
                         style={MainStyle.secondaryButton}>
                         <Text style={MainStyle.buttonText}>Add own exercise</Text>
                     </Pressable>
