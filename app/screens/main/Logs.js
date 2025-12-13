@@ -1,5 +1,5 @@
 // React
-import { View, Text, ScrollView, StyleSheet} from "react-native";
+import { View, Text, ScrollView, StyleSheet, Pressable} from "react-native";
 import { useState, useEffect, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Calendar } from "react-native-calendars";
@@ -23,10 +23,19 @@ const LogsStyle = StyleSheet.create({
 })
 
 export default function Logs() {
-    const [workout, setWorkout] = useState();
+    const [workouts, setWorkouts] = useState();
+    const [recentWorkouts, setRecentWorkouts] = useState();
     const [logModal, setLogModal] = useState(false);
     const [status, setStatus] = useState();
     const { token } = useContext(Context);
+
+    useEffect(() => {
+        fetch("http://localhost:4000/workout/recent" + 5, {headers: {"Authorization" : token}})
+        .then(res => res.json())
+        .then(data => {
+            data.success ?? setRecentWorkouts(data.data);
+        })
+    }, [])
 
     return (
         <SafeAreaView style={MainStyle.content}>
@@ -45,8 +54,8 @@ export default function Logs() {
                             .then(res => res.json())
                             .then(data => {
                                 setStatus();
-                                setWorkout();
-                                data.success ? setWorkout(data.data) : setStatus(data.message);
+                                setWorkouts();
+                                data.success ? setWorkouts(data.data) : setStatus(data.message);
                                 setLogModal(true);
                             })
                         }}
@@ -64,11 +73,31 @@ export default function Logs() {
                     visible={logModal}
                     status={status}
                     Close={() => setLogModal(false)}
-                    workout={workout}>
+                    workouts={workouts}>
                 </LogModal>
                 <View style={MainStyle.container}>
                     <Text style={MainStyle.containerTitle}>Recent logs</Text>
-
+                        <View style={MainStyle.overlay}>
+                            <View style={MainStyle.container}>
+                                    {recentWorkouts?.map((workout, workoutIndex) => (
+                                        <View key={workout.id}>
+                                            <Text style={MainStyle.screenTitle}>{workout?.name || status}</Text>
+                                            {workout.workout.map((exercise, exerciseIndex) => (
+                                                <View key={`${exercise.id ?? "custom"}${exerciseIndex}`} style={MainStyle.container}>
+                                                    <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                                                    {exercise.sets.map((_, setIndex) => (
+                                                        <View key={`${exercise} - ${setIndex}`} style={MainStyle.inlineContainer}>
+                                                            <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].kg} </Text>
+                                                            <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text>
+                                                        </View>
+                                                    ))}
+                                                </View>
+                                                ))
+                                            }
+                                        </View> 
+                                    ))}
+                            </View>
+                        </View>
                 </View>
             </ScrollView>
         </SafeAreaView>

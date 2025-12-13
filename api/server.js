@@ -160,13 +160,111 @@ app.put("/workout", (req, res) => {
         })
     })
 })
+
 app.get("/workout/:date", (req, res) => {
-    db.get("SELECT id, name FROM workouts WHERE DATE(date) = ?", [req.params.date], (e, row) => {
-        if (!row) return res.status(404).json({success: false, message: "No workout that day"});
+    db.all("SELECT id, name FROM workouts WHERE DATE(date) = ?", [req.params.date], (e, workouts) => {
+        if (!workouts.length) return res.status(404).json({success: false, message: "No workout that day"});
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        db.all("SELECT e.id as id, COALESCE(sets.exercise_name, e.name) as name, rep, weight FROM sets LEFT JOIN exercises e ON sets.exercise_id = e.id WHERE sets.workout_id = ?", [row.id], (e, rows) => {
+
+        const workoutIds = workouts.map(w => w.id);
+
+        db.all(`SELECT w.id as workout_id, w.name as workout_name, e.id as exercise_id, COALESCE(s.exercise_name, e.name) as exercise_name, rep, weight 
+                FROM sets s 
+                LEFT JOIN exercises e ON s.exercise_id = e.id 
+                JOIN workouts w ON w.id = s.workout_id 
+                WHERE s.workout_id IN (${workoutIds.map(() => "?").join(",")})`, workoutIds, (e, rows) => {
             if (e) return res.status(500).json({success: false, message: "Database error"}); 
-            res.json({success: true, data: {name: row.name, workout: rows}});
+
+            const workoutsMap = {};
+
+            rows.forEach(r => {
+
+                if(!workoutsMap[r.workout_id]){
+                    workoutsMap[r.workout_id] = {
+                        id: r.workout_id,
+                        name: r.workout_name,
+                        workout: {}
+                    }
+                }
+
+                const workout = workoutsMap[r.workout_id];
+                const key = `${r.exercise_id}-${r.exercise_name}`;
+
+                if(!workout.workout[key]){
+                    workout.workout[key] = {
+                        id: r.exercise_id,
+                        name: r.exercise_name,
+                        sets: []
+                    }
+                }
+
+                workout.workout[key].sets.push({
+                    kg: r.weight,
+                    rep: r.rep
+                })
+            });
+
+            const result = Object.values(workoutsMap).map(w => ({
+                id: w.id,
+                name: w.name,
+                workout: Object.values(w.workout)
+            }));
+
+            res.json({success: true, data: result});
+        })
+    })
+})
+
+app.get("/workout/:latest", (req, res) => {
+    db.all("SELECT id, name FROM workouts ORDER BY date DESC LIMIT ?", [req.params.limit], (e, workouts) => {
+        if (!workouts.length) return res.status(404).json({success: false, message: "No workout done yet!"});
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+        const workoutIds = workouts.map(w => w.id);
+
+        db.all(`SELECT w.id as workout_id, w.name as workout_name, e.id as exercise_id, COALESCE(s.exercise_name, e.name) as exercise_name, rep, weight 
+                FROM sets s 
+                LEFT JOIN exercises e ON s.exercise_id = e.id 
+                JOIN workouts w ON w.id = s.workout_id 
+                WHERE s.workout_id IN (${workoutIds.map(() => "?").join(",")})`, workoutIds, (e, rows) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+            const workoutsMap = {};
+
+            rows.forEach(r => {
+
+                if(!workoutsMap[r.workout_id]){
+                    workoutsMap[r.workout_id] = {
+                        id: r.workout_id,
+                        name: r.workout_name,
+                        workout: {}
+                    }
+                }
+
+                const workout = workoutsMap[r.workout_id];
+                const key = `${r.exercise_id}-${r.exercise_name}`;
+
+                if(!workout.workout[key]){
+                    workout.workout[key] = {
+                        id: r.exercise_id,
+                        name: r.exercise_name,
+                        sets: []
+                    }
+                }
+
+                workout.workout[key].sets.push({
+                    kg: r.weight,
+                    rep: r.rep
+                })
+            });
+
+            const result = Object.values(workoutsMap).map(w => ({
+                id: w.id,
+                name: w.name,
+                workout: Object.values(w.workout)
+            }));
+
+            res.json({success: true, data: result});
         })
     })
 })

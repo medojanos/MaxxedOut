@@ -11,30 +11,37 @@ import { Context } from "../misc/Provider";
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
 const LogModalStyle = StyleSheet.create({
-
+    logModal : {
+        maxHeight: "80%",
+    }
 })
 
-export default function LogModal({visible, Close, workout, status}) {
+export default function LogModal({visible, Close, workouts, status}) {
     return (
         <Modal
             animationType="fade"
             transparent={true}
             visible={visible}>
             <View style={MainStyle.overlay}>
-                <View style={MainStyle.modal}>
-                    <Text style={MainStyle.screenTitle}>{workout?.name || status}</Text>
+                <View style={[MainStyle.modal, LogModalStyle.logModal]}>
                     <ScrollView>
-                        {
-                            workout?.workout.map((exercise, index) => (
-                                <View key={`${exercise.id}${index}`} style={MainStyle.container}>
-                                    <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
-                                    <View style={MainStyle.inlineContainer}>
-                                        <Text style={MainStyle.lightText}>Kg: {exercise.weight}</Text>
-                                        <Text style={MainStyle.lightText}>Rep: {exercise.rep}</Text>
+                        {workouts?.map((workout, workoutIndex) => (
+                            <View key={workout.id}>
+                                <Text style={MainStyle.screenTitle}>{workout?.name || status}</Text>
+                                {workout.workout.map((exercise, exerciseIndex) => (
+                                    <View key={`${exercise.id ?? "custom"}${exerciseIndex}`} style={MainStyle.container}>
+                                        <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                                        {exercise.sets.map((_, setIndex) => (
+                                            <View key={`${exercise} - ${setIndex}`} style={MainStyle.inlineContainer}>
+                                                <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].kg} </Text>
+                                                <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text>
+                                            </View>
+                                        ))}
                                     </View>
-                                </View>
-                            )
-                        )}
+                                    ))
+                                }
+                            </View> 
+                        ))}
                     </ScrollView>
                     <Pressable
                         style={MainStyle.button}
