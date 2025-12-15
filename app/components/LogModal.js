@@ -1,19 +1,17 @@
 // React
 import { View, Text, Pressable, Modal, StyleSheet} from "react-native";
-import { FlatList, ScrollView } from "react-native-web";
-import { useState, useEffect, useContext } from "react";
+import { ScrollView } from "react-native";
 
 // Misc
-
 import { Context } from "../misc/Provider";
 
 // Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
 const LogModalStyle = StyleSheet.create({
-    logModal : {
+    /*modal : {
         maxHeight: "80%",
-    }
+    }*/
 })
 
 export default function LogModal({visible, Close, workouts, status}) {
@@ -22,18 +20,19 @@ export default function LogModal({visible, Close, workouts, status}) {
             animationType="fade"
             transparent={true}
             visible={visible}>
+                {console.log(workouts)}
             <View style={MainStyle.overlay}>
-                <View style={[MainStyle.modal, LogModalStyle.logModal]}>
+                <View style={[MainStyle.modal, LogModalStyle.modal]}>
                     <ScrollView>
-                        {workouts?.map((workout, workoutIndex) => (
+                        {workouts ? workouts.map(workout => (
                             <View key={workout.id}>
-                                <Text style={MainStyle.screenTitle}>{workout?.name || status}</Text>
-                                {workout.workout.map((exercise, exerciseIndex) => (
-                                    <View key={`${exercise.id ?? "custom"}${exerciseIndex}`} style={MainStyle.container}>
+                                <Text style={MainStyle.screenTitle}>{workout.name}</Text>
+                                {workout.exercises.map((exercise, exerciseIndex) => (
+                                    <View key={`${exercise.id || "custom"}${exerciseIndex}`} style={MainStyle.container}>
                                         <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
                                         {exercise.sets.map((_, setIndex) => (
-                                            <View key={`${exercise} - ${setIndex}`} style={MainStyle.inlineContainer}>
-                                                <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].kg} </Text>
+                                            <View key={`${exercise.id} - ${setIndex}`} style={MainStyle.inlineContainer}>
+                                                <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].weight} </Text>
                                                 <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text>
                                             </View>
                                         ))}
@@ -41,7 +40,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                                     ))
                                 }
                             </View> 
-                        ))}
+                        )) : <Text style={MainStyle.containerTitle}>{status}</Text>}
                     </ScrollView>
                     <Pressable
                         style={MainStyle.button}

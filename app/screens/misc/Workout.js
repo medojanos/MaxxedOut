@@ -29,7 +29,7 @@ export default function Workout() {
                     {
                         id: id,
                         name: name,
-                        sets: [{ kg: 0, rep: 0}]
+                        sets: [{ weight: 0, rep: 0}]
                     }
                 ]
             }));
@@ -44,8 +44,8 @@ export default function Workout() {
                     return {...ex, sets: Array.from(ex.sets, (set, seti) => {
                         if (setIndex == seti){
                             switch(prop){
-                                case "kg":
-                                    return {...set, kg: value}
+                                case "weight":
+                                    return {...set, weight: value}
                                 case "rep":
                                     return {...set, rep: value}
                             }  
@@ -88,7 +88,7 @@ export default function Workout() {
                     sets: [
                         ...ex.sets,
                         {
-                            kg: 0, rep: 0
+                            weight: 0, rep: 0
                         }
                     ]
                 }
@@ -111,7 +111,6 @@ export default function Workout() {
     }
     return (
         <SafeAreaView style={MainStyle.content}>
-        {console.log(workout)}
             <ScrollView>
                 <Text style={MainStyle.screenTitle}>{workout.name}</Text>
                 {workout.plan?.map((exercise, exerciseIndex) => (
@@ -130,19 +129,20 @@ export default function Workout() {
                             </Pressable>
                         </View>
                         {
+                            
                             exercise.sets?.map((_, setIndex) => (
                                 <View 
                                     key={setIndex}
                                     style={MainStyle.inlineContainer}>            
                                     <Text style={MainStyle.lightText}>{`${setIndex+1}.`}</Text>
                                     <TextInput 
-                                        value={workout.plan[exerciseIndex].sets[setIndex].kg ? workout.plan[exerciseIndex].sets[setIndex].kg.toString() : ""}
+                                        value={workout.plan[exerciseIndex].sets[setIndex].weight ? workout.plan[exerciseIndex].sets[setIndex].weight.toString() : ""}
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
                                         placeholder="kg"
                                         onChangeText={text => { 
                                             if (!/^\d*$/.test(text)) return;
-                                            updateExercise(exerciseIndex, setIndex, "kg", text) 
+                                            updateExercise(exerciseIndex, setIndex, "weight", text) 
                                         }}
                                     />
                                     <Text style={MainStyle.lightText}>X</Text>
@@ -196,7 +196,7 @@ export default function Workout() {
                                         id: ex.id,
                                         name: ex.name,
                                         sets: ex.sets.map(set => ({
-                                            kg: set.kg,
+                                            weight: set.weight,
                                             rep: set.rep
                                         }))
                                     }))
@@ -204,9 +204,7 @@ export default function Workout() {
                             })
                             .then(res => res.json())
                             .then(data => {
-                                if (data.success) {
-                                    setWorkout(null);
-                                }
+                                if (data.success) setWorkout(null);
                     })}>
                     <Text style={MainStyle.buttonText}>Save</Text>
                 </Pressable>

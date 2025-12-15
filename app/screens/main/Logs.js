@@ -11,7 +11,6 @@ import { Context } from "../../misc/Provider";
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
-import react from "react";
 import LogModal from "../../components/LogModal";
 
 const LogsStyle = StyleSheet.create({
@@ -24,18 +23,9 @@ const LogsStyle = StyleSheet.create({
 
 export default function Logs() {
     const [workouts, setWorkouts] = useState();
-    const [recentWorkouts, setRecentWorkouts] = useState();
     const [logModal, setLogModal] = useState(false);
     const [status, setStatus] = useState();
     const { token } = useContext(Context);
-
-    useEffect(() => {
-        fetch("http://localhost:4000/workout/recent" + 5, {headers: {"Authorization" : token}})
-        .then(res => res.json())
-        .then(data => {
-            data.success ?? setRecentWorkouts(data.data);
-        })
-    }, [])
 
     return (
         <SafeAreaView style={MainStyle.content}>
@@ -79,23 +69,6 @@ export default function Logs() {
                     <Text style={MainStyle.containerTitle}>Recent logs</Text>
                         <View style={MainStyle.overlay}>
                             <View style={MainStyle.container}>
-                                    {recentWorkouts?.map((workout, workoutIndex) => (
-                                        <View key={workout.id}>
-                                            <Text style={MainStyle.screenTitle}>{workout?.name || status}</Text>
-                                            {workout.workout.map((exercise, exerciseIndex) => (
-                                                <View key={`${exercise.id ?? "custom"}${exerciseIndex}`} style={MainStyle.container}>
-                                                    <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
-                                                    {exercise.sets.map((_, setIndex) => (
-                                                        <View key={`${exercise} - ${setIndex}`} style={MainStyle.inlineContainer}>
-                                                            <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].kg} </Text>
-                                                            <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text>
-                                                        </View>
-                                                    ))}
-                                                </View>
-                                                ))
-                                            }
-                                        </View> 
-                                    ))}
                             </View>
                         </View>
                 </View>
