@@ -26,7 +26,6 @@ export default function Logs() {
     const [latest, setLatest] = useState();
     const [logModal, setLogModal] = useState(false);
     const [status, setStatus] = useState();
-    const [markedDates, setMarkedDates] = useState({});
 
     const { token, workout } = useContext(Context);
 

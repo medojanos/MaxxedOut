@@ -160,7 +160,6 @@ app.put("/workout", (req, res) => {
         })
     })
 })
-
 app.get("/workout/:date", (req, res) => {
     db.all("SELECT id, name FROM workouts WHERE DATE(date) = ?", [req.params.date], (e, workouts) => {
         if (workouts.length == 0) return res.status(404).json({success: false, message: "No workout that day"});
@@ -211,6 +210,62 @@ app.get("/workout/:date", (req, res) => {
 
                     res.json({success: true, data: result});
         })
+    })
+})
+app.get("/workout/id/:id", (req, res) => {
+    db.get(
+        "SELECT id, name FROM workouts WHERE id = ?", [req.params.id], (e, workout) => {
+            if (e) return res.status(500).json({ success: false, message: "Database error" });
+            if (!workout) return res.status(404).json({ success: false, message: "Workout not found" });
+            db.all(
+                `SELECT 
+                    e.id as exercise_id,
+                    COALESCE(s.exercise_name, e.name) as exercise_name,
+                    rep,
+                    weight
+                 FROM sets s
+                 LEFT JOIN exercises e ON s.exercise_id = e.id
+                 WHERE s.workout_id = ?`, [workout.id],(e, rows) => {
+                    if (e) return res.status(500).json({ success: false, message: "Database error" });
+                    const exercisesMap = {};
+                    rows.forEach(r => {
+                        if (!exercisesMap[r.exercise_name]) {
+                            exercisesMap[r.exercise_name] = {
+                                id: r.exercise_id,
+                                name: r.exercise_name,
+                                sets: []
+                            };
+                        }
+                        exercisesMap[r.exercise_name].sets.push({
+                            weight: r.weight,
+                            rep: r.rep
+                        });
+                    });
+
+                    res.json({success: true, data: 
+                        [{
+                            id: workout.id, 
+                            name: workout.name, 
+                            exercises: Object.values(exercisesMap)
+                        }]
+                    });
+                }
+            );
+        }
+    );
+});
+
+app.get("/workouts/:month", (req, res) => {
+    db.all("SELECT DATE(date) as dates FROM workouts WHERE user_id = ? AND strftime('%Y-%M', date) = ?", [req.user, req.params.body], (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        res.json({success: true, data: rows});
+    })
+})
+
+app.get("/workouts/latest", (req, res) => {
+    db.all("SELECT id, name, date FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT 5", [req.user], (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        res.json({success: true, data: rows});
     })
 })
 
