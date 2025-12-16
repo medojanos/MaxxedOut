@@ -9,9 +9,7 @@ import { Context } from "../misc/Provider";
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
 const LogModalStyle = StyleSheet.create({
-    /*modal : {
-        maxHeight: "80%",
-    }*/
+    
 })
 
 export default function LogModal({visible, Close, workouts, status}) {
@@ -20,7 +18,6 @@ export default function LogModal({visible, Close, workouts, status}) {
             animationType="fade"
             transparent={true}
             visible={visible}>
-                {console.log(workouts)}
             <View style={MainStyle.overlay}>
                 <View style={[MainStyle.modal, LogModalStyle.modal]}>
                     <ScrollView>
@@ -28,10 +25,10 @@ export default function LogModal({visible, Close, workouts, status}) {
                             <View key={workout.id}>
                                 <Text style={MainStyle.screenTitle}>{workout.name}</Text>
                                 {workout.exercises.map((exercise, exerciseIndex) => (
-                                    <View key={`${exercise.id || "custom"}${exerciseIndex}`} style={MainStyle.container}>
+                                    <View key={exerciseIndex} style={MainStyle.container}>
                                         <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
                                         {exercise.sets.map((_, setIndex) => (
-                                            <View key={`${exercise.id} - ${setIndex}`} style={MainStyle.inlineContainer}>
+                                            <View key={setIndex} style={MainStyle.inlineContainer}>
                                                 <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].weight} </Text>
                                                 <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text>
                                             </View>

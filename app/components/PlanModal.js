@@ -31,10 +31,11 @@ export default function PlanModal({Close, visible, id}) {
             <View style={MainStyle.overlay}>
                 <View style={MainStyle.modal}>
                     <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
-                    <FlatList
-                        data={plan}
-                        renderItem={({item}) => <Text style={MainStyle.lightText}>{item.name}{item.sets}</Text>}>
-                    </FlatList>
+                    {plan?.map((exercise, index) => (
+                        <View key={index} style={MainStyle.container}>
+                            <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                        </View>
+                    ))}
                     <Pressable style={MainStyle.button} onPress={Close}><Text style={MainStyle.buttonText}>Close</Text></Pressable>
                 </View>
             </View>
