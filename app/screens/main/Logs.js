@@ -26,7 +26,7 @@ export default function Logs() {
     const [latest, setLatest] = useState();
     const [logModal, setLogModal] = useState(false);
     const [status, setStatus] = useState();
-
+    const [markedDates, setMarkedDates] = useState({});
     const { token, workout } = useContext(Context);
 
     useEffect(() => {
@@ -34,6 +34,26 @@ export default function Logs() {
         .then(res => res.json())
         .then(data => data.success ? setLatest(data.data) : setStatus(data.message))
     }, [workout]);
+
+    useEffect(() => {
+        const date = new Date();
+        fetchMarkedDates({year: date.getFullYear(), month: date.getMonth() + 1});
+    }, []);
+
+    function fetchMarkedDates(date) {
+        fetch("http://localhost:4000/workouts/latest/" + `${date.year}-${String(date.month).padStart(2, '0')}`, {headers: {"Authorization" : token}})
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                data.data.forEach(workout => {
+                    setMarkedDates(prev => ({
+                        ...prev,
+                        [workout.date] : {marked: true, dotColor: Var.red}
+                    }))
+                })
+            }
+        })
+    }
 
     return (
         <SafeAreaView style={MainStyle.content}>
@@ -66,18 +86,7 @@ export default function Logs() {
                             textDisabledColor: Var.paleRed
                         }}
                         markedDates={markedDates}
-                        onMonthChange={month => {
-                            fetch("http://localhost:4000/workouts/" + month.dateString, {headers: {"Authorization" : token}})
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.success) {data.data.forEach(workout => {
-                                    setMarkedDates(prev => ({
-                                        ...prev,
-                                        [workout.date] : {marked: true, dotColor: Var.red}
-                                    }))
-                                })}
-                            })
-                        }}>
+                        onMonthChange={fetchMarkedDates}>
                     </Calendar>
                 </View>
                 <LogModal

@@ -254,14 +254,12 @@ app.get("/workout/id/:id", (req, res) => {
         }
     );
 });
-
-app.get("/workouts/:month", (req, res) => {
-    db.all("SELECT DATE(date) as dates FROM workouts WHERE user_id = ? AND strftime('%Y-%M', date) = ?", [req.user, req.params.body], (e, rows) => {
+app.get("/workouts/latest/:month", (req, res) => {
+    db.all("SELECT DATE(date) as date FROM workouts WHERE user_id = ? AND strftime('%Y-%M', date) = ?", [req.user, req.params.month], (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
         res.json({success: true, data: rows});
     })
 })
-
 app.get("/workouts/latest", (req, res) => {
     db.all("SELECT id, name, date FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT 5", [req.user], (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
