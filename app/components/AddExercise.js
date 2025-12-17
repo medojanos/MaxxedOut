@@ -58,7 +58,7 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
             visible={visible}>
             <View style={MainStyle.overlay}>
                 <View style={MainStyle.modal}>
-                    <Text style={MainStyle.screenTitle}>Add new exercise</Text>
+                    <Text style={MainStyle.screenTitle}>Search for exercises</Text>
                     <TextInput 
                         style={MainStyle.input}
                         placeholder="Enter exercise name..."
@@ -101,10 +101,6 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                     </ScrollView>
                     <Pressable 
                         onPress={() => {
-                            setWorkout(prev => ({
-                                ...prev,
-                                ownIndex: prev.ownIndex+1
-                            }))
                             addExercise("own" + (ownIndex + 1), "Own exercise " + (ownIndex + 1));
                         }}
                         style={MainStyle.secondaryButton}>

@@ -32,6 +32,13 @@ app.get("/readme", (req, res) => {
     })
 })
 
+app.get("/muscle_groups", (req, res) => {
+    db.all("SELECT * FROM muscle_groups", (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        res.json(rows);
+    })  
+})
+
 app.get("/exercises", (req, res) => {
     db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group FROM muscle_groups_exercises mge JOIN exercises e ON e.id=mge.exercise_id JOIN muscle_groups mg ON mg.id=mge.muscle_group_id ", (e, rows) => {
         const map = {};
@@ -47,12 +54,6 @@ app.get("/exercises", (req, res) => {
             map[row.id].muscle_groups.push(row.muscle_group);
         });
         res.json(map);
-    })
-})
-
-app.get("/muscle_groups", (req, res) => {
-    db.all("SELECT * FROM muscle_groups", (e, rows) => {
-        res.json(rows);
     })
 })
 
@@ -100,18 +101,6 @@ async function AuthMiddleWare(req, res, next) {
 // Below this line the apis will be authenticated
 app.use(AuthMiddleWare);
 
-app.get("/plans", (req, res) => {
-    db.all("SELECT id, user_id, name FROM plans WHERE user_id = ?", [req.user], (e, rows) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        res.json({success: true, data: rows});
-    })
-})
-app.get("/plan/:id", (req, res) => {
-    db.all("SELECT e.id as id, COALESCE(pe.exercise_name, e.name) as name, pe.sets as sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        res.json({success: true, data: rows});
-    })
-})
 app.put("/plan", (req, res) => {
     db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
@@ -122,7 +111,7 @@ app.put("/plan", (req, res) => {
         function Check(err) {
             if (err) return res.status(500).json({success: false, message: "Database error"}); 
             completed++;
-            if (completed == req.body.exercises.length) res.json({success: true, message: "Workout created succesfully"})
+            if (completed == req.body.exercises.length) res.json({success: true, message: "Workout plan created succesfully"})
         }
 
         req.body.exercises.forEach(exercise => {
@@ -132,6 +121,49 @@ app.put("/plan", (req, res) => {
                 db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets) VALUES (?, ?, ?)", [id, exercise.id, exercise.sets], (e) => Check(e))
             }
         });
+    })
+})
+app.patch("/plans/:id", (req, res) => {
+    db.run("UPDATE plans SET name = ? WHERE id = ?", [req.body.name, req.params.id], (e) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+        db.run("DELETE FROM plans_exercises WHERE plan_id = ?", [req.params.id], function(e) {
+            if (e) return res.status(500).json({success: false, message: "Database error"});
+
+            let completed = 0;
+
+            function Check(err) {
+                if (err) return res.status(500).json({success: false, message: "Database error"}); 
+                completed++;
+                if (completed == req.body.exercises.length) res.json({success: true, message: "Workout plan updated succesfully"})
+            }
+
+            req.body.exercises.forEach(exercise => {
+                if (!exercise.id || typeof exercise.id == "string") {
+                    db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets) VALUES (?, ?, ?)", [req.params.id, exercise.name, exercise.sets], (e) => Check(e))
+                } else {
+                    db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets) VALUES (?, ?, ?)", [req.params.id, exercise.id, exercise.sets], (e) => Check(e))
+                }
+            });
+        })
+    })
+})
+app.get("/plans", (req, res) => {
+    db.all("SELECT id, user_id, name FROM plans WHERE user_id = ?", [req.user], (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        res.json({success: true, data: rows});
+    })
+})
+app.get("/plans/:id", (req, res) => {
+    db.all("SELECT e.id as id, COALESCE(pe.exercise_name, e.name) as name, pe.sets as sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        res.json({success: true, data: rows});
+    })
+})
+app.delete("/plans/:id", (req, res) => {
+    db.run("DELETE FROM plans WHERE id = ?", [req.params.id], (e) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        res.json({success: true, message: "Plan deleted succesfully"});
     })
 })
 
@@ -160,9 +192,9 @@ app.put("/workout", (req, res) => {
         })
     })
 })
-app.get("/workout/:date", (req, res) => {
-    db.all("SELECT id, name FROM workouts WHERE DATE(date) = ?", [req.params.date], (e, workouts) => {
-        if (workouts.length == 0) return res.status(404).json({success: false, message: "No workout that day"});
+app.get("/workouts", (req, res) => {
+    db.all("SELECT id, name FROM workouts WHERE DATE(date) = ? AND user_id = ?", [req.query.date, req.user], (e, workouts) => {
+        if (workouts.length == 0) return res.json({success: false, message: "No workout that day"});
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
 
         const workoutIds = workouts.map(w => w.id);
@@ -212,11 +244,22 @@ app.get("/workout/:date", (req, res) => {
         })
     })
 })
-app.get("/workout/id/:id", (req, res) => {
+app.get("/workouts/recent", (req, res) => {
+    db.all("SELECT id, name, date FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT 5", [req.user], (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        res.json({success: true, data: rows});
+    })
+})
+app.get("/workouts/recent/:month", (req, res) => {
+    db.all("SELECT DATE(date) as date FROM workouts WHERE user_id = ? AND strftime('%Y-%m', date) = ?", [req.user, req.params.month], (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        res.json({success: true, data: rows});
+    })
+})
+app.get("/workouts/:id", (req, res) => {
     db.get(
         "SELECT id, name FROM workouts WHERE id = ?", [req.params.id], (e, workout) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
-            if (!workout) return res.status(404).json({ success: false, message: "Workout not found" });
             db.all(
                 `SELECT 
                     e.id as exercise_id,
@@ -254,18 +297,6 @@ app.get("/workout/id/:id", (req, res) => {
         }
     );
 });
-app.get("/workouts/latest/:month", (req, res) => {
-    db.all("SELECT DATE(date) as date FROM workouts WHERE user_id = ? AND strftime('%Y-%M', date) = ?", [req.user, req.params.month], (e, rows) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        res.json({success: true, data: rows});
-    })
-})
-app.get("/workouts/latest", (req, res) => {
-    db.all("SELECT id, name, date FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT 5", [req.user], (e, rows) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        res.json({success: true, data: rows});
-    })
-})
 
 app.patch("/user", (req, res) => {
     function update(column, columnData) {
@@ -280,7 +311,7 @@ app.patch("/user", (req, res) => {
     if (req.body.nickname) return update("nickname", req.body.nickname);
     if (req.body.email) return update("email", req.body.email);
     if (req.body.password) {
-        return db.get("SELECT id FROM users WHERE password = ?", [hash("sha-512", req.body.currentPassword)], (e, row) => {
+        return db.get("SELECT id FROM users WHERE password = ? AND id = ?", [hash("sha-512", req.body.currentPassword), req.user], (e, row) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
             if (!row) return res.status(401).json({success: false, message: "Invalid credentials"});
             update("password", hash("sha-512", req.body.password))

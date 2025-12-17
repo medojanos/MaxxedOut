@@ -22,6 +22,7 @@ export default function WorkoutModal({Close, visible}) {
     const [plans, setPlans] = useState();
 
     const { token, setWorkout } = useContext(Context);
+    const navigation = useNavigation();
 
     useEffect(() => {
         fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
@@ -40,12 +41,13 @@ export default function WorkoutModal({Close, visible}) {
                     <Text style={MainStyle.screenTitle}>Select a workout</Text>
                     <View>
                         {
-                            plans?.map(plan => (
+                            plans ? plans.length != 0 ? 
+                            plans.map(plan => (
                                 <Pressable 
                                     key={plan.id}
                                     style={[MainStyle.button, WorkoutModalStyle.workoutButton]} 
                                     onPress={() => {
-                                        fetch("http://localhost:4000/plan/" + plan.id, { headers: { Authorization: token } })
+                                        fetch("http://localhost:4000/plans/" + plan.id, { headers: { Authorization: token } })
                                         .then(res => res.json())
                                         .then(data => {
                                             if (data.success) setWorkout({id: plan.id, name: plan.name, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": 0, "rep": 0}))}))});
@@ -53,9 +55,17 @@ export default function WorkoutModal({Close, visible}) {
                                         Close();
                                 }}>
                                     <Text style={MainStyle.buttonText}>{plan.name}</Text>
-                                </Pressable>
-                            )
-                        )}
+                                </Pressable>)) 
+                            :
+                            <View style={MainStyle.inlineContainer}>
+                                <Text style={[MainStyle.lightText, {fontWeight: "bold"}]}>No workout plan?</Text>
+                                <Pressable style={[MainStyle.button, WorkoutModalStyle.workoutButton]} onPress={() => navigation.navigate("CreateWorkout")}>
+                                    <Text style={MainStyle.buttonText}>Create one</Text>
+                                </Pressable> 
+                            </View>
+                            : 
+                            null
+                        }
                     </View>
                     <Pressable
                         style={MainStyle.secondaryButton}

@@ -10,6 +10,7 @@ export default function Provider({children}) {
     const [userData, setUserData] = useState();
     const [workout, setWorkout] = useState();
     const [token, setToken] = useState();
+    const [refresh, setRefresh] = useState(0);
 
     useEffect( () => {
         setData("token", token);
@@ -27,7 +28,7 @@ export default function Provider({children}) {
     }, [userData]);
     
     return (
-        <Context.Provider value={{isLoggedIn, setLogin, planDraft, setPlanDraft, userData, setUserData, workout, setWorkout, token, setToken}}>
+        <Context.Provider value={{isLoggedIn, setLogin, planDraft, setPlanDraft, userData, setUserData, workout, setWorkout, token, setToken, refresh, setRefresh}}>
             {children}
         </Context.Provider>
     );

@@ -7,12 +7,12 @@ import { useState, useContext } from "react";
 
 // Misc
 import { Context } from "../../misc/Provider";
+import AddExercise from "../../components/AddExercise";
 
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 import { StyleSheet } from "react-native";
-import AddExercise from "../../components/AddExercise";
 const CreateWorkoutStyle = StyleSheet.create({
    
 })
@@ -20,12 +20,9 @@ const CreateWorkoutStyle = StyleSheet.create({
 export default function CreateWorkout() {
     const [searchModal, setSearchModal] = useState();
     
-    const [status, setStatus] = useState();
     const navigation = useNavigation();
 
-    const {planDraft, setPlanDraft} = useContext(Context);
-    const {token} = useContext(Context);
-    
+    const {planDraft, setPlanDraft, token} = useContext(Context);
 
     function addExercise(id, name) {
         setPlanDraft(prev => ({
@@ -72,13 +69,12 @@ export default function CreateWorkout() {
                     style={MainStyle.input} 
                     onChangeText={text => setPlanDraft(prev => ({...prev, name : text}))}>
                 </TextInput>
+                <Text style={MainStyle.screenTitle}>{planDraft.name}</Text>
                 <Pressable
                     style={MainStyle.button}
                     onPress={() => setSearchModal(true)}>
                     <Text style={MainStyle.buttonText}>Add exercise</Text>
                 </Pressable>
-                <Text style={MainStyle.screenTitle}>{planDraft.name}</Text>
-                <Text style={MainStyle.screenAltTitle}>{status}</Text>
                 <AddExercise
                     visible={searchModal}
                     addExercise={addExercise}
@@ -101,6 +97,9 @@ export default function CreateWorkout() {
                                             updateExercise(index, text, "sets");
                                         }}>
                                     </TextInput>
+                                    <Pressable onPress={() => deleteExercise(index)}>
+                                        <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
+                                    </Pressable>
                                 </View>
                                 {typeof exercise.id == "string" ? (
                                     <TextInput
@@ -108,9 +107,6 @@ export default function CreateWorkout() {
                                         placeholder="Enter exercise name..."
                                         onChangeText={text => updateExercise(index, text, "name")}/>
                                 ) : null}
-                                <Pressable onPress={() => deleteExercise(index)}>
-                                    <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
-                                </Pressable>
                             </View>
                         )
                     })
@@ -139,8 +135,6 @@ export default function CreateWorkout() {
                                 if (data.success) {
                                     setPlanDraft({name : "", ownIndex : 0, exercises : []});
                                     navigation.navigate("Home");
-                                } else {
-                                    setStatus(data.message);
                                 }
                             })
                         }}>

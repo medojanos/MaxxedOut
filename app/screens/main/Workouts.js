@@ -28,8 +28,9 @@ export default function Workouts() {
     const [planModal, setPlanModal] = useState(false);
     const [plans, setPlans] = useState([]);
     const [planId, setPlanId] = useState();
+    const [planName, setPlanName] = useState();
 
-    const {token} = useContext(Context);
+    const {token, refresh} = useContext(Context);
     
     const navigation = useNavigation();
 
@@ -37,7 +38,7 @@ export default function Workouts() {
         fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => setPlans(data.data))
-    }, [])
+    }, [refresh])
 
     return (
         <SafeAreaView style={MainStyle.content}>
@@ -54,6 +55,7 @@ export default function Workouts() {
                                 <Text style={MainStyle.containerTitle}>{plan.name}</Text>
                                 <Pressable style={MainStyle.secondaryButton} onPress={() => {
                                     setPlanId(plan.id);
+                                    setPlanName(plan.name);
                                     setPlanModal(true);
                                 }}>
                                     <Text style={MainStyle.buttonText}>Edit</Text>
@@ -61,7 +63,7 @@ export default function Workouts() {
                             </View>
                         ))
                     }
-                    <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId}></PlanModal>
+                    <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId} name={planName}></PlanModal>
                 </View>
             </ScrollView>
         </SafeAreaView>

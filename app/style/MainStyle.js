@@ -71,7 +71,8 @@ export default StyleSheet.create({
             width: "90%",
             margin: "auto",
             padding: 20,
-            borderRadius: 10
+            borderRadius: 10,
+            maxHeight: "80%"
         },
 
     input : {

@@ -30,7 +30,7 @@ export default function Logs() {
     const { token, workout } = useContext(Context);
 
     useEffect(() => {
-        fetch("http://localhost:4000/workouts/latest", {headers: {"Authorization" : token}})
+        fetch("http://localhost:4000/workouts/recent", {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => data.success ? setLatest(data.data) : setStatus(data.message))
     }, [workout]);
@@ -41,7 +41,7 @@ export default function Logs() {
     }, []);
 
     function fetchMarkedDates(date) {
-        fetch("http://localhost:4000/workouts/latest/" + `${date.year}-${String(date.month).padStart(2, '0')}`, {headers: {"Authorization" : token}})
+        fetch("http://localhost:4000/workouts/recent/" + `${date.year}-${String(date.month).padStart(2, '0')}`, {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => {
             if (data.success) {
@@ -68,7 +68,7 @@ export default function Logs() {
                         style={LogsStyle.calendar} 
                         enableSwipeMonths
                         onDayPress={day => {
-                            fetch("http://localhost:4000/workout/" + day.dateString, {headers: {"Authorization" : token}})
+                            fetch("http://localhost:4000/workouts?date=" + day.dateString, {headers: {"Authorization" : token}})
                             .then(res => res.json())
                             .then(data => {
                                 setStatus();
@@ -99,11 +99,11 @@ export default function Logs() {
                     <Text style={MainStyle.containerTitle}>Recent logs</Text>
                     {latest?.map((workout, index) => (
                         <View key={index} style={MainStyle.container}>
-                            <Text style={MainStyle.lightText}>{workout.name} - {workout.date.slice(0, 10)}</Text>
+                            <Text style={MainStyle.lightText}>{workout.name} - {workout.date.slice(0, 16)}</Text>
                             <Pressable
                                 style={MainStyle.secondaryButton}
                                 onPress={() => {
-                                    fetch("http://localhost:4000/workout/id/" + workout.id, {headers: {"Authorization" : token}})
+                                    fetch("http://localhost:4000/workouts/" + workout.id, {headers: {"Authorization" : token}})
                                     .then(res => res.json())
                                     .then(data => {
                                         setStatus();

@@ -19,7 +19,7 @@ export default function LogModal({visible, Close, workouts, status}) {
             transparent={true}
             visible={visible}>
             <View style={MainStyle.overlay}>
-                <View style={[MainStyle.modal, LogModalStyle.modal]}>
+                <View style={MainStyle.modal}>
                     <ScrollView>
                         {workouts ? workouts.map(workout => (
                             <View key={workout.id}>

@@ -1,5 +1,5 @@
 // React
-import { View, ScrollView, StyleSheet, Text, Pressable, TextInput } from "react-native";
+import { View, ScrollView, StyleSheet, Text, Pressable, TextInput, Modal } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +18,7 @@ const WorkoutStyle = StyleSheet.create({
 export default function Workout() {
     const {token, workout, setWorkout} = useContext(Context);
 
+    const [cancelModal, setCancelModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
 
     function addExercise(id, name) {
@@ -112,9 +113,9 @@ export default function Workout() {
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
-                <Text style={MainStyle.screenTitle}>{workout.name}</Text>
+                <TextInput style={MainStyle.input} value={workout.name} onChangeText={text => setWorkout({...workout, name: text})}></TextInput>
                 {workout.plan?.map((exercise, exerciseIndex) => (
-                    <View key={`${exercise}${exerciseIndex}`} style={MainStyle.container}>
+                    <View key={exerciseIndex} style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
                             {typeof exercise.id == "string" ? 
                             <TextInput
@@ -123,7 +124,7 @@ export default function Workout() {
                                 onChangeText={text => updateExerciseName(exerciseIndex, text)}>
                             </TextInput>
                             :  
-                            <Text style={MainStyle.containerTitle}>{exercise.name}</Text>}
+                            <Text style={[MainStyle.containerTitle, {margin: 0}]}>{exercise.name}</Text>}
                             <Pressable onPress={() => deleteExercise(exerciseIndex)}>
                                 <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
                             </Pressable>
@@ -208,9 +209,29 @@ export default function Workout() {
                     })}>
                     <Text style={MainStyle.buttonText}>Save</Text>
                 </Pressable>
+                <Modal
+                    visible={cancelModal}
+                    transparent={true}
+                    animationType="fade">
+                    <View style={MainStyle.overlay}>
+                        <View style={MainStyle.modal}>
+                            <Text style={MainStyle.screenTitle}>Are you sure you want to cancel this workout?</Text>
+                            <Pressable
+                                style={MainStyle.secondaryButton}
+                                onPress={() => setCancelModal(false)}>
+                                <Text style={MainStyle.buttonText}>No</Text>
+                            </Pressable>
+                            <Pressable
+                                style={MainStyle.button}
+                                onPress={() => setWorkout(null)}>
+                                <Text style={MainStyle.buttonText}>Yes</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
                 <Pressable
                     style={MainStyle.secondaryButton}
-                    onPress={() => setWorkout(null)}>
+                    onPress={() => setCancelModal(true)}>
                     <Text style={MainStyle.buttonText}>Cancel</Text>
                 </Pressable>
             </ScrollView>

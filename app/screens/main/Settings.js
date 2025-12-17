@@ -139,10 +139,6 @@ export default function Settings() {
                         <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
                         <Text style={SettingsStyle.containerTitle}>Preferences</Text>
                     </View>
-                    
-                    <View style={MainStyle.container}>
-                        
-                    </View>
                 </View>
                 <View style={MainStyle.container}>
                     <View style={MainStyle.inlineContainer}>
@@ -150,7 +146,7 @@ export default function Settings() {
                         <Text style={SettingsStyle.containerTitle}>Account settings</Text>
                     </View>
                     <Text style={MainStyle.lightText}>Reset your password</Text>
-                    <Pressable style={MainStyle.button}>
+                    <Pressable style={MainStyle.secondaryButton}>
                         <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength("")}}>Password reset</Text>
                     </Pressable>
                     <Pressable style={MainStyle.button} onPress={() => setLogin(false)}>
