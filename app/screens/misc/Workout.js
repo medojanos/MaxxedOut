@@ -20,6 +20,7 @@ export default function Workout() {
 
     const [cancelModal, setCancelModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
+    const [doneModal, setDoneModal] = useState(false);
 
     function addExercise(id, name) {
         setWorkout(prev => ({
@@ -181,33 +182,48 @@ export default function Workout() {
                     onPress={() => setSearchModal(true)}>
                     <Text style={MainStyle.buttonText}>Add exercise</Text>
                 </Pressable>
+                <Modal
+                    visible={doneModal}
+                    transparent={true}
+                    animationType="fade">
+                    <View style={MainStyle.overlay}>
+                        <View style={MainStyle.modal}>
+                            <Text style={MainStyle.screenTitle}>Are you sure you want to save this workout?</Text>
+                            <Pressable
+                                style={MainStyle.secondaryButton}
+                                onPress={() => setDoneModal(false)}>
+                                <Text style={MainStyle.buttonText}>No</Text>
+                            </Pressable>
+                            <Pressable
+                                style={MainStyle.button}
+                                onPress={() => {
+                                    fetch("http://localhost:4000/workout", {
+                                        method: "PUT",
+                                        headers: {
+                                            "Content-Type" : "application/json",
+                                            "Authorization" : token
+                                        },
+                                        body: JSON.stringify({
+                                            id: workout.id,
+                                            name: workout.name,
+                                            plan: workout.plan
+                                        })
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (data.success) setWorkout(null);
+                                        setDoneModal(false);
+                                    })
+                                }}>
+                                <Text style={MainStyle.buttonText}>Yes</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
                 <Pressable
                     style={MainStyle.button}
-                    onPress={() => 
-                        fetch("http://localhost:4000/workout", {
-                                method: "PUT",
-                                headers: {
-                                    "Content-Type" : "application/json",
-                                    "Authorization" : token
-                                },
-                                body: JSON.stringify({
-                                    id: workout.id,
-                                    name: workout.name,
-                                    plan: workout.plan.map(ex => ({
-                                        id: ex.id,
-                                        name: ex.name,
-                                        sets: ex.sets.map(set => ({
-                                            weight: set.weight,
-                                            rep: set.rep
-                                        }))
-                                    }))
-                                })
-                            })
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.success) setWorkout(null);
-                    })}>
-                    <Text style={MainStyle.buttonText}>Save</Text>
+                    onPress={() => setDoneModal(true)}>
+                    <Text style={MainStyle.buttonText}>Done</Text>
                 </Pressable>
                 <Modal
                     visible={cancelModal}

@@ -1,5 +1,5 @@
 // React
-import { View, Text, Pressable, Modal, StyleSheet, TextInput} from "react-native";
+import { View, Text, Pressable, Modal, StyleSheet, TextInput, ScrollView} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useState, useEffect, useContext } from "react";
 
@@ -104,33 +104,35 @@ export default function PlanModal({Close, visible, id, name}) {
                    <TextInput style={MainStyle.input} value={plan.name} onChangeText={text => setPlan(prev => ({...prev, name: text}))}></TextInput>
                     <Text style={MainStyle.screenAltTitle}>Edit workout plan</Text>
                     <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}><Text style={MainStyle.buttonText}>Add exercise</Text></Pressable>
-                    {plan?.exercises.map((exercise, index) => (
-                        <View key={index} style={MainStyle.container}>
-                            <View key={index} style={MainStyle.inlineContainer}>
-                                {typeof exercise.id == "string" || exercise.id == null ? 
-                                <TextInput
-                                    style={[MainStyle.input, {width: "60%"}]}
-                                    value={exercise.name}
-                                    onChangeText={text => updateExerciseName(index, text)}>
-                                </TextInput>
-                                :  
-                                <Text style={[MainStyle.containerTitle, {margin: 0}]}>{exercise.name}</Text>}
-                                <Text style={MainStyle.lightText}>X</Text>
-                                <TextInput
-                                    keyboardType="numeric"
-                                    style={[MainStyle.input, MainStyle.setInput]}
-                                    value={plan.exercises[index].sets.toString()}
-                                    onChangeText={text => {
-                                        if (!/^\d*$/.test(text)) return;
-                                        updateExercise(index, text, "sets");
-                                    }}>
-                                </TextInput>
-                                <Pressable onPress={() => deleteExercise(index)}>
-                                    <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
-                                </Pressable>
+                    <ScrollView>
+                        {plan?.exercises.map((exercise, index) => (
+                            <View key={index} style={MainStyle.container}>
+                                <View key={index} style={MainStyle.inlineContainer}>
+                                    {typeof exercise.id == "string" || exercise.id == null ? 
+                                    <TextInput
+                                        style={[MainStyle.input, {width: "60%"}]}
+                                        value={exercise.name}
+                                        onChangeText={text => updateExerciseName(index, text)}>
+                                    </TextInput>
+                                    :  
+                                    <Text style={[MainStyle.containerTitle, {margin: 0}]}>{exercise.name}</Text>}
+                                    <Text style={MainStyle.lightText}>X</Text>
+                                    <TextInput
+                                        keyboardType="numeric"
+                                        style={[MainStyle.input, MainStyle.setInput]}
+                                        value={plan.exercises[index].sets.toString()}
+                                        onChangeText={text => {
+                                            if (!/^\d*$/.test(text)) return;
+                                            updateExercise(index, text, "sets");
+                                        }}>
+                                    </TextInput>
+                                    <Pressable onPress={() => deleteExercise(index)}>
+                                        <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
+                                    </Pressable>
+                                </View>
                             </View>
-                        </View>
-                    ))}
+                        ))}
+                    </ScrollView>
                     <AddExercise
                         visible={searchModal}
                         addExercise={addExercise}
