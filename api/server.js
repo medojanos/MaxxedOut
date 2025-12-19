@@ -192,6 +192,43 @@ app.put("/workout", (req, res) => {
         })
     })
 })
+
+app.get("/workout/recent/:name", (req, res) => {
+    db.get("SELECT id, name FROM workouts WHERE user_id=? AND name=? ORDER BY date DESC LIMIT 1", [req.user, req.params.name], (e, workout) => {
+        if (!workout) return res.json({success: false, message: "No recent workout"});
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+        db.all(`SELECT e.id as exercise_id, COALESCE(s.exercise_name, e.name) as exercise_name, rep, weight 
+                FROM sets s 
+                LEFT JOIN exercises e ON s.exercise_id = e.id 
+                JOIN workouts w ON w.id = s.workout_id 
+                WHERE s.workout_id=?`, workout.id, (e, rows) => {
+                    if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+                    const exercisesMap = {};
+
+                    rows.forEach(r => {
+
+                        if(!exercisesMap[r.exercise_name]){
+                            exercisesMap[r.exercise_name] = {
+                                id: r.exercise_id,
+                                name: r.exercise_name,
+                                sets: []
+                            }
+                        }
+
+                        exercisesMap[r.exercise_name].sets.push({
+                            weight: r.weight,
+                            rep: r.rep
+                        })
+                    });
+
+                    res.json({success: true, data: Object.values(exercisesMap)});
+        })
+
+    })
+})
+
 app.get("/workouts", (req, res) => {
     db.all("SELECT id, name FROM workouts WHERE DATE(date) = ? AND user_id = ?", [req.query.date, req.user], (e, workouts) => {
         if (workouts.length == 0) return res.json({success: false, message: "No workout that day"});
