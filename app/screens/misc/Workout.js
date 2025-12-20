@@ -13,7 +13,9 @@ import MainStyle from "../../style/MainStyle"
 import AddExercise from "../../components/AddExercise";
 
 const WorkoutStyle = StyleSheet.create({
-    
+    button : {
+        width: 80
+    }
 })
 export default function Workout() {
     const {token, workout, setWorkout} = useContext(Context);
@@ -22,6 +24,7 @@ export default function Workout() {
     const [searchModal, setSearchModal] = useState(false);
     const [doneModal, setDoneModal] = useState(false);
     const [infoModal, setInfoModal] = useState(false);
+    const [exerciseInfos, setExerciseInfos] = useState();
     const [workoutInfos, setWorkoutInfos] = useState();
 
     function addExercise(id, name) {
@@ -115,12 +118,23 @@ export default function Workout() {
     }
     return (
         <SafeAreaView style={MainStyle.content}>
-            {workoutInfos ? console.log(workoutInfos) : null}
+            {exerciseInfos ? console.log(exerciseInfos) : null}
             <ScrollView>
                 <View style={MainStyle.inlineContainer}>
                     {
                     workout.id ? 
-                        <Text style={MainStyle.screenTitle}>{workout.name}</Text>
+                        <Pressable
+                            onPress={() => {
+                                fetch("http://localhost:4000/exercises/" + workout.id, { headers: { Authorization: token } })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) setWorkoutInfos(data.data);
+                                    if (!data.success) setWorkoutInfos(data.message);
+                                    setInfoModal(true); 
+                                })
+                            }}>
+                            <Text style={MainStyle.screenTitle}>{workout.name}</Text>
+                        </Pressable>
                         :
                         <TextInput 
                             style={MainStyle.input} 
@@ -155,8 +169,19 @@ export default function Workout() {
                                 value={exercise.name}
                                 onChangeText={text => updateExerciseName(exerciseIndex, text)}>
                             </TextInput>
-                            :  
-                            <Text style={[MainStyle.containerTitle, {margin: 0}]}>{exercise.name}</Text>}
+                            : 
+                            <Pressable onPress={() => {
+                                fetch("http://localhost:4000/exercise/" + exercise.id, { headers: { Authorization: token } })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) setExerciseInfos(data.data);
+                                    if (!data.success) setExerciseInfos(data.message);
+                                    setInfoModal(true); 
+                                })
+                            }}>
+                                    <Text style={[MainStyle.containerTitle, {margin: 0}]}>{exerciseIndex+1}. {exercise.name}</Text>
+                            </Pressable>
+                            }
                             <Pressable onPress={() => deleteExercise(exerciseIndex)}>
                                 <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
                             </Pressable>
@@ -250,10 +275,11 @@ export default function Workout() {
                         </View>
                     </View>
                 </Modal>
+                <View style={MainStyle.inlineContainer}>
                 <Pressable
                     style={MainStyle.button}
                     onPress={() => setDoneModal(true)}>
-                    <Text style={MainStyle.buttonText}>Done</Text>
+                    <Text style={[MainStyle.buttonText, WorkoutStyle.button]}>Done</Text>
                 </Pressable>
                 <Modal
                     visible={cancelModal}
@@ -278,51 +304,31 @@ export default function Workout() {
                 <Pressable
                     style={MainStyle.secondaryButton}
                     onPress={() => setCancelModal(true)}>
-                    <Text style={MainStyle.buttonText}>Cancel</Text>
+                    <Text style={[MainStyle.buttonText, WorkoutStyle.button]}>Cancel</Text>
                 </Pressable>
                 <Modal
                     visible={infoModal}
                     transparent={true}
                     animationType="fade">
+                    <View style={MainStyle.overlay}>
                         <View style={MainStyle.modal}>
-                            <Text style={MainStyle.screenTitle}>Infos</Text>
-                            {workoutInfos ? (
-                            <View style={MainStyle.container}>
-                                <Text style={MainStyle.lightText}>
-                                    {workoutInfos.latestDate ? `You did this workout recently on ${new Date(workoutInfos.latestDate).toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })}` : "You haven't done this workout yet"}
-                                </Text>
-                                <Text style={MainStyle.lightText}>
-                                    {workoutInfos.workoutCount ? `You did this workout ${workoutInfos.workoutCount} times` : ""}
-                                </Text>
-                                <View>
-                                    {workoutInfos.exercises ? (
-                                        <>
-                                            {workoutInfos.exercises?.map((exercise, exerciseIndex) => (
-                                                <View 
-                                                    style={MainStyle.container}
-                                                    key={exerciseIndex}
-                                                >
-                                                    <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
-                                                    <Text style={MainStyle.lightText}>Type: {exercise.type}</Text>
-                                                    {exercise.maxWeight !== 0 ? <Text style={MainStyle.lightText}>Max weight done: {exercise.maxWeight} kg</Text> : null}
-                                                    {exercise.muscle_groups?.map((musclegroup, musclegroupIndex) => (
-                                                        <Text style={MainStyle.lightText} key={musclegroupIndex}>{musclegroup.muscles.length > 0 ? `${musclegroup.role}: ${musclegroup.muscles.join(",")}` : null}</Text>
-                                                    ))}
-                                                </View>
-                                            ))}
-                                        </>
-                                        ) : null
-                                    }
-                                </View>
-                            </View>
-                            ) : null}
+                            {exerciseInfos ? 
+                            <View>
+                                <Text>{exerciseInfos.type}</Text>
+                            </View> : null}
+                            {workoutInfos ? 
+                            <View>
+
+                            </View> : null}
                             <Pressable
-                                style={MainStyle.button}
-                                onPress={() => setInfoModal(false)}>
-                                <Text style={MainStyle.buttonText}>Exit</Text>
-                            </Pressable>
+                                style={MainStyle.secondaryButton}
+                                onPress={() => {setInfoModal(false); setExerciseInfos(null); setWorkoutInfos(null)}}>
+                                <Text style={[MainStyle.buttonText, WorkoutStyle.button]}>Exit</Text>
+                            </Pressable> 
                         </View>
+                    </View>
                 </Modal>
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
