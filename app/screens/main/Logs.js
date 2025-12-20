@@ -30,7 +30,7 @@ export default function Logs() {
     const { token, workout } = useContext(Context);
 
     useEffect(() => {
-        fetch("http://localhost:4000/workouts/recent", {headers: {"Authorization" : token}})
+        fetch("http://localhost:4000/workouts/" + "?limit=5", {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => data.success ? setLatest(data.data) : setStatus(data.message))
     }, [workout]);
@@ -41,7 +41,7 @@ export default function Logs() {
     }, []);
 
     function fetchMarkedDates(date) {
-        fetch("http://localhost:4000/workouts/recent/" + `${date.year}-${String(date.month).padStart(2, '0')}`, {headers: {"Authorization" : token}})
+        fetch("http://localhost:4000/workouts" + `?month=${date.year}-${String(date.month).padStart(2, '0')}`, {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => {
             if (data.success) {

@@ -117,50 +117,35 @@ export default function Workout() {
         <SafeAreaView style={MainStyle.content}>
             {workoutInfos ? console.log(workoutInfos) : null}
             <ScrollView>
-                <Pressable
-                    onPress={() => {
-                        fetch("http://localhost:4000/workout/recent/" + workout.name, { headers: { Authorization: token } })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) setWorkout(prev => ({
-                                ...prev, 
-                                plan: prev.plan.map(ex => {
-                                    const recentEx = data.data.find(r => r.name === ex.name);
-                                    return recentEx ? {...ex, sets: recentEx.sets} : ex
-                                })
-                            }));
-                            else console.log(data.message); // Itt még ki kell valahol
-                        })
-                    }}
-                >
-                    <Text style={MainStyle.lightText}>Import recent</Text>
-                </Pressable>
-                {workout.id ? (
-                    <View
-                        style={MainStyle.inlineContainer}
-                    >
+                <View style={MainStyle.inlineContainer}>
+                    {
+                    workout.id ? 
                         <Text style={MainStyle.screenTitle}>{workout.name}</Text>
-                        <Pressable
-                            onPress={() => {
-                                fetch("http://localhost:4000/workout/infos/" + workout.name, { headers: { Authorization: token } })
-                                .then(res => res.json())
-                                .then(data => {
-                                    if (data.success) setWorkoutInfos(data.data)
-                                    if (!data.success) setWorkoutInfos(data.message);
-                                    setInfoModal(true)
-                                })
-                            }}
-                        >
-                            <Ionicons name="information-circle-outline" color={Var.paleWhite} size={30}></Ionicons>
-                        </Pressable>       
-                    </View>
-                ) : 
-                    <TextInput 
-                        style={MainStyle.input}
-                        value={workout.name}
-                        onChangeText={text => setWorkout({...workout, name: text})}>
-                    </TextInput>
-                }
+                        :
+                        <TextInput 
+                            style={MainStyle.input} 
+                            value={workout.name} 
+                            onChangeText={text => setWorkout({...workout, name: text})}>
+                        </TextInput>
+                    }
+                    <Pressable
+                        style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
+                        onPress={() => {
+                            fetch("http://localhost:4000/workouts?name=" + workout.name, { headers: { Authorization: token } })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) setWorkout(prev => ({
+                                    ...prev, 
+                                    plan: prev.plan.map(ex => {
+                                        const recentEx = data.data.find(r => r.name === ex.name);
+                                        return recentEx ? {...ex, sets: recentEx.sets} : ex
+                                    })
+                                }));
+                            })
+                        }}>
+                        <Text style={MainStyle.buttonText}>Import recent</Text>
+                    </Pressable>
+                </View>
                 {workout.plan?.map((exercise, exerciseIndex) => (
                     <View key={exerciseIndex} style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
