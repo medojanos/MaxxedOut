@@ -193,6 +193,73 @@ app.put("/workout", (req, res) => {
     })
 })
 
+app.get("/workout/infos/:name", async (req, res) => {
+    try {
+        const workoutStats = await new Promise((resolve, reject) => {
+            db.get(
+                "SELECT MAX(date) as workout_date, COUNT(id) AS workout_count FROM workouts WHERE user_id=? AND name=?",
+                [req.user, req.params.name],
+                (e, row) => e ? reject(e) : resolve({latestDate: row?.workout_date ?? null, workoutCount: row?.workout_count ?? 0})
+            );
+        });
+
+        const workoutRows = await new Promise((resolve, reject) => {
+            db.all(
+                "SELECT e.id AS exercise_id, COALESCE(s.exercise_name, e.name) AS exercise_name, e.type AS exercise_type, MAX(s.weight) AS max_weight FROM sets s JOIN workouts w ON w.id=s.workout_id LEFT JOIN exercises e ON e.id=s.exercise_id WHERE w.user_id=? AND w.name=? GROUP BY s.exercise_name, e.id, e.name, e.type",
+                [req.user, req.params.name],
+                (e, rows) => e ? reject(e) : resolve(rows)
+            );
+        });
+
+        const musclegroupRows = await new Promise((resolve, reject) => {
+            db.all(
+                "SELECT mge.exercise_id as mge_exercise_id, mg.name as muscle_name, mge.role as role FROM muscle_groups_exercises mge JOIN muscle_groups mg ON mg.id=mge.muscle_group_id",
+                (e, rows) => e ? reject(e) : resolve(rows)
+            );
+        });
+
+        const exercisesMap = {};
+
+        workoutRows.forEach(r => {
+            const key = r.exercise_id ?? `custom:${r.exercise_name}`;
+
+            if (!exercisesMap[key]) {
+                exercisesMap[key] = {
+                    id: r.exercise_id,
+                    name: r.exercise_name,
+                    type: r.exercise_type ?? "Custom",
+                    maxWeight: r.max_weight,
+                    muscle_groups: { Primary: [], Secondary: [], Stabilizer: [] }
+                };
+            }
+        });
+
+        musclegroupRows.forEach(mg => {
+            if (mg.mge_exercise_id && exercisesMap[mg.mge_exercise_id]) {
+                exercisesMap[mg.mge_exercise_id].muscle_groups[mg.role].push(mg.muscle_name);
+            }
+        });
+
+        const exercisesArray = Object.values(exercisesMap).map(exercise => ({
+            ...exercise,
+            muscle_groups: Object.entries(exercise.muscle_groups).map(([role, muscles]) => ({
+                role,
+                muscles
+            }))
+        }));
+
+        res.json({
+            success: true,
+            data: {
+                ...workoutStats,
+                exercises: exercisesArray
+            }
+        });
+            } catch (err) {
+                res.status(500).json({ success: false, message: "Database error", error: err.message });
+            }
+        });
+
 app.get("/workout/recent/:name", (req, res) => {
     db.get("SELECT id, name FROM workouts WHERE user_id=? AND name=? ORDER BY date DESC LIMIT 1", [req.user, req.params.name], (e, workout) => {
         if (!workout) return res.json({success: false, message: "No recent workout"});
