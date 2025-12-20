@@ -167,7 +167,7 @@ app.delete("/plans/:id", (req, res) => {
     })
 })
 
-app.put("/workout", (req, res) => {
+app.put("/workouts", (req, res) => {
     db.run("INSERT INTO workouts (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
         let completed = 0;
@@ -192,107 +192,114 @@ app.put("/workout", (req, res) => {
         })
     })
 })
-
-app.get("/workout/recent/:name", (req, res) => {
-    db.get("SELECT id, name FROM workouts WHERE user_id=? AND name=? ORDER BY date DESC LIMIT 1", [req.user, req.params.name], (e, workout) => {
-        if (!workout) return res.json({success: false, message: "No recent workout"});
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-
-        db.all(`SELECT e.id as exercise_id, COALESCE(s.exercise_name, e.name) as exercise_name, rep, weight 
-                FROM sets s 
-                LEFT JOIN exercises e ON s.exercise_id = e.id 
-                JOIN workouts w ON w.id = s.workout_id 
-                WHERE s.workout_id=?`, workout.id, (e, rows) => {
-                    if (e) return res.status(500).json({success: false, message: "Database error"}); 
-
-                    const exercisesMap = {};
-
-                    rows.forEach(r => {
-
-                        if(!exercisesMap[r.exercise_name]){
-                            exercisesMap[r.exercise_name] = {
-                                id: r.exercise_id,
-                                name: r.exercise_name,
-                                sets: []
-                            }
-                        }
-
-                        exercisesMap[r.exercise_name].sets.push({
-                            weight: r.weight,
-                            rep: r.rep
-                        })
-                    });
-
-                    res.json({success: true, data: Object.values(exercisesMap)});
-        })
-
-    })
-})
-
 app.get("/workouts", (req, res) => {
-    db.all("SELECT id, name FROM workouts WHERE DATE(date) = ? AND user_id = ?", [req.query.date, req.user], (e, workouts) => {
-        if (workouts.length == 0) return res.json({success: false, message: "No workout that day"});
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-
-        const workoutIds = workouts.map(w => w.id);
-
-        db.all(`SELECT w.id as workout_id, w.name as workout_name, e.id as exercise_id, COALESCE(s.exercise_name, e.name) as exercise_name, rep, weight 
-                FROM sets s 
-                LEFT JOIN exercises e ON s.exercise_id = e.id 
-                JOIN workouts w ON w.id = s.workout_id 
-                WHERE s.workout_id IN (${workoutIds.map(() => "?").join(",")})`, workoutIds, (e, rows) => {
-                    if (e) return res.status(500).json({success: false, message: "Database error"}); 
-
+    const { month, date, name, limit } = req.query;
+    if (Object.keys(req.query).length > 1) return res.status(400).json({success: false, message: "Invalid query parameters"});
+    if (date) {
+        db.all("SELECT id, name FROM workouts WHERE DATE(date) = ? AND user_id = ?", [req.query.date, req.user], (e, workouts) => {
+            if (e) return res.status(500).json({ success: false, message: "Database error" });
+            if (workouts.length === 0) return res.json({ success: false, message: "No workout that day" });
+            const workoutIds = workouts.map(w => w.id);
+            db.all(`SELECT
+                    w.id AS workout_id,
+                    w.name AS workout_name,
+                    e.id AS exercise_id,
+                    COALESCE(s.exercise_name, e.name) AS exercise_name,
+                    rep,
+                    weight
+                    FROM sets s
+                    LEFT JOIN exercises e ON s.exercise_id = e.id
+                    JOIN workouts w ON w.id = s.workout_id
+                    WHERE s.workout_id IN (${workoutIds.map(() => "?").join(",")})`, workoutIds, (e, rows) => {
+                    if (e) return res.status(500).json({ success: false, message: "Database error" });
                     const workoutsMap = {};
-
                     rows.forEach(r => {
-
-                        if(!workoutsMap[r.workout_id]){
+                        if (!workoutsMap[r.workout_id]) {
                             workoutsMap[r.workout_id] = {
                                 id: r.workout_id,
                                 name: r.workout_name,
                                 exercises: {}
-                            }
+                            };
                         }
-
                         const workout = workoutsMap[r.workout_id];
-
-                        if(!workout.exercises[r.exercise_name]){
+                        if (!workout.exercises[r.exercise_name]) {
                             workout.exercises[r.exercise_name] = {
                                 id: r.exercise_id,
                                 name: r.exercise_name,
                                 sets: []
-                            }
+                            };
                         }
-
                         workout.exercises[r.exercise_name].sets.push({
                             weight: r.weight,
                             rep: r.rep
-                        })
+                        });
                     });
-
                     const result = Object.values(workoutsMap).map(w => ({
                         id: w.id,
                         name: w.name,
                         exercises: Object.values(w.exercises)
                     }));
+                    res.json({ success: true, data: result});
+                }
+            );
+        });
+    } else if (name) {
+        db.get("SELECT id, name FROM workouts WHERE user_id = ? AND name = ? ORDER BY date DESC LIMIT 1", [req.user, req.query.name], (e, workout) => {
+            if (e) return res.status(500).json({ success: false, message: "Database error" });
+            if (!workout) return res.json({ success: false, message: "No recent workout" });
+            db.all(`SELECT
+                    e.id AS exercise_id,
+                    COALESCE(s.exercise_name, e.name) AS exercise_name,
+                    rep,
+                    weight
+                    FROM sets s
+                    LEFT JOIN exercises e ON s.exercise_id = e.id
+                    JOIN workouts w ON w.id = s.workout_id
+                    WHERE s.workout_id = ?`, workout.id, (e, rows) => {
+                    if (e) return res.status(500).json({ success: false, message: "Database error" });
 
-                    res.json({success: true, data: result});
+                    const exercisesMap = {};
+                    rows.forEach(r => {
+                        if (!exercisesMap[r.exercise_name]) {
+                            exercisesMap[r.exercise_name] = {
+                                id: r.exercise_id,
+                                name: r.exercise_name,
+                                sets: []
+                            };
+                        }
+                        exercisesMap[r.exercise_name].sets.push({
+                            weight: r.weight,
+                            rep: r.rep
+                        });
+                    });
+
+                    res.json({
+                        success: true,
+                        data: Object.values(exercisesMap)
+                    });
+                }
+            );
+        });
+    } else if (month) {
+        db.all("SELECT DATE(date) AS date FROM workouts WHERE user_id = ? AND STRFTIME('%Y-%m', date) = ?", [req.user, req.query.month], (e, rows) => {
+                if (e) return res.status(500).json({ success: false, message: "Database error" });
+                res.json({success: true, data: rows});
+            }
+        );
+    } else {
+        let query = "SELECT id, name, date FROM workouts WHERE user_id = ? ORDER BY date DESC";
+        let params = [];
+        params.push(req.user);
+        if (limit) {
+            query += " LIMIT ?";
+            params.push(limit)
+        };
+        db.all(query, params, (e, rows) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"}); 
+            res.json({success: true, data: rows});
         })
-    })
-})
-app.get("/workouts/recent", (req, res) => {
-    db.all("SELECT id, name, date FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT 5", [req.user], (e, rows) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        res.json({success: true, data: rows});
-    })
-})
-app.get("/workouts/recent/:month", (req, res) => {
-    db.all("SELECT DATE(date) as date FROM workouts WHERE user_id = ? AND strftime('%Y-%m', date) = ?", [req.user, req.params.month], (e, rows) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        res.json({success: true, data: rows});
-    })
-})
+    }
+});
 app.get("/workouts/:id", (req, res) => {
     db.get(
         "SELECT id, name FROM workouts WHERE id = ?", [req.params.id], (e, workout) => {
@@ -303,9 +310,9 @@ app.get("/workouts/:id", (req, res) => {
                     COALESCE(s.exercise_name, e.name) as exercise_name,
                     rep,
                     weight
-                 FROM sets s
-                 LEFT JOIN exercises e ON s.exercise_id = e.id
-                 WHERE s.workout_id = ?`, [workout.id],(e, rows) => {
+                FROM sets s
+                LEFT JOIN exercises e ON s.exercise_id = e.id
+                WHERE s.workout_id = ?`, [workout.id],(e, rows) => {
                     if (e) return res.status(500).json({ success: false, message: "Database error" });
                     const exercisesMap = {};
                     rows.forEach(r => {
