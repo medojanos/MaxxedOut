@@ -15,6 +15,10 @@ import AddExercise from "../../components/AddExercise";
 const WorkoutStyle = StyleSheet.create({
     button : {
         width: 80
+    },
+    
+    infoContainer : {
+        backgroundColor: Var.black
     }
 })
 export default function Workout() {
@@ -118,7 +122,6 @@ export default function Workout() {
     }
     return (
         <SafeAreaView style={MainStyle.content}>
-            {exerciseInfos ? console.log(exerciseInfos) : null}
             <ScrollView>
                 <View style={MainStyle.inlineContainer}>
                     {
@@ -187,7 +190,6 @@ export default function Workout() {
                             </Pressable>
                         </View>
                         {
-                            
                             exercise.sets?.map((_, setIndex) => (
                                 <View 
                                     key={setIndex}
@@ -253,7 +255,7 @@ export default function Workout() {
                             <Pressable
                                 style={MainStyle.button}
                                 onPress={() => {
-                                    fetch("http://localhost:4000/workout", {
+                                    fetch("http://localhost:4000/workouts", {
                                         method: "PUT",
                                         headers: {
                                             "Content-Type" : "application/json",
@@ -312,16 +314,47 @@ export default function Workout() {
                     animationType="fade">
                     <View style={MainStyle.overlay}>
                         <View style={MainStyle.modal}>
-                            {exerciseInfos ? 
-                            <View>
-                                <Text>{exerciseInfos.type}</Text>
+                            {exerciseInfos ?
+                            <View style={[MainStyle.container, WorkoutStyle.infoContainer]}>
+                                {exerciseInfos.type && <Text style={MainStyle.containerTitle}>Type: {exerciseInfos.type}</Text>}
+                                {exerciseInfos.muscle_groups && <Text style={MainStyle.screenAltTitle}>Muscle groups worked</Text>}
+                                {exerciseInfos.muscle_groups && Object.entries(exerciseInfos.muscle_groups).map(([role, muscle_groups]) => (
+                                    <View
+                                        key={role}
+                                        style={MainStyle.content}>
+                                        <Text style={[MainStyle.screenAltTitle]}>{role} </Text>
+                                        {muscle_groups.map((mg, mgIndex) => (
+                                            <Text key={mgIndex} style={[MainStyle.lightText]}>{mg}</Text>
+                                        ))}
+                                    </View>
+                                ))}
                             </View> : null}
                             {workoutInfos ? 
                             <View>
-
+                                <View style={[MainStyle.container, WorkoutStyle.infoContainer]}>
+                                    <Text style={MainStyle.containerTitle}>Types</Text>
+                                    {workoutInfos.types && workoutInfos.types.map((type, typeIndex) => (
+                                        <Text
+                                            key={typeIndex}
+                                            style={MainStyle.lightText}>
+                                            {type.type} - {type.exercises} exercises - {type.sets} sets
+                                        </Text>
+                                    ))}
+                                </View>
+                                <View style={[MainStyle.container, WorkoutStyle.infoContainer]}>
+                                    <Text style={MainStyle.containerTitle}>Muscle groups</Text>
+                                    {workoutInfos.muscle_groups && workoutInfos.muscle_groups.map((mg, mgIndex) => (
+                                        <Text
+                                            key={mgIndex}
+                                            style={MainStyle.lightText}>
+                                            {mg.muscle_group} - {mg.sets} sets
+                                        </Text>
+                                    ))}
+                                    {workoutInfos.custom && <Text style={MainStyle.lightText}>Custom - {workoutInfos.custom} sets</Text>}
+                                </View>
                             </View> : null}
                             <Pressable
-                                style={MainStyle.secondaryButton}
+                                style={MainStyle.button}
                                 onPress={() => {setInfoModal(false); setExerciseInfos(null); setWorkoutInfos(null)}}>
                                 <Text style={[MainStyle.buttonText, WorkoutStyle.button]}>Exit</Text>
                             </Pressable> 

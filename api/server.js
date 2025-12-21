@@ -61,9 +61,56 @@ app.get("/exercises", (req, res) => {
 })
 
 app.get("/exercises/:id", (req, res) => {
-    db.all("SZELEKTÁLD A JÓ ROTHADÓ KURVA ANYÁDAT TE SIVATAGI FASZFEJŰ GECILÁNGOS SZMÖTYISZÜRCSÖLŐ GALAMBGECI", (e, rows) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"});
-        
+    db.all("SELECT e.id as exercise_id, COALESCE(pe.exercise_name, e.name) as name, e.type as type, pe.sets as sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+        const exerciseTypes = {};
+        let exIds = []
+        let exCustom = 0;
+
+        rows.forEach(row => {
+            let type;
+
+            if(!row.exercise_id) {
+                type="Custom";
+                exCustom+=row.sets;
+            }
+            else {
+                type = row.type;
+                exIds.push(row.exercise_id);
+            }
+
+            if(!exerciseTypes[type]){
+                exerciseTypes[type] = {
+                    type: type,
+                    exercises: 0,
+                    sets: 0
+                }
+            }
+
+            exerciseTypes[type].exercises++;
+            exerciseTypes[type].sets += row.sets;
+        });
+
+        const musclegroupsMap = {}
+
+        db.all(`SELECT mge.role AS role, mg.name AS muscle_group, pe.sets AS sets FROM plans_exercises pe JOIN muscle_groups_exercises mge ON mge.exercise_id = pe.exercise_id JOIN muscle_groups mg ON mg.id=mge.muscle_group_id WHERE pe.exercise_id IN (${exIds.map(() => "?").join(",")})`, exIds, (e, rows) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+            rows.forEach(row => {
+                if(!musclegroupsMap[row.muscle_group]){
+                    musclegroupsMap[row.muscle_group] = {
+                        muscle_group: row.muscle_group,
+                        sets: 0
+                    }
+                }
+
+                if(row.role == "Primary") musclegroupsMap[row.muscle_group].sets += row.sets;
+                if(row.role == "Secondary") musclegroupsMap[row.muscle_group].sets += row.sets * 0.5;
+            })
+
+            res.json({success: true, data: {types: Object.values(exerciseTypes), muscle_groups: Object.values(musclegroupsMap), custom: exCustom}});
+        })
     })
 })
 
@@ -203,13 +250,19 @@ app.delete("/plans/:id", (req, res) => {
 app.put("/workouts", (req, res) => {
     db.run("INSERT INTO workouts (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
         let completed = 0;
         const id = this.lastID;
+        let totalSets = 0;
+
+        req.body.plan.forEach(exercise => {
+            totalSets += exercise.sets.length;
+        });
 
         function Check(err) {
             if (err) return res.status(500).json({success: false, message: "Database error"}); 
             completed++;
-            if (completed == req.body.plan.length) res.json({success: true, message: "Workout stored succesfully"})
+            if (completed == totalSets) res.json({success: true, message: "Workout stored succesfully"})
         }
     
         req.body.plan.forEach(exercise => {
