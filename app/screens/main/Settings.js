@@ -28,7 +28,6 @@ const SettingsStyle = StyleSheet.create({
 })
 
 export default function Settings() {
-    const { setLogin } = useContext(Context);
     const {userData, setUserData} = useContext(Context);
 
     const { token } = useContext(Context);
@@ -139,6 +138,20 @@ export default function Settings() {
                         <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
                         <Text style={SettingsStyle.containerTitle}>Preferences</Text>
                     </View>
+                    <View style={MainStyle.container}>
+                        <View style={MainStyle.inlineContainer}>
+                            <Text style={MainStyle.strongText}>Resting time: </Text>
+                            <TextInput
+                                keyboardType="numeric"
+                                style={[MainStyle.input, MainStyle.setInput]}
+                                value={userData.preferences ? userData.preferences.restingTime.toString() : ""}
+                                onChangeText={text => {
+                                    if (!/^\d*$/.test(text)) return;
+                                    setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}))}}>
+                            </TextInput>
+                            <Text style={MainStyle.lightText}> minutes</Text>
+                        </View>
+                    </View>
                 </View>
                 <View style={MainStyle.container}>
                     <View style={MainStyle.inlineContainer}>
@@ -149,7 +162,7 @@ export default function Settings() {
                     <Pressable style={MainStyle.secondaryButton}>
                         <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength("")}}>Password reset</Text>
                     </Pressable>
-                    <Pressable style={MainStyle.button} onPress={() => setLogin(false)}>
+                    <Pressable style={MainStyle.button} onPress={() => setUserData(null)}>
                         <Text style={MainStyle.buttonText}>Logout</Text>
                     </Pressable>
                 </View>

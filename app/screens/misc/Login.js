@@ -23,9 +23,7 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [status, setStatus] = useState(); 
 
-    const { setLogin } = useContext(Context);
-    const { setUserData } = useContext(Context);
-    const { setToken } = useContext(Context);
+    const { setToken, setUserData } = useContext(Context);
 
     function Authenticate() {
         if (!email) {
@@ -52,7 +50,6 @@ export default function Login() {
                 setStatus(data.message);
                 setToken(data.data.token);
                 setUserData(data.data.userData);
-                setLogin(true);
             } else {
                 setStatus(data.message);
             }

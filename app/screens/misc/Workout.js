@@ -5,7 +5,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
-import { Context } from "../../misc/Provider";
+import { Context, Refresh} from "../../misc/Provider";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -263,12 +263,14 @@ export default function Workout() {
                                         },
                                         body: JSON.stringify({
                                             name: workout.name,
-                                            plan: workout.plan
+                                            plan: workout.plan,
+                                            started_at: workout.started_at
                                         })
                                     })
                                     .then(res => res.json())
                                     .then(data => {
                                         if (data.success) setWorkout(null);
+                                        setRefresh
                                         setDoneModal(false);
                                     })
                                 }}>

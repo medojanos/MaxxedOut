@@ -19,12 +19,12 @@ export default function PlanModal({Close, visible, id, name}) {
     const [deleteModal, setDeleteModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
 
-    const {token, setRefresh} = useContext(Context);
+    const {token, Refresh} = useContext(Context);
     
     useEffect(() => {
         fetch("http://localhost:4000/plans/" + id, {headers: {"Authorization" : token}})
         .then(res => res.json())
-        .then(data => setPlan({id: id, name: name, ownIndex: 0, exercises: data.data}))
+        .then(data => setPlan({id: id, name: name, ownIndex: 0, exercises: data.data.plan}))
     }, [id])
 
     function addExercise(id, name) {
@@ -101,7 +101,7 @@ export default function PlanModal({Close, visible, id, name}) {
             visible={visible}>
             <View style={MainStyle.overlay}>
                 <View style={MainStyle.modal}>
-                   <TextInput style={MainStyle.input} value={plan.name} onChangeText={text => setPlan(prev => ({...prev, name: text}))}></TextInput>
+                    <TextInput style={MainStyle.input} value={plan.name} onChangeText={text => setPlan(prev => ({...prev, name: text}))}></TextInput>
                     <Text style={MainStyle.screenAltTitle}>Edit workout plan</Text>
                     <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}><Text style={MainStyle.buttonText}>Add exercise</Text></Pressable>
                     <ScrollView>
@@ -154,7 +154,7 @@ export default function PlanModal({Close, visible, id, name}) {
                                     .then(data => {
                                         if (data.success) {
                                             setDeleteModal(false);
-                                            setRefresh(prev => prev + 1);
+                                            Refresh();
                                             Close();
                                         }
                                     })

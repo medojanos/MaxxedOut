@@ -33,12 +33,10 @@ export default function Logs() {
         fetch("http://localhost:4000/workouts/" + "?limit=5", {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => data.success ? setLatest(data.data) : setStatus(data.message))
-    }, [workout]);
-
-    useEffect(() => {
+        
         const date = new Date();
         fetchMarkedDates({year: date.getFullYear(), month: date.getMonth() + 1});
-    }, []);
+    }, [workout]);
 
     function fetchMarkedDates(date) {
         fetch("http://localhost:4000/workouts" + `?month=${date.year}-${String(date.month).padStart(2, '0')}`, {headers: {"Authorization" : token}})
@@ -48,7 +46,7 @@ export default function Logs() {
                 data.data.forEach(workout => {
                     setMarkedDates(prev => ({
                         ...prev,
-                        [workout.date] : {marked: true, dotColor: Var.red}
+                        [workout.ended_at] : {marked: true, dotColor: Var.red}
                     }))
                 })
             }
@@ -99,7 +97,7 @@ export default function Logs() {
                     <Text style={MainStyle.containerTitle}>Recent logs</Text>
                     {latest?.map((workout, index) => (
                         <View key={index} style={MainStyle.container}>
-                            <Text style={MainStyle.lightText}>{workout.name} - {workout.date.slice(0, 16)}</Text>
+                            <Text style={MainStyle.lightText}>{workout.name} - {workout.ended_at.slice(0, 16)}</Text>
                             <Pressable
                                 style={MainStyle.secondaryButton}
                                 onPress={() => {

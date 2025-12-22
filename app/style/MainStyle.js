@@ -65,6 +65,11 @@ export default StyleSheet.create({
         color: Var.white,
         fontSize: Var.fontSize
     },
+    strongText : {
+        color: Var.white,
+        fontWeight: "bold",
+        fontSize: Var.fontSize
+    },
 
     modal: {
             backgroundColor: Var.darkGray,

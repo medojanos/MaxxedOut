@@ -50,7 +50,7 @@ export default function WorkoutModal({Close, visible}) {
                                         fetch("http://localhost:4000/plans/" + plan.id, { headers: { Authorization: token } })
                                         .then(res => res.json())
                                         .then(data => {
-                                            if (data.success) setWorkout({id: plan.id, name: plan.name, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": 0, "rep": 0}))}))});
+                                            if (data.success) setWorkout({id: plan.id, name: plan.name, started_at: data.data.started_at, plan: Array.from(data.data.plan, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": 0, "rep": 0}))}))});
                                         });
                                         Close();
                                 }}>

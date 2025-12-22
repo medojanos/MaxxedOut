@@ -12,7 +12,7 @@ import { getData, getJson, } from "./misc/Storage";
 
 
 export default function App() {
-  const {setToken, setUserData, setWorkout, isLoggedIn, setLogin} = useContext(Context);
+  const {setToken, userData, setUserData, setWorkout} = useContext(Context);
 
   const [loading, setLoading] = useState(true);
 
@@ -26,9 +26,6 @@ export default function App() {
                 setToken(token);
                 setUserData(await getJson("user"));
                 setWorkout(await getJson("workout"));
-                setLogin(true);
-            } else {
-                setLogin(false);
             }
         }
         finally {
@@ -39,5 +36,5 @@ export default function App() {
   }, [])
 
   if (loading) return <Loader/>;
-  return isLoggedIn ? <Main/> : <Login/>
+  return userData ? <Main/> : <Login/>
 }

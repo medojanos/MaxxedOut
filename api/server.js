@@ -238,7 +238,9 @@ app.get("/plans", (req, res) => {
 app.get("/plans/:id", (req, res) => {
     db.all("SELECT e.id as id, COALESCE(pe.exercise_name, e.name) as name, pe.sets as sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        res.json({success: true, data: rows});
+        db.get("SELECT DATETIME('now') as started_at", (_, row) => {
+            res.json({success: true, data: {plan: rows, started_at: row.started_at}});
+        })
     })
 })
 app.delete("/plans/:id", (req, res) => {
@@ -248,7 +250,7 @@ app.delete("/plans/:id", (req, res) => {
     })
 })
 app.put("/workouts", (req, res) => {
-    db.run("INSERT INTO workouts (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
+    db.run("INSERT INTO workouts (user_id, name, started_at) VALUES (?, ?, ?)", [req.user, req.body.name, req.body.started_at], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
 
         let completed = 0;
@@ -282,7 +284,7 @@ app.get("/workouts", (req, res) => {
     const { month, date, name, limit } = req.query;
     if (Object.keys(req.query).length > 1) return res.status(400).json({success: false, message: "Invalid query parameters"});
     if (date) {
-        db.all("SELECT id, name FROM workouts WHERE DATE(date) = ? AND user_id = ?", [req.query.date, req.user], (e, workouts) => {
+        db.all("SELECT id, name FROM workouts WHERE DATE(ended_at) = ? AND user_id = ?", [req.query.date, req.user], (e, workouts) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
             if (workouts.length === 0) return res.json({ success: false, message: "No workout that day" });
             const workoutIds = workouts.map(w => w.id);
@@ -330,7 +332,7 @@ app.get("/workouts", (req, res) => {
             );
         });
     } else if (name) {
-        db.get("SELECT id, name FROM workouts WHERE user_id = ? AND name = ? ORDER BY date DESC LIMIT 1", [req.user, req.query.name], (e, workout) => {
+        db.get("SELECT id, name FROM workouts WHERE user_id = ? AND name = ? ORDER BY ended_at DESC LIMIT 1", [req.user, req.query.name], (e, workout) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
             if (!workout) return res.json({ success: false, message: "No recent workout" });
             db.all(`SELECT
@@ -367,13 +369,13 @@ app.get("/workouts", (req, res) => {
             );
         });
     } else if (month) {
-        db.all("SELECT DATE(date) AS date FROM workouts WHERE user_id = ? AND STRFTIME('%Y-%m', date) = ?", [req.user, req.query.month], (e, rows) => {
+        db.all("SELECT DATE(ended_at) AS ended_at FROM workouts WHERE user_id = ? AND STRFTIME('%Y-%m', ended_at) = ?", [req.user, req.query.month], (e, rows) => {
                 if (e) return res.status(500).json({ success: false, message: "Database error" });
                 res.json({success: true, data: rows});
             }
         );
     } else {
-        let query = "SELECT id, name, date FROM workouts WHERE user_id = ? ORDER BY date DESC";
+        let query = "SELECT id, name, ended_at FROM workouts WHERE user_id = ? ORDER BY ended_at DESC";
         let params = [];
         params.push(req.user);
         if (limit) {
@@ -392,10 +394,10 @@ app.get("/workouts/:id", (req, res) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
             db.all(
                 `SELECT 
-                    e.id as exercise_id,
-                    COALESCE(s.exercise_name, e.name) as exercise_name,
-                    rep,
-                    weight
+                e.id as exercise_id,
+                COALESCE(s.exercise_name, e.name) as exercise_name,
+                rep,
+                weight
                 FROM sets s
                 LEFT JOIN exercises e ON s.exercise_id = e.id
                 WHERE s.workout_id = ?`, [workout.id],(e, rows) => {
@@ -449,6 +451,72 @@ app.patch("/user", (req, res) => {
     }
     return res.status(400).json({success: false, message: "No changes made"});
 })
+
+app.get("/statistics", (req, res) => {
+    db.get(`
+        SELECT 
+        COUNT(*) AS total_workouts,
+        AVG((strftime('%s', ended_at) - strftime('%s', started_at)) / 60.0) AS avg_duration,
+        
+        FROM workouts
+        WHERE user_id = ?`, [req.user], (e, workouts) => {
+        if (e) return res.status(500).json({ success: false, message: "Database error" });
+
+        db.get(`SELECT 
+            SUM(s.weight) AS total_weight,
+
+            (SELECT weight FROM sets
+            JOIN workouts ON sets.workout_id = workouts.id
+            WHERE exercise_id = 3 AND workouts.user_id = ?
+            ORDER BY weight DESC LIMIT 1) AS max_squat,
+
+            (SELECT rep FROM sets
+            JOIN workouts ON sets.workout_id = workouts.id
+            WHERE exercise_id = 3 AND workouts.user_id = ?
+            ORDER BY weight DESC LIMIT 1) AS reps_squat,
+
+            (SELECT weight FROM sets
+            JOIN workouts ON sets.workout_id = workouts.id
+            WHERE exercise_id = 1 AND workouts.user_id = ?
+            ORDER BY weight DESC LIMIT 1) AS max_bench,
+
+            (SELECT rep FROM sets
+            JOIN workouts ON sets.workout_id = workouts.id
+            WHERE exercise_id = 1 AND workouts.user_id = ?
+            ORDER BY weight DESC LIMIT 1) AS reps_bench,
+
+            (SELECT weight FROM sets
+            JOIN workouts ON sets.workout_id = workouts.id
+            WHERE exercise_id = 2 AND workouts.user_id = ?
+            ORDER BY weight DESC LIMIT 1) AS max_deadlift,
+
+            (SELECT rep FROM sets
+            JOIN workouts ON sets.workout_id = workouts.id
+            WHERE exercise_id = 2 AND workouts.user_id = ?
+            ORDER BY weight DESC LIMIT 1) AS reps_deadlift
+
+            FROM sets s
+            JOIN workouts w ON s.workout_id = w.id
+            WHERE w.user_id = ?`, Array.from({length: 7}, () => req.user), (e, sets) => {
+            if (e) return res.status(500).json({ success: false, message: "Database error" });
+            res.json({
+                success: true,
+                data: {
+                    totalWorkouts: workouts.total_workouts || 0,
+                    avgDuration: Math.round(workouts.avg_duration) || 0,
+                    totalWeight: sets.total_weight || 0,
+                    maxSquat: sets.max_squat || 0,
+                    repsSquat: sets.reps_squat || 0,
+                    maxBench: sets.max_bench || 0,
+                    repsBench: sets.reps_bench || 0,
+                    maxDeadlift: sets.max_deadlift || 0,
+                    repsDeadlift: sets.reps_deadlift || 0
+                }
+            });
+        });
+    });
+});
+        
 
 app.get("/auth", (req, res) => {
     if (!req.user) return res.status(401).json({success: false, message: "Invalid token"})
