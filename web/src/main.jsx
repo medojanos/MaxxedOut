@@ -8,6 +8,7 @@ import Home from './Home'
 import Registration from './Registration'
 import Download from './Download'
 import Docs from './Docs'
+import DeleteAccount from './DeleteAccount'
 import Footer from './components/Footer'
 
 createRoot(document.getElementById('root')).render(
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/registration" element={<Registration />} />
       <Route path="/download" element={<Download />} />
       <Route path="/docs" element={<Docs />} />
+      <Route path="/delete-account" element={<DeleteAccount />} />
     </Routes>
     <Footer></Footer>
   </BrowserRouter>

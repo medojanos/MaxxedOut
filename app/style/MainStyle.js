@@ -26,19 +26,18 @@ export default StyleSheet.create({
         borderColor: Var.navyBlue,
         borderRadius: 10,
         width: "100%",
-        marginVertical : 20
+        marginVertical : 10
     },
     containerTitle : {
         color: Var.white,
         fontSize: 20,
-        marginBottom: 20
+        fontWeight: "bold"
     },
 
     inlineContainer : {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
-        paddingBottom: 10
+        justifyContent: "space-between"
     },
     
     buttonBlock : {
@@ -67,8 +66,8 @@ export default StyleSheet.create({
     },
     strongText : {
         color: Var.white,
+        fontSize: Var.fontSize,
         fontWeight: "bold",
-        fontSize: Var.fontSize
     },
 
     modal: {

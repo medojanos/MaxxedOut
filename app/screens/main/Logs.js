@@ -17,7 +17,8 @@ const LogsStyle = StyleSheet.create({
     calendar : {
         backgroundColor: Var.red,
         borderRadius: 10,
-        height: 365
+        padding: 10,
+        marginVertical : 20
     }
 })
 
@@ -60,33 +61,30 @@ export default function Logs() {
                     <Text style={MainStyle.screenTitle}>Logs</Text>
                     <Text style={MainStyle.screenAltTitle}>Keep track of your previous workouts</Text>
                 </View>
-                <View style={MainStyle.container}>
-                    <Text style={MainStyle.containerTitle}>Calendar</Text>
-                    <Calendar 
-                        style={LogsStyle.calendar} 
-                        enableSwipeMonths
-                        onDayPress={day => {
-                            fetch("http://localhost:4000/workouts?date=" + day.dateString, {headers: {"Authorization" : token}})
-                            .then(res => res.json())
-                            .then(data => {
-                                setStatus();
-                                setWorkouts();
-                                data.success ? setWorkouts(data.data) : setStatus(data.message);
-                                setLogModal(true);
-                            })
-                        }}
-                        theme={{
-                            todayTextColor : Var.red,
-                            monthTextColor: Var.white,
-                            arrowColor: Var.black,
-                            calendarBackground : Var.black,
-                            textDayStyle: {color: Var.white},
-                            textDisabledColor: Var.paleRed
-                        }}
-                        markedDates={markedDates}
-                        onMonthChange={fetchMarkedDates}>
-                    </Calendar>
-                </View>
+                <Calendar 
+                    style={LogsStyle.calendar} 
+                    enableSwipeMonths
+                    onDayPress={day => {
+                        fetch("http://localhost:4000/workouts?date=" + day.dateString, {headers: {"Authorization" : token}})
+                        .then(res => res.json())
+                        .then(data => {
+                            setStatus();
+                            setWorkouts();
+                            data.success ? setWorkouts(data.data) : setStatus(data.message);
+                            setLogModal(true);
+                        })
+                    }}
+                    theme={{
+                        todayTextColor : Var.red,
+                        monthTextColor: Var.white,
+                        arrowColor: Var.black,
+                        calendarBackground : Var.black,
+                        textDayStyle: {color: Var.white},
+                        textDisabledColor: Var.paleRed
+                    }}
+                    markedDates={markedDates}
+                    onMonthChange={fetchMarkedDates}>
+                </Calendar>
                 <LogModal
                     visible={logModal}
                     status={status}

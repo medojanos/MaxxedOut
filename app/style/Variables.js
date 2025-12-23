@@ -1,5 +1,5 @@
 // Sizes
-const fontSize = 15;
+const fontSize = 18;
 
 // Colors
 const black = "#000000";

@@ -14,9 +14,7 @@ import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 const WorkoutsStyle = StyleSheet.create({
     addPlan : {
-        borderWidth: 1,
         backgroundColor: Var.darkGray,
-        flex: 1,
         alignItems: "center",
         marginVertical: 20,
         padding: 5,

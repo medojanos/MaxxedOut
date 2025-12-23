@@ -32,8 +32,8 @@ export default function Tracker() {
                     </View>
                     : 
                     <View>
-                        <Text style={TrackerStyle.welcome}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
                         <Text style={MainStyle.screenTitle}>Tracker</Text>
+                        <Text style={TrackerStyle.welcome}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
                         <Pressable 
                             style={MainStyle.button}
                             onPress={() => {setWorkoutModal(true)}}>

@@ -185,7 +185,8 @@ app.use(AuthMiddleWare);
 app.put("/plan", (req, res) => {
     db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
-
+        if (req.body.exercises.length === 0) return res.json({success: true, message: "Workout plan created succesfully"});
+        
         let completed = 0;
         const id = this.lastID;
 
@@ -449,19 +450,17 @@ app.patch("/user", (req, res) => {
             update("password", hash("sha-512", req.body.password))
         })
     }
-    return res.status(400).json({success: false, message: "No changes made"});
+    res.status(400).json({success: false, message: "No changes made"});
 })
 
 app.get("/statistics", (req, res) => {
     db.get(`
         SELECT 
         COUNT(*) AS total_workouts,
-        AVG((strftime('%s', ended_at) - strftime('%s', started_at)) / 60.0) AS avg_duration,
-        
+        AVG((strftime('%s', ended_at) - strftime('%s', started_at)) / 60.0) AS avg_duration
         FROM workouts
         WHERE user_id = ?`, [req.user], (e, workouts) => {
         if (e) return res.status(500).json({ success: false, message: "Database error" });
-
         db.get(`SELECT 
             SUM(s.weight) AS total_weight,
 

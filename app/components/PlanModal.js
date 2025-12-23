@@ -101,8 +101,8 @@ export default function PlanModal({Close, visible, id, name}) {
             visible={visible}>
             <View style={MainStyle.overlay}>
                 <View style={MainStyle.modal}>
-                    <TextInput style={MainStyle.input} value={plan.name} onChangeText={text => setPlan(prev => ({...prev, name: text}))}></TextInput>
-                    <Text style={MainStyle.screenAltTitle}>Edit workout plan</Text>
+                    <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
+                    <TextInput style={MainStyle.input} value={plan.name || ""} onChangeText={text => setPlan(prev => ({...prev, name: text}))}></TextInput>
                     <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}><Text style={MainStyle.buttonText}>Add exercise</Text></Pressable>
                     <ScrollView>
                         {plan?.exercises.map((exercise, index) => (
@@ -115,8 +115,8 @@ export default function PlanModal({Close, visible, id, name}) {
                                         onChangeText={text => updateExerciseName(index, text)}>
                                     </TextInput>
                                     :  
-                                    <Text style={[MainStyle.containerTitle, {margin: 0}]}>{exercise.name}</Text>}
-                                    <Text style={MainStyle.lightText}>X</Text>
+                                    <Text style={MainStyle.lightText}>{exercise.name}</Text>}
+                                    <Text style={MainStyle.strongText}>X</Text>
                                     <TextInput
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
@@ -176,7 +176,7 @@ export default function PlanModal({Close, visible, id, name}) {
                             .then(res => res.json())
                             .then(data => {
                                 if (data.success) {
-                                    setRefresh(prev => prev + 1);
+                                    Refresh();
                                     Close();
                                 }
                             })

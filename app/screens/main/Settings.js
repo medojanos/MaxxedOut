@@ -1,5 +1,5 @@
 // React
-import { View, Text, ScrollView, Pressable, StyleSheet, TextInput, Modal } from "react-native";
+import { View, Text, ScrollView, Pressable, StyleSheet, TextInput, Modal, Linking } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,19 +12,7 @@ import RandomName from "../../misc/RandomName";
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
 const SettingsStyle = StyleSheet.create({
-    profileContainer : {
-        alignItems: "center"
-    },
-    nickname : {
-        fontSize: 20,
-        color: Var.white
-    },
-    containerTitle : {
-        color: Var.white,
-        fontSize: 20,
-        textAlign: "center",
-        width: "100%"
-    }
+
 })
 
 export default function Settings() {
@@ -70,12 +58,12 @@ export default function Settings() {
                 <View style={MainStyle.container}>
                     <View style={MainStyle.inlineContainer}>
                         <Ionicons name="person-circle" color={Var.red} size={40}></Ionicons>
-                        <Text style={SettingsStyle.containerTitle}>Profile settings</Text>
+                        <Text style={[MainStyle.containerTitle, {textAlign: "center"}]}>Profile settings</Text>
                     </View>
                     <View style={MainStyle.inlineContainer}>
-                        <Text style={SettingsStyle.nickname}>Nickname: </Text>
-                        <Text style={SettingsStyle.nickname}>{userData ? userData.nickname : ""}</Text>
-                        <Pressable onPress={() => setNicknameModal(true)}>
+                        <Text style={MainStyle.lightText}>Nickname: </Text>
+                        <Text style={MainStyle.lightText}>{userData ? userData.nickname : ""}</Text>
+                        <Pressable onPress={() => {setNicknameModal(true); setStatus("");}}>
                             <Ionicons name="create" color={Var.red} size={25}></Ionicons>
                         </Pressable>
                     </View>
@@ -88,7 +76,7 @@ export default function Settings() {
                         <View style={MainStyle.modal}>
                             <Text style={MainStyle.screenTitle}>Edit nickname</Text>
                             <Text style={MainStyle.screenAltTitle}>{status}</Text>
-                            <View style={MainStyle. inlineContainer}>
+                            <View style={MainStyle.inlineContainer}>
                                 <TextInput
                                     value={newNickname}
                                     placeholder="Enter new nickname..."
@@ -120,6 +108,8 @@ export default function Settings() {
                                         if (data.success) {
                                             setUserData(data.data);
                                             setNicknameModal(false);
+                                        } else {
+                                            setStatus(data.message);
                                         }
                                     })
                                     .catch(e => console.log(e))
@@ -136,11 +126,11 @@ export default function Settings() {
                 <View style={MainStyle.container}>
                     <View style={MainStyle.inlineContainer}>
                         <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
-                        <Text style={SettingsStyle.containerTitle}>Preferences</Text>
+                        <Text style={[MainStyle.containerTitle, {textAlign: "center"}]}>Preferences</Text>
                     </View>
                     <View style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
-                            <Text style={MainStyle.strongText}>Resting time: </Text>
+                            <Text style={MainStyle.lightText}>Resting time: </Text>
                             <TextInput
                                 keyboardType="numeric"
                                 style={[MainStyle.input, MainStyle.setInput]}
@@ -156,16 +146,24 @@ export default function Settings() {
                 <View style={MainStyle.container}>
                     <View style={MainStyle.inlineContainer}>
                         <Ionicons name="key" color={Var.red} size={40}></Ionicons>
-                        <Text style={SettingsStyle.containerTitle}>Account settings</Text>
+                        <Text style={[MainStyle.containerTitle, {textAlign: "center"}]}>Account settings</Text>
                     </View>
-                    <Text style={MainStyle.lightText}>Reset your password</Text>
+
                     <Pressable style={MainStyle.secondaryButton}>
                         <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength("")}}>Password reset</Text>
                     </Pressable>
-                    <Pressable style={MainStyle.button} onPress={() => setUserData(null)}>
-                        <Text style={MainStyle.buttonText}>Logout</Text>
+                    <Pressable 
+                        style={MainStyle.button} 
+                        onPress={() => Linking.openURL("http://localhost:5173/delete-account")}>
+                        <View style={[MainStyle.inlineContainer, {justifyContent: "center"}]}>
+                            <Text style={MainStyle.buttonText}>Delete account</Text>
+                            <Ionicons name="link" color={Var.paleWhite} size={20}></Ionicons>
+                        </View>
                     </Pressable>
                 </View>
+                <Pressable style={MainStyle.button} onPress={() => setUserData(null)}>
+                    <Text style={MainStyle.buttonText}>Logout</Text>
+                </Pressable>
                 <Modal 
                     animationType="fade"
                     transparent={true}
@@ -173,7 +171,7 @@ export default function Settings() {
                     <View style={MainStyle.overlay}>
                         <View style={MainStyle.modal}>
                             <Text style={MainStyle.screenTitle}>Edit password</Text>
-                            <Text style={MainStyle.screenAltTitle}>{pwdStrength}</Text>
+                            <Text style={MainStyle.screenAltTitle}>{status}</Text>
                             <TextInput
                                 secureTextEntry
                                 placeholder="Enter current password..."
@@ -192,7 +190,7 @@ export default function Settings() {
                                 style={MainStyle.input}
                                 onChangeText={setNewRepassword}>
                             </TextInput>
-                            <Text style={MainStyle.lightText}>{status}</Text>
+                            <Text style={MainStyle.strongText}>{pwdStrength}</Text>
                             <View style={MainStyle.inlineContainer}>
                                 <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
                                     setStatus("");
@@ -218,8 +216,7 @@ export default function Settings() {
                                         } else {
                                             setStatus(data.message);
                                         }
-                                    })
-                                }}>
+                                    })}}>
                                     <Text style={MainStyle.buttonText}>Save</Text>
                                 </Pressable>
                                 <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setPasswordModal(false)}>

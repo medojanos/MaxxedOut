@@ -1,17 +1,18 @@
 // React
 import { View, Text, ScrollView, Pressable, TextInput, Modal } from "react-native";
 import { Picker } from '@react-native-picker/picker';
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 
 // Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
 import { StyleSheet } from "react-native";
-import { Context } from "../misc/Provider";
 const AddExerciseStyle = StyleSheet.create({
     listItems : {
         backgroundColor: Var.navyBlue,
-        padding: 5
+        padding: 5,
+        fontSize: 15,
+        color: Var.white,
     },
     picker : {
         backgroundColor: Var.black,
@@ -19,10 +20,8 @@ const AddExerciseStyle = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 5,
         color: Var.white,
-        padding: 3
-    },
-    pickerItem : {
-        color: Var.white
+        padding: 5,
+        marginBottom: 10
     }
 })
 
@@ -33,8 +32,6 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const [searchText, setSearchText] = useState("");
     const [type, setType] = useState("");
     const [musclegroup, setMuscleGroup] = useState("");
-
-    const {setWorkout} = useContext(Context);
 
     useEffect(() => {
         fetch("http://localhost:4000/exercises")
@@ -66,36 +63,30 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                         onChangeText={setSearchText}>
                     </TextInput>
                     <View style={MainStyle.inlineContainer}>
-                        <View>
-                            <Text style={MainStyle.lightText}>Type</Text>
-                            <Picker
-                                style={AddExerciseStyle.picker}
-                                selectedValue={type}
-                                onValueChange={setType}>
-                                <Picker.Item label="Choose type" value=""/>
-                                <Picker.Item label="Compound" value="Compound"/>
-                                <Picker.Item label="Isolation" value="Isolation"/>
-                            </Picker>
-                        </View>
-                        <View>
-                            <Text style={MainStyle.lightText}>Muscle</Text>
-                            <Picker
-                                style={AddExerciseStyle.picker}
-                                selectedValue={musclegroup}
-                                onValueChange={setMuscleGroup}>
-                                <Picker.Item label="Choose muscle group" value=""/>
-                                {musclegroups.map(mg => (
-                                    <Picker.Item style={AddExerciseStyle.pickerItem} key={mg.id} label={mg.name} value={mg.name} />
-                                ))}
-                            </Picker>
-                        </View>
+                        <Picker
+                            style={AddExerciseStyle.picker}
+                            selectedValue={type}
+                            onValueChange={setType}>
+                            <Picker.Item label="Choose type" value=""/>
+                            <Picker.Item label="Compound" value="Compound"/>
+                            <Picker.Item label="Isolation" value="Isolation"/>
+                        </Picker>
+                        <Picker
+                            style={AddExerciseStyle.picker}
+                            selectedValue={musclegroup}
+                            onValueChange={setMuscleGroup}>
+                            <Picker.Item label="Choose muscle group" value=""/>
+                            {musclegroups.map(mg => (
+                                <Picker.Item key={mg.id} label={mg.name} value={mg.name} />
+                            ))}
+                        </Picker>
                     </View>
                     <ScrollView>
                         {filteredExercises.map((exercise) => (
                             <Pressable
                                 key={exercise.id}
                                 onPress={() => addExercise(exercise.id, exercise.name)}>
-                                <Text style={[MainStyle.lightText, AddExerciseStyle.listItems]}>{exercise.name}</Text>
+                                <Text style={AddExerciseStyle.listItems}>{exercise.name}</Text>
                             </Pressable>                                  
                         ))}
                     </ScrollView>

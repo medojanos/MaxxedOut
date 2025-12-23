@@ -13,22 +13,21 @@ const WorkoutModalStyle = StyleSheet.create({
     workoutButton:{
         backgroundColor: Var.black,
         borderColor: Var.navyBlue,
-        borderWidth: 2,
-        marginBottom: 2
+        borderWidth: 2
     }
 })
 
 export default function WorkoutModal({Close, visible}) {
     const [plans, setPlans] = useState();
 
-    const { token, setWorkout } = useContext(Context);
+    const { token, setWorkout, refresh } = useContext(Context);
     const navigation = useNavigation();
 
     useEffect(() => {
         fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => setPlans(data.data))
-    }, [])  
+    }, [refresh])  
 
     return (
         <Modal 
@@ -59,7 +58,7 @@ export default function WorkoutModal({Close, visible}) {
                             :
                             <View style={MainStyle.inlineContainer}>
                                 <Text style={[MainStyle.lightText, {fontWeight: "bold"}]}>No workout plan?</Text>
-                                <Pressable style={[MainStyle.button, WorkoutModalStyle.workoutButton]} onPress={() => navigation.navigate("CreateWorkout")}>
+                                <Pressable style={[MainStyle.button, WorkoutModalStyle.workoutButton]} onPress={() => {navigation.navigate("CreateWorkout"); Close();}}>
                                     <Text style={MainStyle.buttonText}>Create one</Text>
                                 </Pressable> 
                             </View>

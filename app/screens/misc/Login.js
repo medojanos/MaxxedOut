@@ -1,5 +1,5 @@
 // React
-import { View, Text, TextInput, Pressable, StyleSheet, ScrollView } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Linking } from "react-native";
 import { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -78,6 +78,14 @@ export default function Login() {
                         onPress={Authenticate}
                         style={MainStyle.button}>
                         <Text style={MainStyle.buttonText}>Login</Text>
+                    </Pressable>
+                </View>
+                <View style={[MainStyle.container, MainStyle.inlineContainer]}>
+                    <Text style={MainStyle.screenAltTitle}>Don't have an account?</Text>
+                    <Pressable
+                        onPress={() => {Linking.openURL("http://localhost:5173/registration")}}
+                        style={MainStyle.button}>
+                        <Text style={MainStyle.buttonText}>Register here!</Text>
                     </Pressable>
                 </View>
             </ScrollView>
