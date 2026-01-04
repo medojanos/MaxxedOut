@@ -17,8 +17,9 @@ app.use(cors())
 app.use(express.json())
 
 const db = new sqlite3.Database(dbPath, (e) => {
-    if (e) console.error("Database error: ", e)
-    else console.log("Database opened successfully")
+    if (e) return console.error("Database error: ", e)
+    db.run("PRAGMA foreign_keys = ON;")
+    console.log("Database opened successfully")
 })
 
 // Open api
@@ -60,6 +61,7 @@ app.get("/exercises", (req, res) => {
     })
 })
 
+/*
 app.get("/exercises/:id", (req, res) => {
     db.all("SELECT e.id as exercise_id, COALESCE(pe.exercise_name, e.name) as name, e.type as type, pe.sets as sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
@@ -137,6 +139,7 @@ app.get("/exercise/:id", (req, res) => {
         res.json({success: true, data: {type: rows[0].type, muscle_groups: musclegroupsMap}});
     })
 })
+*/
 
 app.post("/register", (req, res) => {
     db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
@@ -239,9 +242,7 @@ app.get("/plans", (req, res) => {
 app.get("/plans/:id", (req, res) => {
     db.all("SELECT e.id as id, COALESCE(pe.exercise_name, e.name) as name, pe.sets as sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        db.get("SELECT DATETIME('now') as started_at", (_, row) => {
-            res.json({success: true, data: {plan: rows, started_at: row.started_at}});
-        })
+        res.json({success: true, data: {plan: rows}});
     })
 })
 app.delete("/plans/:id", (req, res) => {
@@ -251,16 +252,18 @@ app.delete("/plans/:id", (req, res) => {
     })
 })
 app.put("/workouts", (req, res) => {
-    db.run("INSERT INTO workouts (user_id, name, started_at) VALUES (?, ?, ?)", [req.user, req.body.name, req.body.started_at], function(e) {
+    db.run("INSERT INTO workouts (user_id, name, started_at, ended_at) VALUES (?, ?, ?, ?)", [req.user, req.body.name, req.body.started_at, req.body.ended_at], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
-
+        
         let completed = 0;
-        const id = this.lastID;
         let totalSets = 0;
+        const id = this.lastID;
 
         req.body.plan.forEach(exercise => {
             totalSets += exercise.sets.length;
         });
+
+        if (totalSets == 0) return res.json({success: true, message: "Workout stored succesfully"})
 
         function Check(err) {
             if (err) return res.status(500).json({success: false, message: "Database error"}); 

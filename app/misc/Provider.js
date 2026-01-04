@@ -25,9 +25,11 @@ export default function Provider({children}) {
     }, [workout])
 
     useEffect(() => {
-        if (userData === undefined || userData === null) return;
-        if (userData.nickname == null) setUserData(prev => ({...prev, nickname: RandomName()}));
-        if (userData.preferences === undefined) setUserData(prev => ({...prev, preferences: {restingTime: 1.5}}));
+        if (userData === undefined) return;
+        if (userData !== null) {
+            if (userData.nickname == null) setUserData(prev => ({...prev, nickname: RandomName()}));
+            if (userData.preferences === undefined) setUserData(prev => ({...prev, preferences: {restingTime: 1.5}}));
+        }
         setJson("user", userData);
     }, [userData]);
     

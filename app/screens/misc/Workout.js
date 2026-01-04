@@ -1,11 +1,13 @@
 // React
 import { View, ScrollView, StyleSheet, Text, Pressable, TextInput, Modal } from "react-native";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import dayjs from "dayjs";
 
 // Misc
-import { Context, Refresh} from "../../misc/Provider";
+import { Context} from "../../misc/Provider";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -13,10 +15,6 @@ import MainStyle from "../../style/MainStyle"
 import AddExercise from "../../components/AddExercise";
 
 const WorkoutStyle = StyleSheet.create({
-    button : {
-        width: 80
-    },
-    
     infoContainer : {
         backgroundColor: Var.black
     }
@@ -24,12 +22,19 @@ const WorkoutStyle = StyleSheet.create({
 export default function Workout() {
     const {token, workout, setWorkout} = useContext(Context);
 
+    const navigation = useNavigation();
+
     const [cancelModal, setCancelModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
     const [doneModal, setDoneModal] = useState(false);
+
+    /*
     const [infoModal, setInfoModal] = useState(false);
     const [exerciseInfos, setExerciseInfos] = useState();
     const [workoutInfos, setWorkoutInfos] = useState();
+    */
+
+    if (!workout) return null;
 
     function addExercise(id, name) {
         setWorkout(prev => ({
@@ -126,7 +131,8 @@ export default function Workout() {
                 <View style={MainStyle.inlineContainer}>
                     {
                     workout.id ? 
-                        <Pressable
+                        <Text style={MainStyle.screenTitle}>{workout.name}</Text>
+                        /*<Pressable
                             onPress={() => {
                                 fetch("http://localhost:4000/exercises/" + workout.id, { headers: { Authorization: token } })
                                 .then(res => res.json())
@@ -136,8 +142,7 @@ export default function Workout() {
                                     setInfoModal(true); 
                                 })
                             }}>
-                            <Text style={MainStyle.screenTitle}>{workout.name}</Text>
-                        </Pressable>
+                        </Pressable>*/
                         :
                         <TextInput 
                             style={MainStyle.input} 
@@ -173,6 +178,8 @@ export default function Workout() {
                                 onChangeText={text => updateExerciseName(exerciseIndex, text)}>
                             </TextInput>
                             : 
+                            <Text style={[MainStyle.containerTitle, {margin: 0}]}>{exerciseIndex+1}. {exercise.name}</Text>
+                            /*
                             <Pressable onPress={() => {
                                 fetch("http://localhost:4000/exercise/" + exercise.id, { headers: { Authorization: token } })
                                 .then(res => res.json())
@@ -182,8 +189,8 @@ export default function Workout() {
                                     setInfoModal(true); 
                                 })
                             }}>
-                                    <Text style={[MainStyle.containerTitle, {margin: 0}]}>{exerciseIndex+1}. {exercise.name}</Text>
                             </Pressable>
+                            */
                             }
                             <Pressable onPress={() => deleteExercise(exerciseIndex)}>
                                 <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
@@ -232,7 +239,7 @@ export default function Workout() {
                 <AddExercise
                     visible={searchModal}
                     addExercise={addExercise}
-                    ownIndex={workout.ownIndex || 0}
+                    ownIndex={workout.ownIndex}
                     Close={() => setSearchModal(false)}>
                 </AddExercise> 
                 <Pressable
@@ -264,14 +271,17 @@ export default function Workout() {
                                         body: JSON.stringify({
                                             name: workout.name,
                                             plan: workout.plan,
-                                            started_at: workout.started_at
+                                            started_at: workout.started_at,
+                                            ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
                                         })
                                     })
                                     .then(res => res.json())
                                     .then(data => {
-                                        if (data.success) setWorkout(null);
-                                        setRefresh
-                                        setDoneModal(false);
+                                        if (data.success) {
+                                            navigation.navigate("Home");
+                                            setDoneModal(false);
+                                            setWorkout(null);
+                                        }
                                     })
                                 }}>
                                 <Text style={MainStyle.buttonText}>Yes</Text>
@@ -281,7 +291,7 @@ export default function Workout() {
                 </Modal>
                 <View style={MainStyle.inlineContainer}>
                 <Pressable
-                    style={MainStyle.button}
+                    style={[MainStyle.button, MainStyle.buttonBlock]}
                     onPress={() => setDoneModal(true)}>
                     <Text style={[MainStyle.buttonText, WorkoutStyle.button]}>Done</Text>
                 </Pressable>
@@ -299,17 +309,22 @@ export default function Workout() {
                             </Pressable>
                             <Pressable
                                 style={MainStyle.button}
-                                onPress={() => setWorkout(null)}>
+                                onPress={() => {
+                                    navigation.navigate("Home");
+                                    setCancelModal(false);
+                                    setWorkout(null);
+                                }}>
                                 <Text style={MainStyle.buttonText}>Yes</Text>
                             </Pressable>
                         </View>
                     </View>
                 </Modal>
                 <Pressable
-                    style={MainStyle.secondaryButton}
+                    style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
                     onPress={() => setCancelModal(true)}>
-                    <Text style={[MainStyle.buttonText, WorkoutStyle.button]}>Cancel</Text>
+                    <Text style={MainStyle.buttonText}>Cancel</Text>
                 </Pressable>
+                {/*
                 <Modal
                     visible={infoModal}
                     transparent={true}
@@ -363,6 +378,7 @@ export default function Workout() {
                         </View>
                     </View>
                 </Modal>
+                */}
                 </View>
             </ScrollView>
         </SafeAreaView>

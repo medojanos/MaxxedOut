@@ -27,7 +27,7 @@ export default function CreateWorkout() {
     function addExercise(id, name) {
         setPlanDraft(prev => ({
                 ...prev,
-                ownIndex: prev.ownIndex + 1,
+                ownIndex: typeof id == "string" ? prev.ownIndex + 1 : prev.ownIndex,
                 exercises: [
                     ...prev.exercises, 
                     {

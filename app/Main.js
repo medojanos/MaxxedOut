@@ -66,6 +66,7 @@ export default function Main() {
         })}>
         <Stack.Screen name="Home" component={Home} options={{header: () => null}}/>
         <Stack.Screen name="CreateWorkout" component={CreateWorkout} options={{headerTitle: "Create new workout"}}/>
+        <Stack.Screen name="Workout" component={Workout}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

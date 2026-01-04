@@ -48,6 +48,7 @@ export default function Workouts() {
                         <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
                     </Pressable>
                     {
+                        plans.length > 0 ? 
                         plans.map(plan => (
                             <View key={plan.id} style={MainStyle.container}>
                                 <Text style={MainStyle.containerTitle}>{plan.name}</Text>
@@ -59,7 +60,9 @@ export default function Workouts() {
                                     <Text style={MainStyle.buttonText}>Edit</Text>
                                 </Pressable>
                             </View>
-                        ))
+                        )) 
+                        : 
+                        <Text style={MainStyle.lightText}>Your plans will be displayed here!</Text>
                     }
                     <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId} name={planName}></PlanModal>
                 </View>

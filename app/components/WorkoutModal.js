@@ -1,7 +1,8 @@
 // React
-import { View, Text, Pressable, Modal, FlatList, StyleSheet} from "react-native";
+import { View, Text, Pressable, Modal, StyleSheet} from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import dayjs from "dayjs";
 
 // Misc
 import { Context } from "../misc/Provider";
@@ -22,6 +23,7 @@ export default function WorkoutModal({Close, visible}) {
 
     const { token, setWorkout, refresh } = useContext(Context);
     const navigation = useNavigation();
+    
 
     useEffect(() => {
         fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
@@ -49,9 +51,10 @@ export default function WorkoutModal({Close, visible}) {
                                         fetch("http://localhost:4000/plans/" + plan.id, { headers: { Authorization: token } })
                                         .then(res => res.json())
                                         .then(data => {
-                                            if (data.success) setWorkout({id: plan.id, name: plan.name, started_at: data.data.started_at, plan: Array.from(data.data.plan, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": 0, "rep": 0}))}))});
+                                            if (data.success) setWorkout({id: plan.id, name: plan.name, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss"), ownIndex : 0, plan: Array.from(data.data.plan, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": 0, "rep": 0}))}))});
                                         });
                                         Close();
+                                        navigation.navigate("Workout");
                                 }}>
                                     <Text style={MainStyle.buttonText}>{plan.name}</Text>
                                 </Pressable>)) 
@@ -69,7 +72,7 @@ export default function WorkoutModal({Close, visible}) {
                     <Pressable
                         style={MainStyle.secondaryButton}
                         onPress={() => {
-                            setWorkout({name: "New workout", plan: []});
+                            setWorkout({name: "New workout", plan: [], ownIndex : 0, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss")});
                             Close();
                         }}>
                         <Text style={MainStyle.buttonText}>Start a new one</Text>

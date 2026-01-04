@@ -26,7 +26,7 @@ export default function App() {
                 setToken(token);
                 setUserData(await getJson("user"));
                 setWorkout(await getJson("workout"));
-            }
+            } else setUserData(undefined);
         }
         finally {
             setLoading(false);

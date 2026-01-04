@@ -71,13 +71,13 @@ export default StyleSheet.create({
     },
 
     modal: {
-            backgroundColor: Var.darkGray,
-            width: "90%",
-            margin: "auto",
-            padding: 20,
-            borderRadius: 10,
-            maxHeight: "80%"
-        },
+        backgroundColor: Var.darkGray,
+        width: "90%",
+        margin: "auto",
+        padding: 20,
+        borderRadius: 10,
+        maxHeight: "80%"
+    },
 
     input : {
         backgroundColor: Var.navyBlue,

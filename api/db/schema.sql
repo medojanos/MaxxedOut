@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS workouts (
     id INTEGER PRIMARY KEY NOT NULL,
     user_id INTEGER NOT NULL, 
     started_at DATETIME,
-    ended_at DATETIME DEFAULT (DATETIME('now')),
+    ended_at DATETIME,
     name TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id)
     ON DELETE CASCADE
