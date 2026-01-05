@@ -5,7 +5,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import { Context } from "../../misc/Provider";
-import { setData } from "../../misc/Storage";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -15,7 +14,13 @@ const LoginStyle = StyleSheet.create({
         color: Var.white,
         fontSize: 20,
         textAlign: "center"
+    },
+    forgotPassword: {
+        textAlign: "right",
+        textDecorationLine: "underline",
+        fontSize: 15
     }
+
 })
 
 export default function Login() {
@@ -78,6 +83,10 @@ export default function Login() {
                         onPress={Authenticate}
                         style={MainStyle.button}>
                         <Text style={MainStyle.buttonText}>Login</Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => {Linking.openURL("http://localhost:5173/password-recovery")}}>
+                        <Text style={[MainStyle.strongText, LoginStyle.forgotPassword]}>Forgot password?</Text>
                     </Pressable>
                 </View>
                 <View style={[MainStyle.container, MainStyle.inlineContainer]}>

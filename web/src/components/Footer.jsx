@@ -10,6 +10,7 @@ export default function Footer() {
                     <a href="/registration">Registration</a>
                     <a href="/download">Download</a>
                     <a href="/docs">Docs</a>
+                    <a href="/password-recovery">Password recovery</a>
                     <a href="/delete-account">Delete account</a>
                 </div>
             </div>

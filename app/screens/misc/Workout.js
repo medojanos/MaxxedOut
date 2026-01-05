@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 
 // Misc
 import { Context} from "../../misc/Provider";
+import Loader from "../../components/Loader";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -34,7 +35,7 @@ export default function Workout() {
     const [workoutInfos, setWorkoutInfos] = useState();
     */
 
-    if (!workout) return null;
+    if (!workout) return <Loader></Loader>;
 
     function addExercise(id, name) {
         setWorkout(prev => ({

@@ -1,4 +1,3 @@
-import "./style/docs.css"
 import { useEffect } from "react";
 
 export default function Docs() {

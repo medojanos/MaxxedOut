@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS plans_exercises (
 CREATE TABLE IF NOT EXISTS codes (
     code TEXT PRIMARY KEY NOT NULL,
     user_id INTEGER NOT NULL,
-    expiry DATETIME NOT NULL,
+    expiry DATETIME DEFAULT (DATETIME('now', '+10 minutes')),
     FOREIGN KEY (user_id) REFERENCES users(id)
         ON DELETE CASCADE
 );

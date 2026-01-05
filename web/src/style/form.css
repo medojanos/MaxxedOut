@@ -1,4 +1,4 @@
-#registration {
+.form{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -10,6 +10,9 @@ input {
     border: none;
     margin-bottom: 1rem;
     color: var(--white);
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
 }
 
 input[type=submit] {
@@ -17,4 +20,10 @@ input[type=submit] {
     padding: 0.5rem;
     width: 100%;
     margin: 0;
+}
+
+.checkbox {
+    display: inline;
+    width: fit-content;
+    margin-right: 0.5rem;
 }

@@ -4,8 +4,9 @@ import cors from 'cors'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
-import { hash } from 'crypto'
-import { randomBytes } from 'crypto'
+import { hash, randomBytes } from 'crypto'
+import nodemailer from "nodemailer";
+import 'dotenv/config';
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -15,6 +16,16 @@ const readmePath = path.join(dirname, '..', 'README.md')
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+});
+
+await transporter.verify();
 
 const db = new sqlite3.Database(dbPath, (e) => {
     if (e) return console.error("Database error: ", e)
@@ -144,7 +155,7 @@ app.get("/exercise/:id", (req, res) => {
 app.post("/register", (req, res) => {
     db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        if (row) return res.status(400).json({success: false, message: "Email already registered"});
+        if (row) return res.status(401).json({success: false, message: "Email already registered"});
         db.run("INSERT INTO users (email, password) VALUES (?, ?)", [req.body.email, hash('sha-512', req.body.password)], (e) => {
             if (e) return res.status(500).json({ success: false, message: "Database error"});
             res.json({success: true, message : "Successfully registered"});
@@ -162,6 +173,56 @@ app.post("/login", (req, res) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
             res.json({success: true, message: "Successfully logged in", data : {token : token, userData: {email : row.email, nickname : row.nickname}}});
         });
+    })
+})
+
+app.post("/forgot-password", (req, res) => {
+    db.get("SELECT id FROM users WHERE email = ?", [req.body.email], (e, row) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        if (!row) return res.status(404).json({success: false, message: "Email not found"});
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        db.run("INSERT INTO codes (user_id, code) VALUES (?, ?)", [row.id, code], async (e) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"});
+            try {
+                await transporter.sendMail({
+                    from: `"MaxxedOut" <${process.env.EMAIL_USER}>`,
+                    to: req.body.email,
+                    subject: "Password Reset Code",
+                    text: `Your reset code is: ${code}`,
+                    html: `<h3>Your reset code is: ${code}</h3>`,
+                });
+                res.json({ success: true, message: "Email sent!" });
+            } catch (error) {
+                res.status(500).json({ success: false, message: "Failed to send email" });
+            }
+        })
+    })
+})
+app.post("/verify-code", (req, res) => {
+    db.get("SELECT c.code FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.created_at DESC LIMIT 1", [req.body.email], (e, row) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        if (!row || row.code !== req.body.code) return res.status(400).json({success: false, message: "Invalid code"});
+        res.json({success: true, message: "Code verified"});
+    })
+})
+app.post("/reset-password", (req, res) => {
+    db.get("SELECT c.code, u.id FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.created_at DESC LIMIT 1", [req.body.email], (e, row) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        if (!row || row.code !== req.body.code) return res.status(400).json({success: false, message: "Invalid code"});
+        db.run("UPDATE users SET password = ? WHERE id = ?", [hash("sha-512", req.body.password), row.id], (e) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"});
+            res.json({success: true, message: "Password reset succesfully"});
+        })
+    })
+})
+app.delete("/user", (req, res) => {
+    db.get("SELECT id FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, row) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        if (!row) return res.status(401).json({success: false, message: "Invalid credentials"});
+        db.run("DELETE FROM users WHERE id = ?", [row.id], (e) => {
+            if (e) return res.status(500).json({success: false, message: "Database error"});
+            res.json({success: true, message: "Account deleted succesfully"});
+        })
     })
 })
 
@@ -525,7 +586,6 @@ app.get("/auth", (req, res) => {
     res.json({success: true})
 })
 
-const PORT = 4000
-app.listen(PORT, () => {
-    console.log("API listening on http://localhost:" + PORT)
+app.listen(4000, () => {
+    console.log("API listening on http://localhost:4000")
 })
