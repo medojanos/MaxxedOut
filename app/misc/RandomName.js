@@ -10,7 +10,7 @@ const Nouns = [
   "Warrior", "Titan", "Hulk", "Beast", "Champion", "Grinder", "Hero", "Dynamo",
   "Pump", "Crusher", "Lifter", "Jugger", "Atlas", "Goliath", "Predator", "Hulkster",
   "Ironman", "Berserker", "Barbarian", "Tank", "Colossus", "Rager", "Anvil", "Muscleman",
-  "Jugger", "Behemoth", "Hammer", "Macho", "Flexer", "Beastlord", "Musclelord", "Ironlord",
+  "Jugger", "Behemoth", "Hammer", "Macho", "Flexer", "Beastlord", "Powerlord", "Ironlord",
   "Pumpking", "Bulkzilla", "Flexzilla"
 ];
 

@@ -26,13 +26,13 @@ function OneRepMax(weight, reps) {
 export default function Statistics() {
     const [statistics, setStatistics] = useState();
 
-    const {token, workout} = useContext(Context);
+    const {token, workout, refresh} = useContext(Context);
 
     useEffect(() => {
         fetch("http://localhost:4000/statistics", {headers: {"Authorization": token}})
         .then(res => res.json())
         .then(data => setStatistics(data.data));
-    }, [workout]);
+    }, [workout, refresh]);
 
     return (
         <SafeAreaView style={MainStyle.content}>
@@ -60,9 +60,9 @@ export default function Statistics() {
                     <View style={MainStyle.inlineContainer}>
                         <View style={[MainStyle.container, {width: "53%"}]}>
                             <Text style={MainStyle.strongText}>Personal records</Text>
-                            <Text style={MainStyle.lightText}>Squat: {statistics.repsSquat} x {statistics.maxSquat} kg</Text>
-                            <Text style={MainStyle.lightText}>Bench: {statistics.repsBench} x {statistics.maxBench} kg</Text>
-                            <Text style={MainStyle.lightText}>Deadlift: {statistics.repsDeadlift} x {statistics.maxDeadlift} kg</Text>
+                            <Text style={MainStyle.lightText}>Squat: {statistics.maxSquat} kg x {statistics.repsSquat}</Text>
+                            <Text style={MainStyle.lightText}>Bench: {statistics.maxBench} kg x {statistics.repsBench}</Text>
+                            <Text style={MainStyle.lightText}>Deadlift: {statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
                             <Text style={MainStyle.lightText}>Total: {statistics.maxSquat + statistics.maxBench + statistics.maxDeadlift} kg</Text>
                         </View>
                         <View style={[MainStyle.container, {width: "43%"}]}>

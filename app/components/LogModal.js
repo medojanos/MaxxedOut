@@ -15,7 +15,7 @@ const LogModalStyle = StyleSheet.create({
 
 export default function LogModal({visible, Close, workouts, status}) {
     const [deleteModal, setDeleteModal] = useState(false);
-    const { token } = useContext(Context);
+    const { token, Refresh } = useContext(Context);
     return (
         <Modal
             animationType="fade"
@@ -65,6 +65,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                                         .then(res => res.json())
                                         .then(data => {
                                             if (data.success) {
+                                                Refresh();
                                                 setDeleteModal(false);
                                                 Close();
                                             }

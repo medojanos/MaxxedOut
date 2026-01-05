@@ -453,6 +453,12 @@ app.get("/workouts", (req, res) => {
         })
     }
 });
+app.delete("/workouts/:id", (req, res) => {
+    db.run("DELETE FROM workouts WHERE id = ?", [req.params.id], (e) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        res.json({success: true, message: "Workout deleted succesfully"});
+    })
+})
 app.get("/workouts/:id", (req, res) => {
     db.get(
         "SELECT id, name FROM workouts WHERE id = ?", [req.params.id], (e, workout) => {
@@ -526,7 +532,7 @@ app.get("/statistics", (req, res) => {
         WHERE user_id = ?`, [req.user], (e, workouts) => {
         if (e) return res.status(500).json({ success: false, message: "Database error" });
         db.get(`SELECT 
-            SUM(s.weight) AS total_weight,
+            SUM(s.weight * s.rep) AS total_weight,
 
             (SELECT weight FROM sets
             JOIN workouts ON sets.workout_id = workouts.id

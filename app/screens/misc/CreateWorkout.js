@@ -86,6 +86,10 @@ export default function CreateWorkout() {
                         return (
                             <View key={exercise.id} style={MainStyle.container}>
                                 <View style={MainStyle.inlineContainer}>
+                                    <View>
+                                        <Ionicons name="chevron-up" color={Var.white} size={20} onPress={() => {}}></Ionicons>
+                                        <Ionicons name="chevron-down" color={Var.white} size={20} onPress={() => {}}></Ionicons>
+                                    </View>
                                     <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
                                     <Text style={MainStyle.lightText}>X</Text>
                                     <TextInput

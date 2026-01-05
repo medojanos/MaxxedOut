@@ -87,7 +87,7 @@ export default function Settings() {
                                         setNewNickname(text);
                                     }}>
                                 </TextInput>
-                                <Pressable onPress={() => setNewNickname(RandomName())}>
+                                <Pressable onPress={() => {setNewNickname(RandomName()); setStatus("");}}>
                                     <Ionicons name="dice-outline" color={Var.red} size={25}></Ionicons>
                                 </Pressable>
                             </View>
@@ -107,7 +107,8 @@ export default function Settings() {
                                     .then(data => {
                                         if (data.success) {
                                             setUserData(data.data);
-                                            setNicknameModal(false);
+                                            setStatus(data.message);
+                                            setTimeout(() => setNicknameModal(false), 1000);
                                         } else {
                                             setStatus(data.message);
                                         }
@@ -139,7 +140,6 @@ export default function Settings() {
                                     if (!/^\d*$/.test(text)) return;
                                     setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}))}}>
                             </TextInput>
-                            <Text style={MainStyle.lightText}> minutes</Text>
                         </View>
                     </View>
                 </View>
@@ -150,7 +150,7 @@ export default function Settings() {
                     </View>
 
                     <Pressable style={MainStyle.secondaryButton}>
-                        <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength("")}}>Password reset</Text>
+                        <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength(""); setStatus("")}}>Password reset</Text>
                     </Pressable>
                     <Pressable 
                         style={MainStyle.button} 
@@ -212,7 +212,8 @@ export default function Settings() {
                                     .then(data => {
                                         if (data.success) {
                                             setUserData(data.data);
-                                            setPasswordModal(false);
+                                            setStatus(data.message);
+                                            setTimeout(() => setPasswordModal(false), 2000);
                                         } else {
                                             setStatus(data.message);
                                         }

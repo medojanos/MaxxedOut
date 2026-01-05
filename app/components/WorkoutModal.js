@@ -74,6 +74,7 @@ export default function WorkoutModal({Close, visible}) {
                         onPress={() => {
                             setWorkout({name: "New workout", plan: [], ownIndex : 0, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss")});
                             Close();
+                            navigation.navigate("Workout");
                         }}>
                         <Text style={MainStyle.buttonText}>Start a new one</Text>
                     </Pressable>

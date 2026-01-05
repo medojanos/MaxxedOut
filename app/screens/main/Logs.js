@@ -28,7 +28,7 @@ export default function Logs() {
     const [logModal, setLogModal] = useState(false);
     const [status, setStatus] = useState();
     const [markedDates, setMarkedDates] = useState({});
-    const { token, workout } = useContext(Context);
+    const { token, workout, refresh } = useContext(Context);
 
     useEffect(() => {
         fetch("http://localhost:4000/workouts/" + "?limit=5", {headers: {"Authorization" : token}})
@@ -37,7 +37,7 @@ export default function Logs() {
         
         const date = new Date();
         fetchMarkedDates({year: date.getFullYear(), month: date.getMonth() + 1});
-    }, [workout]);
+    }, [refresh, workout]);
 
     function fetchMarkedDates(date) {
         fetch("http://localhost:4000/workouts" + `?month=${date.year}-${String(date.month).padStart(2, '0')}`, {headers: {"Authorization" : token}})
