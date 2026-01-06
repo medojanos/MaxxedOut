@@ -46,7 +46,10 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const filteredExercises = exercises
         .filter(ex => ex?.name?.toLowerCase().includes(searchText.toLowerCase()))
         .filter(ex => !type || ex.type === type)
-        .filter(ex => !musclegroup || ex.muscle_groups?.includes(musclegroup));
+        .filter(ex => !musclegroup || 
+            Object.values(ex.muscle_groups || {})
+            .flat()
+            .includes(musclegroup));
 
     return (
         <Modal 
@@ -85,7 +88,7 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                         {filteredExercises.map((exercise) => (
                             <Pressable
                                 key={exercise.id}
-                                onPress={() => addExercise(exercise.id, exercise.name)}>
+                                onPress={() => addExercise(exercise.id, exercise.name, exercise.type, exercise.muscle_groups)}>
                                 <Text style={AddExerciseStyle.listItems}>{exercise.name}</Text>
                             </Pressable>                                  
                         ))}

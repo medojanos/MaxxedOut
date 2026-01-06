@@ -24,7 +24,7 @@ export default function CreateWorkout() {
 
     const {planDraft, setPlanDraft, token, Refresh} = useContext(Context);
 
-    function addExercise(id, name) {
+    function addExercise(id, name, type, muscle_groups) {
         setPlanDraft(prev => ({
                 ...prev,
                 ownIndex: typeof id == "string" ? prev.ownIndex + 1 : prev.ownIndex,
@@ -33,6 +33,8 @@ export default function CreateWorkout() {
                     {
                         id: id,
                         name: name,
+                        type: type ? type: "Custom",
+                        muscle_groups: muscle_groups ? muscle_groups : [],
                         sets: 0
                     }
                 ]
@@ -110,7 +112,22 @@ export default function CreateWorkout() {
                                         style={MainStyle.input}
                                         placeholder="Enter exercise name..."
                                         onChangeText={text => updateExercise(index, text, "name")}/>
-                                ) : null}
+                                ) : (
+                                    <View>
+                                        <Text style={MainStyle.lightText}>Type: {exercise.type}</Text>
+                                        <Text style={MainStyle.lightText}>Muscle groups</Text>
+                                        {exercise.muscle_groups ? Object.entries(exercise.muscle_groups).map(([role, muscleGroups]) => (
+                                            <View 
+                                                style={MainStyle.inlineContainer}
+                                                key={role}>
+                                                <Text>{role}: </Text>
+                                                {muscleGroups.map((mg => (
+                                                    <Text key={mg}>{mg}</Text>
+                                                )))}
+                                            </View>
+                                        )) : null}
+                                    </View>
+                                )}
                             </View>
                         )
                     })

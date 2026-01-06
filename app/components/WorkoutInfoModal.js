@@ -30,34 +30,37 @@ export default function WorkoutInfoModal({Close, visible, id, name}) {
             onRequestClose={() => Close()}
             transparent={true}
             visible={visible}>
-            {workoutInfos ? console.log(workoutInfos) : null}
             <View style={MainStyle.overlay}>
                 <View style={MainStyle.modal}>
-                    <Text style={MainStyle.screenTitle}>{name} info</Text>
-                    <View style={MainStyle.container}>
-                        {workoutInfos.muscle_groups ? <Text style={MainStyle.containerTitle}>Muscle groups</Text> : null}
-                        {workoutInfos.muscle_groups ? workoutInfos.muscle_groups.map(mg => (
-                            <View style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.lightText}>{mg.muscle_group}</Text>
-                                <Text style={MainStyle.lightText}>{mg.sets}</Text>
-                            </View>
-                        ))
-                        : 
-                        null
-                        } 
-                    </View>
-                    <View style={MainStyle.container}>
-                        {workoutInfos.types ? <Text style={MainStyle.containerTitle}>Types</Text> : null}
-                        {workoutInfos.types ? workoutInfos.types.map(type => (
-                            <View style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.lightText}>{type.type}</Text>
-                                <Text style={MainStyle.lightText}>{type.sets}</Text>
-                            </View>
-                        )) 
-                        : 
-                        null
-                        } 
-                    </View>
+                    {workoutInfos ? (<View>
+                        <Text style={MainStyle.screenTitle}>{name} info</Text>
+                        <Text>Total: {workoutInfos.totalSets} sets {workoutInfos.totalExercises} exercises</Text>
+                        <View style={MainStyle.container}>
+                            {workoutInfos.muscle_groups ? <Text style={MainStyle.containerTitle}>Muscle groups</Text> : null}
+                            {workoutInfos.muscle_groups ? workoutInfos.muscle_groups.map(mg => (
+                                <View style={MainStyle.inlineContainer}>
+                                    <Text style={MainStyle.lightText}>{mg.muscle_group}</Text>
+                                    <Text style={MainStyle.lightText}>{mg.sets}</Text>
+                                </View>
+                            ))
+                            : 
+                            null
+                            } 
+                        </View>
+                        <View style={MainStyle.container}>
+                            {workoutInfos.types ? <Text style={MainStyle.containerTitle}>Types</Text> : null}
+                            {workoutInfos.types ? workoutInfos.types.map(type => (
+                                <View style={MainStyle.inlineContainer}>
+                                    <Text style={MainStyle.lightText}>{type.type}</Text>
+                                    <Text style={MainStyle.lightText}>{type.exercises} exercise</Text>
+                                    <Text style={MainStyle.lightText}>{type.sets} sets</Text>
+                                </View>
+                            )) 
+                            : 
+                            null
+                            } 
+                        </View> 
+                        </View>) : null} 
                     <Pressable style={MainStyle.button} onPress={Close}><Text style={MainStyle.buttonText}>Close</Text></Pressable>
                 </View>
             </View>

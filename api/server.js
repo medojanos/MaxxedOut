@@ -52,7 +52,7 @@ app.get("/muscle_groups", (req, res) => {
 })
 
 app.get("/exercises", (req, res) => {
-    db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group FROM muscle_groups_exercises mge JOIN exercises e ON e.id=mge.exercise_id JOIN muscle_groups mg ON mg.id=mge.muscle_group_id ", (e, rows) => {
+    db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role FROM muscle_groups_exercises mge JOIN exercises e ON e.id=mge.exercise_id JOIN muscle_groups mg ON mg.id=mge.muscle_group_id ", (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         const exercisesMap = {};
 
@@ -62,10 +62,15 @@ app.get("/exercises", (req, res) => {
                     id: row.id,
                     name: row.name,
                     type: row.type,
-                    muscle_groups: []
+                    muscle_groups: {}
                 };
             }
-            exercisesMap[row.id].muscle_groups.push(row.muscle_group);
+
+            if(!exercisesMap[row.id].muscle_groups[row.role]){
+                exercisesMap[row.id].muscle_groups[row.role] = [];
+            }
+
+            exercisesMap[row.id].muscle_groups[row.role].push(row.muscle_group);
         });
 
         res.json(exercisesMap);
@@ -80,6 +85,8 @@ app.get("/plan-info/:id", (req, res) => {
         const exerciseTypes = {};
         let exIds = []
         let exCustom = 0;
+        let totalE = 0;
+        let totalS = 0;
 
         rows.forEach(row => {
             let type;
@@ -103,6 +110,7 @@ app.get("/plan-info/:id", (req, res) => {
 
             exerciseTypes[type].exercises++;
             exerciseTypes[type].sets += row.sets;
+            totalS += row.sets;
         });
 
         const musclegroupsMap = {}
@@ -120,9 +128,11 @@ app.get("/plan-info/:id", (req, res) => {
 
                 if(row.role == "Primary") musclegroupsMap[row.muscle_group].sets += row.sets;
                 if(row.role == "Secondary") musclegroupsMap[row.muscle_group].sets += row.sets * 0.5;
+
+                totalE++;
             })
 
-            res.json({success: true, data: {types: Object.values(exerciseTypes), muscle_groups: Object.values(musclegroupsMap), custom: exCustom}});
+            res.json({success: true, data: {types: Object.values(exerciseTypes), muscle_groups: Object.values(musclegroupsMap), custom: exCustom, totalExercises: totalE, totalSets: totalS}});
         })
     })
 })
