@@ -72,8 +72,8 @@ app.get("/exercises", (req, res) => {
     })
 })
 
-/*
-app.get("/exercises/:id", (req, res) => {
+
+app.get("/plan-info/:id", (req, res) => {
     db.all("SELECT e.id as exercise_id, COALESCE(pe.exercise_name, e.name) as name, e.type as type, pe.sets as sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
 
@@ -127,7 +127,7 @@ app.get("/exercises/:id", (req, res) => {
     })
 })
 
-app.get("/exercise/:id", (req, res) => {
+app.get("/exercises/:id", (req, res) => {
     db.all("SELECT e.id as id, e.type as type, mg.name as muscle_group, mge.role as role FROM muscle_groups_exercises mge JOIN exercises e ON e.id=mge.exercise_id JOIN muscle_groups mg ON mg.id=mge.muscle_group_id WHERE e.id=?", [req.params.id] , (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         const musclegroupsMap = {};
@@ -150,7 +150,6 @@ app.get("/exercise/:id", (req, res) => {
         res.json({success: true, data: {type: rows[0].type, muscle_groups: musclegroupsMap}});
     })
 })
-*/
 
 app.post("/register", (req, res) => {
     db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
