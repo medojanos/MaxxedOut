@@ -18,7 +18,7 @@ const SettingsStyle = StyleSheet.create({
 export default function Settings() {
     const {userData, setUserData} = useContext(Context);
 
-    const { token } = useContext(Context);
+    const { token, Refresh } = useContext(Context);
 
     const [nicknameModal, setNicknameModal] = useState(false);
     const [newNickname, setNewNickname] = useState("");
@@ -138,7 +138,9 @@ export default function Settings() {
                                 value={userData.preferences ? userData.preferences.restingTime.toString() : ""}
                                 onChangeText={text => {
                                     if (!/^\d*$/.test(text)) return;
-                                    setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}))}}>
+                                    setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}));
+                                    Refresh()
+                                    }}>
                             </TextInput>
                         </View>
                     </View>

@@ -21,7 +21,7 @@ const TrackerStyle = StyleSheet.create({
 })
 
 export default function Tracker() {
-    const { userData, workout } = useContext(Context);
+    const { userData, workout, refresh } = useContext(Context);
 
     const navigation = useNavigation();
 
@@ -31,6 +31,10 @@ export default function Tracker() {
     const [workoutModal, setWorkoutModal] = useState(false);
     const [duration, setDuration] = useState("00:00:00");
     const [restTimer, setRestTimer] = useState(formatTime(userData.preferences?.restingTime || 0));
+
+    useEffect(() => {
+        setRestTimer(formatTime(userData.preferences?.restingTime || 0));
+    }, [refresh]);
 
     useEffect(() => {
         if (!workout) return;

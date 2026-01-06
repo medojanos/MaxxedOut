@@ -46,7 +46,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                                     ))
                                 }
                             </View> 
-                        )) : <Text style={MainStyle.containerTitle}>{status}</Text>}
+                        )) : <Text style={MainStyle.screenTitle}>{status}</Text>}
                     </ScrollView>
                     <Modal 
                         animationType="fade"

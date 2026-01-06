@@ -2,6 +2,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useContext } from "react";
 
 // Main Screens
 import Statistics from "./screens/main/Statistics";
@@ -13,9 +14,13 @@ import Settings from "./screens/main/Settings";
 import Workout from "./screens/misc/Workout"
 import CreateWorkout from "./screens/misc/CreateWorkout"
 
+// Misc 
+import { Context } from "./misc/Provider";
+
 // Style
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Var from "./style/Variables";
+import MainStyle from "./style/MainStyle";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -55,18 +60,18 @@ function Home() {
 }
 
 export default function Main() {
+  const {workout} = useContext(Context);
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={() => ({
           headerStyle : {backgroundColor: Var.darkGray},
-          headerTitleStyle : {color: Var.red},
           headerBackButtonDisplayMode : "generic",
-          headerTintColor: Var.white
+          headerTintColor: Var.white,
         })}>
         <Stack.Screen name="Home" component={Home} options={{header: () => null}}/>
-        <Stack.Screen name="CreateWorkout" component={CreateWorkout} options={{headerTitle: "Create new workout"}}/>
-        <Stack.Screen name="Workout" component={Workout}/>
+        <Stack.Screen name="CreateWorkout" component={CreateWorkout} options={{headerTitle: "Create New Workout", headerBackButtonDisplayMode: "minimal", headerTitleStyle: MainStyle.strongText}}/>
+        <Stack.Screen name="Workout" component={Workout} options={{headerBackButtonDisplayMode: "minimal", headerTitle: workout?.name, headerTitleStyle: MainStyle.screenTitle}}/>
       </Stack.Navigator>
     </NavigationContainer>
   )
