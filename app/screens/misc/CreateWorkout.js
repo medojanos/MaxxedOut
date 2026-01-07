@@ -3,11 +3,12 @@ import { View, Text, ScrollView, Pressable, TextInput } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useContext } from "react";
+import { useState, useContext, use } from "react";
 
 // Misc
 import { Context } from "../../misc/Provider";
 import AddExercise from "../../components/AddExercise";
+import ExerciseInfoModal from "../../components/ExerciseInfoModal";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -92,7 +93,11 @@ export default function CreateWorkout() {
                                         <Ionicons name="chevron-up" color={Var.white} size={20} onPress={() => {}}></Ionicons>
                                         <Ionicons name="chevron-down" color={Var.white} size={20} onPress={() => {}}></Ionicons>
                                     </View>
-                                    <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                                    <ExerciseInfoModal
+                                        id={exercise.id}
+                                        name={exercise.name}
+                                    >
+                                    </ExerciseInfoModal>
                                     <Text style={MainStyle.lightText}>X</Text>
                                     <TextInput
                                         keyboardType="numeric"
@@ -112,22 +117,7 @@ export default function CreateWorkout() {
                                         style={MainStyle.input}
                                         placeholder="Enter exercise name..."
                                         onChangeText={text => updateExercise(index, text, "name")}/>
-                                ) : (
-                                    <View>
-                                        <Text style={MainStyle.lightText}>Type: {exercise.type}</Text>
-                                        <Text style={MainStyle.lightText}>Muscle groups</Text>
-                                        {exercise.muscle_groups ? Object.entries(exercise.muscle_groups).map(([role, muscleGroups]) => (
-                                            <View 
-                                                style={MainStyle.inlineContainer}
-                                                key={role}>
-                                                <Text>{role}: </Text>
-                                                {muscleGroups.map((mg => (
-                                                    <Text key={mg}>{mg}</Text>
-                                                )))}
-                                            </View>
-                                        )) : null}
-                                    </View>
-                                )}
+                                ) : null}
                             </View>
                         )
                     })
