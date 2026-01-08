@@ -6,6 +6,7 @@ import { useState, useEffect, useContext } from "react";
 // Misc
 import AddExercise from "./AddExercise";
 import { Context } from "../misc/Provider";
+import ExerciseInfoModal from "./ExerciseInfoModal";
 
 // Style
 import * as Var from "../style/Variables"
@@ -115,8 +116,11 @@ export default function PlanModal({Close, visible, id, name}) {
                                         onChangeText={text => updateExerciseName(index, text)}>
                                     </TextInput>
                                     :  
-                                    <Text style={MainStyle.lightText}>{exercise.name}</Text>}
-                                    <Text style={MainStyle.strongText}>X</Text>
+                                    <ExerciseInfoModal
+                                        id={exercise.id}
+                                        name={exercise.name}/>
+                                    }
+                                    <Text style={MainStyle.lightText}>x</Text>
                                     <TextInput
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}

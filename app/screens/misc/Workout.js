@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 // Misc
 import { Context} from "../../misc/Provider";
 import Loader from "../../components/Loader";
+import ExerciseInfoModal from "../../components/ExerciseInfoModal";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -161,14 +162,16 @@ export default function Workout() {
                 {workout.plan?.map((exercise, exerciseIndex) => (
                     <View key={exerciseIndex} style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
-                            {typeof exercise.id == "string" ? 
+                            {typeof exercise.id == "string" || exercise.id === null ? 
                             <TextInput
                                 style={MainStyle.input}
                                 value={exercise.name}
                                 onChangeText={text => updateExerciseName(exerciseIndex, text)}>
                             </TextInput>
                             : 
-                            <Text style={[MainStyle.containerTitle, {margin: 0}]}>{exerciseIndex+1}. {exercise.name}</Text>
+                            <ExerciseInfoModal
+                                id={exercise.id}
+                                name={`${exerciseIndex+1}. ${exercise.name}`}/>
                             }
                             <Pressable onPress={() => deleteExercise(exerciseIndex)}>
                                 <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
@@ -190,7 +193,7 @@ export default function Workout() {
                                             updateExercise(exerciseIndex, setIndex, "weight", text) 
                                         }}
                                     />
-                                    <Text style={MainStyle.lightText}>X</Text>
+                                    <Text style={MainStyle.lightText}>x</Text>
                                     <TextInput 
                                         value={workout.plan[exerciseIndex].sets[setIndex].rep ? workout.plan[exerciseIndex].sets[setIndex].rep.toString() : ""}
                                         keyboardType="numeric"

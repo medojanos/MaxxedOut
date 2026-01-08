@@ -78,7 +78,7 @@ app.get("/exercises", (req, res) => {
 })
 
 app.get("/exercises/:id", (req, res) => {
-    db.all("SELECT e.id as id, e.type as type, mg.name as muscle_group, mge.role as role FROM muscle_groups_exercises mge JOIN exercises e ON e.id=mge.exercise_id JOIN muscle_groups mg ON mg.id=mge.muscle_group_id WHERE e.id=?", [req.params.id] , (e, rows) => {
+    db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role FROM muscle_groups_exercises mge JOIN exercises e ON e.id=mge.exercise_id JOIN muscle_groups mg ON mg.id=mge.muscle_group_id WHERE e.id=?", [req.params.id] , (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         const musclegroupsMap = {};
 
@@ -97,7 +97,7 @@ app.get("/exercises/:id", (req, res) => {
             musclegroupsMap[row.role].push(row.muscle_group);
         });
 
-        res.json({success: true, data: {type: rows[0].type, muscle_groups: musclegroupsMap}});
+        res.json({success: true, data: {type: rows[0].type, muscle_groups: musclegroupsMap, name: rows[0].name}});
     })
 })
 

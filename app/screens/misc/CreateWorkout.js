@@ -93,11 +93,13 @@ export default function CreateWorkout() {
                                         <Ionicons name="chevron-up" color={Var.white} size={20} onPress={() => {}}></Ionicons>
                                         <Ionicons name="chevron-down" color={Var.white} size={20} onPress={() => {}}></Ionicons>
                                     </View>
+                                    {typeof exercise.id !== "string" ?
                                     <ExerciseInfoModal
                                         id={exercise.id}
-                                        name={exercise.name}
-                                    >
-                                    </ExerciseInfoModal>
+                                        name={exercise.name}/> 
+                                    : 
+                                    <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                                    }
                                     <Text style={MainStyle.lightText}>X</Text>
                                     <TextInput
                                         keyboardType="numeric"
