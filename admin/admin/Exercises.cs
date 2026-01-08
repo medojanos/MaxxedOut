@@ -32,12 +32,12 @@ namespace admin
 
             foreach (DataRow exercise in exercises.Rows)
             {
-                var muscle_groups_exercises = db.Query($@"SELECT * FROM muscle_groups_exercises WHERE exercises_id={int.Parse(exercise["id"].ToString())}");
+                var muscle_groups_exercises = db.Query($@"SELECT * FROM muscle_groups_exercises WHERE exercise_id={int.Parse(exercise["id"].ToString())}");
                 List<MusclesworkedDB> MusclesworkedList = new List<MusclesworkedDB>();
                  
                 foreach (DataRow mg_ex in muscle_groups_exercises.Rows)
                 {
-                    MusclesworkedDB mgworked = new MusclesworkedDB(MuscleGroupsList.MuscleGroups.FirstOrDefault(mg => mg.ID == int.Parse(mg_ex["muscle_groups_id"].ToString())), mg_ex["role"].ToString());
+                    MusclesworkedDB mgworked = new MusclesworkedDB(MuscleGroupsList.MuscleGroups.FirstOrDefault(mg => mg.ID == int.Parse(mg_ex["muscle_group_id"].ToString())), mg_ex["role"].ToString());
                     MusclesworkedList.Add(mgworked);
                 }
 
@@ -56,7 +56,6 @@ namespace admin
 
             role.Items.Add("Primary");
             role.Items.Add("Secondary");
-            role.Items.Add("Stabilizer");
         }
 
         // Navigation handling
@@ -164,7 +163,7 @@ namespace admin
 
             if(Rows.SelectedItem != null)
             {
-                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_groups_id, exercises_id, role) VALUES ('{mgworkedObj.MuscleGroup.ID}', '{Exercise.ID}', '{role.Text}')");
+                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES ('{mgworkedObj.MuscleGroup.ID}', '{Exercise.ID}', '{role.Text}')");
             }
         }
 
@@ -197,7 +196,7 @@ namespace admin
             if (Rows.SelectedItem != null)
             {
                 ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
-                db.Execute($@"UPDATE muscle_groups_exercises SET role = '{role.Text}' WHERE muscle_groups_id = '{mgworkedObj.MuscleGroup.ID}' AND exercises_id = '{Exercise.ID}';");
+                db.Execute($@"UPDATE muscle_groups_exercises SET role = '{role.Text}' WHERE muscle_group_id = '{mgworkedObj.MuscleGroup.ID}' AND exercise_id = '{Exercise.ID}';");
             }
         }
 
@@ -217,7 +216,7 @@ namespace admin
 
             if (Rows.SelectedItem != null)
             {
-                db.Execute($@"DELETE FROM muscle_groups_exercises WHERE muscle_groups_id = '{mgworkedObj.MuscleGroup.ID}' AND exercises_id = '{Exercise.ID}';");
+                db.Execute($@"DELETE FROM muscle_groups_exercises WHERE muscle_group_id = '{mgworkedObj.MuscleGroup.ID}' AND exercise_id = '{Exercise.ID}';");
             }
 
             Musclesworked.SelectedItem = null;
@@ -245,7 +244,7 @@ namespace admin
             foreach (MusclesworkedDB mgworked in Musclesworked.Items)
             {
                 mgworkedList.Add(mgworked);
-                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_groups_id, exercises_id, role) VALUES ('{mgworked.MuscleGroup.ID}', '{id}', '{mgworked.Role}')");
+                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES ('{mgworked.MuscleGroup.ID}', '{id}', '{mgworked.Role}')");
             }
 
             ExercisesDB exerciseObj = new ExercisesDB(id, exercise.Text, type.Text, mgworkedList);
@@ -269,14 +268,14 @@ namespace admin
                 return;
             }
 
-            db.Execute($@"DELETE FROM muscle_groups_exercises WHERE exercises_id = '{Exercise.ID}'");
+            db.Execute($@"DELETE FROM muscle_groups_exercises WHERE exercise_id = '{Exercise.ID}'");
 
             List<MusclesworkedDB> mgworkedList = new List<MusclesworkedDB>();
 
             foreach (MusclesworkedDB mgworkedObj in Musclesworked.Items)
             {
                 mgworkedList.Add(mgworkedObj);
-                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_groups_id, exercises_id, role) VALUES ('{mgworkedObj.MuscleGroup.ID}', '{Exercise.ID}', '{mgworkedObj.Role}');");
+                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES ('{mgworkedObj.MuscleGroup.ID}', '{Exercise.ID}', '{mgworkedObj.Role}');");
             }
 
             Exercise.Exercise = exercise.Text;
@@ -296,7 +295,7 @@ namespace admin
                 return;
             }
 
-            db.Execute($@"DELETE FROM muscle_groups_exercises WHERE exercises_id = '{Exercise.ID}'");
+            db.Execute($@"DELETE FROM muscle_groups_exercises WHERE exercise_id = '{Exercise.ID}'");
 
             ExercisesList.Remove(Exercise);
             Rows.Items.Remove(Exercise);

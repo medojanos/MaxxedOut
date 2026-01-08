@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlTypes;
+using System.IO;
 
 namespace admin
 {
@@ -21,7 +22,10 @@ namespace admin
         {
             InitializeComponent();
 
-            db = new Database($@"Data Source=D:\Projektek\MaxxedOut\MaxxedOut\api\db\maxxedout.db");
+            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
+            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
+
+            db = new Database($@"Data Source={dbPath}");
 
             mgSource.DataSource = MGList;
             Rows.DataSource = mgSource;
