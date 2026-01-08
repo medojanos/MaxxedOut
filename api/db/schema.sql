@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS muscle_groups (
 CREATE TABLE IF NOT EXISTS muscle_groups_exercises (
     muscle_group_id INTEGER NOT NULL,
     exercise_id INTEGER NOT NULL,
-    role TEXT NOT NULL CHECK (role IN ('Primary', 'Secondary', 'Stabilizer')),
+    role TEXT NOT NULL CHECK (role IN ('Primary', 'Secondary')),
     FOREIGN KEY (muscle_group_id) REFERENCES muscle_groups(id)
         ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
