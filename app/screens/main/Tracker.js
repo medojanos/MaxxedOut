@@ -13,11 +13,7 @@ import { Context } from "../../misc/Provider";
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
 const TrackerStyle = StyleSheet.create({
-    welcome : {
-        color: Var.white,
-        fontSize: 30,
-        fontWeight: "bold"
-    }
+    
 })
 
 export default function Tracker() {
@@ -34,6 +30,7 @@ export default function Tracker() {
 
     useEffect(() => {
         setRestTimer(formatTime(userData.preferences?.restingTime || 0));
+        handleTimer();
     }, [refresh]);
 
     useEffect(() => {
@@ -74,8 +71,8 @@ export default function Tracker() {
     return (
         <SafeAreaView style={MainStyle.content}>
             <ScrollView>
+                <Text style={MainStyle.titleText}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
                 <Text style={MainStyle.screenTitle}>Tracker</Text>
-                <Text style={TrackerStyle.welcome}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
                 {workout ?
                     <>
                         <View style={MainStyle.container}>

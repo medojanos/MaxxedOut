@@ -28,6 +28,7 @@ export default function Settings() {
     const [newPassword, setNewPassword] = useState("");
     const [newRepassword, setNewRepassword] = useState();
     const [pwdStrength, setPwdStrength] = useState();
+    const [saveDisabled, setSaveDisabled] = useState(false);
     function evaluatePwdStrength(password){
         setStatus("");
         let score = 0;
@@ -92,7 +93,7 @@ export default function Settings() {
                                 </Pressable>
                             </View>
                             <View style={MainStyle.inlineContainer}>
-                                <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
+                                <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
                                     fetch("http://localhost:4000/user", {
                                         method: "PATCH",
                                         headers: {
@@ -108,7 +109,8 @@ export default function Settings() {
                                         if (data.success) {
                                             setUserData(data.data);
                                             setStatus(data.message);
-                                            setTimeout(() => setNicknameModal(false), 1000);
+                                            setSaveDisabled(true);
+                                            setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
                                         } else {
                                             setStatus(data.message);
                                         }
@@ -129,20 +131,24 @@ export default function Settings() {
                         <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
                         <Text style={[MainStyle.containerTitle, {textAlign: "center"}]}>Preferences</Text>
                     </View>
-                    <View style={MainStyle.container}>
-                        <View style={MainStyle.inlineContainer}>
-                            <Text style={MainStyle.lightText}>Resting time: </Text>
-                            <TextInput
-                                keyboardType="numeric"
-                                style={[MainStyle.input, MainStyle.setInput]}
-                                value={userData.preferences ? userData.preferences.restingTime.toString() : ""}
-                                onChangeText={text => {
-                                    if (!/^\d*$/.test(text)) return;
-                                    setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}));
-                                    Refresh()
-                                    }}>
-                            </TextInput>
-                        </View>
+                    <View style={MainStyle.inlineContainer}>
+                        <Text style={MainStyle.lightText}>Resting time: </Text>
+                        <TextInput
+                            keyboardType="numeric"
+                            style={[MainStyle.input, MainStyle.setInput]}
+                            value={userData.preferences ? userData.preferences.restingTime.toString() : ""}
+                            onChangeText={text => {
+                                if (!/^\d*$/.test(text)) return;
+                                setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}));
+                                Refresh()
+                                }}>
+                        </TextInput>
+                    </View>
+                    <View style={MainStyle.inlineContainer}>
+                        <Text style={MainStyle.lightText}>Bottom tab text: </Text>
+                        <TextInput
+                            style={[MainStyle.input, MainStyle.setInput]}>
+                        </TextInput>
                     </View>
                 </View>
                 <View style={MainStyle.container}>
@@ -194,7 +200,7 @@ export default function Settings() {
                             </TextInput>
                             <Text style={MainStyle.strongText}>{pwdStrength}</Text>
                             <View style={MainStyle.inlineContainer}>
-                                <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
+                                <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
                                     setStatus("");
                                     if (pwdStrength == "") return setStatus("Enter valid password")
                                     if (pwdStrength == "Weak") return setStatus("Password is too weak");
@@ -215,7 +221,8 @@ export default function Settings() {
                                         if (data.success) {
                                             setUserData(data.data);
                                             setStatus(data.message);
-                                            setTimeout(() => setPasswordModal(false), 2000);
+                                            setSaveDisabled(true);
+                                            setTimeout(() => {setPasswordModal(false); setSaveDisabled(false)}, 2000);
                                         } else {
                                             setStatus(data.message);
                                         }

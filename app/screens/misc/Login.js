@@ -16,7 +16,7 @@ const LoginStyle = StyleSheet.create({
         textAlign: "center"
     },
     forgotPassword: {
-        textAlign: "right",
+        textAlign: "center",
         textDecorationLine: "underline",
         fontSize: 15
     }
@@ -68,17 +68,21 @@ export default function Login() {
         <SafeAreaView style={MainStyle.content}> 
             <ScrollView contentContainerStyle={{flex : 1, justifyContent : "center"}}>
                 <Text style={LoginStyle.statusText}>{status}</Text>
-                <View style={MainStyle.container}>
-                    <Text style={MainStyle.screenTitle}>Login</Text>
-                    <TextInput 
-                        placeholder="Enter your email..."
-                        style={MainStyle.input}
-                        onChangeText={setEmail}/>
-                    <TextInput 
-                        placeholder="Enter your password..."
-                        style={MainStyle.input}
-                        onChangeText={setPassword}
-                        secureTextEntry/>
+                <View style={{height: "75%"}}>
+                    <View style={{marginVertical: "auto"}}>
+                        <Text style={[MainStyle.titleText, {textAlign: "center"}]}>Log In</Text>
+                        <TextInput 
+                            placeholder="Enter your email..."
+                            style={MainStyle.input}
+                            onChangeText={setEmail}/>
+                        <TextInput 
+                            placeholder="Enter your password..."
+                            style={MainStyle.input}
+                            onChangeText={setPassword}
+                            secureTextEntry/>
+                    </View>
+                </View>
+                <View style={{height: "25%"}}>
                     <Pressable
                         onPress={Authenticate}
                         style={MainStyle.button}>
@@ -88,14 +92,15 @@ export default function Login() {
                         onPress={() => {Linking.openURL("http://localhost:5173/password-recovery")}}>
                         <Text style={[MainStyle.strongText, LoginStyle.forgotPassword]}>Forgot password?</Text>
                     </Pressable>
-                </View>
-                <View style={[MainStyle.container, MainStyle.inlineContainer]}>
-                    <Text style={MainStyle.screenAltTitle}>Don't have an account?</Text>
-                    <Pressable
-                        onPress={() => {Linking.openURL("http://localhost:5173/registration")}}
-                        style={MainStyle.button}>
-                        <Text style={MainStyle.buttonText}>Register here!</Text>
-                    </Pressable>
+                    <View style={{marginTop: "auto"}}>
+                        <View style={[MainStyle.inlineContainer, {margin: "auto"}]}>
+                            <Text style={[MainStyle.lightText, {marginEnd: 5}]}>Don't have an account?</Text>
+                            <Pressable
+                                onPress={() => {Linking.openURL("http://localhost:5173/registration")}}>
+                                <Text style={MainStyle.strongText}>Register here!</Text>
+                            </Pressable>
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
         </SafeAreaView>

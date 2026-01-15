@@ -8,6 +8,12 @@ export default StyleSheet.create({
         backgroundColor: Var.black
     },
 
+    titleText : {
+        color: Var.white,
+        fontSize: 30,
+        fontWeight: "bold"
+    },
+
     screenTitle : {
         color: Var.white,
         fontSize : 25,
@@ -22,8 +28,6 @@ export default StyleSheet.create({
     container : {
         padding: 20,
         backgroundColor: Var.darkGray,
-        borderWidth: 1,
-        borderColor: Var.navyBlue,
         borderRadius: 10,
         width: "100%",
         marginVertical : 10
@@ -86,7 +90,7 @@ export default StyleSheet.create({
         color: Var.white,
         padding: 10,
         marginVertical: 10,
-        borderRadius: 5
+        borderRadius: 10
     },
     setInput : {
         width : 50,
