@@ -25,7 +25,8 @@ export default function ExerciseInfoModal({id, name}) {
 
     return (
         <>
-            <Pressable onPress={() => setVisible(true)}>
+            <Pressable 
+                onPress={() => setVisible(true)}>
                 <Text style={MainStyle.strongText}>{name}</Text>
             </Pressable>
             <Modal

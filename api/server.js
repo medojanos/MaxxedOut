@@ -619,6 +619,6 @@ app.get("/auth", (req, res) => {
     res.json({success: true})
 })
 
-app.listen(4000, () => {
-    console.log("API listening on http://localhost:4000")
+app.listen(2200, () => {
+    console.log("API listening on http://localhost:2200")
 })

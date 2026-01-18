@@ -2,6 +2,7 @@
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Linking } from "react-native";
 import { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import 'dotenv/config';
 
 // Misc
 import { Context } from "../../misc/Provider";
