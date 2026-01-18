@@ -38,8 +38,9 @@ export default function ExerciseInfoModal({id, name}) {
                         {exerciseInfos ? (
                             <View>
                                 <Text style={MainStyle.lightText}>Type: {exerciseInfos.type}</Text>
-                                    <View style={MainStyle.container}>
-                                        <Text style={MainStyle.containerTitle}>Muscle groups</Text>
+                                    {Object.entries(exerciseInfos.muscle_groups).length != 0 ? 
+                                    <>
+                                        <Text style={[MainStyle.containerTitle, {marginVertical: 10, textAlign: "center"}]}>Muscle groups</Text>
                                         <View style={MainStyle.inlineContainer}>
                                             {Object.entries(exerciseInfos.muscle_groups).map(
                                                 ([role, muscleGroups]) => (
@@ -51,8 +52,8 @@ export default function ExerciseInfoModal({id, name}) {
                                                     </View>
                                                 )
                                             )}
-                                        </View>
-                                    </View>
+                                        </View> 
+                                    </> : null}
                             </View>
                         ) : null}
                         <Pressable style={MainStyle.button} onPress={() => setVisible(false)}>

@@ -1,5 +1,6 @@
 // React
 import { View, Text, ScrollView, Pressable, StyleSheet, TextInput, Modal, Linking } from "react-native";
+import { Picker } from '@react-native-picker/picker';
 import { useContext, useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -59,14 +60,18 @@ export default function Settings() {
                 <View style={MainStyle.container}>
                     <View style={MainStyle.inlineContainer}>
                         <Ionicons name="person-circle" color={Var.red} size={40}></Ionicons>
-                        <Text style={[MainStyle.containerTitle, {textAlign: "center"}]}>Profile settings</Text>
+                        <Text style={MainStyle.containerTitle}>Profile</Text>
                     </View>
                     <View style={MainStyle.inlineContainer}>
                         <Text style={MainStyle.lightText}>Nickname: </Text>
-                        <Text style={MainStyle.lightText}>{userData ? userData.nickname : ""}</Text>
+                        <Text style={MainStyle.lightText}>{userData.nickname}</Text>
                         <Pressable onPress={() => {setNicknameModal(true); setStatus("");}}>
                             <Ionicons name="create" color={Var.red} size={25}></Ionicons>
                         </Pressable>
+                    </View>
+                    <View style={MainStyle.inlineContainer}>
+                        <Text style={MainStyle.lightText}>E-mail: </Text>
+                        <Text style={MainStyle.lightText}>{userData.email}</Text>
                     </View>
                 </View>
                 <Modal 
@@ -129,7 +134,7 @@ export default function Settings() {
                 <View style={MainStyle.container}>
                     <View style={MainStyle.inlineContainer}>
                         <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
-                        <Text style={[MainStyle.containerTitle, {textAlign: "center"}]}>Preferences</Text>
+                        <Text style={MainStyle.containerTitle}>Preferences</Text>
                     </View>
                     <View style={MainStyle.inlineContainer}>
                         <Text style={MainStyle.lightText}>Resting time: </Text>
@@ -146,15 +151,21 @@ export default function Settings() {
                     </View>
                     <View style={MainStyle.inlineContainer}>
                         <Text style={MainStyle.lightText}>Bottom tab text: </Text>
-                        <TextInput
-                            style={[MainStyle.input, MainStyle.setInput]}>
-                        </TextInput>
+                        <Picker
+                            selectedValue={userData.preferences.bottomTabText}
+                            style={[MainStyle.input, {borderWidth: 0}]}
+                            onValueChange={itemValue =>
+                                setUserData(prev => ({...prev, preferences: {...prev.preferences, bottomTabText: itemValue}}))
+                            }>
+                            <Picker.Item label="Show" value="Show" />
+                            <Picker.Item label="Hide" value="Hide" />
+                        </Picker>
                     </View>
                 </View>
                 <View style={MainStyle.container}>
                     <View style={MainStyle.inlineContainer}>
                         <Ionicons name="key" color={Var.red} size={40}></Ionicons>
-                        <Text style={[MainStyle.containerTitle, {textAlign: "center"}]}>Account settings</Text>
+                        <Text style={MainStyle.containerTitle}>Account</Text>
                     </View>
 
                     <Pressable style={MainStyle.secondaryButton}>
@@ -236,6 +247,14 @@ export default function Settings() {
                         </View>
                     </View>
                 </Modal>
+                <View style={MainStyle.container}>
+                    <View style={MainStyle.inlineContainer}>
+                        <Ionicons name="information-circle" color={Var.red} size={40}></Ionicons>
+                        <Text style={MainStyle.containerTitle}>About v0.1</Text>
+                    </View>
+                    <Text style={MainStyle.lightText}>Contact info: </Text>
+                    <Text style={[MainStyle.lightText, {textAlign: 'center'}]}>© MaxxedOut. All rights reserved.</Text>
+                </View>
             </ScrollView>
         </SafeAreaView>
     );

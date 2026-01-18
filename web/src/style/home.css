@@ -23,5 +23,6 @@
 #phone {
     width: 300px;
     max-width: 100%;
-    padding-bottom: 2rem;
+    border: 5px solid var(--red);
+    border-radius: 2rem;
 }

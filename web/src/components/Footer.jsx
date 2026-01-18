@@ -8,8 +8,6 @@ export default function Footer() {
                 </div>
                 <div className="d-flex flex-column align-items-end">
                     <a href="/registration">Registration</a>
-                    <a href="/download">Download</a>
-                    <a href="/docs">Docs</a>
                     <a href="/password-recovery">Password recovery</a>
                     <a href="/delete-account">Delete account</a>
                 </div>

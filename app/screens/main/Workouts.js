@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import PlanModal from "../../components/PlanModal";
-import WorkoutInfoModal from "../../components/WorkoutInfoModal"
+import PlanInfoModal from "../../components/PlanInfoModal";
 import { Context } from "../../misc/Provider";
 
 //Style
@@ -25,12 +25,12 @@ const WorkoutsStyle = StyleSheet.create({
 
 export default function Workouts() {
     const [planModal, setPlanModal] = useState(false);
-    const [workoutInfoModal, setWorkoutInfoModal] = useState(false);
+    const [planInfoModal, setPlanInfoModal] = useState(false);
     const [plans, setPlans] = useState([]);
     const [planId, setPlanId] = useState();
     const [planName, setPlanName] = useState();
 
-    const {token, refresh} = useContext(Context);
+    const {token, refresh, Refresh} = useContext(Context);
     
     const navigation = useNavigation();
 
@@ -56,9 +56,10 @@ export default function Workouts() {
                                 <View style={MainStyle.inlineContainer}>
                                     <Text style={MainStyle.containerTitle}>{plan.name}</Text>
                                     <Pressable onPress={() => {
+                                        Refresh();
                                         setPlanId(plan.id);
                                         setPlanName(plan.name);
-                                        setWorkoutInfoModal(true);
+                                        setPlanInfoModal(true);
                                     }}>
                                         <Ionicons name="information-circle-outline" size={25} color={Var.paleWhite}></Ionicons>
                                     </Pressable>
@@ -76,7 +77,7 @@ export default function Workouts() {
                         <Text style={MainStyle.lightText}>Your plans will be displayed here!</Text>
                     }
                     <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId} name={planName}></PlanModal>
-                    <WorkoutInfoModal visible={workoutInfoModal} Close={() => setWorkoutInfoModal(false)} id={planId} name={planName}></WorkoutInfoModal>
+                    <PlanInfoModal visible={planInfoModal} Close={() => setPlanInfoModal(false)} id={planId} name={planName}></PlanInfoModal>
                 </View>
             </ScrollView>
         </SafeAreaView>

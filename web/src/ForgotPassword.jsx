@@ -20,9 +20,9 @@ export default function ForgotPassword() {
             },
             body: JSON.stringify({email: email}),
         })
-        .then((res) => res.json())
-        .then((data) => {
-            console.log(data);  
+        .then(res => res.json())
+        .then(data => {
+            setStatus("");
             data.success ? setStep(1) : setStatus(data.message);
         });
     }
@@ -36,8 +36,9 @@ export default function ForgotPassword() {
             },
             body: JSON.stringify({email: email, code: code}),
         })
-        .then((res) => res.json())
-        .then((data) => {
+        .then(res => res.json())
+        .then(data => {
+            setStatus("");
             data.success ? setStep(2) : setStatus(data.message);
         })
     }
@@ -55,10 +56,11 @@ export default function ForgotPassword() {
             },
             body: JSON.stringify({email: email, code: code, password: password}),
         })
-        .then((res) => res.json())
-        .then((data) => {
+        .then(res => res.json())
+        .then(data => {
             setStatus(data.message);
             if(data.success){
+                setStatus("Password successfully changed! Redirecting to homepage...");
                 setTimeout(() => {
                     window.location.href = "/";
                 }, 2000);
@@ -67,6 +69,7 @@ export default function ForgotPassword() {
     }
 
     function HandleInput(e){
+        setStatus("");
         switch(e.target.name){
         case "email":
             setEmail(e.target.value);
@@ -132,6 +135,7 @@ export default function ForgotPassword() {
                         <input name="repassword" value={repassword || ""} type="password" onChange={HandleInput} required placeholder="Confirm new password"></input>
                         <p>{pwdStrength ? "Password strength: " + pwdStrength : ""}</p>
                         <input type="submit" value={"Change password"}></input>
+                        {status}
                     </form>
                     
                 )

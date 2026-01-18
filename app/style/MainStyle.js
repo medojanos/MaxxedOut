@@ -28,9 +28,11 @@ export default StyleSheet.create({
     container : {
         padding: 20,
         backgroundColor: Var.darkGray,
-        borderRadius: 10,
+        borderRadius: 15,
         width: "100%",
-        marginVertical : 10
+        marginVertical : 10,
+        borderWidth: 1,
+        borderColor: Var.navyBlue
     },
     containerTitle : {
         color: Var.white,

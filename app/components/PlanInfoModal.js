@@ -16,13 +16,13 @@ const WorkoutInfoModalStyle = StyleSheet.create({
 export default function WorkoutInfoModal({Close, visible, id, name}) {
     const [workoutInfos, setWorkoutInfos] = useState();
     
-    const {token} = useContext(Context);
+    const {token, refresh} = useContext(Context);
     
     useEffect(() => {
         fetch("http://localhost:4000/plan-info/" + id, {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => setWorkoutInfos(data.data))
-    }, [id])
+    }, [id, refresh])
 
     return (
         <Modal 
@@ -32,30 +32,26 @@ export default function WorkoutInfoModal({Close, visible, id, name}) {
             visible={visible}>
             <View style={MainStyle.overlay}>
                 <View style={MainStyle.modal}>
-                    <Text style={MainStyle.screenTitle}>{name} info</Text>  
+                    <Text style={MainStyle.screenTitle}>{name} Details</Text>  
                     <View style={[MainStyle.inlineContainer, {marginVertical: 10}]}>
                         <Text style={MainStyle.lightText}>Total exercises: {workoutInfos?.totalExercises}</Text>
                         <Text style={MainStyle.lightText}>Total sets: {workoutInfos?.totalSets}</Text>
                     </View>
-                    <View style={MainStyle.container}>
-                        <Text style={MainStyle.containerTitle}>Muscle groups</Text>
-                        {workoutInfos?.muscle_groups.map((mg, index) => (
-                            <View key={index} style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.lightText}>{mg.muscle_group}</Text>
-                                <Text style={MainStyle.lightText}>{mg.sets}</Text>
-                            </View>
-                        ))}
-                    </View>
-                    <View style={MainStyle.container}>
-                        <Text style={MainStyle.containerTitle}>Types</Text>
-                        {workoutInfos?.types.map((type, index) => (
-                            <View key={index} style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.lightText}>{type.type}</Text>
-                                <Text style={MainStyle.lightText}>{type.exercises} exercise</Text>
-                                <Text style={MainStyle.lightText}>{type.sets} sets</Text>
-                            </View>
-                        ))}
-                    </View>
+                    <Text style={[MainStyle.containerTitle, {marginVertical: 10}]}>Muscle groups</Text>
+                    {workoutInfos?.muscle_groups.map((mg, index) => (
+                        <View key={index} style={MainStyle.inlineContainer}>
+                            <Text style={MainStyle.lightText}>{mg.muscle_group}</Text>
+                            <Text style={MainStyle.lightText}>{mg.sets} sets</Text>
+                        </View>
+                    ))}
+                    <Text style={[MainStyle.containerTitle, {marginVertical: 10}]}>Types</Text>
+                    {workoutInfos?.types.map((type, index) => (
+                        <View key={index} style={MainStyle.inlineContainer}>
+                            <Text style={MainStyle.lightText}>{type.type}</Text>
+                            <Text style={MainStyle.lightText}>{type.exercises} exercise</Text>
+                            <Text style={MainStyle.lightText}>{type.sets} sets</Text>
+                        </View>
+                    ))}
                     <Pressable style={MainStyle.button} onPress={Close}><Text style={MainStyle.buttonText}>Close</Text></Pressable>
                 </View>
             </View>

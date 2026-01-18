@@ -67,10 +67,12 @@ export default function Login() {
     return (
         <SafeAreaView style={MainStyle.content}> 
             <ScrollView contentContainerStyle={{flex : 1, justifyContent : "center"}}>
-                <Text style={LoginStyle.statusText}>{status}</Text>
-                <View style={{height: "75%"}}>
+                <View style={{height: "10%", alignItems: "center", justifyContent: "center"}}>
+                    <Text style={MainStyle.titleText}>MaxxedOut</Text>
+                </View>
+                <View style={{height: "70%"}}>
                     <View style={{marginVertical: "auto"}}>
-                        <Text style={[MainStyle.titleText, {textAlign: "center"}]}>Log In</Text>
+                        <Text style={[MainStyle.screenTitle, {textAlign: "center"}]}>Log In</Text>
                         <TextInput 
                             placeholder="Enter your email..."
                             style={MainStyle.input}
@@ -80,9 +82,10 @@ export default function Login() {
                             style={MainStyle.input}
                             onChangeText={setPassword}
                             secureTextEntry/>
+                    <Text style={[MainStyle.lightText, {textAlign: "center"}]}>{status}</Text>
                     </View>
                 </View>
-                <View style={{height: "25%"}}>
+                <View style={{height: "20%"}}>
                     <Pressable
                         onPress={Authenticate}
                         style={MainStyle.button}>

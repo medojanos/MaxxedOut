@@ -34,8 +34,8 @@ export default function CreateWorkout() {
                     {
                         id: id,
                         name: name,
-                        type: type ? type: "Custom",
-                        muscle_groups: muscle_groups ? muscle_groups : [],
+                        type: type || "Custom",
+                        muscle_groups: muscle_groups || [],
                         sets: 0
                     }
                 ]

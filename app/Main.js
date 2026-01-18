@@ -26,6 +26,7 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function Home() {
+  const {userData} = useContext(Context);
   return (
     <Tab.Navigator
         initialRouteName="Tracker"
@@ -37,8 +38,9 @@ function Home() {
           tabBarStyle: { height: 65, backgroundColor: Var.black, padding: 5},
           tabBarActiveTintColor: Var.red,
           tabBarInactiveTintColor: Var.paleWhite,
-          tabBarIconStyle: {width: 30, height: 30},
+          tabBarIconStyle: {height: userData.preferences?.bottomTabText == "Show" ? 30 : 50},
           tabBarHideOnKeyboard : true,
+
           tabBarIcon: ({ color }) => {
             const icons = {
               Statistics: "stats-chart",
@@ -67,7 +69,7 @@ export default function Main() {
         screenOptions={() => ({
           headerStyle : {backgroundColor: Var.darkGray},
           headerBackButtonDisplayMode : "generic",
-          headerTintColor: Var.white,
+          headerTintColor: Var.white
         })}>
         <Stack.Screen name="Home" component={Home} options={{header: () => null}}/>
         <Stack.Screen name="CreateWorkout" component={CreateWorkout} options={{headerTitle: "Create New Workout", headerBackButtonDisplayMode: "minimal", headerTitleStyle: MainStyle.strongText}}/>

@@ -1,4 +1,4 @@
-import TestPhone from "./assets/testphone.png"
+import Tracker from "./assets/tracker.png"
 import "./style/home.css"
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
         <h2>Download MaxxedOut</h2>
         <div className="row justify-content-evenly">
           <div className="col-auto">
-            <img src={TestPhone} id="phone"/>
+            <img src={Tracker} id="phone"/>
           </div>
           <div className="col-auto">
             <h3>Get the app to...</h3>

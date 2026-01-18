@@ -1,6 +1,5 @@
 {
   "name": "maxxedoutapi",
-  "version": "1.0.0",
   "main": "server.js",
   "type": "module",
   "dependencies": {
@@ -8,10 +7,9 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "nodemailer": "^7.0.12",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.0.2"
   },
   "scripts": {
-    "start": "cd db && node create.js && cd .. && node server.js"
-  },
-  "private": "true"
+    "start": "cd db && node migration.js && cd .. && node server.js"
+  }
 }
