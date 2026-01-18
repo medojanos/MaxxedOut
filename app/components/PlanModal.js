@@ -7,6 +7,7 @@ import { useState, useEffect, useContext } from "react";
 import AddExercise from "./AddExercise";
 import { Context } from "../misc/Provider";
 import ExerciseInfoModal from "./ExerciseInfoModal";
+import ReArrange from "./ReArrange";
 
 // Style
 import * as Var from "../style/Variables"
@@ -109,6 +110,11 @@ export default function PlanModal({Close, visible, id, name}) {
                         {plan?.exercises.map((exercise, index) => (
                             <View key={index} style={MainStyle.container}>
                                 <View key={index} style={MainStyle.inlineContainer}>
+                                    <ReArrange
+                                        index={index}
+                                        list={plan.exercises}
+                                        onMove={newList => setPlan(prev => ({...prev, exercises : newList}))}>
+                                    </ReArrange>
                                     {typeof exercise.id == "string" || exercise.id == null ? 
                                     <TextInput
                                         style={[MainStyle.input, {width: "60%"}]}

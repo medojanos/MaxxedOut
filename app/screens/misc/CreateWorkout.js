@@ -9,6 +9,7 @@ import { useState, useContext, use } from "react";
 import { Context } from "../../misc/Provider";
 import AddExercise from "../../components/AddExercise";
 import ExerciseInfoModal from "../../components/ExerciseInfoModal";
+import ReArrange from "../../components/ReArrange";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -89,10 +90,11 @@ export default function CreateWorkout() {
                         return (
                             <View key={exercise.id} style={MainStyle.container}>
                                 <View style={MainStyle.inlineContainer}>
-                                    <View>
-                                        <Ionicons name="chevron-up" color={Var.white} size={20} onPress={() => {}}></Ionicons>
-                                        <Ionicons name="chevron-down" color={Var.white} size={20} onPress={() => {}}></Ionicons>
-                                    </View>
+                                    <ReArrange
+                                        index={index}
+                                        list={planDraft.exercises}
+                                        onMove={newList => setPlanDraft(prev => ({...prev, exercises : newList}))}>
+                                    </ReArrange>
                                     {typeof exercise.id !== "string" ?
                                     <ExerciseInfoModal
                                         id={exercise.id}

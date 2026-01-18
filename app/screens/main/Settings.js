@@ -17,7 +17,7 @@ const SettingsStyle = StyleSheet.create({
 })
 
 export default function Settings() {
-    const {userData, setUserData} = useContext(Context);
+    const {userData, setUserData, setWorkout} = useContext(Context);
 
     const { token, Refresh } = useContext(Context);
 
@@ -141,7 +141,7 @@ export default function Settings() {
                         <TextInput
                             keyboardType="numeric"
                             style={[MainStyle.input, MainStyle.setInput]}
-                            value={userData.preferences ? userData.preferences.restingTime.toString() : ""}
+                            value={userData.preferences?.restingTime.toString() || "0"}
                             onChangeText={text => {
                                 if (!/^\d*$/.test(text)) return;
                                 setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}));
@@ -152,7 +152,7 @@ export default function Settings() {
                     <View style={MainStyle.inlineContainer}>
                         <Text style={MainStyle.lightText}>Bottom tab text: </Text>
                         <Picker
-                            selectedValue={userData.preferences.bottomTabText}
+                            selectedValue={userData.preferences?.bottomTabText || "Show"}
                             style={[MainStyle.input, {borderWidth: 0}]}
                             onValueChange={itemValue =>
                                 setUserData(prev => ({...prev, preferences: {...prev.preferences, bottomTabText: itemValue}}))
@@ -180,7 +180,10 @@ export default function Settings() {
                         </View>
                     </Pressable>
                 </View>
-                <Pressable style={MainStyle.button} onPress={() => setUserData(null)}>
+                <Pressable style={MainStyle.button} onPress={() => {
+                    setUserData(null);
+                    setWorkout(null);
+                }}>
                     <Text style={MainStyle.buttonText}>Logout</Text>
                 </Pressable>
                 <Modal 
@@ -252,7 +255,6 @@ export default function Settings() {
                         <Ionicons name="information-circle" color={Var.red} size={40}></Ionicons>
                         <Text style={MainStyle.containerTitle}>About v0.1</Text>
                     </View>
-                    <Text style={MainStyle.lightText}>Contact info: </Text>
                     <Text style={[MainStyle.lightText, {textAlign: 'center'}]}>© MaxxedOut. All rights reserved.</Text>
                 </View>
             </ScrollView>

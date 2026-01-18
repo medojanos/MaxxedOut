@@ -84,7 +84,8 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                             ))}
                         </Picker>
                     </View>
-                    <ScrollView>
+                    <ScrollView 
+                        style={{maxHeight: 120}}>
                         {filteredExercises.map((exercise) => (
                             <Pressable
                                 key={exercise.id}

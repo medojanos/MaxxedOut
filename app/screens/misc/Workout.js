@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { Context} from "../../misc/Provider";
 import Loader from "../../components/Loader";
 import ExerciseInfoModal from "../../components/ExerciseInfoModal";
+import ReArrange from "../../components/ReArrange";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -162,17 +163,24 @@ export default function Workout() {
                 {workout.plan?.map((exercise, exerciseIndex) => (
                     <View key={exerciseIndex} style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
-                            {typeof exercise.id == "string" || exercise.id === null ? 
-                            <TextInput
-                                style={MainStyle.input}
-                                value={exercise.name}
-                                onChangeText={text => updateExerciseName(exerciseIndex, text)}>
-                            </TextInput>
-                            : 
-                            <ExerciseInfoModal
-                                id={exercise.id}
-                                name={`${exerciseIndex+1}. ${exercise.name}`}/>
-                            }
+                            <View style={MainStyle.inlineContainer}>
+                                <ReArrange
+                                    index={exerciseIndex}
+                                    list={workout.plan}
+                                    onMove={newList => setWorkout(prev => ({...prev, plan : newList}))}>
+                                </ReArrange>
+                                {typeof exercise.id == "string" || exercise.id === null ? 
+                                <TextInput
+                                    style={MainStyle.input}
+                                    value={exercise.name}
+                                    onChangeText={text => updateExerciseName(exerciseIndex, text)}>
+                                </TextInput>
+                                : 
+                                <ExerciseInfoModal
+                                    id={exercise.id}
+                                    name={`${exerciseIndex+1}. ${exercise.name}`}/>
+                                }
+                            </View>
                             <Pressable onPress={() => deleteExercise(exerciseIndex)}>
                                 <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
                             </Pressable>

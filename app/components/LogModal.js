@@ -38,7 +38,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                                         <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
                                         {exercise.sets.map((_, setIndex) => (
                                             <View key={setIndex} style={MainStyle.inlineContainer}>
-                                                <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].weight} </Text>
+                                                {exercise.sets[setIndex].weight != 0 ? <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].weight} </Text> : null}
                                                 <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text>
                                             </View>
                                         ))}

@@ -3,9 +3,7 @@
   "main": "index.html",
   "type": "module",
   "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "deploy": "gh-pages -d dist"
+    "start": "vite"
   },
   "dependencies": {
     "react": "^19.1.1",
