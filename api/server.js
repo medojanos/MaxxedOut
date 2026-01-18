@@ -75,7 +75,6 @@ app.get("/exercises", (req, res) => {
             }
 
         });
-        console.log(exercisesMap);
         res.json(exercisesMap);
     })
 })

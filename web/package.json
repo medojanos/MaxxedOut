@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^19.1.1",

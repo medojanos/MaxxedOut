@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
     return (
         <footer className="container-lg">
@@ -7,13 +9,13 @@ export default function Footer() {
                     <h5>Maxx out your workouts</h5>
                 </div>
                 <div className="d-flex flex-column align-items-end">
-                    <a href="/registration">Registration</a>
-                    <a href="/password-recovery">Password recovery</a>
-                    <a href="/delete-account">Delete account</a>
+                    <Link to="/registration">Registration</Link>
+                    <Link to="/password-recovery">Password recovery</Link>
+                    <Link to="/delete-account">Delete account</Link>
                 </div>
             </div>
             <hr/>
-            <p>2025 @ MaxxedOut. All rights reserved.</p>
+            <p>2026 @ MaxxedOut. All rights reserved.</p>
         </footer>
     )
 }

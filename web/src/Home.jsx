@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import Tracker from "./assets/tracker.png"
 import "./style/home.css"
 
@@ -13,7 +14,7 @@ export default function Home() {
         <div className="container m-auto text-center">
           <h3>Start your fitness journey</h3>
           <h5>You need to register to use the app</h5>
-          <a href="/registration"><button>Sign up now <ion-icon name="arrow-forward"></ion-icon></button></a>
+          <Link to="/registration"><button>Sign up now <ion-icon name="arrow-forward"></ion-icon></button></Link>
         </div>
       </section>
       <hr></hr>
@@ -38,7 +39,7 @@ export default function Home() {
                 <ion-icon name="analytics"></ion-icon>
                 <span>See results</span>
               </div>
-              <a href="/download"><button>DOWNLOAD the APK</button></a>
+              <a href=""><button>DOWNLOAD the APK</button></a>
             </div>
           </div>
         </div>
