@@ -90,14 +90,14 @@ export default function Login() {
                         <Text style={MainStyle.buttonText}>Login</Text>
                     </Pressable>
                     <Pressable
-                        onPress={() => {Linking.openURL(Config.WEB_URL + "/password-recovery")}}>
+                        onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/password-recovery")}}>
                         <Text style={[MainStyle.strongText, LoginStyle.forgotPassword]}>Forgot password?</Text>
                     </Pressable>
                     <View style={{marginTop: "auto"}}>
                         <View style={[MainStyle.inlineContainer, {margin: "auto"}]}>
                             <Text style={[MainStyle.lightText, {marginEnd: 5}]}>Don't have an account?</Text>
                             <Pressable
-                                onPress={() => {Linking.openURL(Config.WEB_URL + "/registration")}}>
+                                onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/registration")}}>
                                 <Text style={MainStyle.strongText}>Register here!</Text>
                             </Pressable>
                         </View>

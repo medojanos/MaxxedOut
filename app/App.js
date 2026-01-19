@@ -19,7 +19,6 @@ export default function App() {
   useEffect(() => {
     async function load() {
         try {
-            console.log(Constants.expoConfig.extra.API_URL);
             const token = await getData("token");
             const res = await fetch(Constants.expoConfig.extra.API_URL + "/auth", {headers: {"Authorization" : token}});
             const data = await res.json();
