@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "expo start",
-    "build:android": "npx eas build --platform android --profile development"
+    "build:android": "npx eas build -p android --profile android-apk"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
