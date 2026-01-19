@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // Misc
 import { Context } from "../../misc/Provider";
 import RandomName from "../../misc/RandomName";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../../style/Variables"
@@ -100,7 +100,7 @@ export default function Settings() {
                             </View>
                             <View style={MainStyle.inlineContainer}>
                                 <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
-                                    fetch(Config.API_URL + "/user", {
+                                    fetch(Constants.expoConfig.extra.API_URL + "/user", {
                                         method: "PATCH",
                                         headers: {
                                             "Content-Type": "application/json",
@@ -219,7 +219,7 @@ export default function Settings() {
                                     if (pwdStrength == "") return setStatus("Enter valid password")
                                     if (pwdStrength == "Weak") return setStatus("Password is too weak");
                                     if (newPassword != newRepassword) return setStatus("Passwords do not match");
-                                    fetch(Config.API_URL + "/user", {
+                                    fetch(Constants.expoConfig.extra.API_URL + "/user", {
                                         method: "PATCH",
                                         headers: {
                                             "Content-Type": "application/json",

@@ -13,7 +13,7 @@ export default function ForgotPassword() {
 
     function SendCode(event){
         event.preventDefault();
-        fetch("http://localhost:4000/forgot-password", {
+        fetch(import.meta.env.VITE_API_URL + "/forgot-password", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -29,7 +29,7 @@ export default function ForgotPassword() {
 
     function VerifyCode(event){
         event.preventDefault();
-        fetch("http://localhost:4000/verify-code", {
+        fetch(import.meta.env.VITE_API_URL + "/verify-code", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export default function ForgotPassword() {
             setStatus("Passwords do not match");
             return;
         }
-        fetch("http://localhost:4000/reset-password", {
+        fetch(import.meta.env.VITE_API_URL + "/reset-password", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

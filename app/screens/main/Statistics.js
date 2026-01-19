@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import { Context } from "../../misc/Provider";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../../style/Variables"
@@ -30,7 +30,7 @@ export default function Statistics() {
     const {token, workout, refresh} = useContext(Context);
 
     useEffect(() => {
-        fetch(Config.API_URL + "/statistics", { headers: { "Authorization": token } })
+        fetch(Constants.expoConfig.extra.API_URL + "/statistics", { headers: { "Authorization": token } })
         .then(res => res.json())
         .then(data => setStatistics(data.data));
     }, [workout, refresh]);

@@ -8,7 +8,7 @@ import AddExercise from "./AddExercise";
 import { Context } from "../misc/Provider";
 import ExerciseInfoModal from "./ExerciseInfoModal";
 import ReArrange from "./ReArrange";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../style/Variables"
@@ -22,7 +22,7 @@ export default function PlanModal({ Close, visible, id, name }) {
     const { token, Refresh } = useContext(Context);
     
     useEffect(() => {
-        fetch(`${Config.API_URL}/plans/${id}`, { headers: { "Authorization": token } })
+        fetch(`${Constants.expoConfig.extra.API_URL}/plans/${id}`, { headers: { "Authorization": token } })
             .then(res => res.json())
             .then(data => setPlan({ id: id, name: name, ownIndex: 0, exercises: data.data.plan }))
     }, [id, name, token]);
@@ -157,7 +157,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                             <View style={MainStyle.modal}>
                                 <Text style={MainStyle.screenTitle}>Are you sure you want to delete <Text style={{fontStyle: "italic"}}>{name}</Text>?</Text>
                                 <Pressable style={MainStyle.button} onPress={() => {
-                                    fetch("http://localhost:4000/plans/" + id, {method: "DELETE", headers: {"Authorization" : token}})
+                                    fetch(Constants.expoConfig.extra.API_URL + "/plans/" + id, {method: "DELETE", headers: {"Authorization" : token}})
                                     .then(res => res.json())
                                     .then(data => {
                                         if (data.success) {
@@ -173,7 +173,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                     </Modal>
                     <View style={MainStyle.inlineContainer}>
                         <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
-                            fetch("http://localhost:4000/plans/" + id, {
+                            fetch(Constants.expoConfig.extra.API_URL + "/plans/" + id, {
                                 method: "PATCH",
                                 headers: {
                                     "Authorization" : token,

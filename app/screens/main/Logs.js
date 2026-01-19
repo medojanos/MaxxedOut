@@ -6,7 +6,7 @@ import { Calendar } from "react-native-calendars";
 
 // Misc
 import { Context } from "../../misc/Provider";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../../style/Variables"
@@ -31,7 +31,7 @@ export default function Logs() {
     const { token, workout, refresh } = useContext(Context);
 
     useEffect(() => {
-        fetch(Config.API_URL + "/workouts/" + "?limit=5", {headers: {"Authorization" : token}})
+        fetch(Constants.expoConfig.extra.API_URL + "/workouts/" + "?limit=5", {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => data.success ? setLatest(data.data) : setStatus(data.message))
         
@@ -40,7 +40,7 @@ export default function Logs() {
     }, [refresh, workout]);
 
     function fetchMarkedDates(date) {
-        fetch(Config.API_URL + "/workouts" + "?month=" + date.year + "-" + String(date.month).padStart(2, '0'), {headers: {"Authorization" : token}})
+        fetch(Constants.expoConfig.extra.API_URL + "/workouts" + "?month=" + date.year + "-" + String(date.month).padStart(2, '0'), {headers: {"Authorization" : token}})
         .then(res => res.json())
         .then(data => {
             if (data.success) {
@@ -65,7 +65,7 @@ export default function Logs() {
                     style={LogsStyle.calendar} 
                     enableSwipeMonths
                     onDayPress={day => {
-                        fetch(Config.API_URL + "/workouts?date=" + day.dateString, {headers: {"Authorization" : token}})
+                        fetch(Constants.expoConfig.extra.API_URL + "/workouts?date=" + day.dateString, {headers: {"Authorization" : token}})
                         .then(res => res.json())
                         .then(data => {
                             setStatus();
@@ -99,7 +99,7 @@ export default function Logs() {
                             <Pressable
                                 style={MainStyle.secondaryButton}
                                 onPress={() => {
-                                    fetch(Config.API_URL + "/workouts/" + workout.id, {headers: {"Authorization" : token}})
+                                    fetch(Constants.expoConfig.extra.API_URL + "/workouts/" + workout.id, {headers: {"Authorization" : token}})
                                     .then(res => res.json())
                                     .then(data => {
                                         setStatus();

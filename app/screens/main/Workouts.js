@@ -9,7 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import PlanModal from "../../components/PlanModal";
 import PlanInfoModal from "../../components/PlanInfoModal";
 import { Context } from "../../misc/Provider";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 //Style
 import * as Var from "../../style/Variables"
@@ -36,7 +36,7 @@ export default function Workouts() {
     const navigation = useNavigation();
 
     useEffect(() => {
-        fetch(Config.API_URL + "/plans", { headers: { "Authorization": token } })
+        fetch(Constants.expoConfig.extra.API_URL + "/plans", { headers: { "Authorization": token } })
         .then(res => res.json())
         .then(data => setPlans(data.data))
     }, [refresh])

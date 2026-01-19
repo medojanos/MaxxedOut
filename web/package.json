@@ -3,7 +3,7 @@
   "main": "index.html",
   "type": "module",
   "scripts": {
-    "start": "vite"
+    "start": "vite --port 6800"
   },
   "dependencies": {
     "react": "^19.1.1",

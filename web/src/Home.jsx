@@ -25,7 +25,7 @@ export default function Home() {
             <img src={Tracker} id="phone"/>
           </div>
           <div className="col-auto">
-            <h3>Get the app to...</h3>
+            <h3 className="mt-5">Get the app to...</h3>
             <div id="features">
               <div>
                 <ion-icon name="barbell"></ion-icon>

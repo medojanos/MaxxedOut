@@ -12,7 +12,7 @@ import Loader from "../../components/Loader";
 import ExerciseInfoModal from "../../components/ExerciseInfoModal";
 import ReArrange from "../../components/ReArrange";
 import AddExercise from "../../components/AddExercise";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../../style/Variables"
@@ -120,7 +120,7 @@ export default function Workout() {
                     <Pressable
                         style={MainStyle.secondaryButton}
                         onPress={() => {
-                            fetch(Config.API_URL + "/workouts?name=" + workout.name, { headers: { Authorization: token } })
+                            fetch(Constants.expoConfig.extra.API_URL + "/workouts?name=" + workout.name, { headers: { Authorization: token } })
                             .then(res => res.json())
                             .then(data => {
                                 if (data.success) setWorkout(prev => ({
@@ -224,7 +224,7 @@ export default function Workout() {
                                 <Text style={MainStyle.buttonText}>No</Text>
                             </Pressable>
                             <Pressable style={MainStyle.button} onPress={() => {
-                                fetch(Config.API_URL + "/workouts", {
+                                fetch(Constants.expoConfig.extra.API_URL + "/workouts", {
                                     method: "PUT",
                                     headers: {
                                         "Content-Type" : "application/json",

@@ -9,7 +9,7 @@ import Loader from "./components/Loader";
 // Misc
 import { Context } from "./misc/Provider";
 import { getData, getJson, } from "./misc/Storage";
-
+import Constants from 'expo-constants';
 
 export default function App() {
   const {setToken, userData, setUserData, setWorkout} = useContext(Context);
@@ -19,8 +19,9 @@ export default function App() {
   useEffect(() => {
     async function load() {
         try {
+            console.log(Constants.expoConfig.extra.API_URL);
             const token = await getData("token");
-            const res = await fetch("http://localhost:4000/auth", {headers: {"Authorization" : token}});
+            const res = await fetch(Constants.expoConfig.extra.API_URL + "/auth", {headers: {"Authorization" : token}});
             const data = await res.json();
             if (data.success) {
                 setToken(token);

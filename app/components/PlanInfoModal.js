@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from "react";
 
 // Misc
 import { Context } from "../misc/Provider";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../style/Variables"
@@ -16,7 +16,7 @@ export default function PlanInfoModal({ Close, visible, id, name }) {
     const { token, refresh } = useContext(Context);
     
     useEffect(() => {
-        fetch(`${Config.API_URL}/plan-info/${id}`, { headers: { "Authorization": token } })
+        fetch(`${Constants.expoConfig.extra.API_URL}/plan-info/${id}`, { headers: { "Authorization": token } })
             .then(res => res.json())
             .then(data => setPlanInfo(data.data))
     }, [id, refresh])

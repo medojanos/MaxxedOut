@@ -4,13 +4,13 @@ import { useContext, useEffect, useState } from "react";
 
 // Misc
 import { Context } from "../misc/Provider";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
 const ExerciseModalStyle = StyleSheet.create({})
 
-import Config from "react-native-config";
 
 export default function ExerciseInfoModal({id, name}) {
     const [exerciseInfos, setExerciseInfos] = useState();
@@ -19,7 +19,7 @@ export default function ExerciseInfoModal({id, name}) {
     const {token} = useContext(Context);
 
     useEffect(() => {
-        fetch(Config.API_URL + "/exercises/" + id, { headers: { "Authorization": token } })
+        fetch(Constants.expoConfig.extra.API_URL + "/exercises/" + id, { headers: { "Authorization": token } })
             .then(res => res.json())
             .then(data => setExerciseInfos(data.data))
     }, [id, token]);

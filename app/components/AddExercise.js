@@ -3,6 +3,8 @@ import { View, Text, ScrollView, Pressable, TextInput, Modal } from "react-nativ
 import { Picker } from '@react-native-picker/picker';
 import { useState, useEffect } from "react";
 
+import Constants from 'expo-constants';
+
 // Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
@@ -25,8 +27,6 @@ const AddExerciseStyle = StyleSheet.create({
     }
 })
 
-import Config from "react-native-config";
-
 export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const [exercises, setExercises] = useState([]);
     const [musclegroups, setMuscleGroups] = useState([]);
@@ -36,11 +36,11 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const [musclegroup, setMuscleGroup] = useState("");
 
     useEffect(() => {
-        fetch(Config.API_URL + "/exercises")
+        fetch(Constants.expoConfig.extra.API_URL + "/exercises")
         .then(res => res.json())
         .then(data => setExercises(Object.values(data)))
 
-        fetch(Config.API_URL + "/muscle_groups")
+        fetch(Constants.expoConfig.extra.API_URL + "/muscle_groups")
         .then(res => res.json())
         .then(data => setMuscleGroups(data))
     },[])

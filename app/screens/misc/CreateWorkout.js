@@ -10,7 +10,7 @@ import { Context } from "../../misc/Provider";
 import AddExercise from "../../components/AddExercise";
 import ExerciseInfoModal from "../../components/ExerciseInfoModal";
 import ReArrange from "../../components/ReArrange";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../../style/Variables"
@@ -131,7 +131,7 @@ export default function CreateWorkout() {
                     <Pressable
                         style={[MainStyle.button, MainStyle.buttonBlock]}
                         onPress={() => {
-                            fetch(Config.API_URL + "/plan", {
+                            fetch(Constants.expoConfig.extra.API_URL + "/plan", {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type" : "application/json",

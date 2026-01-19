@@ -5,7 +5,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 // Misc
 import { Context } from "../misc/Provider";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../style/Variables"
@@ -58,7 +58,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                                 <Pressable
                                     style={MainStyle.button}
                                     onPress={() => {
-                                        fetch(`${Config.API_URL}/workouts/${workouts[0].id}`, {
+                                        fetch(`${Constants.expoConfig.extra.API_URL}/workouts/${workouts[0].id}`, {
                                             method: "DELETE",
                                             headers: {"Authorization" : token}
                                         })

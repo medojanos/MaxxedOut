@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import { Context } from "../../misc/Provider";
-import Config from "react-native-config";
+import Constants from 'expo-constants';
 
 // Style
 import * as Var from "../../style/Variables"
@@ -40,7 +40,7 @@ export default function Login() {
             setStatus("Enter a valid password");
             return;
         }
-        fetch(Config.API_URL + "/login", {
+        fetch(Constants.expoConfig.extra.API_URL + "/login", {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json"
