@@ -4,6 +4,11 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    allowedHosts: ["maxxedout.meadowhub.net"]
+    host: true,  
+    port: 6800,
+    hmr: {
+      host: 'maxxedout.meadowhub.net', 
+      protocol: 'wss'
+    }
   }
 })
