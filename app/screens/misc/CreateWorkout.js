@@ -3,20 +3,21 @@ import { View, Text, ScrollView, Pressable, TextInput } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useContext, use } from "react";
+import { useState, useContext } from "react";
 
 // Misc
 import { Context } from "../../misc/Provider";
 import AddExercise from "../../components/AddExercise";
 import ExerciseInfoModal from "../../components/ExerciseInfoModal";
 import ReArrange from "../../components/ReArrange";
+import Config from "react-native-config";
 
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 import { StyleSheet } from "react-native";
 const CreateWorkoutStyle = StyleSheet.create({
-   
+
 })
 
 export default function CreateWorkout() {
@@ -130,7 +131,7 @@ export default function CreateWorkout() {
                     <Pressable
                         style={[MainStyle.button, MainStyle.buttonBlock]}
                         onPress={() => {
-                            fetch("http://localhost:4000/plan", {
+                            fetch(Config.API_URL + "/plan", {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type" : "application/json",

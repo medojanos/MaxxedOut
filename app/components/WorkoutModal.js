@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 
 // Misc
 import { Context } from "../misc/Provider";
+import Config from "react-native-config";
 
 // Style
 import * as Var from "../style/Variables"
@@ -26,10 +27,11 @@ export default function WorkoutModal({Close, visible}) {
     
 
     useEffect(() => {
-        fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
+        fetch(Config.API_URL + "/plans", { headers: { "Authorization": token } })
         .then(res => res.json())
         .then(data => setPlans(data.data))
-    }, [refresh])  
+    }, [refresh])
+
 
     return (
         <Modal 

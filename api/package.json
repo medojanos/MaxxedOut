@@ -10,6 +10,7 @@
     "sqlite3": "^5.0.2"
   },
   "scripts": {
-    "start": "cd db && node migration.js && cd .. && node server.js"
+    "dev": "cd db && node migration.js && cd .. && node server.js",
+    "start": "node server.js"
   }
 }

@@ -23,7 +23,7 @@ export default function Registration() {
         return;
     }
 
-    fetch("http://localhost:4000/register", {
+    fetch(import.meta.env.VITE_API_URL + "/register", {
         method: "POST",
         headers: {
             "Content-Type" : "application/json"

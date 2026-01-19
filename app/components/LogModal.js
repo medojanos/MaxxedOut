@@ -5,17 +5,18 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 // Misc
 import { Context } from "../misc/Provider";
+import Config from "react-native-config";
 
 // Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
-const LogModalStyle = StyleSheet.create({
-    
-})
+const LogModalStyle = StyleSheet.create({})
+
 
 export default function LogModal({visible, Close, workouts, status}) {
     const [deleteModal, setDeleteModal] = useState(false);
     const { token, Refresh } = useContext(Context);
+
     return (
         <Modal
             animationType="fade"
@@ -43,8 +44,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                                             </View>
                                         ))}
                                     </View>
-                                    ))
-                                }
+                                ))}
                             </View> 
                         )) : <Text style={MainStyle.screenTitle}>{status}</Text>}
                     </ScrollView>
@@ -58,7 +58,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                                 <Pressable
                                     style={MainStyle.button}
                                     onPress={() => {
-                                        fetch("http://localhost:4000/workouts/" + workouts[0].id, {
+                                        fetch(`${Config.API_URL}/workouts/${workouts[0].id}`, {
                                             method: "DELETE",
                                             headers: {"Authorization" : token}
                                         })

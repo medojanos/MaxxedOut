@@ -8,26 +8,24 @@ import AddExercise from "./AddExercise";
 import { Context } from "../misc/Provider";
 import ExerciseInfoModal from "./ExerciseInfoModal";
 import ReArrange from "./ReArrange";
+import Config from "react-native-config";
 
 // Style
 import * as Var from "../style/Variables"
 import MainStyle from "../style/MainStyle"
-const PlanModalStyle = StyleSheet.create({
 
-})
-
-export default function PlanModal({Close, visible, id, name}) {
-    const [plan, setPlan] = useState({id: 0, name: "", ownIndex: 0, exercises: []});
+export default function PlanModal({ Close, visible, id, name }) {
+    const [plan, setPlan] = useState({ id: 0, name: "", ownIndex: 0, exercises: [] });
     const [deleteModal, setDeleteModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
 
-    const {token, Refresh} = useContext(Context);
+    const { token, Refresh } = useContext(Context);
     
     useEffect(() => {
-        fetch("http://localhost:4000/plans/" + id, {headers: {"Authorization" : token}})
-        .then(res => res.json())
-        .then(data => setPlan({id: id, name: name, ownIndex: 0, exercises: data.data.plan}))
-    }, [id])
+        fetch(`${Config.API_URL}/plans/${id}`, { headers: { "Authorization": token } })
+            .then(res => res.json())
+            .then(data => setPlan({ id: id, name: name, ownIndex: 0, exercises: data.data.plan }))
+    }, [id, name, token]);
 
     function addExercise(id, name) {
         setPlan(prev => ({

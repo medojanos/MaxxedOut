@@ -3,7 +3,6 @@ import sqlite3 from 'sqlite3'
 import cors from 'cors'
 import { fileURLToPath } from 'url'
 import path from 'path'
-import fs from 'fs'
 import { hash, randomBytes } from 'crypto'
 import nodemailer from "nodemailer";
 import 'dotenv/config';
@@ -11,7 +10,6 @@ import 'dotenv/config';
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const dbPath = path.join(dirname, 'db', 'maxxedout.db')
-const readmePath = path.join(dirname, '..', 'README.md')
 
 const app = express()
 app.use(cors())
@@ -36,12 +34,6 @@ const db = new sqlite3.Database(dbPath, (e) => {
 // Open api
 app.get("/", (req, res) => {
     res.send("The API is working!")
-})
-
-app.get("/readme", (req, res) => {
-    fs.readFile(readmePath, "utf-8", (e, text) => {
-        res.send(text)
-    })
 })
 
 app.get("/muscle_groups", (req, res) => {
@@ -618,6 +610,6 @@ app.get("/auth", (req, res) => {
     res.json({success: true})
 })
 
-app.listen(2200, () => {
-    console.log("API listening on http://localhost:2200")
+app.listen(process.env.API_PORT, () => {
+    console.log("API listening on http://localhost:" + process.env.API_PORT)
 })

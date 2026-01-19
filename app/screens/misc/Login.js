@@ -2,10 +2,10 @@
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Linking } from "react-native";
 import { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import 'dotenv/config';
 
 // Misc
 import { Context } from "../../misc/Provider";
+import Config from "react-native-config";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -40,7 +40,7 @@ export default function Login() {
             setStatus("Enter a valid password");
             return;
         }
-        fetch("http://localhost:4000/login", {
+        fetch(Config.API_URL + "/login", {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json"
@@ -59,9 +59,6 @@ export default function Login() {
             } else {
                 setStatus(data.message);
             }
-        })
-        .catch(e => {
-            console.log(e)
         })
     }
 
@@ -93,14 +90,14 @@ export default function Login() {
                         <Text style={MainStyle.buttonText}>Login</Text>
                     </Pressable>
                     <Pressable
-                        onPress={() => {Linking.openURL("http://localhost:5173/password-recovery")}}>
+                        onPress={() => {Linking.openURL(Config.WEB_URL + "/password-recovery")}}>
                         <Text style={[MainStyle.strongText, LoginStyle.forgotPassword]}>Forgot password?</Text>
                     </Pressable>
                     <View style={{marginTop: "auto"}}>
                         <View style={[MainStyle.inlineContainer, {margin: "auto"}]}>
                             <Text style={[MainStyle.lightText, {marginEnd: 5}]}>Don't have an account?</Text>
                             <Pressable
-                                onPress={() => {Linking.openURL("http://localhost:5173/registration")}}>
+                                onPress={() => {Linking.openURL(Config.WEB_URL + "/registration")}}>
                                 <Text style={MainStyle.strongText}>Register here!</Text>
                             </Pressable>
                         </View>
