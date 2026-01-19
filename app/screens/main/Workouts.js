@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import PlanModal from "../../components/PlanModal";
 import PlanInfoModal from "../../components/PlanInfoModal";
 import { Context } from "../../misc/Provider";
+import Config from "react-native-config";
 
 //Style
 import * as Var from "../../style/Variables"
@@ -35,10 +36,11 @@ export default function Workouts() {
     const navigation = useNavigation();
 
     useEffect(() => {
-        fetch("http://localhost:4000/plans", {headers: {"Authorization" : token}})
+        fetch(Config.API_URL + "/plans", { headers: { "Authorization": token } })
         .then(res => res.json())
         .then(data => setPlans(data.data))
     }, [refresh])
+
 
     return (
         <SafeAreaView style={MainStyle.content}>

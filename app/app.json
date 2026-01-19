@@ -19,7 +19,13 @@
       "adaptiveIcon": {
         "backgroundColor": "#F5EDED"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.medojanos.MaxxedOut"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e3330407-7f87-4ede-8221-2cb3d0314beb"
+      }
     }
   }
 }

@@ -25,6 +25,8 @@ const AddExerciseStyle = StyleSheet.create({
     }
 })
 
+import Config from "react-native-config";
+
 export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const [exercises, setExercises] = useState([]);
     const [musclegroups, setMuscleGroups] = useState([]);
@@ -34,11 +36,11 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const [musclegroup, setMuscleGroup] = useState("");
 
     useEffect(() => {
-        fetch("http://localhost:4000/exercises")
+        fetch(Config.API_URL + "/exercises")
         .then(res => res.json())
         .then(data => setExercises(Object.values(data)))
 
-        fetch("http://localhost:4000/muscle_groups")
+        fetch(Config.API_URL + "/muscle_groups")
         .then(res => res.json())
         .then(data => setMuscleGroups(data))
     },[])

@@ -5,8 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import { Context } from "../../misc/Provider";
+import Config from "react-native-config";
 
-//Style
+// Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 const StatisticsStyle = StyleSheet.create({
@@ -29,10 +30,11 @@ export default function Statistics() {
     const {token, workout, refresh} = useContext(Context);
 
     useEffect(() => {
-        fetch("http://localhost:4000/statistics", {headers: {"Authorization": token}})
+        fetch(Config.API_URL + "/statistics", { headers: { "Authorization": token } })
         .then(res => res.json())
         .then(data => setStatistics(data.data));
     }, [workout, refresh]);
+
 
     return (
         <SafeAreaView style={MainStyle.content}>

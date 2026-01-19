@@ -1,4 +1,3 @@
-// React
 import { View, Text, ScrollView, Pressable, StyleSheet, TextInput, Modal, Linking } from "react-native";
 import { Picker } from '@react-native-picker/picker';
 import { useContext, useEffect, useState } from "react";
@@ -8,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // Misc
 import { Context } from "../../misc/Provider";
 import RandomName from "../../misc/RandomName";
+import Config from "react-native-config";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -15,6 +15,7 @@ import MainStyle from "../../style/MainStyle";
 const SettingsStyle = StyleSheet.create({
 
 })
+
 
 export default function Settings() {
     const {userData, setUserData, setWorkout} = useContext(Context);
@@ -99,7 +100,7 @@ export default function Settings() {
                             </View>
                             <View style={MainStyle.inlineContainer}>
                                 <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
-                                    fetch("http://localhost:4000/user", {
+                                    fetch(Config.API_URL + "/user", {
                                         method: "PATCH",
                                         headers: {
                                             "Content-Type": "application/json",
@@ -120,7 +121,6 @@ export default function Settings() {
                                             setStatus(data.message);
                                         }
                                     })
-                                    .catch(e => console.log(e))
                                 }}>
                                     <Text style={MainStyle.buttonText}>Save</Text>
                                 </Pressable>
@@ -173,7 +173,7 @@ export default function Settings() {
                     </Pressable>
                     <Pressable 
                         style={MainStyle.button} 
-                        onPress={() => Linking.openURL("http://localhost:5173/delete-account")}>
+                        onPress={() => Linking.openURL(Config.WEB_URL + "/delete-account")}>
                         <View style={[MainStyle.inlineContainer, {justifyContent: "center"}]}>
                             <Text style={MainStyle.buttonText}>Delete account</Text>
                             <Ionicons name="link" color={Var.paleWhite} size={20}></Ionicons>
@@ -219,7 +219,7 @@ export default function Settings() {
                                     if (pwdStrength == "") return setStatus("Enter valid password")
                                     if (pwdStrength == "Weak") return setStatus("Password is too weak");
                                     if (newPassword != newRepassword) return setStatus("Passwords do not match");
-                                    fetch("http://localhost:4000/user", {
+                                    fetch(Config.API_URL + "/user", {
                                         method: "PATCH",
                                         headers: {
                                             "Content-Type": "application/json",
