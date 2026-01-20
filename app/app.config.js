@@ -3,7 +3,7 @@ import "dotenv/config";
 export default {
   "expo": {
     "name": "MaxxedOut",
-    "slug": "MaxxedOut",
+    "slug": "maxxedout",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,10 +19,11 @@ export default {
     },
     "android": {
       "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#F5EDED"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.medojanos.MaxxedOut"
+      "package": "com.medojanos.maxxedout"
     },
     "extra": {
       "eas": {
