@@ -14,9 +14,6 @@ export default {
       "resizeMode": "contain",
       "backgroundColor": "#F5EDED"
     },
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -27,7 +24,7 @@ export default {
     },
     "extra": {
       "eas": {
-        "projectId": "e3330407-7f87-4ede-8221-2cb3d0314beb",
+        "projectId": "648275ea-05c3-4716-be3f-e0bdd47054e1"
       },
       API_URL: process.env.API_URL,
       WEB_URL: process.env.WEB_URL
