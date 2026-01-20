@@ -1,8 +1,7 @@
-import { View, Text, ScrollView, Pressable, StyleSheet, TextInput, Modal, Linking } from "react-native";
-import { Picker } from '@react-native-picker/picker';
-import { useContext, useEffect, useState } from "react";
+import { View, Text, ScrollView, Pressable, TextInput, Modal, Linking } from "react-native";
+import { useContext, useState } from "react";
+import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import { Context } from "../../misc/Provider";
@@ -12,10 +11,6 @@ import Constants from 'expo-constants';
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
-const SettingsStyle = StyleSheet.create({
-
-})
-
 
 export default function Settings() {
     const {userData, setUserData, setWorkout} = useContext(Context);
@@ -31,6 +26,8 @@ export default function Settings() {
     const [newRepassword, setNewRepassword] = useState();
     const [pwdStrength, setPwdStrength] = useState();
     const [saveDisabled, setSaveDisabled] = useState(false);
+    const [picker, setPicker] = useState(false);
+
     function evaluatePwdStrength(password){
         setStatus("");
         let score = 0;
@@ -52,212 +49,212 @@ export default function Settings() {
     }
 
     return (
-        <SafeAreaView style={MainStyle.content}>
-            <ScrollView>
-                <View>
-                    <Text style={MainStyle.screenTitle}>Settings</Text>
-                    <Text style={MainStyle.screenAltTitle}>Manage your account and preferences</Text>
+        <ScrollView contentContainerStyle={MainStyle.content}>
+            <View>
+                <Text style={MainStyle.screenTitle}>Settings</Text>
+                <Text style={MainStyle.screenAltTitle}>Manage your account and preferences</Text>
+            </View>
+            <View style={MainStyle.container}>
+                <View style={MainStyle.inlineContainer}>
+                    <Ionicons name="person-circle" color={Var.red} size={40}></Ionicons>
+                    <Text style={MainStyle.containerTitle}>Profile</Text>
                 </View>
-                <View style={MainStyle.container}>
-                    <View style={MainStyle.inlineContainer}>
-                        <Ionicons name="person-circle" color={Var.red} size={40}></Ionicons>
-                        <Text style={MainStyle.containerTitle}>Profile</Text>
-                    </View>
-                    <View style={MainStyle.inlineContainer}>
-                        <Text style={MainStyle.lightText}>Nickname: </Text>
-                        <Text style={MainStyle.lightText}>{userData.nickname}</Text>
-                        <Pressable onPress={() => {setNicknameModal(true); setStatus("");}}>
-                            <Ionicons name="create" color={Var.red} size={25}></Ionicons>
-                        </Pressable>
-                    </View>
-                    <View style={MainStyle.inlineContainer}>
-                        <Text style={MainStyle.lightText}>E-mail: </Text>
-                        <Text style={MainStyle.lightText}>{userData.email}</Text>
-                    </View>
-                </View>
-                <Modal 
-                    animationType="fade"
-                    transparent={true}
-                    visible={nicknameModal}>
-                    <View style={MainStyle.overlay}>
-                        <View style={MainStyle.modal}>
-                            <Text style={MainStyle.screenTitle}>Edit nickname</Text>
-                            <Text style={MainStyle.screenAltTitle}>{status}</Text>
-                            <View style={MainStyle.inlineContainer}>
-                                <TextInput
-                                    value={newNickname}
-                                    placeholder="Enter new nickname..."
-                                    style={MainStyle.input}
-                                    onChangeText={text => {
-                                        setStatus("");
-                                        if (text.length > 20) return setStatus("Too long");
-                                        setNewNickname(text);
-                                    }}>
-                                </TextInput>
-                                <Pressable onPress={() => {setNewNickname(RandomName()); setStatus("");}}>
-                                    <Ionicons name="dice-outline" color={Var.red} size={25}></Ionicons>
-                                </Pressable>
-                            </View>
-                            <View style={MainStyle.inlineContainer}>
-                                <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
-                                    fetch(Constants.expoConfig.extra.API_URL + "/user", {
-                                        method: "PATCH",
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                            "Authorization": token
-                                        },
-                                        body: JSON.stringify({
-                                            "nickname" : newNickname
-                                        })
-                                    })
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            setUserData(data.data);
-                                            setStatus(data.message);
-                                            setSaveDisabled(true);
-                                            setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
-                                        } else {
-                                            setStatus(data.message);
-                                        }
-                                    })
-                                }}>
-                                    <Text style={MainStyle.buttonText}>Save</Text>
-                                </Pressable>
-                                <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setNicknameModal(false)}>
-                                    <Text style={MainStyle.buttonText}>Close</Text>
-                                </Pressable>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
-                <View style={MainStyle.container}>
-                    <View style={MainStyle.inlineContainer}>
-                        <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
-                        <Text style={MainStyle.containerTitle}>Preferences</Text>
-                    </View>
-                    <View style={MainStyle.inlineContainer}>
-                        <Text style={MainStyle.lightText}>Resting time: </Text>
-                        <TextInput
-                            keyboardType="numeric"
-                            style={[MainStyle.input, MainStyle.setInput]}
-                            value={userData.preferences?.restingTime.toString() || "0"}
-                            onChangeText={text => {
-                                if (!/^\d*$/.test(text)) return;
-                                setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}));
-                                Refresh()
-                                }}>
-                        </TextInput>
-                    </View>
-                    <View style={MainStyle.inlineContainer}>
-                        <Text style={MainStyle.lightText}>Bottom tab text: </Text>
-                        <Picker
-                            selectedValue={userData.preferences?.bottomTabText || "Show"}
-                            style={[MainStyle.input, {borderWidth: 0}]}
-                            onValueChange={itemValue =>
-                                setUserData(prev => ({...prev, preferences: {...prev.preferences, bottomTabText: itemValue}}))
-                            }>
-                            <Picker.Item label="Show" value="Show" />
-                            <Picker.Item label="Hide" value="Hide" />
-                        </Picker>
-                    </View>
-                </View>
-                <View style={MainStyle.container}>
-                    <View style={MainStyle.inlineContainer}>
-                        <Ionicons name="key" color={Var.red} size={40}></Ionicons>
-                        <Text style={MainStyle.containerTitle}>Account</Text>
-                    </View>
-
-                    <Pressable style={MainStyle.secondaryButton}>
-                        <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength(""); setStatus("")}}>Password reset</Text>
-                    </Pressable>
-                    <Pressable 
-                        style={MainStyle.button} 
-                        onPress={() => Linking.openURL(Config.WEB_URL + "/delete-account")}>
-                        <View style={[MainStyle.inlineContainer, {justifyContent: "center"}]}>
-                            <Text style={MainStyle.buttonText}>Delete account</Text>
-                            <Ionicons name="link" color={Var.paleWhite} size={20}></Ionicons>
-                        </View>
+                <View style={MainStyle.inlineContainer}>
+                    <Text style={MainStyle.lightText}>Nickname: </Text>
+                    <Text style={MainStyle.lightText}>{userData.nickname}</Text>
+                    <Pressable onPress={() => {setNicknameModal(true); setStatus("");}}>
+                        <Ionicons name="create" color={Var.red} size={25}></Ionicons>
                     </Pressable>
                 </View>
-                <Pressable style={MainStyle.button} onPress={() => {
-                    setUserData(null);
-                    setWorkout(null);
-                }}>
-                    <Text style={MainStyle.buttonText}>Logout</Text>
-                </Pressable>
-                <Modal 
-                    animationType="fade"
-                    transparent={true}
-                    visible={passwordModal}>
-                    <View style={MainStyle.overlay}>
-                        <View style={MainStyle.modal}>
-                            <Text style={MainStyle.screenTitle}>Edit password</Text>
-                            <Text style={MainStyle.screenAltTitle}>{status}</Text>
+                <View style={MainStyle.inlineContainer}>
+                    <Text style={MainStyle.lightText}>E-mail: </Text>
+                    <Text style={MainStyle.lightText}>{userData.email}</Text>
+                </View>
+            </View>
+            <Modal 
+                animationType="fade"
+                transparent={true}
+                visible={nicknameModal}>
+                <View style={MainStyle.overlay}>
+                    <View style={MainStyle.modal}>
+                        <Text style={MainStyle.screenTitle}>Edit nickname</Text>
+                        <Text style={MainStyle.screenAltTitle}>{status}</Text>
+                        <View style={MainStyle.inlineContainer}>
                             <TextInput
-                                secureTextEntry
-                                placeholder="Enter current password..."
+                                value={newNickname}
+                                placeholder="Enter new nickname..."
                                 style={MainStyle.input}
-                                onChangeText={setCurrentPassword}>
-                            </TextInput>
-                            <TextInput
-                                secureTextEntry
-                                placeholder="Enter new password..."
-                                style={MainStyle.input}
-                                onChangeText={evaluatePwdStrength}>
-                            </TextInput>
-                            <TextInput
-                                secureTextEntry
-                                placeholder="Reenter new password..."
-                                style={MainStyle.input}
-                                onChangeText={setNewRepassword}>
-                            </TextInput>
-                            <Text style={MainStyle.strongText}>{pwdStrength}</Text>
-                            <View style={MainStyle.inlineContainer}>
-                                <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
+                                onChangeText={text => {
                                     setStatus("");
-                                    if (pwdStrength == "") return setStatus("Enter valid password")
-                                    if (pwdStrength == "Weak") return setStatus("Password is too weak");
-                                    if (newPassword != newRepassword) return setStatus("Passwords do not match");
-                                    fetch(Constants.expoConfig.extra.API_URL + "/user", {
-                                        method: "PATCH",
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                            "Authorization": token
-                                        },
-                                        body: JSON.stringify({
-                                            "password": newPassword,
-                                            "currentPassword": currentPassword
-                                        })
+                                    if (text.length > 20) return setStatus("Too long");
+                                    setNewNickname(text);
+                                }}>
+                            </TextInput>
+                            <Pressable onPress={() => {setNewNickname(RandomName()); setStatus("");}}>
+                                <Ionicons name="dice-outline" color={Var.red} size={25}></Ionicons>
+                            </Pressable>
+                        </View>
+                        <View style={MainStyle.inlineContainer}>
+                            <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
+                                fetch(Constants.expoConfig.extra.API_URL + "/user", {
+                                    method: "PATCH",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "Authorization": token
+                                    },
+                                    body: JSON.stringify({
+                                        "nickname" : newNickname
                                     })
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            setUserData(data.data);
-                                            setStatus(data.message);
-                                            setSaveDisabled(true);
-                                            setTimeout(() => {setPasswordModal(false); setSaveDisabled(false)}, 2000);
-                                        } else {
-                                            setStatus(data.message);
-                                        }
-                                    })}}>
-                                    <Text style={MainStyle.buttonText}>Save</Text>
-                                </Pressable>
-                                <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setPasswordModal(false)}>
-                                    <Text style={MainStyle.buttonText}>Close</Text>
-                                </Pressable>
-                            </View>
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        setUserData(data.data);
+                                        setStatus(data.message);
+                                        setSaveDisabled(true);
+                                        setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
+                                    } else {
+                                        setStatus(data.message);
+                                    }
+                                })
+                            }}>
+                                <Text style={MainStyle.buttonText}>Save</Text>
+                            </Pressable>
+                            <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setNicknameModal(false)}>
+                                <Text style={MainStyle.buttonText}>Close</Text>
+                            </Pressable>
                         </View>
                     </View>
-                </Modal>
-                <View style={MainStyle.container}>
-                    <View style={MainStyle.inlineContainer}>
-                        <Ionicons name="information-circle" color={Var.red} size={40}></Ionicons>
-                        <Text style={MainStyle.containerTitle}>About v0.1</Text>
-                    </View>
-                    <Text style={[MainStyle.lightText, {textAlign: 'center'}]}>© MaxxedOut. All rights reserved.</Text>
                 </View>
-            </ScrollView>
-        </SafeAreaView>
+            </Modal>
+            <View style={[MainStyle.container, {zIndex: 1}]}>
+                <View style={MainStyle.inlineContainer}>
+                    <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
+                    <Text style={MainStyle.containerTitle}>Preferences</Text>
+                </View>
+                <View style={MainStyle.inlineContainer}>
+                    <Text style={MainStyle.lightText}>Resting time: </Text>
+                    <TextInput
+                        keyboardType="numeric"
+                        style={[MainStyle.input, MainStyle.setInput]}
+                        value={userData.preferences?.restingTime.toString() || "0"}
+                        onChangeText={text => {
+                            if (!/^\d*$/.test(text)) return;
+                            setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}));
+                            Refresh()
+                            }}>
+                    </TextInput>
+                </View>
+                <View style={MainStyle.inlineContainer}>
+                    <Text style={MainStyle.lightText}>Bottom tab text: </Text>
+                    <DropDownPicker
+                        open={picker}
+                        setOpen={setPicker}
+                        containerStyle={{width: "30%"}}
+                        style={MainStyle.input}
+                        textStyle={{color: Var.white}}
+                        value={userData.preferences?.bottomTabText || "Show"}
+                        dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
+                        items={[{label: "Show", value: "Show"}, {label: "Hide", value: "Hide"}]}
+                        setValue={value => setUserData(prev => ({...prev, preferences: {...prev.preferences, bottomTabText: value()}}))}>
+                    </DropDownPicker>
+                </View>
+            </View>
+            <View style={MainStyle.container}>
+                <View style={MainStyle.inlineContainer}>
+                    <Ionicons name="key" color={Var.red} size={40}></Ionicons>
+                    <Text style={MainStyle.containerTitle}>Account</Text>
+                </View>
+
+                <Pressable style={MainStyle.secondaryButton}>
+                    <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength(""); setStatus("")}}>Password reset</Text>
+                </Pressable>
+                <Pressable 
+                    style={MainStyle.button} 
+                    onPress={() => Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/delete-account")}>
+                    <View style={[MainStyle.inlineContainer, {justifyContent: "center"}]}>
+                        <Text style={MainStyle.buttonText}>Delete account</Text>
+                        <Ionicons name="link" color={Var.paleWhite} size={20}></Ionicons>
+                    </View>
+                </Pressable>
+            </View>
+            <Pressable style={MainStyle.button} onPress={() => {
+                setUserData(null);
+                setWorkout(null);
+            }}>
+                <Text style={MainStyle.buttonText}>Logout</Text>
+            </Pressable>
+            <Modal 
+                animationType="fade"
+                transparent={true}
+                visible={passwordModal}>
+                <View style={MainStyle.overlay}>
+                    <View style={MainStyle.modal}>
+                        <Text style={MainStyle.screenTitle}>Edit password</Text>
+                        <Text style={MainStyle.screenAltTitle}>{status}</Text>
+                        <TextInput
+                            secureTextEntry
+                            placeholder="Enter current password..."
+                            style={MainStyle.input}
+                            onChangeText={setCurrentPassword}>
+                        </TextInput>
+                        <TextInput
+                            secureTextEntry
+                            placeholder="Enter new password..."
+                            style={MainStyle.input}
+                            onChangeText={evaluatePwdStrength}>
+                        </TextInput>
+                        <TextInput
+                            secureTextEntry
+                            placeholder="Reenter new password..."
+                            style={MainStyle.input}
+                            onChangeText={setNewRepassword}>
+                        </TextInput>
+                        <Text style={MainStyle.strongText}>{pwdStrength}</Text>
+                        <View style={MainStyle.inlineContainer}>
+                            <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
+                                setStatus("");
+                                if (pwdStrength == "") return setStatus("Enter valid password")
+                                if (pwdStrength == "Weak") return setStatus("Password is too weak");
+                                if (newPassword != newRepassword) return setStatus("Passwords do not match");
+                                fetch(Constants.expoConfig.extra.API_URL + "/user", {
+                                    method: "PATCH",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "Authorization": token
+                                    },
+                                    body: JSON.stringify({
+                                        "password": newPassword,
+                                        "currentPassword": currentPassword
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        setUserData(data.data);
+                                        setStatus(data.message);
+                                        setSaveDisabled(true);
+                                        setTimeout(() => {setPasswordModal(false); setSaveDisabled(false)}, 2000);
+                                    } else {
+                                        setStatus(data.message);
+                                    }
+                                })}}>
+                                <Text style={MainStyle.buttonText}>Save</Text>
+                            </Pressable>
+                            <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setPasswordModal(false)}>
+                                <Text style={MainStyle.buttonText}>Close</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            <View style={MainStyle.container}>
+                <View style={MainStyle.inlineContainer}>
+                    <Ionicons name="information-circle" color={Var.red} size={40}></Ionicons>
+                    <Text style={MainStyle.containerTitle}>About v0.1</Text>
+                </View>
+                <Text style={[MainStyle.lightText, {textAlign: 'center'}]}>© MaxxedOut. All rights reserved.</Text>
+            </View>
+        </ScrollView>
     );
 }

@@ -1,6 +1,6 @@
 // React
 import { View, Text, ScrollView, Pressable, TextInput, Modal } from "react-native";
-import { Picker } from '@react-native-picker/picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { useState, useEffect } from "react";
 
 import Constants from 'expo-constants';
@@ -15,15 +15,6 @@ const AddExerciseStyle = StyleSheet.create({
         padding: 5,
         fontSize: 15,
         color: Var.white,
-    },
-    picker : {
-        backgroundColor: Var.black,
-        borderColor: Var.navyBlue,
-        borderWidth: 2,
-        borderRadius: 5,
-        color: Var.white,
-        padding: 5,
-        marginBottom: 10
     }
 })
 
@@ -34,6 +25,8 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const [searchText, setSearchText] = useState("");
     const [type, setType] = useState("");
     const [musclegroup, setMuscleGroup] = useState("");
+    const [mgPicker, setMgPicker] = useState(false);
+    const [typePicker, setTypePicker] = useState(false);
 
     useEffect(() => {
         fetch(Constants.expoConfig.extra.API_URL + "/exercises")
@@ -67,24 +60,38 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                         value={searchText}
                         onChangeText={setSearchText}>
                     </TextInput>
-                    <View style={MainStyle.inlineContainer}>
-                        <Picker
-                            style={AddExerciseStyle.picker}
-                            selectedValue={type}
-                            onValueChange={setType}>
-                            <Picker.Item label="Choose type" value=""/>
-                            <Picker.Item label="Compound" value="Compound"/>
-                            <Picker.Item label="Isolation" value="Isolation"/>
-                        </Picker>
-                        <Picker
-                            style={AddExerciseStyle.picker}
-                            selectedValue={musclegroup}
-                            onValueChange={setMuscleGroup}>
-                            <Picker.Item label="Choose muscle group" value=""/>
-                            {musclegroups.map(mg => (
-                                <Picker.Item key={mg.id} label={mg.name} value={mg.name} />
-                            ))}
-                        </Picker>
+                    <View style={[MainStyle.inlineContainer, {zIndex: 1}]}>
+                        <DropDownPicker
+                            open={typePicker}
+                            setOpen={setTypePicker}
+                            value={type}
+                            containerStyle={{width: "40%"}}
+                            style={MainStyle.input}
+                            textStyle={{color: Var.white}}
+                            dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
+                            items={[
+                                {label: "Type", value: ""}, 
+                                {label: "Compound", value: "Compound"},
+                                {label: "Isolation", value: "Isolation"}
+                            ]}
+                            setValue={setType}>
+                        </DropDownPicker>
+                        <DropDownPicker
+                            open={mgPicker}
+                            setOpen={setMgPicker}
+                            containerStyle={{width: "50%"}}
+                            style={MainStyle.input}
+                            value={musclegroup}
+                            textStyle={{color: Var.white}}
+                            dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
+                            items={[
+                                {label: "Muscle group", value: ""}, 
+                                ...musclegroups.map(mg => (
+                                    {label: mg.name, value: mg.name}
+                                ))
+                            ]}
+                            setValue={setMuscleGroup}>
+                        </DropDownPicker>
                     </View>
                     <ScrollView 
                         style={{maxHeight: 120}}>

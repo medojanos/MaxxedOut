@@ -4,8 +4,8 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     content: {
         padding: 20,
-        flex: 1,
-        backgroundColor: Var.black
+        backgroundColor: Var.black,
+        flexGrow: 1
     },
 
     titleText : {
@@ -88,11 +88,11 @@ export default StyleSheet.create({
 
     input : {
         backgroundColor: Var.navyBlue,
-        borderColor: Var.red,
         color: Var.white,
         padding: 10,
         marginVertical: 10,
-        borderRadius: 10
+        borderRadius: 10,
+        borderWidth: 0
     },
     setInput : {
         width : 50,

@@ -69,60 +69,58 @@ export default function Tracker() {
     }
 
     return (
-        <SafeAreaView style={MainStyle.content}>
-            <ScrollView>
-                <Text style={MainStyle.titleText}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
-                <Text style={MainStyle.screenTitle}>Tracker</Text>
-                {workout ?
-                    <>
-                        <View style={MainStyle.container}>
-                            <View style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.strongText}>{workout.name}</Text>
-                                <Text style={MainStyle.lightText}>{duration}</Text>
-                            </View>
+        <ScrollView contentContainerStyle={MainStyle.content}>
+            <Text style={MainStyle.titleText}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
+            <Text style={MainStyle.screenTitle}>Tracker</Text>
+            {workout ?
+                <>
+                    <View style={MainStyle.container}>
+                        <View style={MainStyle.inlineContainer}>
+                            <Text style={MainStyle.strongText}>{workout.name}</Text>
+                            <Text style={MainStyle.lightText}>{duration}</Text>
+                        </View>
+                        <Pressable
+                            style={MainStyle.button}
+                            onPress={() => navigation.navigate("Workout")}>
+                            <Text style={MainStyle.buttonText}>Continue workout</Text>
+                        </Pressable>
+                    </View>
+                    <View style={MainStyle.container}>
+                        <View style={MainStyle.inlineContainer}>
+                            <Text style={MainStyle.strongText}>Resting timer</Text>
+                            <Text style={MainStyle.lightText}>{restTimer}</Text>
+                        </View>
+                        <View style={MainStyle.inlineContainer}>
                             <Pressable
-                                style={MainStyle.button}
-                                onPress={() => navigation.navigate("Workout")}>
-                                <Text style={MainStyle.buttonText}>Continue workout</Text>
+                                style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
+                                onPress={() => {handleTimer("reset")}}>
+                                <Text style={MainStyle.buttonText}>Reset</Text>
                             </Pressable>
+                            <Pressable
+                                style={[MainStyle.button, MainStyle.buttonBlock]}
+                                onPress={() => {handleTimer("start")}}>
+                                <Text style={MainStyle.buttonText}>Start</Text>
+                            </Pressable>
+                            <Pressable
+                                style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
+                                onPress={() => {handleTimer()}}>
+                                <Text style={MainStyle.buttonText}>Stop</Text>
+                            </Pressable>
+                            
                         </View>
-                        <View style={MainStyle.container}>
-                            <View style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.strongText}>Resting timer</Text>
-                                <Text style={MainStyle.lightText}>{restTimer}</Text>
-                            </View>
-                            <View style={MainStyle.inlineContainer}>
-                                <Pressable
-                                    style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
-                                    onPress={() => {handleTimer("reset")}}>
-                                    <Text style={MainStyle.buttonText}>Reset</Text>
-                                </Pressable>
-                                <Pressable
-                                    style={[MainStyle.button, MainStyle.buttonBlock]}
-                                    onPress={() => {handleTimer("start")}}>
-                                    <Text style={MainStyle.buttonText}>Start</Text>
-                                </Pressable>
-                                <Pressable
-                                    style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
-                                    onPress={() => {handleTimer()}}>
-                                    <Text style={MainStyle.buttonText}>Stop</Text>
-                                </Pressable>
-                                
-                            </View>
-                        </View>
-                    </>
-                    : 
-                    <Pressable 
-                        style={MainStyle.button}
-                        onPress={() => {setWorkoutModal(true)}}>
-                        <Ionicons style={{margin: "auto"}} name="add-circle" size={50} color={Var.black}></Ionicons>
-                    </Pressable> 
-                }
-                <WorkoutModal 
-                    visible={workoutModal} 
-                    Close={() => setWorkoutModal(false)}>
-                </WorkoutModal>
-            </ScrollView>
-        </SafeAreaView>
+                    </View>
+                </>
+                : 
+                <Pressable 
+                    style={MainStyle.button}
+                    onPress={() => {setWorkoutModal(true)}}>
+                    <Ionicons style={{margin: "auto"}} name="add-circle" size={50} color={Var.black}></Ionicons>
+                </Pressable> 
+            }
+            <WorkoutModal 
+                visible={workoutModal} 
+                Close={() => setWorkoutModal(false)}>
+            </WorkoutModal>
+        </ScrollView>
     );
 }

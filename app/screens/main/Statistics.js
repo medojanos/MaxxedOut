@@ -37,52 +37,50 @@ export default function Statistics() {
 
 
     return (
-        <SafeAreaView style={MainStyle.content}>
-            <ScrollView>
-                {statistics ?
-                <View>
-                    <Text style={MainStyle.screenTitle}>Statistics</Text>
-                    <Text style={MainStyle.screenAltTitle}>Datas of all your workouts</Text>
-                    <Text style={StatisticsStyle.statTitle}>Consistency</Text>
-                    <View style={MainStyle.inlineContainer}>
-                        <View style={[MainStyle.container, {width: "48%"}]}>
-                            <Text style={MainStyle.strongText}>Current weekly workout streak</Text>
-                            <Text style={MainStyle.lightText}>0 weeks</Text>
-                        </View>
-                        <View style={[MainStyle.container, {width: "48%"}]}>
-                            <Text style={MainStyle.strongText}>Total workouts completed</Text>
-                            <Text style={MainStyle.lightText}>{statistics.totalWorkouts} workouts</Text>
-                        </View>
+        <ScrollView contentContainerStyle={MainStyle.content}>
+            {statistics ?
+            <View>
+                <Text style={MainStyle.screenTitle}>Statistics</Text>
+                <Text style={MainStyle.screenAltTitle}>Datas of all your workouts</Text>
+                <Text style={StatisticsStyle.statTitle}>Consistency</Text>
+                <View style={MainStyle.inlineContainer}>
+                    <View style={[MainStyle.container, {width: "48%"}]}>
+                        <Text style={MainStyle.strongText}>Current weekly workout streak</Text>
+                        <Text style={MainStyle.lightText}>0 weeks</Text>
                     </View>
-                    <View style={MainStyle.container}>
-                        <Text style={MainStyle.strongText}>Average workout duration</Text>
-                        <Text style={MainStyle.lightText}>{statistics.avgDuration} minutes</Text>
-                    </View>
-                    <Text style={StatisticsStyle.statTitle}>Strength & volume</Text>
-                    <View style={MainStyle.inlineContainer}>
-                        <View style={[MainStyle.container, {width: "53%"}]}>
-                            <Text style={MainStyle.strongText}>Personal records</Text>
-                            <Text style={MainStyle.lightText}>Squat: {statistics.maxSquat} kg x {statistics.repsSquat}</Text>
-                            <Text style={MainStyle.lightText}>Bench: {statistics.maxBench} kg x {statistics.repsBench}</Text>
-                            <Text style={MainStyle.lightText}>Deadlift: {statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
-                            <Text style={MainStyle.lightText}>Total: {statistics.maxSquat + statistics.maxBench + statistics.maxDeadlift} kg</Text>
-                        </View>
-                        <View style={[MainStyle.container, {width: "43%"}]}>
-                            <Text style={MainStyle.strongText}>1RM</Text>
-                            <Text style={MainStyle.lightText}>Squat: {OneRepMax(statistics.maxSquat, statistics.repsSquat)} kg</Text>
-                            <Text style={MainStyle.lightText}>Bench: {OneRepMax(statistics.maxBench, statistics.repsBench)} kg</Text>
-                            <Text style={MainStyle.lightText}>Deadlift: {OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift)} kg</Text>
-                            <Text style={MainStyle.lightText}>Total: {OneRepMax(statistics.maxSquat, statistics.repsSquat) + OneRepMax(statistics.maxBench, statistics.repsBench) + OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift)} kg</Text>
-                        </View>
-                    </View>
-                    <View style={MainStyle.container}>
-                        <Text style={MainStyle.strongText}>Total volume lifted</Text>
-                        <Text style={MainStyle.lightText}>{statistics.totalWeight} kg</Text>
+                    <View style={[MainStyle.container, {width: "48%"}]}>
+                        <Text style={MainStyle.strongText}>Total workouts completed</Text>
+                        <Text style={MainStyle.lightText}>{statistics.totalWorkouts} workouts</Text>
                     </View>
                 </View>
-                :
-                <Text style={MainStyle.strongText}>Failed to get statistics</Text>}
-            </ScrollView>
-        </SafeAreaView>
+                <View style={MainStyle.container}>
+                    <Text style={MainStyle.strongText}>Average workout duration</Text>
+                    <Text style={MainStyle.lightText}>{statistics.avgDuration} minutes</Text>
+                </View>
+                <Text style={StatisticsStyle.statTitle}>Strength & volume</Text>
+                <View style={MainStyle.inlineContainer}>
+                    <View style={[MainStyle.container, {width: "53%"}]}>
+                        <Text style={MainStyle.strongText}>Personal records</Text>
+                        <Text style={MainStyle.lightText}>Squat: {statistics.maxSquat} kg x {statistics.repsSquat}</Text>
+                        <Text style={MainStyle.lightText}>Bench: {statistics.maxBench} kg x {statistics.repsBench}</Text>
+                        <Text style={MainStyle.lightText}>Deadlift: {statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
+                        <Text style={MainStyle.lightText}>Total: {statistics.maxSquat + statistics.maxBench + statistics.maxDeadlift} kg</Text>
+                    </View>
+                    <View style={[MainStyle.container, {width: "43%"}]}>
+                        <Text style={MainStyle.strongText}>1RM</Text>
+                        <Text style={MainStyle.lightText}>Squat: {OneRepMax(statistics.maxSquat, statistics.repsSquat)} kg</Text>
+                        <Text style={MainStyle.lightText}>Bench: {OneRepMax(statistics.maxBench, statistics.repsBench)} kg</Text>
+                        <Text style={MainStyle.lightText}>Deadlift: {OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift)} kg</Text>
+                        <Text style={MainStyle.lightText}>Total: {OneRepMax(statistics.maxSquat, statistics.repsSquat) + OneRepMax(statistics.maxBench, statistics.repsBench) + OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift)} kg</Text>
+                    </View>
+                </View>
+                <View style={MainStyle.container}>
+                    <Text style={MainStyle.strongText}>Total volume lifted</Text>
+                    <Text style={MainStyle.lightText}>{statistics.totalWeight} kg</Text>
+                </View>
+            </View>
+            :
+            <Text style={MainStyle.strongText}>Failed to get statistics</Text>}
+        </ScrollView>
     );
 }

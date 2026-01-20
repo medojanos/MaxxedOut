@@ -21,6 +21,7 @@ import { Context } from "./misc/Provider";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Var from "./style/Variables";
 import MainStyle from "./style/MainStyle";
+import { Platform } from "react-native";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -32,13 +33,15 @@ function Home() {
         initialRouteName="Tracker"
         screenOptions={({ route }) => ({
           headerTitle: "MaxxedOut",
-          headerStyle: { backgroundColor: Var.black },
-          headerTitleStyle: { color: Var.white, fontSize: 30 },
-          
+          headerStatusBarHeight: Platform.OS == "android" ? 20 : 0,
+          headerStyle: { backgroundColor: Var.black, borderWidth: 1 },
+          headerTitleStyle: { color: Var.white, fontSize: 30},
+
           tabBarStyle: { height: 65, backgroundColor: Var.black, padding: 5},
           tabBarActiveTintColor: Var.red,
           tabBarInactiveTintColor: Var.paleWhite,
           tabBarIconStyle: {height: userData.preferences?.bottomTabText == "Show" ? 30 : 50},
+          tabBarShowLabel: userData.preferences?.bottomTabText == "Show" ? true : false,
           tabBarHideOnKeyboard : true,
 
           tabBarIcon: ({ color }) => {

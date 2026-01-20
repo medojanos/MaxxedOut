@@ -1,5 +1,5 @@
 // React
-import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Linking } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Linking, Alert } from "react-native";
 import { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -60,51 +60,49 @@ export default function Login() {
                 setStatus(data.message);
             }
         })
+        .catch(() => setStatus("Something went wrong. Please try again later."))
     }
 
     return (
-        <SafeAreaView style={MainStyle.content}> 
-            <ScrollView contentContainerStyle={{flex : 1, justifyContent : "center"}}>
-                <View style={{height: "10%", alignItems: "center", justifyContent: "center"}}>
-                    <Text style={MainStyle.titleText}>MaxxedOut</Text>
+        <View style={MainStyle.content}>
+            <View style={{height: "10%", alignItems: "center", justifyContent: "center"}}>
+                <Text style={MainStyle.titleText}>MaxxedOut</Text>
+            </View>
+            <View style={{height: "70%"}}>
+                <View style={{marginVertical: "auto"}}>
+                    <Text style={[MainStyle.screenTitle, {textAlign: "center"}]}>Log In</Text>
+                    <TextInput 
+                        placeholder="Enter your email..."
+                        style={MainStyle.input}
+                        onChangeText={setEmail}/>
+                    <TextInput 
+                        placeholder="Enter your password..."
+                        style={MainStyle.input}
+                        onChangeText={setPassword}
+                        secureTextEntry/>
+                <Text style={[MainStyle.lightText, {textAlign: "center"}]}>{status}</Text>
                 </View>
-                <View style={{height: "70%"}}>
-                    <View style={{marginVertical: "auto"}}>
-                        <Text style={[MainStyle.screenTitle, {textAlign: "center"}]}>Log In</Text>
-                        <TextInput 
-                            placeholder="Enter your email..."
-                            style={MainStyle.input}
-                            onChangeText={setEmail}/>
-                        <TextInput 
-                            placeholder="Enter your password..."
-                            style={MainStyle.input}
-                            onChangeText={setPassword}
-                            secureTextEntry/>
-                    <Text style={[MainStyle.lightText, {textAlign: "center"}]}>{status}</Text>
+            </View>
+            <View style={{height: "20%"}}>
+                <Pressable
+                    onPress={Authenticate}
+                    style={MainStyle.button}>
+                    <Text style={MainStyle.buttonText}>Login</Text>
+                </Pressable>
+                <Pressable
+                    onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/password-recovery")}}>
+                    <Text style={[MainStyle.strongText, LoginStyle.forgotPassword]}>Forgot password?</Text>
+                </Pressable>
+                <View style={{marginTop: "auto"}}>
+                    <View style={[MainStyle.inlineContainer, {margin: "auto"}]}>
+                        <Text style={[MainStyle.lightText, {marginEnd: 5}]}>Don't have an account?</Text>
+                        <Pressable
+                            onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/registration")}}>
+                            <Text style={MainStyle.strongText}>Register here!</Text>
+                        </Pressable>
                     </View>
                 </View>
-                <View style={{height: "20%"}}>
-                    <Pressable
-                        onPress={Authenticate}
-                        style={MainStyle.button}>
-                        <Text style={MainStyle.buttonText}>Login</Text>
-                    </Pressable>
-                    <Pressable
-                        onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/password-recovery")}}>
-                        <Text style={[MainStyle.strongText, LoginStyle.forgotPassword]}>Forgot password?</Text>
-                    </Pressable>
-                    <View style={{marginTop: "auto"}}>
-                        <View style={[MainStyle.inlineContainer, {margin: "auto"}]}>
-                            <Text style={[MainStyle.lightText, {marginEnd: 5}]}>Don't have an account?</Text>
-                            <Pressable
-                                onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/registration")}}>
-                                <Text style={MainStyle.strongText}>Register here!</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-        
+            </View>
+        </View>
     );
 }

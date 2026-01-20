@@ -43,45 +43,41 @@ export default function Workouts() {
 
 
     return (
-        <SafeAreaView style={MainStyle.content}>
-            <ScrollView>
-                <View>
-                    <Text style={MainStyle.screenTitle}>Workouts</Text>
-                    <Text style={MainStyle.screenAltTitle}>Create or edit your workout plans</Text>
-                    <Pressable style={WorkoutsStyle.addPlan} onPress={() => {navigation.navigate("CreateWorkout")}}>
-                        <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
-                    </Pressable>
-                    {
-                        plans.length > 0 ? 
-                        plans.map(plan => (
-                            <View key={plan.id} style={MainStyle.container}>
-                                <View style={MainStyle.inlineContainer}>
-                                    <Text style={MainStyle.containerTitle}>{plan.name}</Text>
-                                    <Pressable onPress={() => {
-                                        Refresh();
-                                        setPlanId(plan.id);
-                                        setPlanName(plan.name);
-                                        setPlanInfoModal(true);
-                                    }}>
-                                        <Ionicons name="information-circle-outline" size={25} color={Var.paleWhite}></Ionicons>
-                                    </Pressable>
-                                </View>
-                                <Pressable style={MainStyle.secondaryButton} onPress={() => {
-                                    setPlanId(plan.id);
-                                    setPlanName(plan.name);
-                                    setPlanModal(true);
-                                }}>
-                                    <Text style={MainStyle.buttonText}>Edit</Text>
-                                </Pressable>
-                            </View>
-                        )) 
-                        : 
-                        <Text style={MainStyle.lightText}>Your plans will be displayed here!</Text>
-                    }
-                    <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId} name={planName}></PlanModal>
-                    <PlanInfoModal visible={planInfoModal} Close={() => setPlanInfoModal(false)} id={planId} name={planName}></PlanInfoModal>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+        <ScrollView contentContainerStyle={MainStyle.content}>
+            <Text style={MainStyle.screenTitle}>Workouts</Text>
+            <Text style={MainStyle.screenAltTitle}>Create or edit your workout plans</Text>
+            <Pressable style={WorkoutsStyle.addPlan} onPress={() => {navigation.navigate("CreateWorkout")}}>
+                <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
+            </Pressable>
+            {
+                plans.length > 0 ? 
+                plans.map(plan => (
+                    <View key={plan.id} style={MainStyle.container}>
+                        <View style={MainStyle.inlineContainer}>
+                            <Text style={MainStyle.containerTitle}>{plan.name}</Text>
+                            <Pressable onPress={() => {
+                                Refresh();
+                                setPlanId(plan.id);
+                                setPlanName(plan.name);
+                                setPlanInfoModal(true);
+                            }}>
+                                <Ionicons name="information-circle-outline" size={25} color={Var.paleWhite}></Ionicons>
+                            </Pressable>
+                        </View>
+                        <Pressable style={MainStyle.secondaryButton} onPress={() => {
+                            setPlanId(plan.id);
+                            setPlanName(plan.name);
+                            setPlanModal(true);
+                        }}>
+                            <Text style={MainStyle.buttonText}>Edit</Text>
+                        </Pressable>
+                    </View>
+                )) 
+                : 
+                <Text style={MainStyle.lightText}>Your plans will be displayed here!</Text>
+            }
+            <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId} name={planName}></PlanModal>
+            <PlanInfoModal visible={planInfoModal} Close={() => setPlanInfoModal(false)} id={planId} name={planName}></PlanInfoModal>
+        </ScrollView>
     );
 }
