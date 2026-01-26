@@ -1,7 +1,9 @@
-﻿using System;
+﻿using DotNetEnv;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,8 +14,11 @@ namespace admin
         [STAThread]
         static void Main()
         {
-            SQLitePCL.Batteries_V2.Init();
-            var _ = AppData.db;
+            Env.Load();
+
+            string apiUrl = Environment.GetEnvironmentVariable("API_URL");
+
+            HttpClient client = new HttpClient();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

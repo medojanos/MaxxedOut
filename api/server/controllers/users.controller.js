@@ -106,3 +106,19 @@ export const updateUser = (req, res) => {
 }
 
 // Admin
+
+export const getUsers = (req, res) => {
+
+}
+
+export const addUser = (req, res) => {
+
+}
+
+export const updateUserFromId = (req, res) => {
+
+}
+
+export const deleteUserFromId = (req, res) => {
+
+}

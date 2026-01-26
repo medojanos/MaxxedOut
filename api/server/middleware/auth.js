@@ -43,7 +43,7 @@ export function authAdmin() {
         if (!key || key !== process.env.ADMIN_API_KEY) {
             return res.status(403).json({
                 success: false,
-                message: "Admin access denied"
+                message: "Fuck you !!! Admin access denied"
             });
         }
 

@@ -12,21 +12,14 @@ namespace admin
 {
     public static class AppData
     {
-        private static string dbPath;
-        public static Database db;
-
         static AppData()
         {
-            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
-            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
+            
+            var musclegroups = "dataofmusclegroups";
 
-            db = new Database($@"Data Source={dbPath}");
-
-            var musclegroups = db.Query("SELECT * FROM muscle_groups;");
-
-            foreach (DataRow mg in musclegroups.Rows)
+            foreach ()
             {
-                MuscleGroupsDB MGObj = new MuscleGroupsDB(int.Parse(mg["id"].ToString()), mg["name"].ToString());
+                MuscleGroupsDB  = new MuscleGroupsDB();
                 MuscleGroupsList.MuscleGroups.Add(MGObj);
             }
         }

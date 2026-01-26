@@ -1,5 +1,5 @@
 import express from 'express'
-import { getAllMuscleGroups } from "../controllers/muscleGroups.controller.js"
+import { getAllMuscleGroups, addMuscleGroup, updateMuscleGroup, deleteMuscleGroup } from "../controllers/muscleGroups.controller.js"
 import { authAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -10,6 +10,10 @@ router.get("/", getAllMuscleGroups);
 
 // Admin
 
+router.post("/admin", authAdmin(), addMuscleGroup);
 
+router.patch("/admin", authAdmin(), updateMuscleGroup);
+
+router.delete("/admin", authAdmin(), deleteMuscleGroup);
 
 export default router;

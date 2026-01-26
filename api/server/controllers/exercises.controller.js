@@ -26,7 +26,7 @@ export const getAllExercises = (req, res) => {
             }
 
         });
-        res.json(exercisesMap);
+        res.json({success: true, data: Object.values(exercisesMap)});
     })  
 }
 
@@ -49,3 +49,26 @@ export const getExerciseById = (req, res) => {
 
 // Admin
 
+export const addMuscleGroup = (req, res) => {
+
+}
+
+export const updateMuscleGroup = (req, res) => {
+
+}
+
+export const deleteMuscleGroup = (req, res) => {
+    
+}
+
+export const addExercise = (req, res) => {
+
+}
+
+export const updateExercise = (req, res) => {
+
+}
+
+export const deleteExercise = (req, res) => {
+    
+}

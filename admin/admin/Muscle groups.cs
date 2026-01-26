@@ -14,7 +14,6 @@ namespace admin
 {
     public partial class Muscle_groups : Form
     {
-        private Database db;
         private BindingList<MuscleGroupsDB> MGList = MuscleGroupsList.MuscleGroups;
         private BindingSource mgSource = new BindingSource();
 

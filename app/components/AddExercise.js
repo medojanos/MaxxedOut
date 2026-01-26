@@ -31,11 +31,11 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     useEffect(() => {
         fetch(Constants.expoConfig.extra.API_URL + "/exercises")
         .then(res => res.json())
-        .then(data => setExercises(Object.values(data)))
+        .then(data => setExercises(data.data))
 
         fetch(Constants.expoConfig.extra.API_URL + "/muscle_groups")
         .then(res => res.json())
-        .then(data => setMuscleGroups(data))
+        .then(data => setMuscleGroups(data.data))
     },[])
 
     const filteredExercises = exercises
