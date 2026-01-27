@@ -108,17 +108,41 @@ export const updateUser = (req, res) => {
 // Admin
 
 export const getUsers = (req, res) => {
-
+    db.all("SELECT name, nickname, email FROM users", (e, rows) => {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        res.status(200).json({success: true, data: rows})
+    })
 }
 
 export const addUser = (req, res) => {
-
+    db.run("INSERT INTO users (nickname, email, password) VALUES ('?', '?', '?')", [req.body.nickname, req,body.email, req.body.password], function (e) {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        return res.status(200).json({success: true, data: {id: this.lastID}});
+    });
 }
 
 export const updateUserFromId = (req, res) => {
+    db.run("UPDATE users SET nickname=?, email=?, password=? WHERE id=?", [req.body.nickname, req.body.email, req.body.password, req.body.id], function (e) {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        if (this.changes === 0) { return res.status(404).json({ success: false, message: "User not found"}); }
+        
+        db.run("DELETE FROM tokens WHERE user_id=?", [req.body.id], function(e) {
+            if (e) return res.status(500).json({success: false, message: "Database error"});
+        })
 
+        return res.status(200).json({success: true, message: "User updated successfully!"});
+    })
 }
 
 export const deleteUserFromId = (req, res) => {
-
+    db.run("DELETE FROM users WHERE id=?", [req.body.id], function (e) {
+        if (e) return res.status(500).json({success: false, message: "Database error"});
+        if (this.changes === 0) { return res.status(404).json({ success: false, message: "User not found"}); }
+        
+        db.run("DELETE FROM tokens WHERE user_id=?", [req.body.id], function(e) {
+            if (e) return res.status(500).json({success: false, message: "Database error"});
+        })
+        
+        return res.status(200).json({success: true, message: "User deleted successfully!"});
+    })
 }

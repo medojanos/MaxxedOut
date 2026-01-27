@@ -38,7 +38,7 @@ namespace admin
 
                 if(response.IsSuccessStatusCode)
                 {
-                    
+                    MessageBox.Show("Ekevas");
                 }
                 else
                 {

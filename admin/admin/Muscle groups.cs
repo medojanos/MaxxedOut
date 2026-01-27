@@ -21,11 +21,6 @@ namespace admin
         {
             InitializeComponent();
 
-            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
-            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
-
-            db = new Database($@"Data Source={dbPath}");
-
             mgSource.DataSource = MGList;
             Rows.DataSource = mgSource;
             Rows.DisplayMember = "Name";
