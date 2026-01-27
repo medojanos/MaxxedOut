@@ -12,7 +12,7 @@ router.get("/", getAllMuscleGroups);
 
 router.post("/admin", authAdmin(), addMuscleGroup);
 
-router.patch("/admin", authAdmin(), updateMuscleGroup);
+router.put("/admin", authAdmin(), updateMuscleGroup);
 
 router.delete("/admin", authAdmin(), deleteMuscleGroup);
 

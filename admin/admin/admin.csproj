@@ -225,7 +225,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppData.cs" />
+    <Compile Include="ApiClient.cs" />
     <Compile Include="Authorization.cs">
       <SubType>Form</SubType>
     </Compile>

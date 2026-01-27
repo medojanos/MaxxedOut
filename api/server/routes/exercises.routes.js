@@ -14,8 +14,8 @@ router.get("/:id", getExerciseById);
 router.post("/admin", authAdmin(), addExercise);
 router.post("/admin/musclegroup", authAdmin(), addMuscleGroup);
 
-router.patch("/admin", authAdmin(), updateExercise);
-router.patch("/admin/musclegroup", authAdmin(), updateMuscleGroup);
+router.put("/admin", authAdmin(), updateExercise);
+router.put("/admin/musclegroup", authAdmin(), updateMuscleGroup);
 
 router.delete("/admin", authAdmin(), deleteExercise);
 router.delete("/admin/musclegroup", authAdmin(), deleteMuscleGroup);

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static admin.ApiClient;
 
 namespace admin
 {
@@ -14,15 +15,21 @@ namespace admin
         [STAThread]
         static void Main()
         {
-            Env.Load();
+            Env.TraversePath().Load();
 
             string apiUrl = Environment.GetEnvironmentVariable("API_URL");
 
-            HttpClient client = new HttpClient();
+            if (string.IsNullOrWhiteSpace(apiUrl))
+            {
+                MessageBox.Show("Failed to get API Url");
+                return;
+            }
+
+            ApiClient.Initialize(apiUrl);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new admin.Utils.FormManager());
+            Application.Run(new Authorization());
         }
     }
 }

@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Http.Headers;
+using static admin.ApiClient;
+using System.Net.Http;
 
 namespace admin
 {
@@ -17,9 +20,35 @@ namespace admin
             InitializeComponent();
         }
 
-        private void validateButton_Click(object sender, EventArgs e)
+        private async void validateButton_Click(object sender, EventArgs e)
         {
-            if(AdminToken.Text == )
+            try
+            {
+                string token = AdminToken.Text.Trim();
+
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    MessageBox.Show("Token is needed!");
+                    return;
+                }
+
+                ApiClient.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", token);
+
+                HttpResponseMessage response = await ApiClient.Client.GetAsync("/auth/admin");
+
+                if(response.IsSuccessStatusCode)
+                {
+                    
+                }
+                else
+                {
+                    MessageBox.Show("Bad token!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Hiba: " + ex.Message);
+            }
         }
     }
 }

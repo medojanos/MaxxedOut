@@ -17,16 +17,11 @@ namespace admin
 {
     public partial class Exercises : Form
     {
-        private Database db;
         private List<ExercisesDB> ExercisesList = new List<ExercisesDB>();
         public Exercises()
         {
             InitializeComponent();
 
-            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
-            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
-
-            db = new Database($@"Data Source={dbPath}");
 
             var exercises = db.Query("SELECT * FROM exercises;");
 

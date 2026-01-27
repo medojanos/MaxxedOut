@@ -22,7 +22,7 @@ router.get("/user/admin", authAdmin(), getUsers);
 
 router.post("/user/admin", authAdmin(), addUser);
 
-router.patch("/user/admin", authAdmin(), updateUserFromId);
+router.put("/user/admin", authAdmin(), updateUserFromId);
 
 router.delete("/user/admin", authAdmin(), deleteUserFromId);
 

@@ -3,8 +3,6 @@ import db from "../config/db.js"
 import dotenv from 'dotenv';
 dotenv.config();
 
-
-
 async function getUserFromToken(token) {
     return new Promise((res, rej) => {
         db.get("SELECT user_id FROM tokens WHERE token = ?", [token], (e, row) => {
@@ -50,3 +48,4 @@ export function authAdmin() {
         next();
     };
 }
+
