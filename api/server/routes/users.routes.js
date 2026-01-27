@@ -4,6 +4,16 @@ import { authUser, authAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// Admin
+
+router.get("/user/admin", authAdmin(), getUsers);
+
+router.post("/user/admin", authAdmin(), addUser);
+
+router.put("/user/admin", authAdmin(), updateUserFromId);
+
+router.delete("/user/admin", authAdmin(), deleteUserFromId);
+
 // App
 
 router.post("/register", Register);
@@ -15,15 +25,5 @@ router.post("/verify-code", verifyCode);
 router.patch("/user", authUser(), updateUser);
 
 router.delete("/user", authUser(), deleteUser);
-
-// Admin
-
-router.get("/user/admin", authAdmin(), getUsers);
-
-router.post("/user/admin", authAdmin(), addUser);
-
-router.put("/user/admin", authAdmin(), updateUserFromId);
-
-router.delete("/user/admin", authAdmin(), deleteUserFromId);
 
 export default router;

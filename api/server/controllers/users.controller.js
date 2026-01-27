@@ -87,7 +87,7 @@ export const updateUser = (req, res) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
             db.get("SELECT email, nickname FROM users WHERE id = ?", [req.user], (e, row) => {
                 if (e) return res.status(500).json({success: false, message: "Database error"});
-                res.json({success : true, message : "Profile updated succesfully", data : row});
+                res.status(200).json({success : true, message : "Profile updated succesfully", data : row});
             })
         })
     }
@@ -110,39 +110,49 @@ export const updateUser = (req, res) => {
 export const getUsers = (req, res) => {
     db.all("SELECT name, nickname, email FROM users", (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        res.status(200).json({success: true, data: rows})
+        return res.json({success: true, data: rows})
     })
 }
 
 export const addUser = (req, res) => {
-    db.run("INSERT INTO users (nickname, email, password) VALUES ('?', '?', '?')", [req.body.nickname, req,body.email, req.body.password], function (e) {
+    db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [req.body.nickname, req,body.email, req.body.password], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        return res.status(200).json({success: true, data: {id: this.lastID}});
+        return res.json({success: true, data: {id: this.lastID}});
     });
 }
 
 export const updateUserFromId = (req, res) => {
     db.run("UPDATE users SET nickname=?, email=?, password=? WHERE id=?", [req.body.nickname, req.body.email, req.body.password, req.body.id], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        if (this.changes === 0) { return res.status(404).json({ success: false, message: "User not found"}); }
-        
+        if (this.changes === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found!"
+            });
+        } 
+
         db.run("DELETE FROM tokens WHERE user_id=?", [req.body.id], function(e) {
             if (e) return res.status(500).json({success: false, message: "Database error"});
         })
 
-        return res.status(200).json({success: true, message: "User updated successfully!"});
+        return res.json({success: true, message: "User updated successfully!"});
     })
 }
 
 export const deleteUserFromId = (req, res) => {
     db.run("DELETE FROM users WHERE id=?", [req.body.id], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        if (this.changes === 0) { return res.status(404).json({ success: false, message: "User not found"}); }
+        if (this.changes === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found!"
+            });
+        } 
         
         db.run("DELETE FROM tokens WHERE user_id=?", [req.body.id], function(e) {
             if (e) return res.status(500).json({success: false, message: "Database error"});
         })
         
-        return res.status(200).json({success: true, message: "User deleted successfully!"});
+        return res.json({success: true, message: "User deleted successfully!"});
     })
 }

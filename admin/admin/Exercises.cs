@@ -182,7 +182,7 @@ namespace admin
 
             if (role.SelectedItem == null || musclegroups.SelectedItem == null)
             {
-                MessageBox.Show("Must choose muscle group and role before adding!");
+                MessageBox.Show("Must choose muscle group and role before saving!");
                 return;
             }
 
