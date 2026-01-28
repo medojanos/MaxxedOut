@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlTypes;
 using System.IO;
+using static admin.ApiClient;
+using System.Net.Http;
 
 namespace admin
 {
@@ -20,6 +22,27 @@ namespace admin
         public Muscle_groups()
         {
             InitializeComponent();
+
+            this.Load += Muscle_groups_load;
+            
+        }
+        private async void Muscle_groups_load(object sender, EventArgs e)
+        {
+            try
+            {
+                HttpResponseMessage muscle_groups = await ApiClient.Client.GetAsync("/muscle_groups");
+
+                if (!muscle_groups.IsSuccessStatusCode || muscle_groups == null)
+                {
+                    MessageBox.Show(muscle_groups.Headers.ToString());
+                    return;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.ToString());
+            }
 
             mgSource.DataSource = MGList;
             Rows.DataSource = mgSource;
@@ -72,7 +95,7 @@ namespace admin
             name.Text = mgObj.Name;
         }
 
-        private void addButton_Click(object sender, EventArgs e)
+        private async void addButton_Click(object sender, EventArgs e)
         {
             if(string.IsNullOrWhiteSpace(name.Text))
             {
@@ -86,12 +109,18 @@ namespace admin
                 return;
             }
 
-            var result = db.Query($@"INSERT INTO muscle_groups (name) VALUES ('{name.Text}') RETURNING id");
+            /* var data = new
+            {
+                name = name.Text
+            };
+
+            var result = await ApiClient.Client.PostAsync("muscle_groups/admin", data);
+
             var id = int.Parse(result.Rows[0]["id"].ToString());
 
             MuscleGroupsDB mgObj = new MuscleGroupsDB(id, name.Text);
 
-            MGList.Add(mgObj);
+            MGList.Add(mgObj);*/
         }
 
         private void saveButton_Click(object sender, EventArgs e)

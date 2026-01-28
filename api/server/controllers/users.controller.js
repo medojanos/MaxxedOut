@@ -7,7 +7,12 @@ import "../config/mail.js"
 export const Register = (req, res) => {
     db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        if (row) return res.status(401).json({success: false, message: "Email already registered"});
+        if (row) { 
+            return res.status(401).json({
+                success: false, 
+                message: "Email already registered!"
+            }); 
+        }
         db.run("INSERT INTO users (email, password) VALUES (?, ?)", [req.body.email, hash('sha-512', req.body.password)], (e) => {
             if (e) return res.status(500).json({ success: false, message: "Database error"});
             res.json({success: true, message : "Successfully registered"});
@@ -18,7 +23,12 @@ export const Register = (req, res) => {
 export const Login = (req, res) => {
     db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        if (!row) return res.status(401).json({success: false, message: "Invalid credentials"});
+        if (!row) { 
+            return res.status(401).json({
+                success: false, 
+                message: "Invalid credentials"
+            });
+        }
         let token = randomBytes(32).toString('hex');
         db.run("INSERT INTO tokens (token, user_id) VALUES (?, ?)", [token, row.id], (e) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
@@ -30,7 +40,13 @@ export const Login = (req, res) => {
 export const forgotPassword = (req, res) => {
     db.get("SELECT id FROM users WHERE email = ?", [req.body.email], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        if (!row) return res.status(404).json({success: false, message: "Email not found"});
+        if (!row) { 
+            return res.status(404).json({
+                success: false, 
+                message: "Email not found!"
+            }); 
+        }
+
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         db.run("INSERT INTO codes (user_id, code) VALUES (?, ?)", [row.id, code], async (e) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
@@ -44,7 +60,7 @@ export const forgotPassword = (req, res) => {
                 });
                 res.json({ success: true, message: "Email sent!" });
             } catch (error) {
-                res.status(500).json({ success: false, message: "Failed to send email" });
+                res.status(500).json({ success: false, message: "Failed to send email!" });
             }
         })
     })

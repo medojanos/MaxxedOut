@@ -38,7 +38,7 @@ namespace admin
 
                 if(response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show("Ekevas");
+                    Application.Run(new AppContext());
                 }
                 else
                 {
@@ -47,7 +47,7 @@ namespace admin
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Hiba: " + ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
             }
         }
     }
