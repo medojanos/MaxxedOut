@@ -45,7 +45,7 @@ namespace admin
                     MessageBox.Show("Bad token!");
                 }
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }

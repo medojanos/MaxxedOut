@@ -42,7 +42,7 @@
             // 
             // validateButton
             // 
-            this.validateButton.Location = new System.Drawing.Point(468, 202);
+            this.validateButton.Location = new System.Drawing.Point(468, 205);
             this.validateButton.Name = "validateButton";
             this.validateButton.Size = new System.Drawing.Size(75, 23);
             this.validateButton.TabIndex = 1;

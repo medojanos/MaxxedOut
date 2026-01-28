@@ -120,7 +120,7 @@ namespace admin
 
             MuscleGroupsDB mgObj = new MuscleGroupsDB(id, name.Text);
 
-            MGList.Add(mgObj);*/
+            MGList.Add(mgObj); */
         }
 
         private void saveButton_Click(object sender, EventArgs e)
