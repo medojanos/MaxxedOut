@@ -9,8 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlTypes;
 using System.IO;
+
 using static admin.ApiClient;
+using admin.Models;
 using System.Net.Http;
+using System.Text.Json;
 
 namespace admin
 {
@@ -28,25 +31,11 @@ namespace admin
         }
         private async void Muscle_groups_load(object sender, EventArgs e)
         {
-            try
-            {
-                HttpResponseMessage muscle_groups = await ApiClient.Client.GetAsync("/muscle_groups");
-
-                if (!muscle_groups.IsSuccessStatusCode || muscle_groups == null)
-                {
-                    MessageBox.Show(muscle_groups.Headers.ToString());
-                    return;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.ToString());
-            }
+            MGList = await ApiClient.SafeGet<BindingList<MuscleGroupsDB>>("/muscle_groups");
 
             mgSource.DataSource = MGList;
             Rows.DataSource = mgSource;
-            Rows.DisplayMember = "Name";
+            Rows.DisplayMember = "name";
         }
 
         // Navigation handling
@@ -80,7 +69,7 @@ namespace admin
             }
             else
             {
-                mgSource.DataSource = MGList.Where(musclegroup => musclegroup.Name.ToLower().Contains(search.Text.ToLower())).ToList();
+                mgSource.DataSource = MGList.Where(musclegroup => musclegroup.name.ToLower().Contains(search.Text.ToLower())).ToList();
             }
         }
 
@@ -92,7 +81,7 @@ namespace admin
 
             if(mgObj == null) return;
 
-            name.Text = mgObj.Name;
+            name.Text = mgObj.name;
         }
 
         private async void addButton_Click(object sender, EventArgs e)
@@ -103,27 +92,26 @@ namespace admin
                 return;
             }
 
-            if(MGList.Any(musclegroup => musclegroup.Name == name.Text))
+            if(MGList.Any(musclegroup => musclegroup.name == name.Text))
             {
                 MessageBox.Show("Muscle group already in database!");
                 return;
             }
 
-            /* var data = new
+            var mgObj = new MuscleGroupsDB
             {
                 name = name.Text
             };
 
-            var result = await ApiClient.Client.PostAsync("muscle_groups/admin", data);
+            var result = await ApiClient.Post<MuscleGroupsDB, ApiResult>("muscle_groups/admin", mgObj);
+            ApiResult.ensureSuccess(result);
 
-            var id = int.Parse(result.Rows[0]["id"].ToString());
+            mgObj.id = Convert.ToInt32(result.data["id"]);
 
-            MuscleGroupsDB mgObj = new MuscleGroupsDB(id, name.Text);
-
-            MGList.Add(mgObj); */
+            MGList.Add(mgObj);
         }
 
-        private void saveButton_Click(object sender, EventArgs e)
+        private async void saveButton_Click(object sender, EventArgs e)
         {
             if (Rows.SelectedIndex < 0)
             {
@@ -145,15 +133,16 @@ namespace admin
                 return;
             }
 
-            mgObj.Name = name.Text;
+            mgObj.name = name.Text;
 
             Rows.DisplayMember = null;
-            Rows.DisplayMember = "Name";
+            Rows.DisplayMember = "name";
 
-            db.Execute($"UPDATE muscle_groups SET name='{mgObj.Name}' WHERE id={mgObj.ID}");
+            var result = await ApiClient.SafePut<MuscleGroupsDB, ApiResult>("muscle_groups/admin", mgObj);
+            ApiResult.ensureSuccess(result);
         }
 
-        private void deleteButton_Click(object sender, EventArgs e)
+        private async void deleteButton_Click(object sender, EventArgs e)
         {
             if (Rows.SelectedIndex < 0)
             {
@@ -169,33 +158,11 @@ namespace admin
                 return;
             }
 
+            var result = await ApiClient.SafeDelete<object, ApiResult>("muscle_groups/admin", new { id = mgObj.id });
+            ApiResult.ensureSuccess(result);
+
             MGList.Remove(mgObj);
-
             name.Clear();
-
-            db.Execute($"DELETE FROM muscle_groups WHERE id='{mgObj.ID}'");
-        }
-
-        private void search_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-    }
-
-    public class MuscleGroupsDB
-    {
-        public int ID { get; set; }
-        public string Name { get; set; }
-
-        public MuscleGroupsDB(int id, string name)
-        {
-            ID = id;
-            Name = name;
-        }
-
-        public override string ToString()
-        {
-            return Name;
         }
     }
 }

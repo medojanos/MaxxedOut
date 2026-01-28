@@ -11,7 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using admin.Classes;
+
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using static admin.ApiClient;
+using admin.Models;
+using System.Net.Http;
+using System.Text.Json;
+
 
 namespace admin
 {
@@ -21,9 +27,6 @@ namespace admin
         public Exercises()
         {
             InitializeComponent();
-
-
-            var exercises = db.Query("SELECT * FROM exercises;");
 
             foreach (DataRow exercise in exercises.Rows)
             {
@@ -295,44 +298,6 @@ namespace admin
             ExercisesList.Remove(Exercise);
             Rows.Items.Remove(Exercise);
             db.Execute($@"DELETE FROM exercises WHERE id = '{Exercise.ID}';");
-        }
-    }
-
-    public class ExercisesDB
-    {
-        public int ID { get; set; }
-        public string Exercise { get; set; }
-        public string Type { get; set; }
-        public List<MusclesworkedDB> Musclesworked { get; set; }
-
-        public ExercisesDB(int id, string exercise, string type, List<MusclesworkedDB> musclesworked)
-        {
-            ID = id;
-            Exercise = exercise;
-            Type = type;
-            Musclesworked = musclesworked;
-        }
-
-        public override string ToString()
-        {
-            return Exercise;
-        }
-    }
-
-    public class MusclesworkedDB
-    {
-        public MuscleGroupsDB MuscleGroup { get; set; }
-        public string Role { get; set; }
-
-        public MusclesworkedDB(MuscleGroupsDB musclegroup, string role)
-        {
-            MuscleGroup = musclegroup;
-            Role = role;
-        }
-
-        public override string ToString()
-        {
-            return MuscleGroup.Name;
         }
     }
 }

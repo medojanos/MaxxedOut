@@ -244,6 +244,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiClient.cs" />
+    <Compile Include="ApiResult.cs" />
     <Compile Include="AppContext.cs" />
     <Compile Include="Authorization.cs">
       <SubType>Form</SubType>
@@ -259,6 +260,9 @@
     <Compile Include="Exercises.Designer.cs">
       <DependentUpon>Exercises.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\ExercisesDB.cs" />
+    <Compile Include="Models\MuscleGroupsDB.cs" />
+    <Compile Include="Models\UsersDB.cs" />
     <Compile Include="Muscle groups.cs">
       <SubType>Form</SubType>
     </Compile>

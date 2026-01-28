@@ -112,7 +112,6 @@
             this.search.Name = "search";
             this.search.Size = new System.Drawing.Size(200, 20);
             this.search.TabIndex = 7;
-            this.search.TextChanged += new System.EventHandler(this.search_TextChanged);
             // 
             // Rows
             // 

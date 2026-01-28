@@ -14,28 +14,33 @@ using System.Net.Mail;
 using System.Security.Cryptography;
 using System.IO;
 
+using static admin.ApiClient;
+using admin.Models;
+using System.Net.Http;
+using System.Text.Json;
+
 namespace admin
 {
     public partial class Users : Form
     {
-        private Database db;
         private List<UsersDB> UsersList = new List<UsersDB>();
         public Users()
         {
             InitializeComponent();
 
-            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
-            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
+            this.Load += Users_load;
+        }
 
-            db = new Database($@"Data Source={dbPath}");
+        private async void Users_load(object sender, EventArgs e)
+        {
+            var result = await ApiClient.SafeGet<List<UsersDB>>("/user/admin");
+            if (result == null) return;
 
-            var users = db.Query("SELECT * FROM users;");
+            UsersList = result;
 
-            foreach (DataRow user in users.Rows)
+            foreach (var user in UsersList)
             {
-                UsersDB UserObj = new UsersDB(int.Parse(user["id"].ToString()), user["nickname"].ToString(), user["email"].ToString(), user["password"].ToString());
-                UsersList.Add(UserObj);
-                Rows.Items.Add(UserObj);
+                Rows.Items.Add(user);
             }
         }
 
@@ -76,7 +81,7 @@ namespace admin
             }
             else
             {
-                foreach(var user in UsersList.Where(user => user.Nickname.Contains(search.Text.ToLower()) || user.Email.Contains(search.Text.ToLower())))
+                foreach(var user in UsersList.Where(user => user.nickname.Contains(search.Text.ToLower()) || user.email.Contains(search.Text.ToLower())))
                 {
                     Rows.Items.Add(user);
                 }
@@ -91,12 +96,12 @@ namespace admin
 
             if (userOBJ == null) return;
 
-            nickname.Text = userOBJ.Nickname;
-            email.Text = userOBJ.Email;
+            nickname.Text = userOBJ.nickname;
+            email.Text = userOBJ.email;
             password.Clear();
         }
 
-        private void addButton_Click(object sender, EventArgs e)
+        private async void addButton_Click(object sender, EventArgs e)
         {
             if(string.IsNullOrWhiteSpace(nickname.Text) || string.IsNullOrWhiteSpace(email.Text) || string.IsNullOrWhiteSpace(password.Text))
             {
@@ -104,39 +109,45 @@ namespace admin
                 return;
             }
 
-            if (UsersList.Any(user => user.Nickname == nickname.Text))
+            if (UsersList.Any(user => user.nickname == nickname.Text))
             {
                 MessageBox.Show("Nickname already in database!");
                 return;
             }
 
-            if (UsersList.Any(user => user.Email == email.Text))
+            if (UsersList.Any(user => user.email == email.Text))
             {
                 MessageBox.Show("Email already in database!");
                 return;
             }
 
-            if (!IsPwdValid(password.Text))
+            if (!UsersDB.IsPwdValid(password.Text))
             {
                 return;
             }
 
-            if (!IsEmailValid(email.Text))
+            if (!UsersDB.IsEmailValid(email.Text))
             {
                 return;
             }
 
-            string hashedPwd = UsersDB.Hash(password.Text);
-            var result = db.Query($@"INSERT INTO users (nickname, email, password) VALUES ('{nickname.Text}', '{email.Text}', '{hashedPwd}') RETURNING id;");
-            int id = int.Parse(result.Rows[0]["id"].ToString());
+            var userObj = new UsersDB
+            {
+                nickname = nickname.Text,
+                email = email.Text,
+                password = UsersDB.PwdEncrypt(password.Text)
+            };
 
-            UsersDB userObj = new UsersDB(id, nickname.Text, email.Text, hashedPwd, true);
+            var result = await ApiClient.SafePost<UsersDB, ApiResult>("/user/admin", userObj);
+            ApiResult.ensureSuccess(result);
+
+            userObj.id = Convert.ToInt32(result.data["id"]);
 
             UsersList.Add(userObj);
             Rows.Items.Add(userObj);
         }
 
-        private void saveButton_Click(object sender, EventArgs e)
+        private async void saveButton_Click(object sender, EventArgs e)
         {
             if (Rows.SelectedIndex < 0)
             {
@@ -158,22 +169,23 @@ namespace admin
                 return;
             }
 
-            if (!IsEmailValid(email.Text))
+            if (!UsersDB.IsEmailValid(email.Text))
             {
                 return;
             }
 
-            userObj.Email = email.Text;
-            userObj.Nickname = nickname.Text;
-            if(!string.IsNullOrWhiteSpace(password.Text) && IsPwdValid(password.Text)) userObj.Password = userObj.PwdEncrypt(password.Text);
+            userObj.email = email.Text;
+            userObj.nickname = nickname.Text;
+
+            if(!string.IsNullOrWhiteSpace(password.Text) && UsersDB.IsPwdValid(password.Text)) userObj.password = UsersDB.PwdEncrypt(password.Text);
 
             Rows.Items[Rows.SelectedIndex] = userObj;
 
-            db.Execute($"UPDATE users SET nickname='{userObj.Nickname}', email='{userObj.Email}', password='{userObj.Password}' WHERE id='{userObj.ID}'");
-            db.Execute($"DELETE FROM tokens WHERE user_id={userObj.ID}");
+            var result = await ApiClient.SafePut<UsersDB, ApiResult>("/user/admin", userObj);
+            ApiResult.ensureSuccess(result);
         }
 
-        private void deleteButton_Click(object sender, EventArgs e)
+        private async void deleteButton_Click(object sender, EventArgs e)
         {
             if (Rows.SelectedIndex < 0)
             {
@@ -189,89 +201,14 @@ namespace admin
                 return;
             }
 
+            var result = await ApiClient.SafeDelete<object, ApiResult>("/user/admin/", new { id = userObj.id });
+
             UsersList.Remove(userObj);
             Rows.Items.Remove(userObj);
 
             nickname.Clear();
             email.Clear();
             password.Clear();
-
-            db.Execute($"DELETE FROM users WHERE id='{userObj.ID}'");
-        }
-
-        public bool IsPwdValid(string pwd)
-        {
-            if(pwd.Length >= 8 && pwd.Any(char.IsDigit))
-            {
-                return true;
-            }
-
-            MessageBox.Show("Enter a valid password!");
-            return false;
-        }
-
-        public bool IsEmailValid(string email)
-        {
-            try
-            {
-                MailAddress mailAddress = new MailAddress(email);
-                return true;
-            }
-            catch (FormatException)
-            {
-                MessageBox.Show("Not valid email!");
-                return false;
-            }
-        }
-    }
-
-    public class UsersDB
-    {
-        public int ID { get; set; }
-        public string Nickname { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-
-        public UsersDB(int id, string nickname, string email, string password)
-        {
-            ID = id;
-            Nickname = nickname;
-            Email = email;
-            Password = password;
-        }
-        public UsersDB(int id, string nickname, string email, string password, bool isHashed)
-        {
-            ID = id;
-            Nickname = nickname;
-            Email = email;
-            Password = isHashed ? password : PwdEncrypt(password);
-        }
-
-        public override string ToString()
-        {
-            return Nickname;
-        }
-
-        public string PwdEncrypt(string pwd)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes(pwd);
-
-            using (SHA512 sha512 = SHA512.Create())
-            {
-                byte[] hashBytes = sha512.ComputeHash(bytes);
-
-                StringBuilder sb = new StringBuilder();
-                foreach (byte b in hashBytes)
-                {
-                    sb.Append(b.ToString("x2"));
-                }
-
-                return sb.ToString();
-            }
-        }
-        public static string Hash(string pwd)
-        {
-            return new UsersDB(0, "", "", "").PwdEncrypt(pwd);
         }
     }
 }

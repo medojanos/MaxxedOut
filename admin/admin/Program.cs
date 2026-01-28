@@ -21,11 +21,11 @@ namespace admin
 
             if (string.IsNullOrWhiteSpace(apiUrl))
             {
-                MessageBox.Show("Failed to get API Url");
+                MessageBox.Show("Failed to get API Url!");
                 return;
             }
 
-            ApiClient.Initialize(apiUrl);
+            ApiClient.Initialize($"{apiUrl}/");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

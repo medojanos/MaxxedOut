@@ -14,64 +14,147 @@ namespace admin
     public static class ApiClient
     {
         public static HttpClient Client { get; private set; }
+        private static bool _initialized = false;
 
         public static void Initialize(string apiUrl)
         {
-            Client = new HttpClient { BaseAddress = new Uri(apiUrl) };
+            if (_initialized) return;
+
+            Client = new HttpClient 
+            { 
+                BaseAddress = new Uri(apiUrl) 
+            };
 
             Client.DefaultRequestHeaders.Clear();
             Client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+            _initialized = true;
         }
 
-        public static async Task<string> Get(string url)
+        public static async Task<T> Get<T>(string url)
         {
             var response = await Client.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsStringAsync();
+            return await response.Content.ReadFromJsonAsync<T>();
         }
-
-        public static async Task<string> Post(string url, object data)
+        public static async Task<T> SafeGet<T>(string url)
         {
-            var json = JsonSerializer.Serialize(data);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await Client.PostAsync(url, content);
-
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        public static async Task<Dictionary<string, object>> Put(string url, object data)
-        {
-            var json = JsonSerializer.Serialize(data);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await Client.PutAsync(url, content);
-
-            response.EnsureSuccessStatusCode();
-
-            string resultString = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true
+                return await Get<T>(url);
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Error with request: {ex.ToString()}");
+                return default;
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show($"Data error: {ex.ToString()}");
+                return default;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.ToString()}");
+                return default;
+            }
+        }
+
+        public static async Task<TResponse> Post<TRequest, TResponse>(string url, TRequest data)
+        {
+            var response = await Client.PostAsJsonAsync(url, data);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<TResponse>();
+        }
+        public static async Task<TResponse> SafePost<TRequest, TResponse>(string url, TRequest data)
+        {
+            try
+            {
+                return await Post<TRequest, TResponse>(url, data);
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Error with request: {ex.ToString()}");
+                return default;
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show($"Data error: {ex.ToString()}");
+                return default;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.ToString()}");
+                return default;
+            }
+        }
+
+        public static async Task<TResponse> Put<TRequest, TResponse>(string url, TRequest data)
+        {
+            var response = await Client.PutAsJsonAsync(url, data);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<TResponse>();
+        }
+
+        public static async Task<TResponse> SafePut<TRequest, TResponse>(string url, TRequest data)
+        {
+            try
+            {
+                return await Put<TRequest, TResponse>(url, data);
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Error with request: {ex.ToString()}");
+                return default;
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show($"Data error: {ex.ToString()}");
+                return default;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.ToString()}");
+                return default;
+            }
+        }
+
+        public static async Task<TResponse> Delete<TRequest, TResponse>(string url, TRequest data)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, url) 
+            { 
+                Content = JsonContent.Create(data) 
             };
 
-            var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(resultString, options);
-
-            return dict;
-        }
-
-        public static async Task<string> Delete(string url, object data)
-        {
-            var json = JsonSerializer.Serialize(data);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var request = new HttpRequestMessage(HttpMethod.Delete, url) { Content = content };
             var response = await Client.SendAsync(request);
-
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsStringAsync();
+            return await response.Content.ReadFromJsonAsync<TResponse>();
+        }
+        public static async Task<TResponse> SafeDelete<TRequest, TResponse>(string url, TRequest data)
+        {
+            try
+            {
+                return await Delete<TRequest, TResponse>(url, data);
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Error with request: {ex.ToString()}");
+                return default;
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show($"Data error: {ex.ToString()}");
+                return default;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.ToString()}");
+                return default;
+            }
         }
     }
 }
