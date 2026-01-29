@@ -103,7 +103,9 @@ namespace admin
                 name = name.Text
             };
 
-            var result = await ApiClient.Post<MuscleGroupsDB, ApiResult>("muscle_groups/admin", mgObj);
+            var result = await ApiClient.SafePost<object, ApiResult>("muscle_groups/admin", new {
+                name = name.Text
+            });
             ApiResult.ensureSuccess(result);
 
             mgObj.id = Convert.ToInt32(result.data["id"]);
@@ -158,7 +160,7 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<object, ApiResult>("muscle_groups/admin", new { id = mgObj.id });
+            var result = await ApiClient.SafeDelete<ApiResult>($"muscle_groups/admin/{mgObj.id}");
             ApiResult.ensureSuccess(result);
 
             MGList.Remove(mgObj);

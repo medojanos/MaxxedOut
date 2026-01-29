@@ -124,7 +124,7 @@ export const updateUser = (req, res) => {
 // Admin
 
 export const getUsers = (req, res) => {
-    db.all("SELECT name, nickname, email FROM users", (e, rows) => {
+    db.all("SELECT id, nickname, email FROM users", (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         return res.json({success: true, data: rows})
     })
@@ -156,7 +156,7 @@ export const updateUserFromId = (req, res) => {
 }
 
 export const deleteUserFromId = (req, res) => {
-    db.run("DELETE FROM users WHERE id=?", [req.body.id], function (e) {
+    db.run("DELETE FROM users WHERE id=?", req.params.id, function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         if (this.changes === 0) {
             return res.status(404).json({
@@ -165,7 +165,7 @@ export const deleteUserFromId = (req, res) => {
             });
         } 
         
-        db.run("DELETE FROM tokens WHERE user_id=?", [req.body.id], function(e) {
+        db.run("DELETE FROM tokens WHERE user_id=?", req.params.id, function(e) {
             if (e) return res.status(500).json({success: false, message: "Database error"});
         })
         

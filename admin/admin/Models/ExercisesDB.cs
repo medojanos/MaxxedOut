@@ -14,6 +14,7 @@ namespace admin.Models
         public string type { get; set; }
         public List<MusclesworkedDB> musclesworked { get; set; }
 
+        public ExercisesDB() { }
         public ExercisesDB(int id, string name, string type, List<MusclesworkedDB> musclesworked)
         {
             this.id = id;
@@ -33,6 +34,7 @@ namespace admin.Models
         public MuscleGroupsDB musclegroup { get; set; }
         public string role { get; set; }
 
+        public MusclesworkedDB() { }
         public MusclesworkedDB(MuscleGroupsDB musclegroup, string role)
         {
             this.musclegroup = musclegroup;

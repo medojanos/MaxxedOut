@@ -122,7 +122,7 @@ namespace admin
             }
         }
 
-        public static async Task<TResponse> Delete<TRequest, TResponse>(string url, TRequest data)
+        public static async Task<TResponse> DeleteWithBody<TRequest, TResponse>(string url, TRequest data)
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, url) 
             { 
@@ -134,11 +134,43 @@ namespace admin
 
             return await response.Content.ReadFromJsonAsync<TResponse>();
         }
-        public static async Task<TResponse> SafeDelete<TRequest, TResponse>(string url, TRequest data)
+        public static async Task<TResponse> SafeDeleteWithBody<TRequest, TResponse>(string url, TRequest data)
         {
             try
             {
-                return await Delete<TRequest, TResponse>(url, data);
+                return await DeleteWithBody<TRequest, TResponse>(url, data);
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Error with request: {ex.ToString()}");
+                return default;
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show($"Data error: {ex.ToString()}");
+                return default;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.ToString()}");
+                return default;
+            }
+        }
+
+        public static async Task<T> Delete<T>(string url)
+        {
+            var response = await Client.DeleteAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            if (response.Content == null || response.Content.Headers.ContentLength == 0) return default;
+
+            return await response.Content.ReadFromJsonAsync<T>();
+        }
+        public static async Task<T> SafeDelete<T>(string url)
+        {
+            try
+            {
+                return await Delete<T>(url);
             }
             catch (HttpRequestException ex)
             {

@@ -201,7 +201,8 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<object, ApiResult>("/user/admin/", new { id = userObj.id });
+            var result = await ApiClient.SafeDelete<ApiResult>($"/user/admin/{userObj.id}");
+            ApiResult.ensureSuccess(result);
 
             UsersList.Remove(userObj);
             Rows.Items.Remove(userObj);

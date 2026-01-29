@@ -50,8 +50,11 @@ export const getExerciseById = (req, res) => {
 
 // Admin
 
-export const getMuscleGroups = (req, res) => {
-    db.run("SELECT * FROM muscle_groups_exercises WHERE exercise_id=?", [req.body.id], (e, rows) => {
+export const getAllExercisesAdmin = (req, res) => {
+    
+    // Itt is jó formátumba visszaküldeni
+
+    db.run("SELECT * FROM muscle_groups_exercises WHERE exercise_id=?", req.params.id, (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         return res.json({success: true, data: rows});
     })
@@ -93,16 +96,34 @@ export const deleteMuscleGroup = (req, res) => {
 }
 
 export const addExercise = (req, res) => {
+
+    // megírni úgy, hogy izomcsoportokat listában adja
+
     db.run("INSERT INTO exercises (name, type) VALUES (?, ?)", [req.body.name, req.body.type], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        return res.status(201).json({success: true, message: "Exercise added succesfully!"})
+        return res.status(201).json({success: true, data: {id: this.lastID}})
     })
 }
 
 export const updateExercise = (req, res) => {
-    db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", [req.body.id], function(e) {
+    db.run("UPDATE exercises SET name = ?, type = ? WHERE id = ?", [req.body.name, req.body.type, req.body.id], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        db.run("UPDATE exercises SET name = ?, type = ? WHERE id = ?", [req.body.name, req.body.type, req.body.id], function (e) {
+        if (this.changes === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Exercise not found!"
+            });
+        }
+
+
+        // megírni úgy, hogy izomcsoportokat listában adja
+
+        return res.json({success: true, message: "Exercise updated successfully!"});
+    })
+}
+
+export const deleteExercise = (req, res) => {
+        db.run("DELETE FROM exercises WHERE id = ?", [req.params.id], function (e) {
             if (e) return res.status(500).json({success: false, message: "Database error"}); 
             if (this.changes === 0) {
                 return res.status(404).json({
@@ -110,24 +131,11 @@ export const updateExercise = (req, res) => {
                     message: "Exercise not found!"
                 });
             }
+            
+            db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", [req.params.id], function(e) {
 
-            return res.json({success: true, message: "Exercise updated successfully!"});
-        })
-    })
-}
-
-export const deleteExercise = (req, res) => {
-    db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", [req.body.id], function(e) {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        db.run("DELETE FROM exercises WHERE id = ?", [req.body.id], function (e) {
-            if (this.changes === 0) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Exercise not found!"
-                });
-            }
+            })
 
             return res.json({success: true, message: "Exercise deleted successfully!"});
-        })
     })
 }
