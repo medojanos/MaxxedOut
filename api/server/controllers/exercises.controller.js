@@ -51,13 +51,39 @@ export const getExerciseById = (req, res) => {
 // Admin
 
 export const getAllExercisesAdmin = (req, res) => {
-    
-    // Itt is jó formátumba visszaküldeni
-
-    db.run("SELECT * FROM muscle_groups_exercises WHERE exercise_id=?", req.params.id, (e, rows) => {
+    db.all("SELECT * FROM exercises", (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        return res.json({success: true, data: rows});
+        
+        const exercisesMap = {};
+
+        rows.forEach(row => {
+            if(exercisesMap[row.id]){
+                exercisesMap[row.id] = {
+                    id: row.id,
+                    name: row.name,
+                    type: row.type,
+                    musclesworked: {}
+                }
+            }
+
+            db.run("SELECT * FROM muscle_groups_exercises WHERE exercise_id=?", row.id, (e, mgRows) => {
+                if (e) return res.status(500).json({success: false, message: "Database error"});
+
+                mgRows.forEach(mgRow => {
+                    if(!exercisesMap[row.id].musclesworked[mgRow.id]){
+                        exercisesMap[row.id].musclesworked[mgRow.id] = {
+                            id: mgRow.id,
+                            name: mgRow.name,
+                            role: mgRow.role
+                        }
+                    }
+                })
+            })
+        });
+
+        return res.json({success: true, data: exercisesMap});
     })
+
 }
 
 export const addMuscleGroup = (req, res) => {
@@ -96,11 +122,15 @@ export const deleteMuscleGroup = (req, res) => {
 }
 
 export const addExercise = (req, res) => {
-
-    // megírni úgy, hogy izomcsoportokat listában adja
-
     db.run("INSERT INTO exercises (name, type) VALUES (?, ?)", [req.body.name, req.body.type], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+        req.body.musclesworked.forEach(mg => {
+            db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, this.lastID, mg.role], function(e) {
+                if (e) return res.status(500).json({success: false, message: "Database error"}); 
+            })
+        });
+
         return res.status(201).json({success: true, data: {id: this.lastID}})
     })
 }
@@ -114,16 +144,23 @@ export const updateExercise = (req, res) => {
                 message: "Exercise not found!"
             });
         }
+        
+        db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", this.lastID, function(e) {
+            if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        })
 
-
-        // megírni úgy, hogy izomcsoportokat listában adja
+        req.body.musclesworked.forEach(mg => {
+            db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, this.lastID, mg.role], function(e) {
+                if (e) return res.status(500).json({success: false, message: "Database error"}); 
+            })
+        });
 
         return res.json({success: true, message: "Exercise updated successfully!"});
     })
 }
 
 export const deleteExercise = (req, res) => {
-        db.run("DELETE FROM exercises WHERE id = ?", [req.params.id], function (e) {
+        db.run("DELETE FROM exercises WHERE id = ?", req.params.id, function (e) {
             if (e) return res.status(500).json({success: false, message: "Database error"}); 
             if (this.changes === 0) {
                 return res.status(404).json({
@@ -132,8 +169,8 @@ export const deleteExercise = (req, res) => {
                 });
             }
             
-            db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", [req.params.id], function(e) {
-
+            db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", req.params.id, function(e) {
+                if (e) return res.status(500).json({success: false, message: "Database error"}); 
             })
 
             return res.json({success: true, message: "Exercise deleted successfully!"});

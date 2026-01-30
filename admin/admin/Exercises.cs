@@ -247,7 +247,7 @@ namespace admin
             var result = await ApiClient.SafePost<object, ApiResult>("exercises/admin", new {
                     name = exercise.Text,
                     type = type.Text,
-                    muscles = Musclesworked.Items.Cast<MusclesworkedDB>().Select(mgworked => new {
+                    musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().Select(mgworked => new {
                         muscleGroupId = mgworked.musclegroup.id,
                         role = mgworked.role
                     }).ToList()
@@ -288,7 +288,7 @@ namespace admin
                 id = ExerciseObj.id,
                 name = exercise.Text,
                 type = type.Text,
-                muscles = Musclesworked.Items.Cast<MusclesworkedDB>().
+                musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().
                     Select(mgworked => new {
                         muscleGroupId = mgworked.musclegroup.id,
                         role = mgworked.role
