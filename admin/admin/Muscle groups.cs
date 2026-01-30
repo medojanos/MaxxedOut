@@ -69,7 +69,7 @@ namespace admin
             }
             else
             {
-                mgSource.DataSource = MGList.Where(musclegroup => musclegroup.name.ToLower().Contains(search.Text.ToLower())).ToList();
+                mgSource.DataSource = MGList.Where(musclegroup => musclegroup.Name.ToLower().Contains(search.Text.ToLower())).ToList();
             }
         }
 
@@ -81,7 +81,7 @@ namespace admin
 
             if(mgObj == null) return;
 
-            name.Text = mgObj.name;
+            name.Text = mgObj.Name;
         }
 
         private async void addButton_Click(object sender, EventArgs e)
@@ -92,7 +92,7 @@ namespace admin
                 return;
             }
 
-            if(MGList.Any(musclegroup => musclegroup.name == name.Text))
+            if(MGList.Any(musclegroup => musclegroup.Name == name.Text))
             {
                 MessageBox.Show("Muscle group already in database!");
                 return;
@@ -100,7 +100,7 @@ namespace admin
 
             var mgObj = new MuscleGroupsDB
             {
-                name = name.Text
+                Name = name.Text
             };
 
             var result = await ApiClient.SafePost<object, ApiResult>("muscle_groups/admin", new {
@@ -108,7 +108,7 @@ namespace admin
             });
             ApiResult.ensureSuccess(result);
 
-            mgObj.id = Convert.ToInt32(result.data["id"]);
+            mgObj.Id = Convert.ToInt32(result.data);
 
             MGList.Add(mgObj);
         }
@@ -135,7 +135,7 @@ namespace admin
                 return;
             }
 
-            mgObj.name = name.Text;
+            mgObj.Name = name.Text;
 
             Rows.DisplayMember = null;
             Rows.DisplayMember = "name";
@@ -160,7 +160,7 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<ApiResult>($"muscle_groups/admin/{mgObj.id}");
+            var result = await ApiClient.SafeDelete<ApiResult>($"muscle_groups/admin/{mgObj.Id}");
             ApiResult.ensureSuccess(result);
 
             MGList.Remove(mgObj);

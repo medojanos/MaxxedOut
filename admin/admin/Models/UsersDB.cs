@@ -11,30 +11,30 @@ namespace admin.Models
 {
     public class UsersDB
     {
-        public int id { get; set; }
-        public string nickname { get; set; }
-        public string email { get; set; }
-        public string password { get; set; }
+        public int Id { get; set; }
+        public string Nickname { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
 
         public UsersDB() { }
         public UsersDB(int id, string nickname, string email, string password)
         {
-            this.id = id;
-            this.nickname = nickname;
-            this.email = email;
-            this.password = password;
+            Id = id;
+            Nickname = nickname;
+            Email = email;
+            Password = password;
         }
         public UsersDB(int id, string nickname, string email, string password, bool isHashed)
         {
-            this.id = id;
-            this.nickname = nickname;
-            this.email = email;
-            this.password = isHashed ? password : PwdEncrypt(password);
+            Id = id;
+            Nickname = nickname;
+            Email = email;
+            Password = isHashed ? password : PwdEncrypt(password);
         }
 
         public override string ToString()
         {
-            return string.IsNullOrEmpty(nickname) ? email : nickname;
+            return string.IsNullOrEmpty(Nickname) ? Email : Nickname;
         }
 
         public static string PwdEncrypt(string pwd)

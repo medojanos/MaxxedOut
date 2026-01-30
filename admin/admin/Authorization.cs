@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Net.Http.Headers;
 using static admin.ApiClient;
 using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace admin
 {
@@ -32,22 +33,26 @@ namespace admin
                     return;
                 }
 
-                ApiClient.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", token);
+                if (ApiClient.Client.DefaultRequestHeaders.Contains("Authorization")) ApiClient.Client.DefaultRequestHeaders.Remove("Authorization");
 
-                HttpResponseMessage response = await ApiClient.Client.GetAsync("/auth/admin");
+                ApiClient.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
 
-                if(response.IsSuccessStatusCode)
+                var httpResponse = await ApiClient.Client.GetAsync("auth/admin");
+
+                if (httpResponse.IsSuccessStatusCode)
                 {
+                    this.Hide();
                     Application.Run(new AppContext());
                 }
                 else
                 {
-                    MessageBox.Show("Bad token!");
+                    ApiResult content = await httpResponse.Content.ReadFromJsonAsync<ApiResult>();
+                    MessageBox.Show($"Bad token! \nStatus: {httpResponse.StatusCode.GetHashCode()} {httpResponse.StatusCode} \nSuccess: {content.success} \nMessage: {content.message}");
                 }
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                MessageBox.Show("Unexpected error: " + ex.Message);
             }
         }
     }

@@ -34,6 +34,7 @@ namespace admin
         private async void Exercises_load(object sender, EventArgs e)
         {
             ExercisesList = await ApiClient.SafeGet<List<ExercisesDB>>("/exercises/admin");
+            ExercisesList.ForEach(exercise => Rows.Items.Add(exercise));
 
             musclegroups.DataSource = MuscleGroupsList.MuscleGroups;
             musclegroups.DisplayMember = "Name";
@@ -82,10 +83,10 @@ namespace admin
                 return;
             }
 
-            exercise.Text = exerciseObj.name;
-            type.SelectedItem = exerciseObj.type;
+            exercise.Text = exerciseObj.Name;
+            type.SelectedItem = exerciseObj.Type;
 
-            foreach (var mg in exerciseObj.musclesworked)
+            foreach (var mg in exerciseObj.Musclesworked)
             {
                 Musclesworked.Items.Add(mg);
             }
@@ -101,8 +102,8 @@ namespace admin
             }
 
             MusclesworkedDB selectedMuscleworked = Musclesworked.SelectedItem as MusclesworkedDB;
-            musclegroups.SelectedItem = selectedMuscleworked.musclegroup;
-            role.SelectedItem = selectedMuscleworked.role;
+            musclegroups.SelectedItem = selectedMuscleworked.Musclegroup;
+            role.SelectedItem = selectedMuscleworked.Role;
         }
 
         private void searchButton_Click(object sender, EventArgs e)
@@ -118,7 +119,7 @@ namespace admin
             }
             else
             {
-                foreach (var exercise in ExercisesList.Where(ex => ex.name.ToLower().Contains(search.Text.ToLower()) || ex.type.ToLower().Contains(search.Text.ToLower()) || ex.musclesworked.Any(mg => mg.musclegroup.name.ToLower().Contains(search.Text.ToLower()))))
+                foreach (var exercise in ExercisesList.Where(ex => ex.Name.ToLower().Contains(search.Text.ToLower()) || ex.Type.ToLower().Contains(search.Text.ToLower()) || ex.Musclesworked.Any(mg => mg.Musclegroup.Name.ToLower().Contains(search.Text.ToLower()))))
                 {
                     Rows.Items.Add(exercise);
                 }
@@ -131,7 +132,7 @@ namespace admin
 
             foreach (MusclesworkedDB mgworked in Musclesworked.Items)
             {
-                if (mgworked.musclegroup.name == mgObj.name)
+                if (mgworked.Musclegroup.Name == mgObj.Name)
                 {
                     MessageBox.Show("Can't add a muscle worked twice!");
                     return;
@@ -149,8 +150,8 @@ namespace admin
                 ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
 
                 var obj = new {
-                    muscleGroupId = mgObj.id,
-                    exerciseId = Exercise.id, 
+                    muscleGroupId = mgObj.Id,
+                    exerciseId = Exercise.Id, 
                     role = role.Text 
                 };
 
@@ -174,7 +175,7 @@ namespace admin
 
             MuscleGroupsDB mgObj = musclegroups.SelectedItem as MuscleGroupsDB;
 
-            if (mgworkedObj.musclegroup.name != mgObj.name)
+            if (mgworkedObj.Musclegroup.Name != mgObj.Name)
             {
                 MessageBox.Show("Can't save if the muscle group is not the same!");
                 return;
@@ -192,8 +193,8 @@ namespace admin
 
                 var obj = new
                 {
-                    muscleGroupId = mgObj.id,
-                    exerciseId = Exercise.id,
+                    muscleGroupId = mgObj.Id,
+                    exerciseId = Exercise.Id,
                     role = role.Text
                 };
 
@@ -201,7 +202,7 @@ namespace admin
                 ApiResult.ensureSuccess(result);
             }
 
-            mgworkedObj.role = role.Text;
+            mgworkedObj.Role = role.Text;
         }
 
         private async void deletemuscleworkedButton_Click(object sender, EventArgs e)
@@ -221,8 +222,8 @@ namespace admin
                 ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
 
                 var result = await ApiClient.SafeDeleteWithBody<object, ApiResult>("admin/musclegroup", new {
-                    muscleGroupId = mgworkedObj.musclegroup.id,
-                    exerciseId = Exercise.id
+                    muscleGroupId = mgworkedObj.Musclegroup.Id,
+                    exerciseId = Exercise.Id
                 });
                 ApiResult.ensureSuccess(result);
             }
@@ -238,7 +239,7 @@ namespace admin
                 return;
             }
 
-            if (ExercisesList.Any(ex => ex.name == exercise.Text))
+            if (ExercisesList.Any(ex => ex.Name == exercise.Text))
             {
                 MessageBox.Show("Can't add an exercise twice!");
                 return;
@@ -248,8 +249,8 @@ namespace admin
                     name = exercise.Text,
                     type = type.Text,
                     musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().Select(mgworked => new {
-                        muscleGroupId = mgworked.musclegroup.id,
-                        role = mgworked.role
+                        muscleGroupId = mgworked.Musclegroup.Id,
+                        role = mgworked.Role
                     }).ToList()
                 }
             );
@@ -259,10 +260,10 @@ namespace admin
 
             ExercisesDB exerciseObj = new ExercisesDB
             {
-                id = Convert.ToInt32(result.data["id"]),
-                name = exercise.Text,
-                type = type.Text,
-                musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList()
+                Id = Convert.ToInt32(result.data),
+                Name = exercise.Text,
+                Type = type.Text,
+                Musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList()
             };
 
             Rows.Items.Add(exerciseObj);
@@ -285,21 +286,21 @@ namespace admin
             }
 
             var result = await ApiClient.SafePut<object, ApiResult>($"/admin/exercises", new {
-                id = ExerciseObj.id,
+                id = ExerciseObj.Id,
                 name = exercise.Text,
                 type = type.Text,
                 musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().
                     Select(mgworked => new {
-                        muscleGroupId = mgworked.musclegroup.id,
-                        role = mgworked.role
+                        muscleGroupId = mgworked.Musclegroup.Id,
+                        role = mgworked.Role
                     }).ToList()
             });
             ApiResult.ensureSuccess(result);
 
 
-            ExerciseObj.musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList();
-            ExerciseObj.name = exercise.Text;
-            ExerciseObj.type = type.Text;
+            ExerciseObj.Musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList();
+            ExerciseObj.Name = exercise.Text;
+            ExerciseObj.Type = type.Text;
         }
 
         private async void deleteButton_Click(object sender, EventArgs e)
@@ -312,7 +313,7 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<ApiResult>($"/exercises/admin/:{Exercise.id}");
+            var result = await ApiClient.SafeDelete<ApiResult>($"/exercises/admin/:{Exercise.Id}");
             ApiResult.ensureSuccess(result);
 
             ExercisesList.Remove(Exercise);

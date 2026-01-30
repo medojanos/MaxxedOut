@@ -51,39 +51,35 @@ export const getExerciseById = (req, res) => {
 // Admin
 
 export const getAllExercisesAdmin = (req, res) => {
-    db.all("SELECT * FROM exercises", (e, rows) => {
+    db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group_name, mge.role as role, mg.id as muscle_group_id FROM exercises e LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id LEFT JOIN muscle_groups mg ON mge.muscle_group_id = mg.id", (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        
-        const exercisesMap = {};
 
+        const exercisesMap = {};
+        
         rows.forEach(row => {
-            if(exercisesMap[row.id]){
+            if (!exercisesMap[row.id]) {
                 exercisesMap[row.id] = {
                     id: row.id,
                     name: row.name,
                     type: row.type,
-                    musclesworked: {}
-                }
+                    musclesworked: []
+                };
             }
 
-            db.run("SELECT * FROM muscle_groups_exercises WHERE exercise_id=?", row.id, (e, mgRows) => {
-                if (e) return res.status(500).json({success: false, message: "Database error"});
+            if (row.muscle_group_id) {
+                exercisesMap[row.id].musclesworked.push({
+                    musclegroup: {
+                        id: row.muscle_group_id,
+                        name: row.muscle_group_name
+                    },
+                    role: row.role
+                });
+            }
 
-                mgRows.forEach(mgRow => {
-                    if(!exercisesMap[row.id].musclesworked[mgRow.id]){
-                        exercisesMap[row.id].musclesworked[mgRow.id] = {
-                            id: mgRow.id,
-                            name: mgRow.name,
-                            role: mgRow.role
-                        }
-                    }
-                })
-            })
         });
 
-        return res.json({success: true, data: exercisesMap});
-    })
-
+        return res.json({success: true, data: Object.values(exercisesMap)});
+    })  
 }
 
 export const addMuscleGroup = (req, res) => {

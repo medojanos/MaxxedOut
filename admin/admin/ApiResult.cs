@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,7 +13,7 @@ namespace admin
     {
         public bool success { get; set; }
         public string message { get; set; }
-        public Dictionary<string, object> data { get; set; }
+        public JsonElement data { get; set; }
 
         public ApiResult() { }
 
