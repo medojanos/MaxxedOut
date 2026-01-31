@@ -16,6 +16,8 @@ namespace admin
 {
     public partial class Authorization : Form
     {
+        public event Action LoginSucceeded;
+
         public Authorization()
         {
             InitializeComponent();
@@ -33,16 +35,14 @@ namespace admin
                     return;
                 }
 
-                if (ApiClient.Client.DefaultRequestHeaders.Contains("Authorization")) ApiClient.Client.DefaultRequestHeaders.Remove("Authorization");
-
                 ApiClient.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
 
                 var httpResponse = await ApiClient.Client.GetAsync("auth/admin");
 
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    this.Hide();
-                    Application.Run(new AppContext());
+                    LoginSucceeded.Invoke();
+                    this.Close();
                 }
                 else
                 {

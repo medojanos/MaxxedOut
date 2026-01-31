@@ -49,7 +49,7 @@ namespace admin
             try
             {
                 var response = await Get<ApiResult>(url);
-                MessageBox.Show(response.data.ToString());
+                // MessageBox.Show(response.data.ToString());
                 return JsonSerializer.Deserialize<T>(response.data.GetRawText(), options);
             }
             catch (HttpRequestException ex)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -9,9 +10,13 @@ namespace admin
 {
     public class AppContext : ApplicationContext
     {
+        private int formCount;
+
         private void onFormClosed(object sender, EventArgs e)
         {
-            if (Application.OpenForms.Count == 0)
+            formCount--;
+
+            if (formCount == 0)
             {
                 ExitThread();
             }
@@ -19,22 +24,37 @@ namespace admin
 
         public AppContext()
         {
+            showLoginForm();
+        }
+
+        private void showLoginForm()
+        {
+            var loginForm = new Authorization();
+
+            registerForm(loginForm);
+            loginForm.LoginSucceeded += loginSucceeded;
+        }
+
+        private void loginSucceeded()
+        {
             var forms = new List<Form>()
             {
+                new Muscle_groups(),
                 new Exercises(),
-                new Users(),
-                new Muscle_groups()
+                new Users()
             };
 
             foreach (var form in forms)
             {
-                form.FormClosed += onFormClosed;
+                registerForm(form);
             }
+        }
 
-            foreach (var form in forms)
-            {
-                form.Show();
-            }
+        private void registerForm(Form form)
+        {
+            form.FormClosed += onFormClosed;
+            form.Show();
+            formCount++;
         }
     }
 }

@@ -24,6 +24,7 @@ namespace admin
     public partial class Exercises : Form
     {
         private List<ExercisesDB> ExercisesList = new List<ExercisesDB>();
+        private BindingSource mgSource = new BindingSource();
         public Exercises()
         {
             InitializeComponent();
@@ -36,9 +37,10 @@ namespace admin
             ExercisesList = await ApiClient.SafeGet<List<ExercisesDB>>("/exercises/admin");
             ExercisesList.ForEach(exercise => Rows.Items.Add(exercise));
 
-            musclegroups.DataSource = MuscleGroupsList.MuscleGroups;
+            mgSource.DataSource = MuscleGroupsList.MuscleGroups;
+            musclegroups.DataSource = mgSource;
             musclegroups.DisplayMember = "Name";
-            musclegroups.ValueMember = "ID";
+            musclegroups.ValueMember = "Id";
 
             type.Items.Add("Compound");
             type.Items.Add("Isolation");
@@ -149,18 +151,16 @@ namespace admin
             {
                 ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
 
-                var obj = new {
+                var result = await ApiClient.SafePost<object, ApiResult>("/admin/musclegroup", new {
                     muscleGroupId = mgObj.Id,
-                    exerciseId = Exercise.Id, 
-                    role = role.Text 
-                };
+                    exerciseId = Exercise.Id,
+                    role = role.Text
+                });
 
-                var result = await ApiClient.SafePost<object, ApiResult>("/admin/musclegroup", obj);
-                ApiResult.ensureSuccess(result);
+                if (!ApiResult.ensureSuccess(result)) return;
             }
 
-            MusclesworkedDB mgworkedObj = new MusclesworkedDB(mgObj, role.Text);
-            Musclesworked.Items.Add(mgworkedObj);
+            Musclesworked.Items.Add(new MusclesworkedDB(mgObj, role.Text));
         }
 
         private async void savemuscleworkedButton_Click(object sender, EventArgs e)
@@ -191,15 +191,13 @@ namespace admin
             {
                 ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
 
-                var obj = new
-                {
+                var result = await ApiClient.SafePut<object, ApiResult>("admin/musclegroup", new {
                     muscleGroupId = mgObj.Id,
                     exerciseId = Exercise.Id,
                     role = role.Text
-                };
+                });
 
-                var result = await ApiClient.SafePut<object, ApiResult>("admin/musclegroup", obj);
-                ApiResult.ensureSuccess(result);
+                if(!ApiResult.ensureSuccess(result)) return;
             }
 
             mgworkedObj.Role = role.Text;
@@ -215,8 +213,6 @@ namespace admin
                 return;
             }
 
-            Musclesworked.Items.Remove(mgworkedObj);
-
             if (Rows.SelectedItem != null)
             {
                 ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
@@ -225,9 +221,11 @@ namespace admin
                     muscleGroupId = mgworkedObj.Musclegroup.Id,
                     exerciseId = Exercise.Id
                 });
-                ApiResult.ensureSuccess(result);
+
+                if(!ApiResult.ensureSuccess(result)) return;
             }
 
+            Musclesworked.Items.Remove(mgworkedObj);
             Musclesworked.SelectedItem = null;
         }
 
@@ -255,18 +253,10 @@ namespace admin
                 }
             );
 
-            ApiResult.ensureSuccess(result);
-
-
-            ExercisesDB exerciseObj = new ExercisesDB
+            if (ApiResult.ensureSuccess(result))
             {
-                Id = Convert.ToInt32(result.data),
-                Name = exercise.Text,
-                Type = type.Text,
-                Musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList()
-            };
-
-            Rows.Items.Add(exerciseObj);
+                Rows.Items.Add(new ExercisesDB(result.data.GetProperty("id").GetInt32(), exercise.Text, type.Text, Musclesworked.Items.Cast<MusclesworkedDB>().ToList()));
+            }
         }
 
         private async void saveButton_Click(object sender, EventArgs e)
@@ -289,18 +279,18 @@ namespace admin
                 id = ExerciseObj.Id,
                 name = exercise.Text,
                 type = type.Text,
-                musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().
-                    Select(mgworked => new {
-                        muscleGroupId = mgworked.Musclegroup.Id,
-                        role = mgworked.Role
-                    }).ToList()
+                musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().Select(mgworked => new {
+                    muscleGroupId = mgworked.Musclegroup.Id,
+                    role = mgworked.Role
+                }).ToList()
             });
-            ApiResult.ensureSuccess(result);
 
-
-            ExerciseObj.Musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList();
-            ExerciseObj.Name = exercise.Text;
-            ExerciseObj.Type = type.Text;
+            if (ApiResult.ensureSuccess(result))
+            {
+                ExerciseObj.Musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList();
+                ExerciseObj.Name = exercise.Text;
+                ExerciseObj.Type = type.Text;
+            }
         }
 
         private async void deleteButton_Click(object sender, EventArgs e)
@@ -314,10 +304,12 @@ namespace admin
             }
 
             var result = await ApiClient.SafeDelete<ApiResult>($"/exercises/admin/:{Exercise.Id}");
-            ApiResult.ensureSuccess(result);
 
-            ExercisesList.Remove(Exercise);
-            Rows.Items.Remove(Exercise);
+            if (ApiResult.ensureSuccess(result))
+            {
+                ExercisesList.Remove(Exercise);
+                Rows.Items.Remove(Exercise);
+            }
         }
     }
 }

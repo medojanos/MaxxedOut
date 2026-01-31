@@ -33,9 +33,11 @@ namespace admin
         {
             MGList = await ApiClient.SafeGet<BindingList<MuscleGroupsDB>>("/muscle_groups");
 
+            MuscleGroupsList.MuscleGroups = MGList;
+
             mgSource.DataSource = MGList;
             Rows.DataSource = mgSource;
-            Rows.DisplayMember = "name";
+            Rows.DisplayMember = "Name";
         }
 
         // Navigation handling
@@ -98,19 +100,14 @@ namespace admin
                 return;
             }
 
-            var mgObj = new MuscleGroupsDB
-            {
-                Name = name.Text
-            };
-
             var result = await ApiClient.SafePost<object, ApiResult>("muscle_groups/admin", new {
                 name = name.Text
             });
-            ApiResult.ensureSuccess(result);
 
-            mgObj.Id = Convert.ToInt32(result.data);
-
-            MGList.Add(mgObj);
+            if (ApiResult.ensureSuccess(result))
+            {
+                MGList.Add(new MuscleGroupsDB(result.data.GetProperty("id").GetInt32(), name.Text));
+            }
         }
 
         private async void saveButton_Click(object sender, EventArgs e)
@@ -135,13 +132,24 @@ namespace admin
                 return;
             }
 
-            mgObj.Name = name.Text;
+            if (mgObj.Name == name.Text)
+            {
+                MessageBox.Show("Name can't be the same!");
+                return;
+            }
+
+            var result = await ApiClient.SafePut<object, ApiResult>("muscle_groups/admin", new {
+                id = mgObj.Id,
+                name = name.Text
+            });
+
+            if (ApiResult.ensureSuccess(result))
+            {
+                mgObj.Name = name.Text;
+            }
 
             Rows.DisplayMember = null;
             Rows.DisplayMember = "name";
-
-            var result = await ApiClient.SafePut<MuscleGroupsDB, ApiResult>("muscle_groups/admin", mgObj);
-            ApiResult.ensureSuccess(result);
         }
 
         private async void deleteButton_Click(object sender, EventArgs e)
@@ -161,10 +169,11 @@ namespace admin
             }
 
             var result = await ApiClient.SafeDelete<ApiResult>($"muscle_groups/admin/{mgObj.Id}");
-            ApiResult.ensureSuccess(result);
-
-            MGList.Remove(mgObj);
-            name.Clear();
+            if (ApiResult.ensureSuccess(result))
+            {
+                MGList.Remove(mgObj);
+                name.Clear();
+            }
         }
     }
 }

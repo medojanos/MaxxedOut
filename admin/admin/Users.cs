@@ -121,30 +121,25 @@ namespace admin
                 return;
             }
 
-            if (!UsersDB.IsPwdValid(password.Text))
+            if (!UsersDB.IsPwdValid(password.Text) || !UsersDB.IsEmailValid(email.Text))
             {
                 return;
             }
 
-            if (!UsersDB.IsEmailValid(email.Text))
+
+            var result = await ApiClient.SafePost<object, ApiResult>("/user/admin", new {
+                nickname = nickname.Text,
+                email = email.Text,
+                password = password.Text
+            });
+
+            if (ApiResult.ensureSuccess(result))
             {
-                return;
+                var userObj = new UsersDB(result.data.GetProperty("id").GetInt32(), nickname.Text, email.Text, password.Text);
+
+                UsersList.Add(userObj);
+                Rows.Items.Add(userObj);
             }
-
-            var userObj = new UsersDB
-            {
-                Nickname = nickname.Text,
-                Email = email.Text,
-                Password = UsersDB.PwdEncrypt(password.Text)
-            };
-
-            var result = await ApiClient.SafePost<UsersDB, ApiResult>("/user/admin", userObj);
-            ApiResult.ensureSuccess(result);
-
-            userObj.Id = Convert.ToInt32(result.data);
-
-            UsersList.Add(userObj);
-            Rows.Items.Add(userObj);
         }
 
         private async void saveButton_Click(object sender, EventArgs e)
@@ -174,15 +169,22 @@ namespace admin
                 return;
             }
 
-            userObj.Email = email.Text;
-            userObj.Nickname = nickname.Text;
+            var result = await ApiClient.SafePut<object, ApiResult>("/user/admin", new {
+                nickname = nickname.Text,
+                email = email.Text,
+                password = string.IsNullOrWhiteSpace(password.Text) ? null : password.Text,
+                id = userObj.Id
+            });
 
-            if(!string.IsNullOrWhiteSpace(password.Text) && UsersDB.IsPwdValid(password.Text)) userObj.Password = UsersDB.PwdEncrypt(password.Text);
+            if (ApiResult.ensureSuccess(result))
+            {
+                userObj.Email = email.Text;
+                userObj.Nickname = nickname.Text;
 
-            Rows.Items[Rows.SelectedIndex] = userObj;
+                if (!string.IsNullOrWhiteSpace(password.Text) && UsersDB.IsPwdValid(password.Text)) userObj.Password = password.Text;
 
-            var result = await ApiClient.SafePut<UsersDB, ApiResult>("/user/admin", userObj);
-            ApiResult.ensureSuccess(result);
+                Rows.Items[Rows.SelectedIndex] = userObj;
+            }
         }
 
         private async void deleteButton_Click(object sender, EventArgs e)
@@ -202,14 +204,16 @@ namespace admin
             }
 
             var result = await ApiClient.SafeDelete<ApiResult>($"/user/admin/{userObj.Id}");
-            ApiResult.ensureSuccess(result);
 
-            UsersList.Remove(userObj);
-            Rows.Items.Remove(userObj);
+            if (ApiResult.ensureSuccess(result))
+            {
+                UsersList.Remove(userObj);
+                Rows.Items.Remove(userObj);
 
-            nickname.Clear();
-            email.Clear();
-            password.Clear();
+                nickname.Clear();
+                email.Clear();
+                password.Clear();
+            }
         }
     }
 }

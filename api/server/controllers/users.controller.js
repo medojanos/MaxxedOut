@@ -131,14 +131,38 @@ export const getUsers = (req, res) => {
 }
 
 export const addUser = (req, res) => {
-    db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [req.body.nickname, req,body.email, req.body.password], function (e) {
+    db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [req.body.nickname, req,body.email, hash("sha-512", req.body.password)], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         return res.json({success: true, data: {id: this.lastID}});
     });
 }
 
 export const updateUserFromId = (req, res) => {
-    db.run("UPDATE users SET nickname=?, email=?, password=? WHERE id=?", [req.body.nickname, req.body.email, req.body.password, req.body.id], function (e) {
+
+    if(!req.body.nickname || req.body.nickname.trim().length < 3){
+        return res.status(400).json({success: false, message: "Invalid nickname"})
+    }
+
+    if(!req.body.email || !req.body.email.includes("@")){
+        return res.status(400).json({success: false, message: "Invalid email"})
+    }
+
+    const fields = ["nickname=?", "email=?"];
+    const properties = [req.body.nickname, req.body.email]
+
+    if (req.body.password) 
+    {
+        if (req.body.password.length < 8){
+            return res.status(400).json({success: false, message: "Weak password"})
+        }
+
+        properties.push(hash("sha-512", req.body.password));
+        fields.push("password=?");
+    }
+
+    properties.push(req.body.id);
+
+    db.run(`UPDATE users SET ${fields.join(", ")} WHERE id=?`, properties, function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         if (this.changes === 0) {
             return res.status(404).json({
@@ -147,7 +171,7 @@ export const updateUserFromId = (req, res) => {
             });
         } 
 
-        db.run("DELETE FROM tokens WHERE user_id=?", [req.body.id], function(e) {
+        db.run("DELETE FROM tokens WHERE user_id=?", req.body.id, function(e) {
             if (e) return res.status(500).json({success: false, message: "Database error"});
         })
 
