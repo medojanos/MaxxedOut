@@ -35,6 +35,8 @@ namespace admin
                     return;
                 }
 
+                if(ApiClient.Client.DefaultRequestHeaders.Authorization != null) ApiClient.Client.DefaultRequestHeaders.Authorization = null;
+
                 ApiClient.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
 
                 var httpResponse = await ApiClient.Client.GetAsync("auth/admin");

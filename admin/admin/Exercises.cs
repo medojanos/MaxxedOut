@@ -128,6 +128,8 @@ namespace admin
             }
         }
 
+        // Muscles worked handling
+
         private async void addmuscleworkedButton_Click(object sender, EventArgs e)
         {
             MuscleGroupsDB mgObj = musclegroups.SelectedItem as MuscleGroupsDB;
@@ -147,19 +149,6 @@ namespace admin
                 return;
             }
 
-            if(Rows.SelectedItem != null)
-            {
-                ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
-
-                var result = await ApiClient.SafePost<object, ApiResult>("/admin/musclegroup", new {
-                    muscleGroupId = mgObj.Id,
-                    exerciseId = Exercise.Id,
-                    role = role.Text
-                });
-
-                if (!ApiResult.ensureSuccess(result)) return;
-            }
-
             Musclesworked.Items.Add(new MusclesworkedDB(mgObj, role.Text));
         }
 
@@ -173,31 +162,18 @@ namespace admin
                 return;
             }
 
-            MuscleGroupsDB mgObj = musclegroups.SelectedItem as MuscleGroupsDB;
-
-            if (mgworkedObj.Musclegroup.Name != mgObj.Name)
-            {
-                MessageBox.Show("Can't save if the muscle group is not the same!");
-                return;
-            }
-
             if (role.SelectedItem == null || musclegroups.SelectedItem == null)
             {
                 MessageBox.Show("Must choose muscle group and role before saving!");
                 return;
             }
 
-            if (Rows.SelectedItem != null)
+            MuscleGroupsDB mgObj = musclegroups.SelectedItem as MuscleGroupsDB;
+
+            if (mgworkedObj.Musclegroup.Name != mgObj.Name)
             {
-                ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
-
-                var result = await ApiClient.SafePut<object, ApiResult>("admin/musclegroup", new {
-                    muscleGroupId = mgObj.Id,
-                    exerciseId = Exercise.Id,
-                    role = role.Text
-                });
-
-                if(!ApiResult.ensureSuccess(result)) return;
+                MessageBox.Show("Can't save if the muscle group is not the same!");
+                return;
             }
 
             mgworkedObj.Role = role.Text;
@@ -213,21 +189,11 @@ namespace admin
                 return;
             }
 
-            if (Rows.SelectedItem != null)
-            {
-                ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
-
-                var result = await ApiClient.SafeDeleteWithBody<object, ApiResult>("admin/musclegroup", new {
-                    muscleGroupId = mgworkedObj.Musclegroup.Id,
-                    exerciseId = Exercise.Id
-                });
-
-                if(!ApiResult.ensureSuccess(result)) return;
-            }
-
             Musclesworked.Items.Remove(mgworkedObj);
             Musclesworked.SelectedItem = null;
         }
+
+        // Exercise handling
 
         private async void addButton_Click(object sender, EventArgs e)
         {
@@ -247,7 +213,7 @@ namespace admin
                     name = exercise.Text,
                     type = type.Text,
                     musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().Select(mgworked => new {
-                        muscleGroupId = mgworked.Musclegroup.Id,
+                        id = mgworked.Musclegroup.Id,
                         role = mgworked.Role
                     }).ToList()
                 }
@@ -275,12 +241,12 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafePut<object, ApiResult>($"/admin/exercises", new {
+            var result = await ApiClient.SafePut<object, ApiResult>($"/exercises/admin", new {
                 id = ExerciseObj.Id,
                 name = exercise.Text,
                 type = type.Text,
                 musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().Select(mgworked => new {
-                    muscleGroupId = mgworked.Musclegroup.Id,
+                    id = mgworked.Musclegroup.Id,
                     role = mgworked.Role
                 }).ToList()
             });
@@ -303,7 +269,7 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<ApiResult>($"/exercises/admin/:{Exercise.Id}");
+            var result = await ApiClient.SafeDelete<ApiResult>($"/exercises/admin/{Exercise.Id}");
 
             if (ApiResult.ensureSuccess(result))
             {

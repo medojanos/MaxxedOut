@@ -137,43 +137,6 @@ namespace admin
             }
         }
 
-        // Delete with body
-
-        public static async Task<TResponse> DeleteWithBody<TRequest, TResponse>(string url, TRequest data)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Delete, url) 
-            { 
-                Content = JsonContent.Create(data) 
-            };
-
-            var response = await Client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<TResponse>(options);
-        }
-        public static async Task<TResponse> SafeDeleteWithBody<TRequest, TResponse>(string url, TRequest data)
-        {
-            try
-            {
-                return await DeleteWithBody<TRequest, TResponse>(url, data);
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error with request: {ex.ToString()}");
-                return default;
-            }
-            catch (JsonException ex)
-            {
-                MessageBox.Show($"Data error: {ex.ToString()}");
-                return default;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.ToString()}");
-                return default;
-            }
-        }
-
         // Delete
 
         public static async Task<T> Delete<T>(string url)

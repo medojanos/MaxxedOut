@@ -82,52 +82,32 @@ export const getAllExercisesAdmin = (req, res) => {
     })  
 }
 
-export const addMuscleGroup = (req, res) => {
-    db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [req.body.muscleGroupId, req.body.exerciseId, req.body.role], function (e) {
-        if (e) return res.status(500).json({success: false, message: "Database error"});
-        return res.status(201).json({success: true, message: "Muscle worked added succesfully!"})
-    })
-}
-
-export const updateMuscleGroup = (req, res) => {
-    db.run("UPDATE muscle_groups_exercises SET role = ? WHERE muscle_group_id = ? AND exercise_id = ?", [req.body.role, req.body.muscleGroupId, req.body.exerciseId], function(e) {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        if (this.changes === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Muscle worked not found!"
-            });
-        }  
-             
-        return res.json({success: true, message: "Muscle worked updated successfully!"});
-    })
-}
-
-export const deleteMuscleGroup = (req, res) => {
-    db.run("DELETE FROM muscle_groups_exercises WHERE muscle_group_id = ? AND exercise_id = ?", [req.body.muscleGroupId, req.body.exerciseId], function(e) {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        if (this.changes === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Muscle worked not found!"
-            });
-        } 
-
-        return res.json({success: true, message: "Muscle worked deleted successfully!"});
-    })
-}
-
 export const addExercise = (req, res) => {
     db.run("INSERT INTO exercises (name, type) VALUES (?, ?)", [req.body.name, req.body.type], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
 
+        const exerciseId = this.lastID;
+        let completed = 0;
+        let responded = false;
+
         req.body.musclesworked.forEach(mg => {
-            db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, this.lastID, mg.role], function(e) {
-                if (e) return res.status(500).json({success: false, message: "Database error"}); 
+            db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, exerciseId, mg.role], function(e) {
+                if(responded) return;
+                
+                if (e)
+                {
+                    responded = true;
+                    return res.status(500).json({success: false, message: "Database error"});
+                } 
+
+                completed++;
+        
+                if(completed == req.body.musclesworked.length) {
+                    responded = true;
+                    return res.json({success: true, message: "Exercise added successfully!"});
+                }
             })
         });
-
-        return res.status(201).json({success: true, data: {id: this.lastID}})
     })
 }
 
@@ -141,17 +121,31 @@ export const updateExercise = (req, res) => {
             });
         }
         
-        db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", this.lastID, function(e) {
+        db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", req.body.id, function(e) {
             if (e) return res.status(500).json({success: false, message: "Database error"}); 
+
+            let completed = 0;
+            let responded = false;
+
+            req.body.musclesworked.forEach(mg => {
+                db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, req.body.id, mg.role], function(e) {
+                    if(responded) return;
+                    
+                    if (e) 
+                    {
+                        responded = true;
+                        return res.status(500).json({success: false, message: "Database error"}); 
+                    }
+
+                    completed ++;
+
+                    if(completed == req.body.musclesworked.length) {
+                        responded = true;
+                        return res.json({success: true, message: "Exercise updated successfully!"});
+                    }
+                })
+            });
         })
-
-        req.body.musclesworked.forEach(mg => {
-            db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, this.lastID, mg.role], function(e) {
-                if (e) return res.status(500).json({success: false, message: "Database error"}); 
-            })
-        });
-
-        return res.json({success: true, message: "Exercise updated successfully!"});
     })
 }
 
