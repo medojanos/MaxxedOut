@@ -83,14 +83,28 @@ export const getAllExercisesAdmin = (req, res) => {
 }
 
 export const addExercise = (req, res) => {
-    db.run("INSERT INTO exercises (name, type) VALUES (?, ?)", [req.body.name, req.body.type], function (e) {
+    const {name, type, musclesworked} = req.body;
+
+    if(!name || name.trim().length === 0) {
+        return res.status(400).json({success: false, message: "Invalid exercise name!"});
+    }
+
+    if(!type || type.trim().length === 0) {
+        return res.status(400).json({success: false, message: "Invalid type!"});
+    }
+
+    if(!musclesworked || musclesworked.length === 0) {
+        return res.status(400).json({success: false, message: "Invalid muscles worked!"});
+    }
+
+    db.run("INSERT INTO exercises (name, type) VALUES (?, ?)", [name, type], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
 
         const exerciseId = this.lastID;
         let completed = 0;
         let responded = false;
 
-        req.body.musclesworked.forEach(mg => {
+        musclesworked.forEach(mg => {
             db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, exerciseId, mg.role], function(e) {
                 if(responded) return;
                 
@@ -102,7 +116,7 @@ export const addExercise = (req, res) => {
 
                 completed++;
         
-                if(completed == req.body.musclesworked.length) {
+                if(completed == musclesworked.length) {
                     responded = true;
                     return res.json({success: true, message: "Exercise added successfully!"});
                 }
@@ -111,8 +125,26 @@ export const addExercise = (req, res) => {
     })
 }
 
-export const updateExercise = (req, res) => {
-    db.run("UPDATE exercises SET name = ?, type = ? WHERE id = ?", [req.body.name, req.body.type, req.body.id], function (e) {
+export const updateExercise = (req, res) => {    
+    const {id, name, type, musclesworked} = req.body;
+    
+    if(!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
+        return res.status(400).json({ success: false, message: "Id is required" });
+    }
+
+    if(!name || name.trim().length === 0) {
+        return res.status(400).json({success: false, message: "Invalid exercise name!"});
+    }
+
+    if(!type || type.trim().length === 0) {
+        return res.status(400).json({success: false, message: "Invalid type!"});
+    }
+
+    if(!musclesworked || musclesworked.length === 0) {
+        return res.status(400).json({success: false, message: "Invalid muscles worked!"});
+    }
+
+    db.run("UPDATE exercises SET name = ?, type = ? WHERE id = ?", [name, type, id], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
         if (this.changes === 0) {
             return res.status(404).json({
@@ -121,14 +153,22 @@ export const updateExercise = (req, res) => {
             });
         }
         
-        db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", req.body.id, function(e) {
+        db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", id, function(e) {
             if (e) return res.status(500).json({success: false, message: "Database error"}); 
 
             let completed = 0;
             let responded = false;
 
-            req.body.musclesworked.forEach(mg => {
-                db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, req.body.id, mg.role], function(e) {
+            musclesworked.forEach(mg => {
+                if(!mg.id || !Number.isInteger(Number(mg.id)) || Number(mg.id) <= 0) {
+                    return res.status(400).json({success: false, message: "Invalid muscle id!"});
+                }      
+
+                if(!mg.role || mg.role.trim() === "") {
+                    return res.status(400).json({success: false, message: "Invalid muscle role!"});
+                }
+
+                db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, id, mg.role], function(e) {
                     if(responded) return;
                     
                     if (e) 
@@ -139,7 +179,7 @@ export const updateExercise = (req, res) => {
 
                     completed ++;
 
-                    if(completed == req.body.musclesworked.length) {
+                    if(completed == musclesworked.length) {
                         responded = true;
                         return res.json({success: true, message: "Exercise updated successfully!"});
                     }
@@ -150,19 +190,25 @@ export const updateExercise = (req, res) => {
 }
 
 export const deleteExercise = (req, res) => {
-        db.run("DELETE FROM exercises WHERE id = ?", req.params.id, function (e) {
-            if (e) return res.status(500).json({success: false, message: "Database error"}); 
-            if (this.changes === 0) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Exercise not found!"
-                });
-            }
-            
-            db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", req.params.id, function(e) {
-                if (e) return res.status(500).json({success: false, message: "Database error"}); 
-            })
+    const id  = Number(req.params.id);
+    
+    if(!id || !Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({ success: false, message: "Id is required" });
+    }
 
-            return res.json({success: true, message: "Exercise deleted successfully!"});
+    db.run("DELETE FROM exercises WHERE id = ?", id, function (e) {
+        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        if (this.changes === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Exercise not found!"
+            });
+        }
+        
+        db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", id, function(e) {
+            if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        })
+
+        return res.json({success: true, message: "Exercise deleted successfully!"});
     })
 }
