@@ -24,15 +24,7 @@ namespace admin
 
         public AppContext()
         {
-            showLoginForm();
-        }
-
-        private void showLoginForm()
-        {
-            var loginForm = new Authorization();
-
-            registerForm(loginForm);
-            loginForm.LoginSucceeded += loginSucceeded;
+            loginSucceeded();
         }
 
         private void loginSucceeded()
