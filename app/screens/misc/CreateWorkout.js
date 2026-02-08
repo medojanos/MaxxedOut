@@ -129,7 +129,7 @@ export default function CreateWorkout() {
                 <Pressable
                     style={[MainStyle.button, MainStyle.buttonBlock]}
                     onPress={() => {
-                        fetch(Constants.expoConfig.extra.API_URL + "/plan", {
+                        fetch(Constants.expoConfig.extra.API_URL + "/plans", {
                             method: "PUT",
                             headers: {
                                 "Content-Type" : "application/json",

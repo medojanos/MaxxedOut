@@ -11,3 +11,6 @@ obj/
 
 # Packages
 packages/
+
+# Enivromental variables
+.env

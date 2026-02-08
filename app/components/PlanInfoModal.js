@@ -16,7 +16,7 @@ export default function PlanInfoModal({ Close, visible, id, name }) {
     const { token, refresh } = useContext(Context);
     
     useEffect(() => {
-        fetch(`${Constants.expoConfig.extra.API_URL}/plan-info/${id}`, { headers: { "Authorization": token } })
+        fetch(`${Constants.expoConfig.extra.API_URL}/plans/info/${id}`, { headers: { "Authorization": token } })
             .then(res => res.json())
             .then(data => setPlanInfo(data.data))
     }, [id, refresh])

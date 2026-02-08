@@ -10,11 +10,15 @@ using System.Windows.Forms;
 using System.Data.SqlTypes;
 using System.IO;
 
+using static admin.ApiClient;
+using admin.Models;
+using System.Net.Http;
+using System.Text.Json;
+
 namespace admin
 {
     public partial class Muscle_groups : Form
     {
-        private Database db;
         private BindingList<MuscleGroupsDB> MGList = MuscleGroupsList.MuscleGroups;
         private BindingSource mgSource = new BindingSource();
 
@@ -22,10 +26,14 @@ namespace admin
         {
             InitializeComponent();
 
-            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
-            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
+            this.Load += Muscle_groups_load;
+            
+        }
+        private async void Muscle_groups_load(object sender, EventArgs e)
+        {
+            MGList = await ApiClient.SafeGet<BindingList<MuscleGroupsDB>>("/muscle_groups");
 
-            db = new Database($@"Data Source={dbPath}");
+            MuscleGroupsList.MuscleGroups = MGList;
 
             mgSource.DataSource = MGList;
             Rows.DataSource = mgSource;
@@ -78,7 +86,7 @@ namespace admin
             name.Text = mgObj.Name;
         }
 
-        private void addButton_Click(object sender, EventArgs e)
+        private async void addButton_Click(object sender, EventArgs e)
         {
             if(string.IsNullOrWhiteSpace(name.Text))
             {
@@ -92,15 +100,17 @@ namespace admin
                 return;
             }
 
-            var result = db.Query($@"INSERT INTO muscle_groups (name) VALUES ('{name.Text}') RETURNING id");
-            var id = int.Parse(result.Rows[0]["id"].ToString());
+            var result = await ApiClient.SafePost<object, ApiResult>("muscle_groups/admin", new {
+                name = name.Text
+            });
 
-            MuscleGroupsDB mgObj = new MuscleGroupsDB(id, name.Text);
-
-            MGList.Add(mgObj);
+            if (ApiResult.ensureSuccess(result))
+            {
+                MGList.Add(new MuscleGroupsDB(result.data.GetProperty("id").GetInt32(), name.Text));
+            }
         }
 
-        private void saveButton_Click(object sender, EventArgs e)
+        private async void saveButton_Click(object sender, EventArgs e)
         {
             if (Rows.SelectedIndex < 0)
             {
@@ -122,15 +132,27 @@ namespace admin
                 return;
             }
 
-            mgObj.Name = name.Text;
+            if (mgObj.Name == name.Text)
+            {
+                MessageBox.Show("Name can't be the same!");
+                return;
+            }
+
+            var result = await ApiClient.SafePut<object, ApiResult>("muscle_groups/admin", new {
+                id = mgObj.Id,
+                name = name.Text
+            });
+
+            if (ApiResult.ensureSuccess(result))
+            {
+                mgObj.Name = name.Text;
+            }
 
             Rows.DisplayMember = null;
-            Rows.DisplayMember = "Name";
-
-            db.Execute($"UPDATE muscle_groups SET name='{mgObj.Name}' WHERE id={mgObj.ID}");
+            Rows.DisplayMember = "name";
         }
 
-        private void deleteButton_Click(object sender, EventArgs e)
+        private async void deleteButton_Click(object sender, EventArgs e)
         {
             if (Rows.SelectedIndex < 0)
             {
@@ -146,33 +168,12 @@ namespace admin
                 return;
             }
 
-            MGList.Remove(mgObj);
-
-            name.Clear();
-
-            db.Execute($"DELETE FROM muscle_groups WHERE id='{mgObj.ID}'");
-        }
-
-        private void search_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-    }
-
-    public class MuscleGroupsDB
-    {
-        public int ID { get; set; }
-        public string Name { get; set; }
-
-        public MuscleGroupsDB(int id, string name)
-        {
-            ID = id;
-            Name = name;
-        }
-
-        public override string ToString()
-        {
-            return Name;
+            var result = await ApiClient.SafeDelete<ApiResult>($"muscle_groups/admin/{mgObj.Id}");
+            if (ApiResult.ensureSuccess(result))
+            {
+                MGList.Remove(mgObj);
+                name.Clear();
+            }
         }
     }
 }

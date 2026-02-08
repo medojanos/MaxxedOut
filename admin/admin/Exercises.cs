@@ -11,45 +11,36 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using admin.Classes;
+
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using static admin.ApiClient;
+using admin.Models;
+using System.Net.Http;
+using System.Text.Json;
+
 
 namespace admin
 {
     public partial class Exercises : Form
     {
-        private Database db;
         private List<ExercisesDB> ExercisesList = new List<ExercisesDB>();
+        private BindingSource mgSource = new BindingSource();
         public Exercises()
         {
             InitializeComponent();
 
-            string solutionRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
-            string dbPath = Path.Combine(solutionRoot, "api", "db", "maxxedout.db");
+            this.Load += Exercises_load;
+        }
 
-            db = new Database($@"Data Source={dbPath}");
+        private async void Exercises_load(object sender, EventArgs e)
+        {
+            ExercisesList = await ApiClient.SafeGet<List<ExercisesDB>>("/exercises/admin");
+            ExercisesList.ForEach(exercise => Rows.Items.Add(exercise));
 
-            var exercises = db.Query("SELECT * FROM exercises;");
-
-            foreach (DataRow exercise in exercises.Rows)
-            {
-                var muscle_groups_exercises = db.Query($@"SELECT * FROM muscle_groups_exercises WHERE exercise_id={int.Parse(exercise["id"].ToString())}");
-                List<MusclesworkedDB> MusclesworkedList = new List<MusclesworkedDB>();
-                 
-                foreach (DataRow mg_ex in muscle_groups_exercises.Rows)
-                {
-                    MusclesworkedDB mgworked = new MusclesworkedDB(MuscleGroupsList.MuscleGroups.FirstOrDefault(mg => mg.ID == int.Parse(mg_ex["muscle_group_id"].ToString())), mg_ex["role"].ToString());
-                    MusclesworkedList.Add(mgworked);
-                }
-
-                ExercisesDB exerciseObj = new ExercisesDB(int.Parse(exercise["id"].ToString()), exercise["name"].ToString(), exercise["type"].ToString(), MusclesworkedList);
-
-                Rows.Items.Add(exerciseObj);
-                ExercisesList.Add(exerciseObj);
-            }
-
-            musclegroups.DataSource = MuscleGroupsList.MuscleGroups;
+            mgSource.DataSource = MuscleGroupsList.MuscleGroups;
+            musclegroups.DataSource = mgSource;
             musclegroups.DisplayMember = "Name";
-            musclegroups.ValueMember = "ID";
+            musclegroups.ValueMember = "Id";
 
             type.Items.Add("Compound");
             type.Items.Add("Isolation");
@@ -94,7 +85,7 @@ namespace admin
                 return;
             }
 
-            exercise.Text = exerciseObj.Exercise;
+            exercise.Text = exerciseObj.Name;
             type.SelectedItem = exerciseObj.Type;
 
             foreach (var mg in exerciseObj.Musclesworked)
@@ -113,7 +104,7 @@ namespace admin
             }
 
             MusclesworkedDB selectedMuscleworked = Musclesworked.SelectedItem as MusclesworkedDB;
-            musclegroups.SelectedItem = selectedMuscleworked.MuscleGroup;
+            musclegroups.SelectedItem = selectedMuscleworked.Musclegroup;
             role.SelectedItem = selectedMuscleworked.Role;
         }
 
@@ -130,20 +121,22 @@ namespace admin
             }
             else
             {
-                foreach (var exercise in ExercisesList.Where(ex => ex.Exercise.ToLower().Contains(search.Text.ToLower()) || ex.Type.ToLower().Contains(search.Text.ToLower()) || ex.Musclesworked.Any(mg => mg.MuscleGroup.Name.ToLower().Contains(search.Text.ToLower()))))
+                foreach (var exercise in ExercisesList.Where(ex => ex.Name.ToLower().Contains(search.Text.ToLower()) || ex.Type.ToLower().Contains(search.Text.ToLower()) || ex.Musclesworked.Any(mg => mg.Musclegroup.Name.ToLower().Contains(search.Text.ToLower()))))
                 {
                     Rows.Items.Add(exercise);
                 }
             }
         }
 
-        private void addmuscleworkedButton_Click(object sender, EventArgs e)
+        // Muscles worked handling
+
+        private async void addmuscleworkedButton_Click(object sender, EventArgs e)
         {
             MuscleGroupsDB mgObj = musclegroups.SelectedItem as MuscleGroupsDB;
 
             foreach (MusclesworkedDB mgworked in Musclesworked.Items)
             {
-                if (mgworked.MuscleGroup.Name == mgObj.Name)
+                if (mgworked.Musclegroup.Name == mgObj.Name)
                 {
                     MessageBox.Show("Can't add a muscle worked twice!");
                     return;
@@ -156,18 +149,10 @@ namespace admin
                 return;
             }
 
-            MusclesworkedDB mgworkedObj = new MusclesworkedDB(mgObj, role.Text);
-            Musclesworked.Items.Add(mgworkedObj);
-
-            ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
-
-            if(Rows.SelectedItem != null)
-            {
-                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES ('{mgworkedObj.MuscleGroup.ID}', '{Exercise.ID}', '{role.Text}')");
-            }
+            Musclesworked.Items.Add(new MusclesworkedDB(mgObj, role.Text));
         }
 
-        private void savemuscleworkedButton_Click(object sender, EventArgs e)
+        private async void savemuscleworkedButton_Click(object sender, EventArgs e)
         {
             MusclesworkedDB mgworkedObj = Musclesworked.SelectedItem as MusclesworkedDB;
 
@@ -177,30 +162,24 @@ namespace admin
                 return;
             }
 
+            if (role.SelectedItem == null || musclegroups.SelectedItem == null)
+            {
+                MessageBox.Show("Must choose muscle group and role before saving!");
+                return;
+            }
+
             MuscleGroupsDB mgObj = musclegroups.SelectedItem as MuscleGroupsDB;
 
-            if (mgworkedObj.MuscleGroup.Name != mgObj.Name)
+            if (mgworkedObj.Musclegroup.Name != mgObj.Name)
             {
                 MessageBox.Show("Can't save if the muscle group is not the same!");
                 return;
             }
 
-            if (role.SelectedItem == null || musclegroups.SelectedItem == null)
-            {
-                MessageBox.Show("Must choose muscle group and role before adding!");
-                return;
-            }
-
             mgworkedObj.Role = role.Text;
-
-            if (Rows.SelectedItem != null)
-            {
-                ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
-                db.Execute($@"UPDATE muscle_groups_exercises SET role = '{role.Text}' WHERE muscle_group_id = '{mgworkedObj.MuscleGroup.ID}' AND exercise_id = '{Exercise.ID}';");
-            }
         }
 
-        private void deletemuscleworkedButton_Click(object sender, EventArgs e)
+        private async void deletemuscleworkedButton_Click(object sender, EventArgs e)
         {
             MusclesworkedDB mgworkedObj = Musclesworked.SelectedItem as MusclesworkedDB;
 
@@ -211,18 +190,12 @@ namespace admin
             }
 
             Musclesworked.Items.Remove(mgworkedObj);
-
-            ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
-
-            if (Rows.SelectedItem != null)
-            {
-                db.Execute($@"DELETE FROM muscle_groups_exercises WHERE muscle_group_id = '{mgworkedObj.MuscleGroup.ID}' AND exercise_id = '{Exercise.ID}';");
-            }
-
             Musclesworked.SelectedItem = null;
         }
 
-        private void addButton_Click(object sender, EventArgs e)
+        // Exercise handling
+
+        private async void addButton_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(exercise.Text) || string.IsNullOrWhiteSpace(type.Text) || Musclesworked.Items.Count == 0)
             {
@@ -230,33 +203,33 @@ namespace admin
                 return;
             }
 
-            if (ExercisesList.Any(ex => ex.Exercise == exercise.Text))
+            if (ExercisesList.Any(ex => ex.Name == exercise.Text))
             {
                 MessageBox.Show("Can't add an exercise twice!");
                 return;
             }
 
-            var result = db.Query($@"INSERT INTO exercises (name, type) VALUES ('{exercise.Text}', '{type.Text}') RETURNING id;");
-            int id = int.Parse(result.Rows[0]["id"].ToString());
+            var result = await ApiClient.SafePost<object, ApiResult>("exercises/admin", new {
+                    name = exercise.Text,
+                    type = type.Text,
+                    musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().Select(mgworked => new {
+                        id = mgworked.Musclegroup.Id,
+                        role = mgworked.Role
+                    }).ToList()
+                }
+            );
 
-            List<MusclesworkedDB> mgworkedList = new List<MusclesworkedDB>();
-
-            foreach (MusclesworkedDB mgworked in Musclesworked.Items)
+            if (ApiResult.ensureSuccess(result))
             {
-                mgworkedList.Add(mgworked);
-                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES ('{mgworked.MuscleGroup.ID}', '{id}', '{mgworked.Role}')");
+                Rows.Items.Add(new ExercisesDB(result.data.GetProperty("id").GetInt32(), exercise.Text, type.Text, Musclesworked.Items.Cast<MusclesworkedDB>().ToList()));
             }
-
-            ExercisesDB exerciseObj = new ExercisesDB(id, exercise.Text, type.Text, mgworkedList);
-            ExercisesList.Add(exerciseObj);
-            Rows.Items.Add(exerciseObj);
         }
 
-        private void saveButton_Click(object sender, EventArgs e)
+        private async void saveButton_Click(object sender, EventArgs e)
         {
-            ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
+            ExercisesDB ExerciseObj = Rows.SelectedItem as ExercisesDB;
 
-            if (Exercise == null)
+            if (ExerciseObj == null)
             {
                 MessageBox.Show("Need to select an exercise to save it!");
                 return;
@@ -268,24 +241,25 @@ namespace admin
                 return;
             }
 
-            db.Execute($@"DELETE FROM muscle_groups_exercises WHERE exercise_id = '{Exercise.ID}'");
+            var result = await ApiClient.SafePut<object, ApiResult>($"/exercises/admin", new {
+                id = ExerciseObj.Id,
+                name = exercise.Text,
+                type = type.Text,
+                musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().Select(mgworked => new {
+                    id = mgworked.Musclegroup.Id,
+                    role = mgworked.Role
+                }).ToList()
+            });
 
-            List<MusclesworkedDB> mgworkedList = new List<MusclesworkedDB>();
-
-            foreach (MusclesworkedDB mgworkedObj in Musclesworked.Items)
+            if (ApiResult.ensureSuccess(result))
             {
-                mgworkedList.Add(mgworkedObj);
-                db.Execute($@"INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES ('{mgworkedObj.MuscleGroup.ID}', '{Exercise.ID}', '{mgworkedObj.Role}');");
+                ExerciseObj.Musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList();
+                ExerciseObj.Name = exercise.Text;
+                ExerciseObj.Type = type.Text;
             }
-
-            Exercise.Exercise = exercise.Text;
-            Exercise.Type = type.Text;
-            Exercise.Musclesworked = mgworkedList;
-
-            db.Execute($@"UPDATE exercises SET name = '{Exercise.Exercise}', type = '{Exercise.Type}' WHERE id = '{Exercise.ID}';");
         }
 
-        private void deleteButton_Click(object sender, EventArgs e)
+        private async void deleteButton_Click(object sender, EventArgs e)
         {
             ExercisesDB Exercise = Rows.SelectedItem as ExercisesDB;
 
@@ -295,49 +269,13 @@ namespace admin
                 return;
             }
 
-            db.Execute($@"DELETE FROM muscle_groups_exercises WHERE exercise_id = '{Exercise.ID}'");
+            var result = await ApiClient.SafeDelete<ApiResult>($"/exercises/admin/{Exercise.Id}");
 
-            ExercisesList.Remove(Exercise);
-            Rows.Items.Remove(Exercise);
-            db.Execute($@"DELETE FROM exercises WHERE id = '{Exercise.ID}';");
-        }
-    }
-
-    public class ExercisesDB
-    {
-        public int ID { get; set; }
-        public string Exercise { get; set; }
-        public string Type { get; set; }
-        public List<MusclesworkedDB> Musclesworked { get; set; }
-
-        public ExercisesDB(int id, string exercise, string type, List<MusclesworkedDB> musclesworked)
-        {
-            ID = id;
-            Exercise = exercise;
-            Type = type;
-            Musclesworked = musclesworked;
-        }
-
-        public override string ToString()
-        {
-            return Exercise;
-        }
-    }
-
-    public class MusclesworkedDB
-    {
-        public MuscleGroupsDB MuscleGroup { get; set; }
-        public string Role { get; set; }
-
-        public MusclesworkedDB(MuscleGroupsDB musclegroup, string role)
-        {
-            MuscleGroup = musclegroup;
-            Role = role;
-        }
-
-        public override string ToString()
-        {
-            return MuscleGroup.Name;
+            if (ApiResult.ensureSuccess(result))
+            {
+                ExercisesList.Remove(Exercise);
+                Rows.Items.Remove(Exercise);
+            }
         }
     }
 }
