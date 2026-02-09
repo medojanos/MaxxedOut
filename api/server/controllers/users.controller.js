@@ -1,6 +1,6 @@
 import db from "../config/db.js"
 import { hash, randomBytes } from 'crypto'
-import "../config/mail.js"
+import transporter from "../config/mail.js";
 
 // App
 
