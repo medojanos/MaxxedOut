@@ -1,5 +1,4 @@
-﻿using admin.Classes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -214,6 +213,14 @@ namespace admin
                 email.Clear();
                 password.Clear();
             }
+        }
+
+        private void clearButton_Click(object sender, EventArgs e)
+        {
+            nickname.Clear();
+            email.Clear();
+            password.Clear();
+            Rows.ClearSelected();
         }
     }
 }

@@ -31,11 +31,7 @@ namespace admin
         }
         private async void Muscle_groups_load(object sender, EventArgs e)
         {
-            MGList = await ApiClient.SafeGet<BindingList<MuscleGroupsDB>>("/muscle_groups");
-
-            MuscleGroupsList.MuscleGroups = MGList;
-
-            mgSource.DataSource = MGList;
+            mgSource.DataSource = MuscleGroupsList.MuscleGroups;
             Rows.DataSource = mgSource;
             Rows.DisplayMember = "Name";
         }
@@ -174,6 +170,12 @@ namespace admin
                 MGList.Remove(mgObj);
                 name.Clear();
             }
+        }
+
+        private void clearButton_Click(object sender, EventArgs e)
+        {
+            name.Clear();
+            Rows.ClearSelected();
         }
     }
 }

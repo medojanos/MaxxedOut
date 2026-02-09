@@ -10,7 +10,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using admin.Classes;
 
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using static admin.ApiClient;
@@ -257,6 +256,9 @@ namespace admin
                 ExerciseObj.Name = exercise.Text;
                 ExerciseObj.Type = type.Text;
             }
+
+            Rows.DisplayMember = null;
+            Rows.DisplayMember = "name";
         }
 
         private async void deleteButton_Click(object sender, EventArgs e)
@@ -276,6 +278,17 @@ namespace admin
                 ExercisesList.Remove(Exercise);
                 Rows.Items.Remove(Exercise);
             }
+        }
+
+        private void clearButton_Click(object sender, EventArgs e)
+        {
+            Musclesworked.Items.Clear();
+            Musclesworked.SelectedItem = null;
+            role.SelectedItem = null;
+            musclegroups.SelectedItem = null;
+            exercise.Clear();
+            type.SelectedItem = null;
+            Rows.ClearSelected();
         }
     }
 }

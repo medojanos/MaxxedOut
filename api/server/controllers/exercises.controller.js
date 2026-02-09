@@ -118,7 +118,7 @@ export const addExercise = (req, res) => {
         
                 if(completed == musclesworked.length) {
                     responded = true;
-                    return res.json({success: true, message: "Exercise added successfully!"});
+                    return res.json({success: true, data: {id: exerciseId}, message: "Exercise added successfully!"});
                 }
             })
         });

@@ -245,8 +245,6 @@
   <ItemGroup>
     <Compile Include="ApiClient.cs" />
     <Compile Include="ApiResult.cs" />
-    <Compile Include="Classes\Exercises.cs" />
-    <Compile Include="Classes\Users.cs" />
     <Compile Include="Exercises.cs">
       <SubType>Form</SubType>
     </Compile>

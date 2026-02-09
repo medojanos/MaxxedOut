@@ -199,7 +199,7 @@ export const updateUserFromId = (req, res) => {
 }
 
 export const deleteUserFromId = (req, res) => {
-    const { id } = req.body;
+    const { id } = req.params;
 
     if(!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
         return res.status(400).json({ success: false, message: "Id is required" });

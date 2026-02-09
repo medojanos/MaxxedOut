@@ -1,4 +1,6 @@
-﻿using System;
+﻿using admin.Models;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,8 +16,16 @@ namespace admin
     {
         public Home()
         {
+            this.Load += Home_load;
             InitializeComponent();
         }
+
+        public async void Home_load(object sender, EventArgs e)
+        {
+            MuscleGroupsList.MuscleGroups = await ApiClient.SafeGet<BindingList<MuscleGroupsDB>>("/muscle_groups");
+        }
+
+        // Data handling
 
         private void muscleGroupsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -27,20 +37,12 @@ namespace admin
             new Users().Show();
         }
 
-        private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
         private void exercisesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new Exercises().Show();
         }
 
-        private void usersToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            new Users().Show();
-        }
+        // Exit
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
