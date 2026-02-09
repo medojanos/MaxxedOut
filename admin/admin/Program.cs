@@ -12,10 +12,10 @@ using static admin.ApiClient;
 
 namespace admin
 {
-    internal static class Program
+    internal class Program
     {
         [STAThread]
-        static async void Main()
+        static async Task Main()
         {
             Env.TraversePath().Load();
 
@@ -35,7 +35,7 @@ namespace admin
 
             if (await IsApiKeyValid())
             {
-                Application.Run(new AppContext());
+                Application.Run(new Home());
             }
         }
 

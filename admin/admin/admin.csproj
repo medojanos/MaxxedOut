@@ -245,7 +245,6 @@
   <ItemGroup>
     <Compile Include="ApiClient.cs" />
     <Compile Include="ApiResult.cs" />
-    <Compile Include="AppContext.cs" />
     <Compile Include="Classes\Exercises.cs" />
     <Compile Include="Classes\Users.cs" />
     <Compile Include="Exercises.cs">
@@ -253,6 +252,12 @@
     </Compile>
     <Compile Include="Exercises.Designer.cs">
       <DependentUpon>Exercises.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Home.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Home.Designer.cs">
+      <DependentUpon>Home.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\ExercisesDB.cs" />
     <Compile Include="Models\MuscleGroupsDB.cs" />
@@ -274,6 +279,9 @@
     </Compile>
     <EmbeddedResource Include="Exercises.resx">
       <DependentUpon>Exercises.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Home.resx">
+      <DependentUpon>Home.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Muscle groups.resx">
       <DependentUpon>Muscle groups.cs</DependentUpon>
@@ -304,6 +312,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
