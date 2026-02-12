@@ -46,7 +46,7 @@ export default function Statistics() {
                 <View style={MainStyle.inlineContainer}>
                     <View style={[MainStyle.container, {width: "48%"}]}>
                         <Text style={MainStyle.strongText}>Current weekly workout streak</Text>
-                        <Text style={MainStyle.lightText}>0 weeks</Text>
+                        <Text style={MainStyle.lightText}>{statistics.workoutStreak}</Text>
                     </View>
                     <View style={[MainStyle.container, {width: "48%"}]}>
                         <Text style={MainStyle.strongText}>Total workouts completed</Text>
