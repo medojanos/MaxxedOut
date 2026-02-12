@@ -1,9 +1,8 @@
 // React
-import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 import { useState, useContext, useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import WorkoutModal from "../../components/WorkoutModal";
@@ -12,26 +11,20 @@ import { Context } from "../../misc/Provider";
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
-const TrackerStyle = StyleSheet.create({
-    
-})
 
 export default function Tracker() {
-    const { userData, workout, refresh } = useContext(Context);
+    const { userData, workout } = useContext(Context);
 
     const navigation = useNavigation();
 
-    const durationInterval = useRef(null);
+    const restStart = useRef(null);
     const restInterval = useRef(null);
+    const durationInterval = useRef(null);
+
+    const [restingTimer, setRestingTimer] = useState("00:00");
+    const [duration, setDuration] = useState("00:00:00");
     
     const [workoutModal, setWorkoutModal] = useState(false);
-    const [duration, setDuration] = useState("00:00:00");
-    const [restTimer, setRestTimer] = useState(formatTime(userData.preferences?.restingTime || 0));
-
-    useEffect(() => {
-        setRestTimer(formatTime(userData.preferences?.restingTime || 0));
-        handleTimer();
-    }, [refresh]);
 
     useEffect(() => {
         if (!workout) return;
@@ -44,28 +37,30 @@ export default function Tracker() {
                 return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             });
         }, 1000);
+        return () => clearInterval(durationInterval.current);
     }, [workout]);
 
     function handleTimer(action) {
         clearInterval(restInterval.current);
         switch (action) {
             case "start":
-                let seconds = userData.preferences.restingTime;
+                if (!restStart.current) restStart.current = new Date();
                 restInterval.current = setInterval(() => {
-                    setRestTimer(formatTime(seconds));
-                    seconds--;
+                    setRestingTimer(() => {
+                        const elapsed = new Date() - restStart.current;
+                        const remaining = userData.preferences.restingTime * 1000 - elapsed;
+                        if (remaining <= 0) handleTimer("reset"); // Push notification here
+                        const minutes = Math.floor(remaining / 60000);
+                        const seconds = Math.ceil((remaining % 60000) / 1000);
+                        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    });
                 }, 1000);
                 break;
             case "reset":
-                setRestTimer(formatTime(userData.preferences.restingTime));
+                restStart.current = null;
+                setRestingTimer("00:00");
                 break;
         }
-    }
-
-    function formatTime(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
     return (
@@ -88,7 +83,7 @@ export default function Tracker() {
                     <View style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
                             <Text style={MainStyle.strongText}>Resting timer</Text>
-                            <Text style={MainStyle.lightText}>{restTimer}</Text>
+                            <Text style={MainStyle.lightText}>{restingTimer}</Text>
                         </View>
                         <View style={MainStyle.inlineContainer}>
                             <Pressable
@@ -103,10 +98,9 @@ export default function Tracker() {
                             </Pressable>
                             <Pressable
                                 style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
-                                onPress={() => {handleTimer()}}>
+                                onPress={() => {handleTimer("stop")}}>
                                 <Text style={MainStyle.buttonText}>Stop</Text>
                             </Pressable>
-                            
                         </View>
                     </View>
                 </>
@@ -121,6 +115,32 @@ export default function Tracker() {
                 visible={workoutModal} 
                 Close={() => setWorkoutModal(false)}>
             </WorkoutModal>
+            <View style={MainStyle.container}>
+                <Text style={MainStyle.containerTitle}>Start Cardio</Text>
+                <View style={MainStyle.inlineContainer}>
+                    <Pressable
+                        style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
+                        onPress={() => {
+
+                        }}>
+                        <Text style={MainStyle.buttonText}>Reset</Text>
+                    </Pressable>
+                    <Pressable
+                        style={[MainStyle.button, MainStyle.buttonBlock]}
+                        onPress={() => {
+
+                        }}>
+                        <Text style={MainStyle.buttonText}>Start</Text>
+                    </Pressable>
+                    <Pressable
+                        style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
+                        onPress={() => {
+                            
+                        }}>
+                        <Text style={MainStyle.buttonText}>Stop</Text>
+                    </Pressable>
+                </View>
+            </View>
         </ScrollView>
     );
 }
