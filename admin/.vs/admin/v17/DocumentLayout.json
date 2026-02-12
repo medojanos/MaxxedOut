@@ -3,8 +3,25 @@
   "WorkspaceRootPath": "C:\\Users\\tekeresdenes\\repos\\MaxxedOut\\admin\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|c:\\users\\tekeresdenes\\repos\\maxxedout\\admin\\admin\\apiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\apiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
+      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|c:\\users\\tekeresdenes\\repos\\maxxedout\\admin\\admin\\exercises.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\exercises.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|c:\\users\\tekeresdenes\\repos\\maxxedout\\admin\\admin\\exercises.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\exercises.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|c:\\users\\tekeresdenes\\repos\\maxxedout\\admin\\admin\\models\\exercisesdb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\models\\exercisesdb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|c:\\users\\tekeresdenes\\repos\\maxxedout\\admin\\admin\\exercises.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{573B3664-95C5-47C1-A98A-04CC5C9D2ACB}|admin\\admin.csproj|solutionrelative:admin\\exercises.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+>>>>>>> origin/main
     }
   ],
   "DocumentGroupContainers": [
@@ -14,6 +31,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
+<<<<<<< HEAD
           "SelectedChildIndex": 0,
           "Children": [
             {
@@ -27,6 +45,59 @@
               "ViewState": "AgIAAFcAAAAAAAAAAAAAAD8AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-29T11:07:07.465Z",
+=======
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Exercises.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\tekeresdenes\\repos\\MaxxedOut\\admin\\admin\\Exercises.Designer.cs",
+              "RelativeDocumentMoniker": "admin\\Exercises.Designer.cs",
+              "ToolTip": "C:\\Users\\tekeresdenes\\repos\\MaxxedOut\\admin\\admin\\Exercises.Designer.cs",
+              "RelativeToolTip": "admin\\Exercises.Designer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-30T09:01:58.8Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Exercises.cs",
+              "DocumentMoniker": "C:\\Users\\tekeresdenes\\repos\\MaxxedOut\\admin\\admin\\Exercises.cs",
+              "RelativeDocumentMoniker": "admin\\Exercises.cs",
+              "ToolTip": "C:\\Users\\tekeresdenes\\repos\\MaxxedOut\\admin\\admin\\Exercises.cs",
+              "RelativeToolTip": "admin\\Exercises.cs",
+              "ViewState": "AgIAABIBAAAAAAAAAAAUwC4BAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-30T09:01:58.712Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Exercises.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\tekeresdenes\\repos\\MaxxedOut\\admin\\admin\\Exercises.cs",
+              "RelativeDocumentMoniker": "admin\\Exercises.cs",
+              "ToolTip": "C:\\Users\\tekeresdenes\\repos\\MaxxedOut\\admin\\admin\\Exercises.cs [Design]",
+              "RelativeToolTip": "admin\\Exercises.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-30T09:01:32.932Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ExercisesDB.cs",
+              "DocumentMoniker": "C:\\Users\\tekeresdenes\\repos\\MaxxedOut\\admin\\admin\\Models\\ExercisesDB.cs",
+              "RelativeDocumentMoniker": "admin\\Models\\ExercisesDB.cs",
+              "ToolTip": "C:\\Users\\tekeresdenes\\repos\\MaxxedOut\\admin\\admin\\Models\\ExercisesDB.cs",
+              "RelativeToolTip": "admin\\Models\\ExercisesDB.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-30T09:00:10.811Z",
+>>>>>>> origin/main
               "EditorCaption": ""
             }
           ]

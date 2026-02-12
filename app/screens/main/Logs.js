@@ -44,12 +44,11 @@ export default function Logs() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
+                const marks = {};
                 data.data.forEach(workout => {
-                    setMarkedDates(prev => ({
-                        ...prev,
-                        [workout.ended_at] : {marked: true, dotColor: Var.red}
-                    }))
+                    marks[workout.ended_at] = {marked: true, dotColor: Var.red};
                 })
+                setMarkedDates(marks);
             }
         })
     }

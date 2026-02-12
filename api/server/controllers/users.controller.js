@@ -1,6 +1,6 @@
 import db from "../config/db.js"
 import { hash, randomBytes } from 'crypto'
-import "../config/mail.js"
+import transporter from "../config/mail.js";
 
 // App
 
@@ -124,21 +124,64 @@ export const updateUser = (req, res) => {
 // Admin
 
 export const getUsers = (req, res) => {
-    db.all("SELECT name, nickname, email FROM users", (e, rows) => {
+    db.all("SELECT id, nickname, email FROM users", (e, rows) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         return res.json({success: true, data: rows})
     })
 }
 
 export const addUser = (req, res) => {
-    db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [req.body.nickname, req,body.email, req.body.password], function (e) {
+    const {nickname, email, password} = req.body;
+
+    if(!nickname || nickname.trim().length < 3) {
+        return res.status(400).json({success: false, message: "Invalid nickname"})
+    }
+
+    if(!email || !email.includes("@")) {
+        return res.status(400).json({success: false, message: "Invalid email"})
+    }        
+    
+    if (!password || password.length < 8) {
+        return res.status(400).json({success: false, message: "Weak or no password"})
+    }
+
+    db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [nickname, email, hash("sha-512", password)], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         return res.json({success: true, data: {id: this.lastID}});
     });
 }
 
 export const updateUserFromId = (req, res) => {
-    db.run("UPDATE users SET nickname=?, email=?, password=? WHERE id=?", [req.body.nickname, req.body.email, req.body.password, req.body.id], function (e) {
+    const {nickname, email, password, id} = req.body;
+
+    if(!nickname || nickname.trim().length < 3) {
+        return res.status(400).json({success: false, message: "Invalid nickname"});
+    }
+
+    if(!email || !email.includes("@")) {
+        return res.status(400).json({success: false, message: "Invalid email"});
+    }
+
+    if(!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
+        return res.status(400).json({ success: false, message: "Id is required" });
+    }
+
+    const fields = ["nickname=?", "email=?"];
+    const properties = [nickname, email]
+
+    if (password) 
+    {
+        if (password.length < 8){
+            return res.status(400).json({success: false, message: "Weak password"});
+        }
+
+        properties.push(hash("sha-512", password));
+        fields.push("password=?");
+    }
+
+    properties.push(id);
+
+    db.run(`UPDATE users SET ${fields.join(", ")} WHERE id=?`, properties, function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         if (this.changes === 0) {
             return res.status(404).json({
@@ -147,7 +190,7 @@ export const updateUserFromId = (req, res) => {
             });
         } 
 
-        db.run("DELETE FROM tokens WHERE user_id=?", [req.body.id], function(e) {
+        db.run("DELETE FROM tokens WHERE user_id=?", id, function(e) {
             if (e) return res.status(500).json({success: false, message: "Database error"});
         })
 
@@ -156,7 +199,13 @@ export const updateUserFromId = (req, res) => {
 }
 
 export const deleteUserFromId = (req, res) => {
-    db.run("DELETE FROM users WHERE id=?", [req.body.id], function (e) {
+    const { id } = req.params;
+
+    if(!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
+        return res.status(400).json({ success: false, message: "Id is required" });
+    }
+
+    db.run("DELETE FROM users WHERE id=?", id, function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         if (this.changes === 0) {
             return res.status(404).json({
@@ -165,7 +214,7 @@ export const deleteUserFromId = (req, res) => {
             });
         } 
         
-        db.run("DELETE FROM tokens WHERE user_id=?", [req.body.id], function(e) {
+        db.run("DELETE FROM tokens WHERE user_id=?", id, function(e) {
             if (e) return res.status(500).json({success: false, message: "Database error"});
         })
         

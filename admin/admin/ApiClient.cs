@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace admin
 {
@@ -15,6 +16,10 @@ namespace admin
     {
         public static HttpClient Client { get; private set; }
         private static bool _initialized = false;
+        private static JsonSerializerOptions options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
         public static void Initialize(string apiUrl)
         {
@@ -31,18 +36,21 @@ namespace admin
             _initialized = true;
         }
 
+        // Get
+
         public static async Task<T> Get<T>(string url)
         {
             var response = await Client.GetAsync(url);
             response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<T>();
+            return await response.Content.ReadFromJsonAsync<T>(options);
         }
         public static async Task<T> SafeGet<T>(string url)
         {
             try
             {
-                return await Get<T>(url);
+                var response = await Get<ApiResult>(url);
+                // MessageBox.Show(response.data.ToString());
+                return JsonSerializer.Deserialize<T>(response.data.GetRawText(), options);
             }
             catch (HttpRequestException ex)
             {
@@ -61,12 +69,14 @@ namespace admin
             }
         }
 
+        // Post
+
         public static async Task<TResponse> Post<TRequest, TResponse>(string url, TRequest data)
         {
-            var response = await Client.PostAsJsonAsync(url, data);
+            var response = await Client.PostAsJsonAsync(url, data, options);
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<TResponse>();
+            return await response.Content.ReadFromJsonAsync<TResponse>(options);
         }
         public static async Task<TResponse> SafePost<TRequest, TResponse>(string url, TRequest data)
         {
@@ -91,9 +101,14 @@ namespace admin
             }
         }
 
+        // Put
+
         public static async Task<TResponse> Put<TRequest, TResponse>(string url, TRequest data)
         {
-            var response = await Client.PutAsJsonAsync(url, data);
+            var response = await Client.PutAsJsonAsync(url, data, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<TResponse>();
@@ -122,23 +137,22 @@ namespace admin
             }
         }
 
-        public static async Task<TResponse> Delete<TRequest, TResponse>(string url, TRequest data)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Delete, url) 
-            { 
-                Content = JsonContent.Create(data) 
-            };
+        // Delete
 
-            var response = await Client.SendAsync(request);
+        public static async Task<T> Delete<T>(string url)
+        {
+            var response = await Client.DeleteAsync(url);
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<TResponse>();
+            if (response.Content == null || response.Content.Headers.ContentLength == 0) return default;
+
+            return await response.Content.ReadFromJsonAsync<T>(options);
         }
-        public static async Task<TResponse> SafeDelete<TRequest, TResponse>(string url, TRequest data)
+        public static async Task<T> SafeDelete<T>(string url)
         {
             try
             {
-                return await Delete<TRequest, TResponse>(url, data);
+                return await Delete<T>(url);
             }
             catch (HttpRequestException ex)
             {

@@ -12,7 +12,7 @@ router.post("/user/admin", authAdmin(), addUser);
 
 router.put("/user/admin", authAdmin(), updateUserFromId);
 
-router.delete("/user/admin", authAdmin(), deleteUserFromId);
+router.delete("/user/admin/:id", authAdmin(), deleteUserFromId);
 
 // App
 

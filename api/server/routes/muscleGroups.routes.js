@@ -10,7 +10,7 @@ router.post("/admin", authAdmin(), addMuscleGroup);
 
 router.put("/admin", authAdmin(), updateMuscleGroup);
 
-router.delete("/admin", authAdmin(), deleteMuscleGroup);
+router.delete("/admin/:id", authAdmin(), deleteMuscleGroup);
 
 // App
 

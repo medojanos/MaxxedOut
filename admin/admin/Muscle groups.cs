@@ -31,11 +31,9 @@ namespace admin
         }
         private async void Muscle_groups_load(object sender, EventArgs e)
         {
-            MGList = await ApiClient.SafeGet<BindingList<MuscleGroupsDB>>("/muscle_groups");
-
-            mgSource.DataSource = MGList;
+            mgSource.DataSource = MuscleGroupsList.MuscleGroups;
             Rows.DataSource = mgSource;
-            Rows.DisplayMember = "name";
+            Rows.DisplayMember = "Name";
         }
 
         // Navigation handling
@@ -69,7 +67,7 @@ namespace admin
             }
             else
             {
-                mgSource.DataSource = MGList.Where(musclegroup => musclegroup.name.ToLower().Contains(search.Text.ToLower())).ToList();
+                mgSource.DataSource = MGList.Where(musclegroup => musclegroup.Name.ToLower().Contains(search.Text.ToLower())).ToList();
             }
         }
 
@@ -81,7 +79,7 @@ namespace admin
 
             if(mgObj == null) return;
 
-            name.Text = mgObj.name;
+            name.Text = mgObj.Name;
         }
 
         private async void addButton_Click(object sender, EventArgs e)
@@ -92,23 +90,20 @@ namespace admin
                 return;
             }
 
-            if(MGList.Any(musclegroup => musclegroup.name == name.Text))
+            if(MGList.Any(musclegroup => musclegroup.Name == name.Text))
             {
                 MessageBox.Show("Muscle group already in database!");
                 return;
             }
 
-            var mgObj = new MuscleGroupsDB
-            {
+            var result = await ApiClient.SafePost<object, ApiResult>("muscle_groups/admin", new {
                 name = name.Text
-            };
+            });
 
-            var result = await ApiClient.Post<MuscleGroupsDB, ApiResult>("muscle_groups/admin", mgObj);
-            ApiResult.ensureSuccess(result);
-
-            mgObj.id = Convert.ToInt32(result.data["id"]);
-
-            MGList.Add(mgObj);
+            if (ApiResult.ensureSuccess(result))
+            {
+                MGList.Add(new MuscleGroupsDB(result.data.GetProperty("id").GetInt32(), name.Text));
+            }
         }
 
         private async void saveButton_Click(object sender, EventArgs e)
@@ -133,13 +128,24 @@ namespace admin
                 return;
             }
 
-            mgObj.name = name.Text;
+            if (mgObj.Name == name.Text)
+            {
+                MessageBox.Show("Name can't be the same!");
+                return;
+            }
+
+            var result = await ApiClient.SafePut<object, ApiResult>("muscle_groups/admin", new {
+                id = mgObj.Id,
+                name = name.Text
+            });
+
+            if (ApiResult.ensureSuccess(result))
+            {
+                mgObj.Name = name.Text;
+            }
 
             Rows.DisplayMember = null;
             Rows.DisplayMember = "name";
-
-            var result = await ApiClient.SafePut<MuscleGroupsDB, ApiResult>("muscle_groups/admin", mgObj);
-            ApiResult.ensureSuccess(result);
         }
 
         private async void deleteButton_Click(object sender, EventArgs e)
@@ -158,11 +164,18 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<object, ApiResult>("muscle_groups/admin", new { id = mgObj.id });
-            ApiResult.ensureSuccess(result);
+            var result = await ApiClient.SafeDelete<ApiResult>($"muscle_groups/admin/{mgObj.Id}");
+            if (ApiResult.ensureSuccess(result))
+            {
+                MGList.Remove(mgObj);
+                name.Clear();
+            }
+        }
 
-            MGList.Remove(mgObj);
+        private void clearButton_Click(object sender, EventArgs e)
+        {
             name.Clear();
+            Rows.ClearSelected();
         }
     }
 }

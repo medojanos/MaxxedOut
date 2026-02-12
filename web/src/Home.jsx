@@ -39,7 +39,9 @@ export default function Home() {
                 <ion-icon name="analytics"></ion-icon>
                 <span>See results</span>
               </div>
-              <a href=""><button>DOWNLOAD the APK</button></a>
+              <a href="https://github.com/medojanos/MaxxedOut/releases/download/v0.1.0/maxxedout-v0.1.0.apk"><button className="mb-3">DOWNLOAD the APK</button></a>
+              <br/>
+              <a href="https://github.com/medojanos/MaxxedOut"><button className="button-secondary">See it on GitHub</button></a>
             </div>
           </div>
         </div>

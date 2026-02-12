@@ -8,20 +8,20 @@ namespace admin.Models
 {
     public class MuscleGroupsDB
     {
-        public int id { get; set; }
-        public string name { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
 
         public MuscleGroupsDB() { }
 
         public MuscleGroupsDB(int id, string name)
         {
-            this.id = id;
-            this.name = name;
+            Id = id;
+            Name = name;
         }
 
         public override string ToString()
         {
-            return name;
+            return Name;
         }
     }
 }

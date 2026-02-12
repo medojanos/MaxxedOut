@@ -9,39 +9,41 @@ namespace admin.Models
 
     public class ExercisesDB
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string type { get; set; }
-        public List<MusclesworkedDB> musclesworked { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public List<MusclesworkedDB> Musclesworked { get; set; }
 
+        public ExercisesDB() { }
         public ExercisesDB(int id, string name, string type, List<MusclesworkedDB> musclesworked)
         {
-            this.id = id;
-            this.name = name;
-            this.type = type;
-            this.musclesworked = musclesworked;
+            Id = id;
+            Name = name;
+            Type = type;
+            Musclesworked = musclesworked;
         }
 
         public override string ToString()
         {
-            return name;
+            return Name;
         }
     }
 
     public class MusclesworkedDB
     {
-        public MuscleGroupsDB musclegroup { get; set; }
-        public string role { get; set; }
+        public MuscleGroupsDB Musclegroup { get; set; }
+        public string Role { get; set; }
 
+        public MusclesworkedDB() { }
         public MusclesworkedDB(MuscleGroupsDB musclegroup, string role)
         {
-            this.musclegroup = musclegroup;
-            this.role = role;
+            Musclegroup = musclegroup;
+            Role = role;
         }
 
         public override string ToString()
         {
-            return musclegroup.name;
+            return Musclegroup.Name;
         }
     }
 }

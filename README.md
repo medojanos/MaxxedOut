@@ -4,13 +4,17 @@
 <h2>Overview</h2>
 
 <h2>Features</h2>
-<h3>User registration & login</h3>
-<h3>Create workouts</h3>
-<h3>Track workouts</h3>
-<h3>Exercise library</h3>
-<h3>Statistics of logs</h3>
 
 <h2>Tech stack</h2>
+<h3>Database</h3>
+<h3>Api</h3>
+<h3>Desktop Admin App</h3>
+<h3>Website</h3>
+<h3>Mobile App</h3>
+
+<h2>Installation & running</h2>
+<h3>Prerequisites</h3>
+<h3>Local Setup</h3>
 
 <h2>Screenshots</h2>
 

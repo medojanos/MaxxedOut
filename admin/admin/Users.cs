@@ -1,5 +1,4 @@
-﻿using admin.Classes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -81,7 +80,7 @@ namespace admin
             }
             else
             {
-                foreach(var user in UsersList.Where(user => user.nickname.Contains(search.Text.ToLower()) || user.email.Contains(search.Text.ToLower())))
+                foreach(var user in UsersList.Where(user => user.Nickname.Contains(search.Text.ToLower()) || user.Email.Contains(search.Text.ToLower())))
                 {
                     Rows.Items.Add(user);
                 }
@@ -92,12 +91,12 @@ namespace admin
         {
             if (Rows.SelectedItem == null) return;
 
-            UsersDB userOBJ = Rows.SelectedItem as UsersDB;
+            UsersDB userObj = Rows.SelectedItem as UsersDB;
 
-            if (userOBJ == null) return;
+            if (userObj == null) return;
 
-            nickname.Text = userOBJ.nickname;
-            email.Text = userOBJ.email;
+            nickname.Text = userObj.Nickname;
+            email.Text = userObj.Email;
             password.Clear();
         }
 
@@ -109,42 +108,37 @@ namespace admin
                 return;
             }
 
-            if (UsersList.Any(user => user.nickname == nickname.Text))
+            if (UsersList.Any(user => user.Nickname == nickname.Text))
             {
                 MessageBox.Show("Nickname already in database!");
                 return;
             }
 
-            if (UsersList.Any(user => user.email == email.Text))
+            if (UsersList.Any(user => user.Email == email.Text))
             {
                 MessageBox.Show("Email already in database!");
                 return;
             }
 
-            if (!UsersDB.IsPwdValid(password.Text))
+            if (!UsersDB.IsPwdValid(password.Text) || !UsersDB.IsEmailValid(email.Text))
             {
                 return;
             }
 
-            if (!UsersDB.IsEmailValid(email.Text))
-            {
-                return;
-            }
 
-            var userObj = new UsersDB
-            {
+            var result = await ApiClient.SafePost<object, ApiResult>("/user/admin", new {
                 nickname = nickname.Text,
                 email = email.Text,
-                password = UsersDB.PwdEncrypt(password.Text)
-            };
+                password = password.Text
+            });
 
-            var result = await ApiClient.SafePost<UsersDB, ApiResult>("/user/admin", userObj);
-            ApiResult.ensureSuccess(result);
+            if (ApiResult.ensureSuccess(result))
+            {
+                var userObj = new UsersDB(result.data.GetProperty("id").GetInt32(), nickname.Text, email.Text, password.Text);
 
-            userObj.id = Convert.ToInt32(result.data["id"]);
-
-            UsersList.Add(userObj);
-            Rows.Items.Add(userObj);
+                UsersList.Add(userObj);
+                Rows.Items.Add(userObj);
+            }
         }
 
         private async void saveButton_Click(object sender, EventArgs e)
@@ -174,15 +168,22 @@ namespace admin
                 return;
             }
 
-            userObj.email = email.Text;
-            userObj.nickname = nickname.Text;
+            var result = await ApiClient.SafePut<object, ApiResult>("/user/admin", new {
+                nickname = nickname.Text,
+                email = email.Text,
+                password = string.IsNullOrWhiteSpace(password.Text) ? null : password.Text,
+                id = userObj.Id
+            });
 
-            if(!string.IsNullOrWhiteSpace(password.Text) && UsersDB.IsPwdValid(password.Text)) userObj.password = UsersDB.PwdEncrypt(password.Text);
+            if (ApiResult.ensureSuccess(result))
+            {
+                userObj.Email = email.Text;
+                userObj.Nickname = nickname.Text;
 
-            Rows.Items[Rows.SelectedIndex] = userObj;
+                if (!string.IsNullOrWhiteSpace(password.Text) && UsersDB.IsPwdValid(password.Text)) userObj.Password = password.Text;
 
-            var result = await ApiClient.SafePut<UsersDB, ApiResult>("/user/admin", userObj);
-            ApiResult.ensureSuccess(result);
+                Rows.Items[Rows.SelectedIndex] = userObj;
+            }
         }
 
         private async void deleteButton_Click(object sender, EventArgs e)
@@ -201,14 +202,25 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<object, ApiResult>("/user/admin/", new { id = userObj.id });
+            var result = await ApiClient.SafeDelete<ApiResult>($"/user/admin/{userObj.Id}");
 
-            UsersList.Remove(userObj);
-            Rows.Items.Remove(userObj);
+            if (ApiResult.ensureSuccess(result))
+            {
+                UsersList.Remove(userObj);
+                Rows.Items.Remove(userObj);
 
+                nickname.Clear();
+                email.Clear();
+                password.Clear();
+            }
+        }
+
+        private void clearButton_Click(object sender, EventArgs e)
+        {
             nickname.Clear();
             email.Clear();
             password.Clear();
+            Rows.ClearSelected();
         }
     }
 }
