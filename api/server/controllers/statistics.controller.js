@@ -4,7 +4,7 @@ export const getStatistics = (req, res) => {
     db.get(`
         SELECT 
         COUNT(*) AS total_workouts,
-        AVG((strftime('%s', ended_at) - strftime('%s', started_at)) / 60.0) AS avg_duration,
+        AVG((strftime('%s', ended_at) - strftime('%s', started_at)) / 60.0) AS avg_duration
         FROM workouts
         WHERE user_id = ?`, [req.user], (e, workouts) => {
         if (e) return res.status(500).json({ success: false, message: "Database error" });
@@ -48,8 +48,8 @@ export const getStatistics = (req, res) => {
 
             db.all(`
                 SELECT 
-                YEAR(ended_at) as year, 
-                WEEK(ended_at, 1) as week
+                strftime('%Y', ended_at) as year, 
+                strftime('%W', ended_at) as week
                 FROM workouts
                 WHERE user_id = ?
                 ORDER BY year DESC, week DESC`, [req.user], (e, dates) => {
@@ -80,12 +80,33 @@ export const getStatistics = (req, res) => {
 function countStreak(dates){
     let streak = 0;
 
-    const weekNow = Date.now().weekOfYear;
-    datesSorted = Object.values(dates);
-    console.log(datesSorted);
-    dates.forEach(date => {
-        //if(weekNow)
-    });
+    const now = new Date();
+
+    let week = weekCount(now) - 1;
+    let year = now.getFullYear();
+
+    for (const date of dates) {
+        if (week === 0) {
+            year--;
+            week = weekCount(new Date(year, 11, 31));
+        }
+
+        if(Number(date.year) === year && Number(date.week) === week) {
+            week--;
+            streak++;
+        }
+        else {
+            break;
+        }
+    };
 
     return streak;
+}
+
+function weekCount(dateParam){
+    const date = new Date(dateParam.getTime());
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    var week1 = new Date(date.getFullYear(), 0, 4);
+
+    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
