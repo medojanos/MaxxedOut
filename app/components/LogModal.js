@@ -43,7 +43,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                                                 {exercise.sets[setIndex].rep != 0 ? <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text> : null}
                                             </View>
                                         ))}
-                                        {exercise.sets.filter((set) => (set.weight === 0 && set.rep === 0)).length != 0 ? <Text style={MainStyle.lightText}>You did {exercise.sets.filter((set) => (set.weight === 0 && set.rep === 0)).length} sets</Text> : null}
+                                        {exercise.sets.filter((set) => (set.weight === 0 && set.rep === 0)).length != 0 ? <Text style={MainStyle.lightText}>You did't log {exercise.sets.filter((set) => (set.weight === 0 && set.rep === 0)).length} sets</Text> : null}
                                     </View>
                                 ))}
                             </View> 

@@ -10,6 +10,7 @@ import Constants from 'expo-constants';
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
+
 const StatisticsStyle = StyleSheet.create({
     statTitle : {
         color: Var.white,
@@ -22,6 +23,32 @@ const StatisticsStyle = StyleSheet.create({
 
 function OneRepMax(weight, reps) {
     return Math.round(weight / (1.0278 - 0.0278 * reps));
+}
+
+function MostImpressive(squat, bench, deadlift) {
+    const ideal = {
+        squat: 1.35,
+        bench: 1,
+        deadlift: 1.65
+    }
+
+    const ratio = {
+        squat: squat / bench,
+        bench: 1,
+        deadlift: deadlift / bench
+    }
+
+    const differences = {
+        squat: ratio.squat - ideal.squat,
+        bench: ratio.bench - ideal.bench,
+        deadlift: ratio.deadlift - ideal.deadlift
+    }
+    
+    const maxDiff = Math.max(differences.squat, differences.bench, differences.deadlift);
+    
+    if(maxDiff === differences.squat) return "Squat"
+    if(maxDiff === differences.deadlift) return "Deadlift"
+    return "Bench"
 }
 
 export default function Statistics() {
@@ -64,7 +91,7 @@ export default function Statistics() {
                         <Text style={MainStyle.lightText}>Squat: {statistics.maxSquat} kg x {statistics.repsSquat}</Text>
                         <Text style={MainStyle.lightText}>Bench: {statistics.maxBench} kg x {statistics.repsBench}</Text>
                         <Text style={MainStyle.lightText}>Deadlift: {statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
-                        <Text style={MainStyle.lightText}>Total: {statistics.maxSquat + statistics.maxBench + statistics.maxDeadlift} kg</Text>
+                        <Text style={MainStyle.lightText}>Most impressive: {MostImpressive(OneRepMax(statistics.maxSquat, statistics.repsSquat), OneRepMax(statistics.maxBench, statistics.repsBench), OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift))}</Text>
                     </View>
                     <View style={[MainStyle.container, {width: "43%"}]}>
                         <Text style={MainStyle.strongText}>1RM</Text>

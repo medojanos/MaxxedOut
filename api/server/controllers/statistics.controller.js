@@ -47,7 +47,7 @@ export const getStatistics = (req, res) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
 
             db.all(`
-                SELECT 
+                SELECT DISTINCT
                 strftime('%Y', ended_at) as year, 
                 strftime('%W', ended_at) as week
                 FROM workouts
