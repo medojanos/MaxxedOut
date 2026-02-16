@@ -81,9 +81,15 @@ function countStreak(dates){
     let streak = 0;
 
     const now = new Date();
+    
 
-    let week = weekCount(now) - 1;
+    let week = weekCount(now);
     let year = now.getFullYear();
+
+    if(week === dates[0].week) {
+        streak++;
+        week--;
+    }
 
     for (const date of dates) {
         if (week === 0) {
@@ -105,8 +111,13 @@ function countStreak(dates){
 
 function weekCount(dateParam){
     const date = new Date(dateParam.getTime());
-    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-    var week1 = new Date(date.getFullYear(), 0, 4);
+    
+    const yearStart = new Date(date.getFullYear(), 0, 1);
+    const firstMonday = (7 - (yearStart.getDay() + 6) % 7) % 7;
 
-    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+    const daySince = Math.floor((date - yearStart) / 86400000);
+
+    if(daySince < firstMonday) return 0;
+
+    return Math.floor((daySince - firstMonday) / 7) + 1;
 }

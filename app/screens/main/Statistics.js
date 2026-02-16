@@ -53,6 +53,7 @@ function MostImpressive(squat, bench, deadlift) {
 
 export default function Statistics() {
     const [statistics, setStatistics] = useState();
+    const [oneRepMaxes, setOneRepMaxes] = useState([]);
 
     const {token, workout, refresh} = useContext(Context);
 
@@ -62,10 +63,19 @@ export default function Statistics() {
         .then(data => setStatistics(data.data));
     }, [workout, refresh]);
 
+    useEffect(() => {
+        if(statistics) {
+            setOneRepMaxes([
+                    OneRepMax(statistics.maxSquat, statistics.repsSquat), 
+                    OneRepMax(statistics.maxBench, statistics.repsBench), 
+                    OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift)
+            ]) 
+        }
+    }, [statistics])
 
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
-            {statistics ?
+            {statistics && oneRepMaxes ? 
             <View>
                 <Text style={MainStyle.screenTitle}>Statistics</Text>
                 <Text style={MainStyle.screenAltTitle}>Datas of all your workouts</Text>
@@ -91,21 +101,21 @@ export default function Statistics() {
                         <Text style={MainStyle.lightText}>Squat: {statistics.maxSquat} kg x {statistics.repsSquat}</Text>
                         <Text style={MainStyle.lightText}>Bench: {statistics.maxBench} kg x {statistics.repsBench}</Text>
                         <Text style={MainStyle.lightText}>Deadlift: {statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
-                        <Text style={MainStyle.lightText}>Most impressive: {MostImpressive(OneRepMax(statistics.maxSquat, statistics.repsSquat), OneRepMax(statistics.maxBench, statistics.repsBench), OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift))}</Text>
+                        <Text style={MainStyle.lightText}>Most impressive: {MostImpressive(...oneRepMaxes)}</Text>
                     </View>
                     <View style={[MainStyle.container, {width: "43%"}]}>
                         <Text style={MainStyle.strongText}>1RM</Text>
-                        <Text style={MainStyle.lightText}>Squat: {OneRepMax(statistics.maxSquat, statistics.repsSquat)} kg</Text>
-                        <Text style={MainStyle.lightText}>Bench: {OneRepMax(statistics.maxBench, statistics.repsBench)} kg</Text>
-                        <Text style={MainStyle.lightText}>Deadlift: {OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift)} kg</Text>
-                        <Text style={MainStyle.lightText}>Total: {OneRepMax(statistics.maxSquat, statistics.repsSquat) + OneRepMax(statistics.maxBench, statistics.repsBench) + OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift)} kg</Text>
+                        <Text style={MainStyle.lightText}>Squat: {oneRepMaxes[0]} kg</Text>
+                        <Text style={MainStyle.lightText}>Bench: {oneRepMaxes[1]} kg</Text>
+                        <Text style={MainStyle.lightText}>Deadlift: {oneRepMaxes[2]} kg</Text>
+                        <Text style={MainStyle.lightText}>Total: {oneRepMaxes[0] + oneRepMaxes[1] + oneRepMaxes[2]} kg</Text>
                     </View>
                 </View>
                 <View style={MainStyle.container}>
                     <Text style={MainStyle.strongText}>Total volume lifted</Text>
                     <Text style={MainStyle.lightText}>{statistics.totalWeight} kg</Text>
                 </View>
-            </View>
+            </View> 
             :
             <Text style={MainStyle.strongText}>Failed to get statistics</Text>}
         </ScrollView>
