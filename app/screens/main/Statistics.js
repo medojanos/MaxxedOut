@@ -101,7 +101,7 @@ export default function Statistics() {
                         <Text style={MainStyle.lightText}>Squat: {statistics.maxSquat} kg x {statistics.repsSquat}</Text>
                         <Text style={MainStyle.lightText}>Bench: {statistics.maxBench} kg x {statistics.repsBench}</Text>
                         <Text style={MainStyle.lightText}>Deadlift: {statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
-                        <Text style={MainStyle.lightText}>Most impressive: {MostImpressive(...oneRepMaxes)}</Text>
+                        <Text style={MainStyle.lightText}>Best lift: {MostImpressive(...oneRepMaxes)}</Text>
                     </View>
                     <View style={[MainStyle.container, {width: "43%"}]}>
                         <Text style={MainStyle.strongText}>1RM</Text>
