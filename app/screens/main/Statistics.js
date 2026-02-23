@@ -26,6 +26,9 @@ function OneRepMax(weight, reps) {
 }
 
 function MostImpressive(squat, bench, deadlift) {
+
+    if(squat === 0 && bench === 0 && deadlift === 0) return "None";
+
     const ideal = {
         squat: 1.35,
         bench: 1,

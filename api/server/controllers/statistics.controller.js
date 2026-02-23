@@ -78,6 +78,8 @@ export const getStatistics = (req, res) => {
 }
 
 function countStreak(dates){
+    if(dates.length === 0 || !dates)  return 0;
+
     let streak = 0;
 
     const now = new Date();
