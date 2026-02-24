@@ -15,6 +15,7 @@ export default {
       "backgroundColor": "#F5EDED"
     },
     "android": {
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#F5EDED"

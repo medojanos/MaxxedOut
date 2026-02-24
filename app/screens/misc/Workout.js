@@ -113,170 +113,167 @@ export default function Workout() {
     }
 
     return (
-        <SafeAreaView style={MainStyle.content}>
-            <ScrollView>
-                {
-                workout.id ? 
-                    <Pressable
-                        style={MainStyle.secondaryButton}
-                        onPress={() => {
-                            fetch(Constants.expoConfig.extra.API_URL + "/workouts?name=" + workout.name, { headers: { Authorization: token } })
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.success) setWorkout(prev => ({
-                                    ...prev, 
-                                    plan: prev.plan.map(ex => {
-                                        const recentEx = data.data.find(r => r.name === ex.name);
-                                        return recentEx ? {...ex, sets: recentEx.sets} : ex
-                                    })
-                                }));
-                            })
-                        }}>
-                        <Text style={MainStyle.buttonText}>Import recent</Text>
-                    </Pressable>
-                    :
-                    <TextInput 
-                        style={MainStyle.input} 
-                        value={workout.name} 
-                        onChangeText={text => setWorkout({...workout, name: text})}>
-                    </TextInput>
-                }
-                <Modal visible={doneModal} transparent={true} animationType="fade">
-                    <View style={MainStyle.overlay}>
-                        <View style={MainStyle.modal}></View>
-                    </View>
-                </Modal>
-                {workout.plan?.map((exercise, exerciseIndex) => (
-                    <View key={exerciseIndex} style={MainStyle.container}>
+        <ScrollView contentContainerStyle={MainStyle.content}>
+            {workout.id ? 
+                <Pressable
+                    style={MainStyle.secondaryButton}
+                    onPress={() => {
+                        fetch(Constants.expoConfig.extra.API_URL + "/workouts?name=" + workout.name, { headers: { Authorization: token } })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) setWorkout(prev => ({
+                                ...prev, 
+                                plan: prev.plan.map(ex => {
+                                    const recentEx = data.data.find(r => r.name === ex.name);
+                                    return recentEx ? {...ex, sets: recentEx.sets} : ex
+                                })
+                            }));
+                        })
+                    }}>
+                    <Text style={MainStyle.buttonText}>Import recent</Text>
+                </Pressable>
+                :
+                <TextInput 
+                    style={MainStyle.input} 
+                    value={workout.name} 
+                    onChangeText={text => setWorkout({...workout, name: text})}>
+                </TextInput>
+            }
+            <Modal visible={doneModal} transparent={true} animationType="fade">
+                <View style={MainStyle.overlay}>
+                    <View style={MainStyle.modal}></View>
+                </View>
+            </Modal>
+            {workout.plan?.map((exercise, exerciseIndex) => (
+                <View key={exerciseIndex} style={MainStyle.container}>
+                    <View style={MainStyle.inlineContainer}>
                         <View style={MainStyle.inlineContainer}>
-                            <View style={MainStyle.inlineContainer}>
-                                <ReArrange
-                                    index={exerciseIndex}
-                                    list={workout.plan}
-                                    onMove={newList => setWorkout(prev => ({...prev, plan : newList}))}>
-                                </ReArrange>
-                                {typeof exercise.id == "string" || exercise.id === null ? 
-                                <TextInput
-                                    style={MainStyle.input}
-                                    value={exercise.name}
-                                    onChangeText={text => updateExerciseName(exerciseIndex, text)}>
-                                </TextInput>
-                                : 
-                                <ExerciseInfoModal
-                                    id={exercise.id}
-                                    name={exerciseIndex+1 + ". " + exercise.name}/>
-                                }
-                            </View>
-                            <Pressable onPress={() => deleteExercise(exerciseIndex)}>
-                                <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
-                            </Pressable>
+                            <ReArrange
+                                index={exerciseIndex}
+                                list={workout.plan}
+                                onMove={newList => setWorkout(prev => ({...prev, plan : newList}))}>
+                            </ReArrange>
+                            {typeof exercise.id == "string" || exercise.id === null ? 
+                            <TextInput
+                                style={MainStyle.input}
+                                value={exercise.name}
+                                onChangeText={text => updateExerciseName(exerciseIndex, text)}>
+                            </TextInput>
+                            : 
+                            <ExerciseInfoModal
+                                id={exercise.id}
+                                name={exerciseIndex+1 + ". " + exercise.name}/>
+                            }
                         </View>
-                        {
-                            exercise.sets?.map((_, setIndex) => (
-                                <View key={setIndex} style={MainStyle.inlineContainer}>            
-                                    <Text style={MainStyle.lightText}>{setIndex+1 + "."}</Text>
-                                    <TextInput 
-                                        value={workout.plan[exerciseIndex].sets[setIndex].weight ? workout.plan[exerciseIndex].sets[setIndex].weight.toString() : ""}
-                                        keyboardType="numeric"
-                                        style={[MainStyle.input, MainStyle.setInput]}
-                                        placeholder="kg"
-                                        onChangeText={text => { 
-                                            if (!/^\d*$/.test(text)) return;
-                                            updateExercise(exerciseIndex, setIndex, "weight", text) 
-                                        }}
-                                    />
-                                    <Text style={MainStyle.lightText}>x</Text>
-                                    <TextInput 
-                                        value={workout.plan[exerciseIndex].sets[setIndex].rep ? workout.plan[exerciseIndex].sets[setIndex].rep.toString() : ""}
-                                        keyboardType="numeric"
-                                        style={[MainStyle.input, MainStyle.setInput]}
-                                        placeholder="rep"
-                                        onChangeText={text => { 
-                                            if (!/^\d*$/.test(text)) return;
-                                            updateExercise(exerciseIndex, setIndex, "rep", text) 
-                                        }}
-                                    />
-                                    <Pressable onPress={() => deleteSet(exerciseIndex, setIndex)}>
-                                        <Ionicons name="close" color={Var.paleWhite} size={30}></Ionicons>
-                                    </Pressable>
-                                </View>
-                            ))
-                        }
-                        <Pressable onPress={() => addSet(exerciseIndex)}>
-                            <Ionicons name="add-circle-outline" color={Var.red} size={25} style={{margin: "auto"}}></Ionicons>
+                        <Pressable onPress={() => deleteExercise(exerciseIndex)}>
+                            <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
                         </Pressable>
                     </View>
-                ))}
-                <AddExercise
-                    visible={searchModal}
-                    addExercise={addExercise}
-                    ownIndex={workout.ownIndex}
-                    Close={() => setSearchModal(false)}>
-                </AddExercise> 
-                <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
-                    <Text style={MainStyle.buttonText}>Add exercise</Text>
+                    {
+                        exercise.sets?.map((_, setIndex) => (
+                            <View key={setIndex} style={MainStyle.inlineContainer}>            
+                                <Text style={MainStyle.lightText}>{setIndex+1 + "."}</Text>
+                                <TextInput 
+                                    value={workout.plan[exerciseIndex].sets[setIndex].weight ? workout.plan[exerciseIndex].sets[setIndex].weight.toString() : ""}
+                                    keyboardType="numeric"
+                                    style={[MainStyle.input, MainStyle.setInput]}
+                                    placeholder="kg"
+                                    onChangeText={text => { 
+                                        if (!/^\d*$/.test(text)) return;
+                                        updateExercise(exerciseIndex, setIndex, "weight", text) 
+                                    }}
+                                />
+                                <Text style={MainStyle.lightText}>x</Text>
+                                <TextInput 
+                                    value={workout.plan[exerciseIndex].sets[setIndex].rep ? workout.plan[exerciseIndex].sets[setIndex].rep.toString() : ""}
+                                    keyboardType="numeric"
+                                    style={[MainStyle.input, MainStyle.setInput]}
+                                    placeholder="rep"
+                                    onChangeText={text => { 
+                                        if (!/^\d*$/.test(text)) return;
+                                        updateExercise(exerciseIndex, setIndex, "rep", text) 
+                                    }}
+                                />
+                                <Pressable onPress={() => deleteSet(exerciseIndex, setIndex)}>
+                                    <Ionicons name="close" color={Var.paleWhite} size={30}></Ionicons>
+                                </Pressable>
+                            </View>
+                        ))
+                    }
+                    <Pressable onPress={() => addSet(exerciseIndex)}>
+                        <Ionicons name="add-circle-outline" color={Var.red} size={25} style={{margin: "auto"}}></Ionicons>
+                    </Pressable>
+                </View>
+            ))}
+            <AddExercise
+                visible={searchModal}
+                addExercise={addExercise}
+                ownIndex={workout.ownIndex}
+                Close={() => setSearchModal(false)}>
+            </AddExercise> 
+            <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
+                <Text style={MainStyle.buttonText}>Add exercise</Text>
+            </Pressable>
+            <Modal visible={doneModal} transparent={true} animationType="fade">
+                <View style={MainStyle.overlay}>
+                    <View style={MainStyle.modal}>
+                        <Text style={MainStyle.screenTitle}>Are you sure you want to save this workout?</Text>
+                        <Pressable style={MainStyle.secondaryButton} onPress={() => setDoneModal(false)}>
+                            <Text style={MainStyle.buttonText}>No</Text>
+                        </Pressable>
+                        <Pressable style={MainStyle.button} onPress={() => {
+                            fetch(Constants.expoConfig.extra.API_URL + "/workouts", {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type" : "application/json",
+                                    "Authorization" : token
+                                },
+                                body: JSON.stringify({
+                                    name: workout.name,
+                                    plan: workout.plan,
+                                    started_at: workout.started_at,
+                                    ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
+                                })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    navigation.navigate("Home");
+                                    setDoneModal(false);
+                                    setWorkout(null);
+                                }
+                            })
+                        }}>
+                            <Text style={MainStyle.buttonText}>Yes</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+            <View style={MainStyle.inlineContainer}>
+                <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => setDoneModal(true)}>
+                    <Text style={MainStyle.buttonText}>Done</Text>
                 </Pressable>
-                <Modal visible={doneModal} transparent={true} animationType="fade">
+                <Modal visible={cancelModal} transparent={true} animationType="fade">
                     <View style={MainStyle.overlay}>
                         <View style={MainStyle.modal}>
-                            <Text style={MainStyle.screenTitle}>Are you sure you want to save this workout?</Text>
-                            <Pressable style={MainStyle.secondaryButton} onPress={() => setDoneModal(false)}>
+                            <Text style={MainStyle.screenTitle}>Are you sure you want to cancel this workout?</Text>
+                            <Pressable style={MainStyle.secondaryButton} onPress={() => setCancelModal(false)}>
                                 <Text style={MainStyle.buttonText}>No</Text>
                             </Pressable>
                             <Pressable style={MainStyle.button} onPress={() => {
-                                fetch(Constants.expoConfig.extra.API_URL + "/workouts", {
-                                    method: "PUT",
-                                    headers: {
-                                        "Content-Type" : "application/json",
-                                        "Authorization" : token
-                                    },
-                                    body: JSON.stringify({
-                                        name: workout.name,
-                                        plan: workout.plan,
-                                        started_at: workout.started_at,
-                                        ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
-                                    })
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        navigation.navigate("Home");
-                                        setDoneModal(false);
-                                        setWorkout(null);
-                                    }
-                                })
+                                navigation.navigate("Home");
+                                setCancelModal(false);
+                                setWorkout(null);
                             }}>
                                 <Text style={MainStyle.buttonText}>Yes</Text>
                             </Pressable>
                         </View>
                     </View>
                 </Modal>
-                <View style={MainStyle.inlineContainer}>
-                    <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => setDoneModal(true)}>
-                        <Text style={MainStyle.buttonText}>Done</Text>
-                    </Pressable>
-                    <Modal visible={cancelModal} transparent={true} animationType="fade">
-                        <View style={MainStyle.overlay}>
-                            <View style={MainStyle.modal}>
-                                <Text style={MainStyle.screenTitle}>Are you sure you want to cancel this workout?</Text>
-                                <Pressable style={MainStyle.secondaryButton} onPress={() => setCancelModal(false)}>
-                                    <Text style={MainStyle.buttonText}>No</Text>
-                                </Pressable>
-                                <Pressable style={MainStyle.button} onPress={() => {
-                                    navigation.navigate("Home");
-                                    setCancelModal(false);
-                                    setWorkout(null);
-                                }}>
-                                    <Text style={MainStyle.buttonText}>Yes</Text>
-                                </Pressable>
-                            </View>
-                        </View>
-                    </Modal>
-                    <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setCancelModal(true)}>
-                        <Text style={MainStyle.buttonText}>Cancel</Text>
-                    </Pressable>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setCancelModal(true)}>
+                    <Text style={MainStyle.buttonText}>Cancel</Text>
+                </Pressable>
+            </View>
+        </ScrollView>
     );
 }

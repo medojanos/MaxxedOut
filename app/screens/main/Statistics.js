@@ -57,16 +57,16 @@ export default function Statistics() {
                     <Text style={MainStyle.strongText}>Average workout duration</Text>
                     <Text style={MainStyle.lightText}>{statistics.avgDuration} minutes</Text>
                 </View>
-                <Text style={StatisticsStyle.statTitle}>Strength & volume</Text>
+                <Text style={StatisticsStyle.statTitle}>Volume & Strength</Text>
                 <View style={MainStyle.inlineContainer}>
-                    <View style={[MainStyle.container, {width: "53%"}]}>
+                    <View style={[MainStyle.container, {width: "max-content"}]}>
                         <Text style={MainStyle.strongText}>Personal records</Text>
                         <Text style={MainStyle.lightText}>Squat: {statistics.maxSquat} kg x {statistics.repsSquat}</Text>
                         <Text style={MainStyle.lightText}>Bench: {statistics.maxBench} kg x {statistics.repsBench}</Text>
                         <Text style={MainStyle.lightText}>Deadlift: {statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
                         <Text style={MainStyle.lightText}>Total: {statistics.maxSquat + statistics.maxBench + statistics.maxDeadlift} kg</Text>
                     </View>
-                    <View style={[MainStyle.container, {width: "43%"}]}>
+                    <View style={[MainStyle.container, {width: "max-content"}]}>
                         <Text style={MainStyle.strongText}>1RM</Text>
                         <Text style={MainStyle.lightText}>Squat: {OneRepMax(statistics.maxSquat, statistics.repsSquat)} kg</Text>
                         <Text style={MainStyle.lightText}>Bench: {OneRepMax(statistics.maxBench, statistics.repsBench)} kg</Text>
