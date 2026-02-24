@@ -1,9 +1,8 @@
 // React
-import { View, Text, ScrollView, Pressable, FlatList, StyleSheet } from "react-native";
+import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import PlanModal from "../../components/PlanModal";

@@ -19,9 +19,10 @@ export default function Tracker() {
 
     const restStart = useRef(null);
     const restInterval = useRef(null);
+    const restElapsed = useRef(0);
     const durationInterval = useRef(null);
 
-    const [restingTimer, setRestingTimer] = useState("00:00");
+    const [restingTimer, setRestingTimer] = useState(displayTime(userData ? userData.preferences.restingTime : 0));
     const [duration, setDuration] = useState("00:00:00");
     
     const [workoutModal, setWorkoutModal] = useState(false);
@@ -31,34 +32,53 @@ export default function Tracker() {
         durationInterval.current = setInterval(() => {
             setDuration(() => {
                 const diff = Math.floor((new Date() - new Date(workout.started_at)) / 1000);
-                const hours = Math.floor(diff / 3600);
-                const minutes = Math.floor((diff % 3600) / 60);
-                const seconds = diff % 60;
-                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                return displayTime(diff);
             });
         }, 1000);
         return () => clearInterval(durationInterval.current);
     }, [workout]);
 
+    function displayTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
     function handleTimer(action) {
-        clearInterval(restInterval.current);
         switch (action) {
             case "start":
-                if (!restStart.current) restStart.current = new Date();
+                if (restInterval.current) return;
+
+                restStart.current = new Date();
                 restInterval.current = setInterval(() => {
-                    setRestingTimer(() => {
-                        const elapsed = new Date() - restStart.current;
-                        const remaining = userData.preferences.restingTime * 1000 - elapsed;
-                        if (remaining <= 0) handleTimer("reset"); // Push notification here
-                        const minutes = Math.floor(remaining / 60000);
-                        const seconds = Math.ceil((remaining % 60000) / 1000);
-                        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    });
+                    const now = new Date();
+                    const elapsed = restElapsed.current + (now - restStart.current);
+
+                    const remaining = userData.preferences.restingTime * 1000 - elapsed;
+
+                    if (remaining <= 0) {
+                        handleTimer("reset");
+                        return;
+                    }
+
+                    setRestingTimer(displayTime(Math.ceil(remaining / 1000)));
                 }, 1000);
                 break;
-            case "reset":
+
+            case "pause":
+                if (!restInterval.current) return;
+                restElapsed.current += new Date() - restStart.current;
+                clearInterval(restInterval.current);
+                restInterval.current = null;
                 restStart.current = null;
-                setRestingTimer("00:00");
+                break;
+
+            case "reset":
+                clearInterval(restInterval.current);
+                restInterval.current = null;
+                restStart.current = null;
+                restElapsed.current = 0;
+                setRestingTimer(displayTime(userData.preferences.restingTime));
                 break;
         }
     }
@@ -67,7 +87,8 @@ export default function Tracker() {
         <ScrollView contentContainerStyle={MainStyle.content}>
             <Text style={MainStyle.titleText}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
             <Text style={MainStyle.screenTitle}>Tracker</Text>
-            {workout ?
+            {
+            workout ?
                 <>
                     <View style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
@@ -98,8 +119,8 @@ export default function Tracker() {
                             </Pressable>
                             <Pressable
                                 style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
-                                onPress={() => {handleTimer("stop")}}>
-                                <Text style={MainStyle.buttonText}>Stop</Text>
+                                onPress={() => {handleTimer("pause")}}>
+                                <Text style={MainStyle.buttonText}>Pause</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -115,7 +136,7 @@ export default function Tracker() {
                 visible={workoutModal} 
                 Close={() => setWorkoutModal(false)}>
             </WorkoutModal>
-            <View style={MainStyle.container}>
+            {/*<View style={MainStyle.container}>
                 <Text style={MainStyle.containerTitle}>Start Cardio</Text>
                 <View style={MainStyle.inlineContainer}>
                     <Pressable
@@ -137,10 +158,10 @@ export default function Tracker() {
                         onPress={() => {
                             
                         }}>
-                        <Text style={MainStyle.buttonText}>Stop</Text>
+                        <Text style={MainStyle.buttonText}>Pause</Text>
                     </Pressable>
                 </View>
-            </View>
+            </View>*/}
         </ScrollView>
     );
 }

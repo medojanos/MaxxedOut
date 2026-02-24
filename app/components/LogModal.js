@@ -38,11 +38,14 @@ export default function LogModal({visible, Close, workouts, status}) {
                                     <View key={exerciseIndex} style={MainStyle.container}>
                                         <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
                                         {exercise.sets.map((_, setIndex) => (
+                                            exercise.sets[setIndex].weight != 0 || exercise.sets[setIndex].rep != 0 ?
                                             <View key={setIndex} style={MainStyle.inlineContainer}>
                                                 {exercise.sets[setIndex].weight != 0 ? <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].weight} </Text> : null}
-                                                <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text>
+                                                {exercise.sets[setIndex].rep != 0 ? <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text> : null}
                                             </View>
+                                            : null
                                         ))}
+                                        {exercise.sets.filter((set) => (set.weight === 0 && set.rep === 0)).length != 0 ? <Text style={MainStyle.lightText}>You did {exercise.sets.filter((set) => (set.weight === 0 && set.rep === 0)).length} sets</Text> : null}
                                     </View>
                                 ))}
                             </View> 
