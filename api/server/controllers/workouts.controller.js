@@ -2,11 +2,13 @@ import db from "../config/db.js"
 
 export const getWorkoutByQuery = (req, res) => {
     const { month, date, name, limit } = req.query;
+
     if (Object.keys(req.query).length > 1) return res.status(400).json({success: false, message: "Invalid query parameters"});
+
     if (date) {
-        db.all("SELECT id, name FROM workouts WHERE DATE(ended_at) = ? AND user_id = ?", [req.query.date, req.user], (e, workouts) => {
+        db.all("SELECT id, name FROM workouts WHERE DATE(ended_at) = ? AND user_id = ?", [date, req.user], (e, workouts) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
-            if (workouts.length === 0) return res.json({ success: false, message: "No workout that day" });
+            if (workouts.length === 0) return res.status(404).json({ success: false, message: "No workout that day" });
             const workoutIds = workouts.map(w => w.id);
             db.all(`SELECT
                     w.id AS workout_id,
@@ -52,9 +54,9 @@ export const getWorkoutByQuery = (req, res) => {
             );
         });
     } else if (name) {
-        db.get("SELECT id, name FROM workouts WHERE user_id = ? AND name = ? ORDER BY ended_at DESC LIMIT 1", [req.user, req.query.name], (e, workout) => {
+        db.get("SELECT id, name FROM workouts WHERE user_id = ? AND name = ? ORDER BY ended_at DESC LIMIT 1", [req.user, name], (e, workout) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
-            if (!workout) return res.json({ success: false, message: "No recent workout" });
+            if (!workout) return res.status(404).json({ success: false, message: "No recent workout" });
             db.all(`SELECT
                     e.id AS exercise_id,
                     COALESCE(s.exercise_name, e.name) AS exercise_name,
@@ -89,12 +91,12 @@ export const getWorkoutByQuery = (req, res) => {
             );
         });
     } else if (month) {
-        db.all("SELECT DATE(ended_at) AS ended_at FROM workouts WHERE user_id = ? AND STRFTIME('%Y-%m', ended_at) = ?", [req.user, req.query.month], (e, rows) => {
+        db.all("SELECT DATE(ended_at) AS ended_at FROM workouts WHERE user_id = ? AND STRFTIME('%Y-%m', ended_at) = ?", [req.user, month], (e, rows) => {
                 if (e) return res.status(500).json({ success: false, message: "Database error" });
                 res.json({success: true, data: rows});
             }
         );
-    } else {
+    } else if (limit) {
         let query = "SELECT id, name, ended_at FROM workouts WHERE user_id = ? ORDER BY ended_at DESC";
         let params = [];
         params.push(req.user);

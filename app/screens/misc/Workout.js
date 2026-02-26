@@ -32,6 +32,7 @@ export default function Workout() {
     const [cancelModal, setCancelModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
     const [doneModal, setDoneModal] = useState(false);
+    const [recentModal, setRecentModal] = useState(false);
 
     if (!workout) return <Loader></Loader>;
 
@@ -118,16 +119,21 @@ export default function Workout() {
                 <Pressable
                     style={MainStyle.secondaryButton}
                     onPress={() => {
-                        fetch(Constants.expoConfig.extra.API_URL + "/workouts?name=" + workout.name, { headers: { Authorization: token } })
+                        fetch(Constants.expoConfig.extra.API_URL + "/workouts?name=" + encodeURIComponent(workout.name), { headers: { Authorization: token } })
                         .then(res => res.json())
                         .then(data => {
-                            if (data.success) setWorkout(prev => ({
-                                ...prev, 
-                                plan: prev.plan.map(ex => {
-                                    const recentEx = data.data.find(r => r.name === ex.name);
-                                    return recentEx ? {...ex, sets: recentEx.sets} : ex
-                                })
-                            }));
+                            if (data.success) {
+                                setWorkout(prev => ({
+                                    ...prev, 
+                                    plan: prev.plan.map(ex => {
+                                        const recentEx = data.data.find(r => r.name === ex.name);
+                                        return recentEx ? {...ex, sets: recentEx.sets} : ex
+                                    })
+                                }))
+                            }
+                            else {
+                                setRecentModal(true);
+                            }
                         })
                     }}>
                     <Text style={MainStyle.buttonText}>Import recent</Text>
@@ -144,6 +150,18 @@ export default function Workout() {
                     <View style={MainStyle.modal}></View>
                 </View>
             </Modal>
+            
+            <Modal visible={recentModal} transparent={true} animationType="fade">
+                <View style={MainStyle.overlay}>
+                    <View style={MainStyle.modal}>
+                        <Text style={MainStyle.screenTitle}>No recent workout</Text>
+                        <Pressable style={MainStyle.secondaryButton} onPress={() => setRecentModal(false)}>
+                            <Text style={MainStyle.buttonText}>Close</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+
             {workout.plan?.map((exercise, exerciseIndex) => (
                 <View key={exerciseIndex} style={MainStyle.container}>
                     <View style={MainStyle.inlineContainer}>

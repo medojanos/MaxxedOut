@@ -136,7 +136,7 @@ export default function Tracker() {
                 visible={workoutModal} 
                 Close={() => setWorkoutModal(false)}>
             </WorkoutModal>
-            {/*<View style={MainStyle.container}>
+            {/*LEKVÁR<View style={MainStyle.container}>
                 <Text style={MainStyle.containerTitle}>Start Cardio</Text>
                 <View style={MainStyle.inlineContainer}>
                     <Pressable
