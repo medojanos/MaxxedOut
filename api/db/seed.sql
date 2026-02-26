@@ -10,10 +10,10 @@ INSERT INTO muscle_groups (name) VALUES
 
 -- Exercises
 INSERT INTO exercises (name, type) VALUES
-('Bench Press', 'Compound'),
-('Incline Bench Press', 'Compound'),
-('Deadlift', 'Compound'),
 ('Squat', 'Compound'),
+('Bench Press', 'Compound'),
+('Deadlift', 'Compound'),
+('Incline Bench Press', 'Compound'),
 ('Barbell Curl', 'Isolation'),
 ('Tricep Pushdown', 'Isolation'),
 ('Lateral Raise', 'Isolation'),
@@ -23,10 +23,10 @@ INSERT INTO exercises (name, type) VALUES
 
 -- Muscle Groups & Exercises
 INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES
-(1, 1, 'Primary'), -- Chest: Bench Press
-(1, 2, 'Primary'), -- Chest: Incline Bench Press
-(3, 4, 'Primary'), -- Legs: Squat
-(2, 3, 'Primary'), -- Back: Deadlift
+(2, 1, 'Primary'), -- Chest: Bench Press
+(4, 2, 'Primary'), -- Chest: Incline Bench Press
+(2, 4, 'Primary'), -- Legs: Squat
+(3, 3, 'Primary'), -- Back: Deadlift
 (4, 5, 'Primary'), -- Biceps: Barbell Curl
 (5, 6, 'Primary'), -- Triceps: Pushdown
 (6, 7, 'Primary'), -- Shoulders: Lateral Raise
@@ -38,17 +38,17 @@ INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES
 INSERT INTO plans (user_id, name) VALUES
 (1, 'Chest & Triceps'),
 (1, 'Back & Biceps'),
-(2, 'Leg Day'),
-(3, 'Full Body Blast');
+(1, 'Leg Day'),
+(1, 'Full Body Blast');
 
 -- Plan Exercises
 INSERT INTO plans_exercises (plan_id, exercise_id, exercise_name, sets) VALUES
-(1, 1, NULL, 4),
-(1, 2, NULL, 3),
+(1, 2, NULL, 4),
+(1, 4, NULL, 3),
 (1, 6, NULL, 3),
 (2, 3, NULL, 3),
 (2, 8, NULL, 4),
 (2, 5, NULL, 3),
-(3, 4, NULL, 4),
+(3, 1, NULL, 4),
 (3, 9, NULL, 3),
 (4, NULL, 'Custom Pushups', 3);
