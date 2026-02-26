@@ -2,7 +2,8 @@ import db from "../config/db.js"
 
 export const getStatistics = (req, res) => {    
     db.get(`
-        SELECT 
+        SELECT
+        SUM((strftime('%s', ended_at) - strftime('%s', started_at)) / 60.0) AS total_duration, 
         COUNT(*) AS total_workouts,
         AVG((strftime('%s', ended_at) - strftime('%s', started_at)) / 60.0) AS avg_duration
         FROM workouts
@@ -54,11 +55,12 @@ export const getStatistics = (req, res) => {
                 WHERE user_id = ?
                 ORDER BY year DESC, week DESC`, [req.user], (e, dates) => {
                     if (e) return res.status(500).json({ success: false, message: "Database error" });
-
+                    
                     res.json({
                         success: true,
                         data: {
                             totalWorkouts: workouts.total_workouts || 0,
+                            totalDuration: Math.round(workouts.total_duration) || 0,
                             avgDuration: Math.round(workouts.avg_duration) || 0,
                             workoutStreak: countStreak(dates) || 0,
                             totalWeight: sets.total_weight || 0,
