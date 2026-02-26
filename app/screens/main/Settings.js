@@ -52,7 +52,7 @@ export default function Settings() {
         <ScrollView contentContainerStyle={MainStyle.content}>
             <View>
                 <Text style={MainStyle.screenTitle}>Settings</Text>
-                <Text style={MainStyle.screenAltTitle}>Manage your account and preferences</Text>
+                <Text style={MainStyle.strongText}>Manage your account and preferences</Text>
             </View>
             <View style={MainStyle.container}>
                 <View style={MainStyle.inlineContainer}>

@@ -44,7 +44,7 @@ export default function Workouts() {
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
             <Text style={MainStyle.screenTitle}>Workouts</Text>
-            <Text style={MainStyle.screenAltTitle}>Create or edit your workout plans</Text>
+            <Text style={MainStyle.strongText}>Create or edit your workout plans</Text>
             <Pressable style={WorkoutsStyle.addPlan} onPress={() => {navigation.navigate("CreateWorkout")}}>
                 <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
             </Pressable>

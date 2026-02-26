@@ -81,16 +81,20 @@ export default function Statistics() {
             {statistics && oneRepMaxes ? 
             <View>
                 <Text style={MainStyle.screenTitle}>Statistics</Text>
-                <Text style={MainStyle.screenAltTitle}>Datas of all your workouts</Text>
+                <Text style={MainStyle.strongText}>Datas of all your workouts</Text>
                 <Text style={StatisticsStyle.statTitle}>Consistency</Text>
+                <View style={MainStyle.container}>
+                    <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Weekly workout streak</Text>
+                    <Text style={[MainStyle.lightText, {textAlign: "center"}]}>{statistics.workoutStreak} weeks</Text>
+                </View>
                 <View style={MainStyle.inlineContainer}>
                     <View style={[MainStyle.container, {width: "48%"}]}>
-                        <Text style={MainStyle.strongText}>Current weekly workout streak</Text>
-                        <Text style={MainStyle.lightText}>{statistics.workoutStreak}</Text>
+                        <Text style={MainStyle.strongText}>Workouts completed</Text>
+                        <Text style={MainStyle.lightText}>{statistics.totalWorkouts} workouts</Text>
                     </View>
                     <View style={[MainStyle.container, {width: "48%"}]}>
-                        <Text style={MainStyle.strongText}>Total workouts completed</Text>
-                        <Text style={MainStyle.lightText}>{statistics.totalWorkouts} workouts</Text>
+                        <Text style={[MainStyle.strongText, {textAlign: "right"}]}>Time spent working out</Text>
+                        <Text style={[MainStyle.lightText, {textAlign: "right"}]}>{statistics.totalDuration} minutes</Text>
                     </View>
                 </View>
                 <View style={MainStyle.container}>
@@ -98,20 +102,34 @@ export default function Statistics() {
                     <Text style={MainStyle.lightText}>{statistics.avgDuration} minutes</Text>
                 </View>
                 <Text style={StatisticsStyle.statTitle}>Strength & volume</Text>
-                <View style={MainStyle.inlineContainer}>
-                    <View style={[MainStyle.container, {width: "53%"}]}>
-                        <Text style={MainStyle.strongText}>Personal records</Text>
-                        <Text style={MainStyle.lightText}>Squat: {statistics.maxSquat} kg x {statistics.repsSquat}</Text>
-                        <Text style={MainStyle.lightText}>Bench: {statistics.maxBench} kg x {statistics.repsBench}</Text>
-                        <Text style={MainStyle.lightText}>Deadlift: {statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
-                        <Text style={MainStyle.lightText}>Best lift: {MostImpressive(...oneRepMaxes)}</Text>
+                <View style={[MainStyle.container, {}]}>
+                    <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Personal records</Text>
+                    <View style={MainStyle.inlineContainer}>
+                        <Text style={MainStyle.lightText}>Squat: </Text>
+                        <Text style={MainStyle.strongText}>{statistics.maxSquat} kg x {statistics.repsSquat}</Text>
                     </View>
-                    <View style={[MainStyle.container, {width: "43%"}]}>
-                        <Text style={MainStyle.strongText}>1RM</Text>
-                        <Text style={MainStyle.lightText}>Squat: {oneRepMaxes[0]} kg</Text>
-                        <Text style={MainStyle.lightText}>Bench: {oneRepMaxes[1]} kg</Text>
-                        <Text style={MainStyle.lightText}>Deadlift: {oneRepMaxes[2]} kg</Text>
-                        <Text style={MainStyle.lightText}>Total: {oneRepMaxes[0] + oneRepMaxes[1] + oneRepMaxes[2]} kg</Text>
+                    <View style={MainStyle.inlineContainer}>
+                        <Text style={MainStyle.lightText}>Bench: </Text>
+                        <Text style={MainStyle.strongText}>{statistics.maxBench} kg x {statistics.repsBench}</Text>
+                    </View>
+                    <View style={MainStyle.inlineContainer}>
+                        <Text style={MainStyle.lightText}>Deadlift: </Text>
+                        <Text style={MainStyle.strongText}>{statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
+                    </View>
+                    <Text style={[MainStyle.lightText, {textAlign: "center"}]}>Best lift: <Text style={MainStyle.strongText}>{MostImpressive(...oneRepMaxes)}</Text></Text>
+                </View>
+                <View style={MainStyle.inlineContainer}>
+                    <View style={[MainStyle.container, {width: "50%"}]}>
+                        <Text style={MainStyle.strongText}>1 Rep Max</Text>
+                        <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[0]} kg</Text></Text>
+                        <Text style={MainStyle.lightText}>Bench: <Text style={MainStyle.strongText}>{oneRepMaxes[1]} kg</Text></Text>
+                        <Text style={MainStyle.lightText}>Deadlift: <Text style={MainStyle.strongText}>{oneRepMaxes[2]} kg</Text></Text>
+                    </View>
+                    <View style={[MainStyle.container, {width: "45%", height: "85%"}]}>
+                        <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Total</Text>
+                        <View style={{justifyContent: "center", alignItems: "center", flex: 1}}>
+                            <Text style={[MainStyle.strongText, {textAlign: "right"}]}>{oneRepMaxes[0] + oneRepMaxes[1] + oneRepMaxes[2]} kg</Text>
+                        </View>
                     </View>
                 </View>
                 <View style={MainStyle.container}>

@@ -57,7 +57,7 @@ export default function Logs() {
         <ScrollView contentContainerStyle={MainStyle.content}>
             <View>
                 <Text style={MainStyle.screenTitle}>Logs</Text>
-                <Text style={MainStyle.screenAltTitle}>Keep track of your previous workouts</Text>
+                <Text style={MainStyle.strongText}>Keep track of your previous workouts</Text>
             </View>
             <Calendar 
                 style={LogsStyle.calendar} 

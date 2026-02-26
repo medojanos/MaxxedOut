@@ -10,18 +10,13 @@ export default StyleSheet.create({
 
     titleText : {
         color: Var.white,
-        fontSize: 30,
+        fontSize: Var.fontSize * 1.5,
         fontWeight: "bold"
     },
 
     screenTitle : {
         color: Var.white,
-        fontSize : 25,
-        fontWeight: "bold"
-    },
-    screenAltTitle : {
-        color: Var.paleWhite,
-        fontSize : 15,
+        fontSize : Var.fontSize * 1.3,
         fontWeight: "bold"
     },
 
@@ -36,7 +31,7 @@ export default StyleSheet.create({
     },
     containerTitle : {
         color: Var.white,
-        fontSize: 20,
+        fontSize: Var.fontSize * 1.2,
         fontWeight: "bold"
     },
 
@@ -48,7 +43,7 @@ export default StyleSheet.create({
     },
     
     buttonBlock : {
-        width : 100
+        width : Var.fontSize * 5,
     },
     button : {
         backgroundColor: Var.red,
@@ -74,7 +69,7 @@ export default StyleSheet.create({
     strongText : {
         color: Var.white,
         fontSize: Var.fontSize,
-        fontWeight: "bold",
+        fontWeight: "bold"
     },
 
     modal: {
