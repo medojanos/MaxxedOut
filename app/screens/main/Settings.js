@@ -70,6 +70,22 @@ export default function Settings() {
                     <Text style={MainStyle.lightText}>E-mail: </Text>
                     <Text style={MainStyle.lightText}>{userData.email}</Text>
                 </View>
+                <View style={MainStyle.inlineContainer}>
+                    <Text style={MainStyle.lightText}>Weight: </Text>
+                    <View style={MainStyle.inlineContainer}>
+                        <TextInput
+                            keyboardType="numeric"
+                            style={[MainStyle.input, MainStyle.setInput]}
+                            value={userData?.weight.toString() || "0"}
+                            onChangeText={text => {
+                                if (!/^\d*$/.test(text)) return;
+                                setUserData(prev => ({...prev, weight: text}));
+                                Refresh()
+                                }}>
+                        </TextInput>
+                        <Text style={MainStyle.lightText}>kg</Text>
+                    </View>
+                </View>
             </View>
             <Modal 
                 animationType="fade"
