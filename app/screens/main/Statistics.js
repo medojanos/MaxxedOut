@@ -57,8 +57,9 @@ function MostImpressive(squat, bench, deadlift) {
 export default function Statistics() {
     const [statistics, setStatistics] = useState();
     const [oneRepMaxes, setOneRepMaxes] = useState([]);
+    const [weight, setWeight] = useState(null);
 
-    const {token, workout, refresh} = useContext(Context);
+    const {token, userData, workout, refresh} = useContext(Context);
 
     useEffect(() => {
         fetch(Constants.expoConfig.extra.API_URL + "/statistics", { headers: { "Authorization": token } })
@@ -72,7 +73,8 @@ export default function Statistics() {
                     OneRepMax(statistics.maxSquat, statistics.repsSquat), 
                     OneRepMax(statistics.maxBench, statistics.repsBench), 
                     OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift)
-            ]) 
+            ]);
+            if (userData?.weight) setWeight(userData.weight);
         }
     }, [statistics])
 
@@ -102,6 +104,9 @@ export default function Statistics() {
                     <Text style={MainStyle.lightText}>{statistics.avgDuration} minutes</Text>
                 </View>
                 <Text style={StatisticsStyle.statTitle}>Strength & volume</Text>
+                {weight ? <Text style={MainStyle.lightText}>{weight}</Text> : null
+                    // Rank depending on weight and one rep maxes (Bronze, Silver, Gold, Platinum, Diamond, etc.)
+                }
                 <View style={[MainStyle.container, {}]}>
                     <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Personal records</Text>
                     <View style={MainStyle.inlineContainer}>
