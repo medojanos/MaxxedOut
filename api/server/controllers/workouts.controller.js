@@ -6,7 +6,7 @@ export const getWorkoutByQuery = (req, res) => {
     if (Object.keys(req.query).length > 1) return res.status(400).json({success: false, message: "Invalid query parameters"});
 
     if (date) {
-        db.all("SELECT id, name FROM workouts WHERE DATE(ended_at) = ? AND user_id = ?", [date, req.user], (e, workouts) => {
+        db.all("SELECT id, name, strftime('%s', ended_at) - strftime('%s', started_at) AS length FROM workouts WHERE DATE(ended_at) = ? AND user_id = ?", [date, req.user], (e, workouts) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
             if (workouts.length === 0) return res.status(404).json({ success: false, message: "No workout that day" });
             const workoutIds = workouts.map(w => w.id);
@@ -47,6 +47,7 @@ export const getWorkoutByQuery = (req, res) => {
                     const result = Object.values(workoutsMap).map(w => ({
                         id: w.id,
                         name: w.name,
+                        duration: w.length,
                         exercises: Object.values(w.exercises)
                     }));
                     res.json({ success: true, data: result});
@@ -113,7 +114,7 @@ export const getWorkoutByQuery = (req, res) => {
 
 export const getWorkoutById = (req, res) => {
     db.get(
-        "SELECT id, name FROM workouts WHERE id = ?", [req.params.id], (e, workout) => {
+        "SELECT id, name, strftime('%s', ended_at) - strftime('%s', started_at) AS length FROM workouts WHERE id = ?", [req.params.id], (e, workout) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
             db.all(
                 `SELECT 
@@ -144,6 +145,7 @@ export const getWorkoutById = (req, res) => {
                         [{
                             id: workout.id, 
                             name: workout.name, 
+                            duration: workout.length,
                             exercises: Object.values(exercisesMap)
                         }]
                     });

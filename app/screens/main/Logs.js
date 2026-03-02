@@ -1,7 +1,6 @@
 // React
 import { View, Text, ScrollView, StyleSheet, Pressable} from "react-native";
 import { useState, useEffect, useContext } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Calendar } from "react-native-calendars";
 
 // Misc
@@ -24,7 +23,7 @@ const LogsStyle = StyleSheet.create({
 
 export default function Logs() {
     const [workouts, setWorkouts] = useState();
-    const [latest, setLatest] = useState();
+    const [latest, setLatest] = useState([]);
     const [logModal, setLogModal] = useState(false);
     const [status, setStatus] = useState();
     const [markedDates, setMarkedDates] = useState({});
@@ -91,7 +90,8 @@ export default function Logs() {
             </LogModal>
             <View style={MainStyle.container}>
                 <Text style={MainStyle.containerTitle}>Recent logs</Text>
-                {latest?.map((workout, index) => (
+                {latest.length > 0 ?
+                latest.map((workout, index) => (
                     <View key={index} style={MainStyle.container}>
                         <Text style={MainStyle.lightText}>{workout.name} - {workout.ended_at.slice(0, 16)}</Text>
                         <Pressable
@@ -109,7 +109,7 @@ export default function Logs() {
                             <Text style={MainStyle.buttonText}>View details</Text>
                         </Pressable>
                     </View>
-                ))}
+                )) : <Text style={MainStyle.lightText}>Your logs will be displayed here!</Text>}
             </View>
         </ScrollView>
     );

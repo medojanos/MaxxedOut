@@ -139,7 +139,7 @@ export default function Settings() {
                         style={[MainStyle.input, MainStyle.setInput]}
                         value={userData.preferences?.restingTime.toString() || "0"}
                         onChangeText={text => {
-                            if (!/^\d*$/.test(text)) return;
+                            if (!/^\d+$/.test(text)) return;
                             setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}));
                             Refresh()
                             }}>
@@ -251,7 +251,7 @@ export default function Settings() {
             <View style={MainStyle.container}>
                 <View style={MainStyle.inlineContainer}>
                     <Ionicons name="information-circle" color={Var.red} size={40}></Ionicons>
-                    <Text style={MainStyle.containerTitle}>About v0.1</Text>
+                    <Text style={MainStyle.containerTitle}>About v0.1.1</Text>
                 </View>
                 <Text style={[MainStyle.lightText, {textAlign: 'center'}]}>© MaxxedOut. All rights reserved.</Text>
             </View>

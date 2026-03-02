@@ -7,6 +7,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 // Misc
 import WorkoutModal from "../../components/WorkoutModal";
 import { Context } from "../../misc/Provider";
+import displayTime from "../../misc/DisplayTime";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -17,12 +18,7 @@ export default function Tracker() {
 
     const navigation = useNavigation();
 
-    const restStart = useRef(null);
-    const restInterval = useRef(null);
-    const restElapsed = useRef(0);
     const durationInterval = useRef(null);
-
-    const [restingTimer, setRestingTimer] = useState(displayTime(userData.preferences ? userData.preferences.restingTime : 0));
     const [duration, setDuration] = useState("00:00:00");
     
     const [workoutModal, setWorkoutModal] = useState(false);
@@ -37,51 +33,6 @@ export default function Tracker() {
         }, 1000);
         return () => clearInterval(durationInterval.current);
     }, [workout]);
-
-    function displayTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    }
-
-    function handleTimer(action) {
-        switch (action) {
-            case "start":
-                if (restInterval.current) return;
-
-                restStart.current = new Date();
-                restInterval.current = setInterval(() => {
-                    const now = new Date();
-                    const elapsed = restElapsed.current + (now - restStart.current);
-
-                    const remaining = userData.preferences.restingTime * 1000 - elapsed;
-
-                    if (remaining <= 0) {
-                        handleTimer("reset");
-                        return;
-                    }
-
-                    setRestingTimer(displayTime(Math.ceil(remaining / 1000)));
-                }, 1000);
-                break;
-
-            case "pause":
-                if (!restInterval.current) return;
-                restElapsed.current += new Date() - restStart.current;
-                clearInterval(restInterval.current);
-                restInterval.current = null;
-                restStart.current = null;
-                break;
-
-            case "reset":
-                clearInterval(restInterval.current);
-                restInterval.current = null;
-                restStart.current = null;
-                restElapsed.current = 0;
-                setRestingTimer(displayTime(userData.preferences.restingTime));
-                break;
-        }
-    }
 
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
@@ -104,22 +55,22 @@ export default function Tracker() {
                     <View style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
                             <Text style={MainStyle.strongText}>Resting timer</Text>
-                            <Text style={MainStyle.lightText}>{restingTimer}</Text>
+                            <Text style={MainStyle.lightText}>{"00:00"}</Text>
                         </View>
                         <View style={MainStyle.inlineContainer}>
                             <Pressable
                                 style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
-                                onPress={() => {handleTimer("reset")}}>
+                                onPress={() => {}}>
                                 <Text style={MainStyle.buttonText}>Reset</Text>
                             </Pressable>
                             <Pressable
                                 style={[MainStyle.button, MainStyle.buttonBlock]}
-                                onPress={() => {handleTimer("start")}}>
+                                onPress={() => {}}>
                                 <Text style={MainStyle.buttonText}>Start</Text>
                             </Pressable>
                             <Pressable
                                 style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
-                                onPress={() => {handleTimer("pause")}}>
+                                onPress={() => {}}>
                                 <Text style={MainStyle.buttonText}>Pause</Text>
                             </Pressable>
                         </View>
@@ -136,8 +87,8 @@ export default function Tracker() {
                 visible={workoutModal} 
                 Close={() => setWorkoutModal(false)}>
             </WorkoutModal>
-            {/*LEKVÁR<View style={MainStyle.container}>
-                <Text style={MainStyle.containerTitle}>Start Cardio</Text>
+            <View style={MainStyle.container}>
+                <Text style={MainStyle.containerTitle}>Cardio</Text>
                 <View style={MainStyle.inlineContainer}>
                     <Pressable
                         style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
@@ -161,7 +112,7 @@ export default function Tracker() {
                         <Text style={MainStyle.buttonText}>Pause</Text>
                     </Pressable>
                 </View>
-            </View>*/}
+            </View>
         </ScrollView>
     );
 }
