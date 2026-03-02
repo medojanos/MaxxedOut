@@ -76,14 +76,13 @@ export default function Settings() {
                         <TextInput
                             keyboardType="numeric"
                             style={[MainStyle.input, MainStyle.setInput]}
-                            value={userData?.weight.toString() || "0"}
+                            value={userData.weight?.toString() || "0"}
                             onChangeText={text => {
-                                if (!/^\d*$/.test(text)) return;
+                                if (!/^\d+(\.\d*)?$/.test(text)) return;
                                 setUserData(prev => ({...prev, weight: text}));
                                 Refresh()
                                 }}>
                         </TextInput>
-                        <Text style={MainStyle.lightText}>kg</Text>
                     </View>
                 </View>
             </View>
