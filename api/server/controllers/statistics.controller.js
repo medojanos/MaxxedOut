@@ -9,39 +9,30 @@ export const getStatistics = (req, res) => {
         FROM workouts
         WHERE user_id = ?`, [req.user], (e, workouts) => {
         if (e) return res.status(500).json({ success: false, message: "Database error" });
+
+        const maxesLifts = {"squat": 1, 
+                            "bench": 2, 
+                            "deadlift": 3
+        };
+
+        let query = [];
+
+        for (const [key, value] of Object.entries(maxesLifts)) {
+            query.push(`
+                        (SELECT weight FROM sets 
+                        JOIN workouts ON sets.workout_id = workouts.id 
+                        WHERE exercise_id = ${value} AND workouts.user_id = ? 
+                        ORDER BY weight DESC LIMIT 1) AS max_${key}, 
+                        (SELECT rep FROM sets 
+                        JOIN workouts ON sets.workout_id = workouts.id 
+                        WHERE exercise_id = ${value} AND workouts.user_id = ? 
+                        ORDER BY weight DESC, rep DESC LIMIT 1) AS reps_${key}`
+            );
+        };
+
         db.get(`SELECT 
             SUM(s.weight * s.rep) AS total_weight,
-
-            (SELECT weight FROM sets
-            JOIN workouts ON sets.workout_id = workouts.id
-            WHERE exercise_id = 1 AND workouts.user_id = ?
-            ORDER BY weight DESC LIMIT 1) AS max_squat,
-
-            (SELECT rep FROM sets
-            JOIN workouts ON sets.workout_id = workouts.id
-            WHERE exercise_id = 1 AND workouts.user_id = ?
-            ORDER BY weight DESC, rep DESC LIMIT 1) AS reps_squat,
-
-            (SELECT weight FROM sets
-            JOIN workouts ON sets.workout_id = workouts.id
-            WHERE exercise_id = 2 AND workouts.user_id = ?
-            ORDER BY weight DESC LIMIT 1) AS max_bench,
-
-            (SELECT rep FROM sets
-            JOIN workouts ON sets.workout_id = workouts.id
-            WHERE exercise_id = 2 AND workouts.user_id = ?
-            ORDER BY weight DESC, rep DESC LIMIT 1) AS reps_bench,
-
-            (SELECT weight FROM sets
-            JOIN workouts ON sets.workout_id = workouts.id
-            WHERE exercise_id = 3 AND workouts.user_id = ?
-            ORDER BY weight DESC LIMIT 1) AS max_deadlift,
-
-            (SELECT rep FROM sets
-            JOIN workouts ON sets.workout_id = workouts.id
-            WHERE exercise_id = 3 AND workouts.user_id = ?
-            ORDER BY weight DESC, rep DESC LIMIT 1) AS reps_deadlift
-
+            ${query.join(", ")}
             FROM sets s
             JOIN workouts w ON s.workout_id = w.id
             WHERE w.user_id = ?`, Array.from({length: 7}, () => req.user), (e, sets) => {
