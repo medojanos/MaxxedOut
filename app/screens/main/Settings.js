@@ -76,9 +76,9 @@ export default function Settings() {
                         <TextInput
                             keyboardType="numeric"
                             style={[MainStyle.input, MainStyle.setInput]}
-                            value={userData.weight?.toString() || "0"}
+                            value={userData.weight?.toString() !== "0" ? userData.weight?.toString() : "" || ""}
                             onChangeText={text => {
-                                if (!/^\d+(\.\d*)?$/.test(text)) return;
+                                if (!/^\d+(\.\d{0,1})?$/.test(text) && text !== "") return;
                                 setUserData(prev => ({...prev, weight: text}));
                                 Refresh()
                                 }}>
@@ -148,13 +148,13 @@ export default function Settings() {
                     <Text style={MainStyle.containerTitle}>Preferences</Text>
                 </View>
                 <View style={MainStyle.inlineContainer}>
-                    <Text style={MainStyle.lightText}>Resting time: </Text>
+                    <Text style={MainStyle.lightText}>Resting time:</Text>
                     <TextInput
                         keyboardType="numeric"
                         style={[MainStyle.input, MainStyle.setInput]}
-                        value={userData.preferences?.restingTime.toString() || "0"}
+                        value={userData.preferences?.restingTime.toString() !== "0" ? userData.preferences?.restingTime.toString() : "" || ""}
                         onChangeText={text => {
-                            if (!/^\d+$/.test(text)) return;
+                            if (!/^\d+$/.test(text) && text !== "") return;
                             setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}));
                             Refresh()
                             }}>
