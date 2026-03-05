@@ -70,7 +70,7 @@ export default function Settings() {
                     <Text style={MainStyle.lightText}>E-mail: </Text>
                     <Text style={MainStyle.lightText}>{userData.email}</Text>
                 </View>
-                <View style={MainStyle.inlineContainer}>
+                {/*<View style={MainStyle.inlineContainer}>
                     <Text style={MainStyle.lightText}>Weight: </Text>
                     <View style={MainStyle.inlineContainer}>
                         <TextInput
@@ -84,7 +84,7 @@ export default function Settings() {
                                 }}>
                         </TextInput>
                     </View>
-                </View>
+                </View>*/}
             </View>
             <Modal 
                 animationType="fade"

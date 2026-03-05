@@ -49,23 +49,17 @@ function MostImpressive(squat, bench, deadlift) {
     }
 
     const ratio = {
-        squat: squat / bench,
-        bench: 1,
-        deadlift: deadlift / bench
-    }
-
-    const differences = {
-        squat: ratio.squat - ideal.squat,
-        bench: ratio.bench - ideal.bench,
-        deadlift: ratio.deadlift - ideal.deadlift
+        squat: squat / ideal.squat,
+        bench: bench / ideal.bench,
+        deadlift: deadlift / ideal.deadlift
     }
     
-    const maxDiff = Math.max(differences.squat, differences.bench, differences.deadlift);
+    const maxDiff = Math.max(ratio.squat, ratio.bench, ratio.deadlift);
     
-    if(maxDiff === differences.squat && maxDiff === differences.bench && maxDiff === differences.deadlift) return "All lifts are equal";
-    if(maxDiff === differences.squat) lifts.push("Squat");
-    if(maxDiff === differences.bench) lifts.push("Bench");
-    if(maxDiff === differences.deadlift) lifts.push("Deadlift");
+    if(maxDiff === ratio.squat && maxDiff === ratio.bench && maxDiff === ratio.deadlift) return "All lifts are equal";
+    if(maxDiff === ratio.squat) lifts.push("Squat");
+    if(maxDiff === ratio.bench) lifts.push("Bench");
+    if(maxDiff === ratio.deadlift) lifts.push("Deadlift");
 
     return lifts.join(" & ");
 }
@@ -120,31 +114,31 @@ export default function Statistics() {
                     <Text style={MainStyle.lightText}>{statistics.avgDuration} minutes</Text>
                 </View>
                 <Text style={StatisticsStyle.statTitle}>Strength & volume</Text>
-                {weight ? <Text style={MainStyle.lightText}>{weight}</Text> : null
+                {//weight ? <Text style={MainStyle.lightText}>{weight}</Text> : null
                     // Rank depending on weight and one rep maxes (Bronze, Silver, Gold, Platinum, Diamond, etc.)
                 }
                 <View style={[MainStyle.container, {}]}>
                     <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Personal records</Text>
                     <View style={MainStyle.inlineContainer}>
                         <Text style={MainStyle.lightText}>Squat: </Text>
-                        <Text style={MainStyle.strongText}>{statistics.maxSquat} kg x {statistics.repsSquat}</Text>
+                        <Text style={MainStyle.strongText}>{statistics.maxSquat != 0 ? `${statistics.maxSquat} kg` : "No record"} {statistics.repsSquat != 0 ? `x ${statistics.repsSquat}` : null}</Text>
                     </View>
                     <View style={MainStyle.inlineContainer}>
                         <Text style={MainStyle.lightText}>Bench: </Text>
-                        <Text style={MainStyle.strongText}>{statistics.maxBench} kg x {statistics.repsBench}</Text>
+                        <Text style={MainStyle.strongText}>{statistics.maxBench != 0 ? `${statistics.maxBench} kg` : "No record"} {statistics.repsBench != 0 ? `x ${statistics.repsBench}` : null}</Text>
                     </View>
                     <View style={MainStyle.inlineContainer}>
                         <Text style={MainStyle.lightText}>Deadlift: </Text>
-                        <Text style={MainStyle.strongText}>{statistics.maxDeadlift} kg x {statistics.repsDeadlift}</Text>
+                        <Text style={MainStyle.strongText}>{statistics.maxDeadlift != 0 ? `${statistics.maxDeadlift} kg` : "No record"} {statistics.repsDeadlift != 0 ? `x ${statistics.repsDeadlift}` : null}</Text>
                     </View>
                     <Text style={[MainStyle.lightText, {textAlign: "center"}]}>Best lift: <Text style={MainStyle.strongText}>{MostImpressive(...oneRepMaxes)}</Text></Text>
                 </View>
                 <View style={MainStyle.inlineContainer}>
                     <View style={[MainStyle.container, {width: "50%"}]}>
                         <Text style={MainStyle.strongText}>1 Rep Max</Text>
-                        <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[0]} kg</Text></Text>
-                        <Text style={MainStyle.lightText}>Bench: <Text style={MainStyle.strongText}>{oneRepMaxes[1]} kg</Text></Text>
-                        <Text style={MainStyle.lightText}>Deadlift: <Text style={MainStyle.strongText}>{oneRepMaxes[2]} kg</Text></Text>
+                        <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[0] != 0 ? `${oneRepMaxes[0]} kg` : "No record"}</Text></Text>
+                        <Text style={MainStyle.lightText}>Bench: <Text style={MainStyle.strongText}>{oneRepMaxes[1] != 0 ? `${oneRepMaxes[1]} kg` : "No record"}</Text></Text>
+                        <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[2] != 0 ? `${oneRepMaxes[2]} kg` : "No record"}</Text></Text>
                     </View>
                     <View style={[MainStyle.container, {width: "45%", height: "85%"}]}>
                         <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Total</Text>
