@@ -6,13 +6,14 @@ export const getWorkoutByQuery = (req, res) => {
     if (Object.keys(req.query).length > 1) return res.status(400).json({success: false, message: "Invalid query parameters"});
 
     if (date) {
-        db.all("SELECT id, name, strftime('%s', ended_at) - strftime('%s', started_at) AS length FROM workouts WHERE DATE(ended_at) = ? AND user_id = ?", [date, req.user], (e, workouts) => {
+        db.all("SELECT id FROM workouts WHERE DATE(ended_at) = ? AND user_id = ?", [date, req.user], (e, workouts) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });
             if (workouts.length === 0) return res.status(404).json({ success: false, message: "No workout that day" });
             const workoutIds = workouts.map(w => w.id);
             db.all(`SELECT
                     w.id AS workout_id,
                     w.name AS workout_name,
+                    strftime('%s', w.ended_at) - strftime('%s', w.started_at) AS length,
                     e.id AS exercise_id,
                     COALESCE(s.exercise_name, e.name) AS exercise_name,
                     rep,
@@ -28,6 +29,7 @@ export const getWorkoutByQuery = (req, res) => {
                             workoutsMap[r.workout_id] = {
                                 id: r.workout_id,
                                 name: r.workout_name,
+                                length: r.length,
                                 exercises: {}
                             };
                         }
@@ -163,7 +165,7 @@ export const addWorkout = (req, res) => {
         let totalSets = 0;
         const id = this.lastID;
 
-        req.body.plan.forEach(exercise => {
+        req.body.plan?.forEach(exercise => {
             totalSets += exercise.sets.length;
         });
 

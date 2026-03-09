@@ -1,9 +1,8 @@
 // React
-import { View, ScrollView, StyleSheet, Text, Pressable, TextInput, Modal } from "react-native";
+import { View, ScrollView, Text, Pressable, TextInput, Modal } from "react-native";
 import { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { SafeAreaView } from "react-native-safe-area-context";
 import dayjs from "dayjs";
 
 // Misc
@@ -17,12 +16,6 @@ import Constants from 'expo-constants';
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
-
-const WorkoutStyle = StyleSheet.create({
-    infoContainer : {
-        backgroundColor: Var.black
-    }
-})
 
 export default function Workout() {
     const {token, workout, setWorkout} = useContext(Context);
@@ -229,9 +222,11 @@ export default function Workout() {
                 ownIndex={workout.ownIndex}
                 Close={() => setSearchModal(false)}>
             </AddExercise> 
-            <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
-                <Text style={MainStyle.buttonText}>Add exercise</Text>
-            </Pressable>
+            {workout.type !== "cardio" ?
+                <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
+                    <Text style={MainStyle.buttonText}>Add exercise</Text>
+                </Pressable> : null 
+            }
             <Modal visible={doneModal} transparent={true} animationType="fade">
                 <View style={MainStyle.overlay}>
                     <View style={MainStyle.modal}>

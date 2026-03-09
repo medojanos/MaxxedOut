@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     content: {
-        padding: 20,
+        padding: 10,
         backgroundColor: Var.black,
         flexGrow: 1
     },
@@ -99,5 +99,12 @@ export default StyleSheet.create({
         backgroundColor: "rgba(0,0,0,0.5)",
         justifyContent: "center",
         alignItems: "center",
+    },
+
+    quoteText : {
+        fontStyle: "italic", 
+        textAlign: "center",
+        color: Var.white,
+        fontSize: Var.fontSize * 1.1
     }
 })

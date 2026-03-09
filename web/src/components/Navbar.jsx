@@ -6,7 +6,8 @@ export default function Navbar() {
             <div className="container-lg">
                 <Link to="/"><h3>MaxxedOut</h3></Link>
                 <div>
-                    <Link to="https://github.com/medojanos/MaxxedOut" className="me-3">GitHub</Link>
+                    <Link to="https://github.com/medojanos/MaxxedOut">GitHub</Link>
+                    <Link to="/changelog" className="mx-3">Change Log</Link>
                     <Link to="/docs">Docs</Link>
                 </div>
             </div>
