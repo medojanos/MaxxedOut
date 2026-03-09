@@ -16,6 +16,7 @@ export default function Provider({children}) {
     }
 
     useEffect( () => {
+        if (token === undefined) return;
         setData("token", token);
     }, [token])
 

@@ -1,3 +1,5 @@
+import RandomNumber from "./RandomNumber";
+
 const Adjectives = [
   "Mighty", "Iron", "Savage", "Lean", "Ripped", "Bulked", "Flexed", "Beastly",
   "Strong", "Furious", "Steel", "Alpha", "Power", "Turbo", "Muscle", "Vicious",
@@ -13,10 +15,6 @@ const Nouns = [
   "Jugger", "Behemoth", "Hammer", "Macho", "Flexer", "Beastlord", "Powerlord", "Ironlord",
   "Pumpking", "Bulkzilla", "Flexzilla"
 ];
-
-function RandomNumber(max) {
-    return Math.floor(Math.random() * max);
-}
 
 export default function RandomName() {
     return Adjectives[RandomNumber(Adjectives.length)] + Nouns[RandomNumber(Nouns.length)] + RandomNumber(10) + RandomNumber(10)

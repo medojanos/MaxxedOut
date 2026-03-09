@@ -1,5 +1,6 @@
 // React
 import { useContext, useEffect, useState } from "react";
+import * as Notifications from 'expo-notifications';
 
 // Screens
 import Login from "./screens/misc/Login";
@@ -24,6 +25,7 @@ export default function App() {
             const data = await res.json();
             if (data.success) {
                 setToken(token);
+                await Notifications.requestPermissionsAsync();
                 setUserData(await getJson("user"));
                 setWorkout(await getJson("workout"));
             } else setUserData(undefined);

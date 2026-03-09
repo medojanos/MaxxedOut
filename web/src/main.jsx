@@ -6,6 +6,7 @@ import './main.css'
 import Navbar from './components/Navbar'
 import Home from './Home'
 import Registration from './Registration'
+import Changelog from './Changelog'
 import Docs from './Docs'
 import ForgotPassword from './ForgotPassword'
 import DeleteAccount from './DeleteAccount'
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/registration" element={<Registration />} />
+      <Route path="/changelog" element={<Changelog />} />
       <Route path="/docs" element={<Docs />} />
       <Route path="/password-recovery" element={<ForgotPassword />} />
       <Route path="/delete-account" element={<DeleteAccount />} />
