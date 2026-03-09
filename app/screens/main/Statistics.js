@@ -80,9 +80,9 @@ export default function Statistics() {
     useEffect(() => {
         if(statistics) {
             setOneRepMaxes([
-                    OneRepMax(statistics.maxSquat, statistics.repsSquat), 
-                    OneRepMax(statistics.maxBench, statistics.repsBench), 
-                    OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift)
+                    OneRepMax(statistics.maxSquat, statistics.repsSquat || 1), 
+                    OneRepMax(statistics.maxBench, statistics.repsBench || 1), 
+                    OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift || 1)
             ]);
             if (userData?.weight) setWeight(userData.weight);
         }
@@ -117,36 +117,43 @@ export default function Statistics() {
                 {//weight ? <Text style={MainStyle.lightText}>{weight}</Text> : null
                     // Rank depending on weight and one rep maxes (Bronze, Silver, Gold, Platinum, Diamond, etc.)
                 }
-                <View style={[MainStyle.container, {}]}>
-                    <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Personal records</Text>
-                    <View style={MainStyle.inlineContainer}>
-                        <Text style={MainStyle.lightText}>Squat: </Text>
-                        <Text style={MainStyle.strongText}>{statistics.maxSquat != 0 ? `${statistics.maxSquat} kg` : "No record"} {statistics.repsSquat != 0 ? `x ${statistics.repsSquat}` : null}</Text>
-                    </View>
-                    <View style={MainStyle.inlineContainer}>
-                        <Text style={MainStyle.lightText}>Bench: </Text>
-                        <Text style={MainStyle.strongText}>{statistics.maxBench != 0 ? `${statistics.maxBench} kg` : "No record"} {statistics.repsBench != 0 ? `x ${statistics.repsBench}` : null}</Text>
-                    </View>
-                    <View style={MainStyle.inlineContainer}>
-                        <Text style={MainStyle.lightText}>Deadlift: </Text>
-                        <Text style={MainStyle.strongText}>{statistics.maxDeadlift != 0 ? `${statistics.maxDeadlift} kg` : "No record"} {statistics.repsDeadlift != 0 ? `x ${statistics.repsDeadlift}` : null}</Text>
-                    </View>
-                    <Text style={[MainStyle.lightText, {textAlign: "center"}]}>Best lift: <Text style={MainStyle.strongText}>{MostImpressive(...oneRepMaxes)}</Text></Text>
-                </View>
-                <View style={MainStyle.inlineContainer}>
-                    <View style={[MainStyle.container, {width: "50%"}]}>
-                        <Text style={MainStyle.strongText}>1 Rep Max</Text>
-                        <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[0] != 0 ? `${oneRepMaxes[0]} kg` : "No record"}</Text></Text>
-                        <Text style={MainStyle.lightText}>Bench: <Text style={MainStyle.strongText}>{oneRepMaxes[1] != 0 ? `${oneRepMaxes[1]} kg` : "No record"}</Text></Text>
-                        <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[2] != 0 ? `${oneRepMaxes[2]} kg` : "No record"}</Text></Text>
-                    </View>
-                    <View style={[MainStyle.container, {width: "45%", height: "85%"}]}>
-                        <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Total</Text>
-                        <View style={{justifyContent: "center", alignItems: "center", flex: 1}}>
-                            <Text style={[MainStyle.strongText, {textAlign: "right"}]}>{oneRepMaxes[0] + oneRepMaxes[1] + oneRepMaxes[2]} kg</Text>
+                {oneRepMaxes.some(max => max !== 0) ?
+                    <View>
+                        <View style={[MainStyle.container, {}]}>
+                            <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Personal records</Text>
+                            <View style={MainStyle.inlineContainer}>
+                                <Text style={MainStyle.lightText}>Squat: </Text>
+                                <Text style={MainStyle.strongText}>{statistics.maxSquat != 0 ? `${statistics.maxSquat} kg` : "No record"} {statistics.repsSquat != 0 ? `x ${statistics.repsSquat}` : null}</Text>
+                            </View>
+                            <View style={MainStyle.inlineContainer}>
+                                <Text style={MainStyle.lightText}>Bench: </Text>
+                                <Text style={MainStyle.strongText}>{statistics.maxBench != 0 ? `${statistics.maxBench} kg` : "No record"} {statistics.repsBench != 0 ? `x ${statistics.repsBench}` : null}</Text>
+                            </View>
+                            <View style={MainStyle.inlineContainer}>
+                                <Text style={MainStyle.lightText}>Deadlift: </Text>
+                                <Text style={MainStyle.strongText}>{statistics.maxDeadlift != 0 ? `${statistics.maxDeadlift} kg` : "No record"} {statistics.repsDeadlift != 0 ? `x ${statistics.repsDeadlift}` : null}</Text>
+                            </View>
+                            <Text style={[MainStyle.lightText, {textAlign: "center"}]}>Best lift: <Text style={MainStyle.strongText}>{MostImpressive(...oneRepMaxes)}</Text></Text>
+                        </View>
+                        <View style={MainStyle.inlineContainer}>
+                            <View style={[MainStyle.container, {width: "50%"}]}>
+                                <Text style={MainStyle.strongText}>1 Rep Max</Text>
+                                <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[0] != 0 ? `${oneRepMaxes[0]} kg` : "No record"}</Text></Text>
+                                <Text style={MainStyle.lightText}>Bench: <Text style={MainStyle.strongText}>{oneRepMaxes[1] != 0 ? `${oneRepMaxes[1]} kg` : "No record"}</Text></Text>
+                                <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[2] != 0 ? `${oneRepMaxes[2]} kg` : "No record"}</Text></Text>
+                            </View>
+                            <View style={[MainStyle.container, {width: "45%", height: "85%"}]}>
+                                <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Total</Text>
+                                <View style={{justifyContent: "center", alignItems: "center", flex: 1}}>
+                                    <Text style={[MainStyle.strongText, {textAlign: "right"}]}>{oneRepMaxes[0] + oneRepMaxes[1] + oneRepMaxes[2]} kg</Text>
+                                </View>
+                            </View>
                         </View>
                     </View>
-                </View>
+                    :
+                    null
+                }
+                
                 <View style={MainStyle.container}>
                     <Text style={MainStyle.strongText}>Total volume lifted</Text>
                     <Text style={MainStyle.lightText}>{statistics.totalWeight} kg</Text>
