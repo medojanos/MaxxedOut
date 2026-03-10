@@ -1,7 +1,13 @@
 <h1>Change Log</h1>
 <p>All notable changes to this project will be documented in this file</p>
 
-<h2>v0.1.2</h2>
+<h2>v0.1.3 [Unreleased]</h2>
+<h3>Bugfixes</h3
+<p>Notification issues</p>
+<p>Exercise order</p>
+<p>Resting timer</p>
+
+<h2>v0.1.2 [Unreleased]</h2>
 <h3>Changes</h3>
 <p>Added cardio</p>
 <p>Push notifications</p>
