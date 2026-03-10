@@ -1,5 +1,5 @@
 // React
-import { View, Text, ScrollView, Pressable, Platform } from "react-native";
+import { View, Text, ScrollView, Pressable, Platform, Modal, TextInput } from "react-native";
 import { useState, useContext, useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -11,13 +11,14 @@ import WorkoutModal from "../../components/WorkoutModal";
 import { Context } from "../../misc/Provider";
 import displayTime from "../../misc/DisplayTime";
 import RandomQuote from "../../misc/RandomQuote";
+import Constants from "expo-constants";
 
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
 
 export default function Tracker() {
-    const { userData, workout, setWorkout } = useContext(Context);
+    const { userData, workout, setWorkout, token, refresh } = useContext(Context);
 
     const navigation = useNavigation();
 
@@ -29,20 +30,37 @@ export default function Tracker() {
     const [remainingTime, setRemainingTime] = useState(userData.preferences?.restingTime || 0);
     const [notificationId, setNotificationId] = useState(null);
 
+    const [saveModal, setSaveModal] = useState(false);
+    const [cancelModal, setCancelModal] = useState(false);
+    const [cardioModal, setCardioModal] = useState(false);
+
     const [workoutModal, setWorkoutModal] = useState(false);
 
     const [quote, setQuote] = useState("");
     useEffect(() => setQuote(RandomQuote()), []);
 
     useEffect(() => {
+        if (!restingInterval.current) {
+            setRemainingTime(userData.preferences.restingTime || 0);
+            setRestingTimer(displayTime(userData.preferences.restingTime || 0));
+        }
+    }, [refresh]);
+
+    useEffect(() => {
         if (!workout) return;
-        durationInterval.current = setInterval(() => {
-            setDurationTimer(() => {
-                const diff = Math.floor((new Date() - new Date(workout.started_at)) / 1000);
-                return displayTime(diff);
-            });
-        }, 1000);
-        return () => clearInterval(durationInterval.current);
+        if (!durationInterval.current) {
+            setDurationTimer("00:00");
+            durationInterval.current = setInterval(() => {
+                setDurationTimer(() => {
+                    const diff = Math.floor((new Date() - new Date(workout.started_at)) / 1000);
+                    return displayTime(diff);
+                });
+            }, 1000);
+        }
+        return () => {
+            clearInterval(durationInterval.current);
+            durationInterval.current = null;
+        }
     }, [workout]);
 
     function handleTimer(action) {
@@ -52,8 +70,7 @@ export default function Tracker() {
                 restingInterval.current = setInterval(() => {
                     setRemainingTime(prev => {
                         if (prev <= 0) {
-                            clearInterval(restingInterval.current);
-                            setRestingTimer(displayTime(0));
+                            handleTimer("reset");
                             return 0;
                         }
                         const newTime = prev - 1;
@@ -67,7 +84,7 @@ export default function Tracker() {
                             title: "Resting time is over!",
                             body: "Get back to your workout and crush it!"
                         },
-                        trigger: remainingTime,
+                        trigger: {seconds: remainingTime},
                     }).then(setNotificationId);
                 }
                 break;
@@ -80,9 +97,8 @@ export default function Tracker() {
                 break;
             case "reset":
                 handleTimer("pause");
-                const initialTime = userData.preferences.restingTime || 0;
-                setRemainingTime(initialTime);
-                setRestingTimer(displayTime(initialTime));
+                setRemainingTime(userData.preferences.restingTime || 0);
+                setRestingTimer(displayTime(userData.preferences.restingTime || 0));
                 break;
         }
     }
@@ -94,42 +110,129 @@ export default function Tracker() {
             {
             workout ?
                 <>
+                    {workout.type !== "cardio" ? <>
+                        <View style={MainStyle.container}>
+                            <View style={MainStyle.inlineContainer}>
+                                <Text style={MainStyle.strongText}>{workout.name}</Text>
+                                <Text style={MainStyle.lightText}>{durationTimer}</Text>
+                            </View>
+                            <Pressable
+                                style={MainStyle.button}
+                                onPress={() => navigation.navigate("Workout")}>
+                                <Text style={MainStyle.buttonText}>Continue workout</Text>
+                            </Pressable>
+                        </View>
+                        <View style={MainStyle.container}>
+                            <View style={MainStyle.inlineContainer}>
+                                <Text style={MainStyle.strongText}>Resting timer</Text>
+                                <Text style={MainStyle.lightText}>{restingTimer}</Text>
+                            </View>
+                            <View style={MainStyle.inlineContainer}>
+                                <Pressable
+                                    style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
+                                    onPress={() => {handleTimer("reset")}}>
+                                    <Text style={MainStyle.buttonText}>Reset</Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[MainStyle.button, MainStyle.buttonBlock]}
+                                    onPress={() => {handleTimer("start")}}>
+                                    <Text style={MainStyle.buttonText}>Start</Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
+                                    onPress={() => {handleTimer("pause")}}>
+                                    <Text style={MainStyle.buttonText}>Pause</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </>
+                    :
                     <View style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
-                            <Text style={MainStyle.strongText}>{workout.name}</Text>
+                            <View style={MainStyle.inlineContainer}>
+                                <Text style={[MainStyle.containerTitle, {marginEnd: 10}]}>{workout.name}</Text>
+                                <Pressable onPress={() => setCardioModal(true)}>
+                                    <Ionicons name="create" size={20} color={Var.red}></Ionicons>
+                                </Pressable>
+                            </View>
                             <Text style={MainStyle.lightText}>{durationTimer}</Text>
                         </View>
-                        <Pressable
-                            style={MainStyle.button}
-                            onPress={() => navigation.navigate("Workout")}>
-                            <Text style={MainStyle.buttonText}>Continue workout</Text>
-                        </Pressable>
-                    </View>
-                    {workout.type !== "cardio" ?
-                    <View style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
-                            <Text style={MainStyle.strongText}>Resting timer</Text>
-                            <Text style={MainStyle.lightText}>{restingTimer}</Text>
-                        </View>
-                        <View style={MainStyle.inlineContainer}>
-                            <Pressable
-                                style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
-                                onPress={() => {handleTimer("reset")}}>
-                                <Text style={MainStyle.buttonText}>Reset</Text>
+                            <Pressable style={[MainStyle.button, MainStyle.buttonBlock]}
+                                onPress={() => setSaveModal(true)}>
+                                <Text style={MainStyle.buttonText}>Save</Text>
                             </Pressable>
-                            <Pressable
-                                style={[MainStyle.button, MainStyle.buttonBlock]}
-                                onPress={() => {handleTimer("start")}}>
-                                <Text style={MainStyle.buttonText}>Start</Text>
-                            </Pressable>
-                            <Pressable
+                            <Pressable 
                                 style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
-                                onPress={() => {handleTimer("pause")}}>
-                                <Text style={MainStyle.buttonText}>Pause</Text>
+                                onPress={() => setCancelModal(true)}>
+                                <Text style={MainStyle.buttonText}>Cancel</Text>
                             </Pressable>
                         </View>
-                    </View>
-                    : null}
+                    </View> 
+                    }
+                    <Modal visible={cardioModal} transparent={true} animationType="fade">
+                        <View style={MainStyle.overlay}>
+                            <View style={MainStyle.modal}>
+                                <TextInput 
+                                    style={MainStyle.input}
+                                    value={workout.name} 
+                                    onChangeText={text => setWorkout(prev => ({...prev, name: text}))}>
+                                </TextInput>
+                                <Pressable style={MainStyle.button} onPress={() => setCardioModal(false)}>
+                                    <Text style={MainStyle.buttonText}>OK</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </Modal>
+                    <Modal visible={saveModal} transparent={true} animationType="fade">
+                        <View style={MainStyle.overlay}>
+                            <View style={MainStyle.modal}>
+                                <Text style={MainStyle.screenTitle}>Are you sure you want to save this workout?</Text>
+                                <Pressable style={MainStyle.secondaryButton} onPress={() => setSaveModal(false)}>
+                                    <Text style={MainStyle.buttonText}>No</Text>
+                                </Pressable>
+                                <Pressable style={MainStyle.button} onPress={() => {
+                                    fetch(Constants.expoConfig.extra.API_URL + "/workouts", {
+                                        method: "PUT",
+                                        headers: {
+                                            "Content-Type" : "application/json",
+                                            "Authorization" : token
+                                        },
+                                        body: JSON.stringify({
+                                            name: workout.name,
+                                            started_at: workout.started_at,
+                                            ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
+                                        })
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            setSaveModal(false);
+                                            setWorkout(null);
+                                        }
+                                    })
+                                }}>
+                                    <Text style={MainStyle.buttonText}>Yes</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </Modal>
+                    <Modal visible={cancelModal} transparent={true} animationType="fade">
+                        <View style={MainStyle.overlay}>
+                            <View style={MainStyle.modal}>
+                                <Text style={MainStyle.screenTitle}>Are you sure you want to cancel this workout?</Text>
+                                <Pressable style={MainStyle.secondaryButton} onPress={() => setCancelModal(false)}>
+                                    <Text style={MainStyle.buttonText}>No</Text>
+                                </Pressable>
+                                <Pressable style={MainStyle.button} onPress={() => {
+                                    setCancelModal(false);
+                                    setWorkout(null);
+                                }}>
+                                    <Text style={MainStyle.buttonText}>Yes</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </Modal>
                 </>
                 : 
                 <>

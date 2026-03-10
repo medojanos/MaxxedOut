@@ -6,34 +6,40 @@ export const getWorkoutByQuery = (req, res) => {
     if (Object.keys(req.query).length > 1) return res.status(400).json({success: false, message: "Invalid query parameters"});
 
     if (date) {
-        db.all("SELECT id FROM workouts WHERE DATE(ended_at) = ? AND user_id = ?", [date, req.user], (e, workouts) => {
-            if (e) return res.status(500).json({ success: false, message: "Database error" });
-            if (workouts.length === 0) return res.status(404).json({ success: false, message: "No workout that day" });
-            const workoutIds = workouts.map(w => w.id);
-            db.all(`SELECT
-                    w.id AS workout_id,
-                    w.name AS workout_name,
-                    strftime('%s', w.ended_at) - strftime('%s', w.started_at) AS length,
-                    e.id AS exercise_id,
-                    COALESCE(s.exercise_name, e.name) AS exercise_name,
-                    rep,
-                    weight
-                    FROM sets s
-                    LEFT JOIN exercises e ON s.exercise_id = e.id
-                    JOIN workouts w ON w.id = s.workout_id
-                    WHERE s.workout_id IN (${workoutIds.map(() => "?").join(",")})`, workoutIds, (e, rows) => {
-                    if (e) return res.status(500).json({ success: false, message: "Database error" });
-                    const workoutsMap = {};
-                    rows.forEach(r => {
-                        if (!workoutsMap[r.workout_id]) {
-                            workoutsMap[r.workout_id] = {
-                                id: r.workout_id,
-                                name: r.workout_name,
-                                length: r.length,
-                                exercises: {}
-                            };
-                        }
-                        const workout = workoutsMap[r.workout_id];
+        db.all(
+            `SELECT
+                w.id AS workout_id,
+                w.name AS workout_name,
+                strftime('%s', w.ended_at) - strftime('%s', w.started_at) AS duration,
+                e.id AS exercise_id,
+                COALESCE(s.exercise_name, e.name) AS exercise_name,
+                s.rep,
+                s.weight
+            FROM workouts w
+            LEFT JOIN sets s ON s.workout_id = w.id
+            LEFT JOIN exercises e ON s.exercise_id = e.id
+            WHERE DATE(w.ended_at) = ?
+            AND w.user_id = ?`,
+            [date, req.user],
+            (e, rows) => {
+                if (e) return res.status(500).json({ success: false, message: "Database error" });
+                if (rows.length === 0) return res.status(404).json({ success: false, message: "No workout that day" });
+
+                const workoutsMap = {};
+
+                rows.forEach(r => {
+                    if (!workoutsMap[r.workout_id]) {
+                        workoutsMap[r.workout_id] = {
+                            id: r.workout_id,
+                            name: r.workout_name,
+                            duration: r.duration,
+                            exercises: {}
+                        };
+                    }
+
+                    const workout = workoutsMap[r.workout_id];
+
+                    if (r.exercise_name) {
                         if (!workout.exercises[r.exercise_name]) {
                             workout.exercises[r.exercise_name] = {
                                 id: r.exercise_id,
@@ -41,21 +47,24 @@ export const getWorkoutByQuery = (req, res) => {
                                 sets: []
                             };
                         }
+
                         workout.exercises[r.exercise_name].sets.push({
                             weight: r.weight,
                             rep: r.rep
                         });
-                    });
-                    const result = Object.values(workoutsMap).map(w => ({
-                        id: w.id,
-                        name: w.name,
-                        duration: w.length,
-                        exercises: Object.values(w.exercises)
-                    }));
-                    res.json({ success: true, data: result});
-                }
-            );
-        });
+                    }
+                });
+
+                const result = Object.values(workoutsMap).map(w => ({
+                    id: w.id,
+                    name: w.name,
+                    duration: w.duration,
+                    exercises: Object.values(w.exercises)
+                }));
+
+                res.json({ success: true, data: result });
+            }
+        );
     } else if (name) {
         db.get("SELECT id, name FROM workouts WHERE user_id = ? AND name = ? ORDER BY ended_at DESC LIMIT 1", [req.user, name], (e, workout) => {
             if (e) return res.status(500).json({ success: false, message: "Database error" });

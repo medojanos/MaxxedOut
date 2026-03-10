@@ -222,11 +222,9 @@ export default function Workout() {
                 ownIndex={workout.ownIndex}
                 Close={() => setSearchModal(false)}>
             </AddExercise> 
-            {workout.type !== "cardio" ?
-                <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
-                    <Text style={MainStyle.buttonText}>Add exercise</Text>
-                </Pressable> : null 
-            }
+            <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
+                <Text style={MainStyle.buttonText}>Add exercise</Text>
+            </Pressable>
             <Modal visible={doneModal} transparent={true} animationType="fade">
                 <View style={MainStyle.overlay}>
                     <View style={MainStyle.modal}>
