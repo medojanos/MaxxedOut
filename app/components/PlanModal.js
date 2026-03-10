@@ -155,8 +155,9 @@ export default function PlanModal({ Close, visible, id, name }) {
                         onRequestClose={() => setDeleteModal(false)}>
                         <View style={MainStyle.overlay}>
                             <View style={MainStyle.modal}>
-                                <Text style={MainStyle.screenTitle}>Are you sure you want to delete 
-                                    <Text style={{fontStyle: "italic"}}>{name}</Text>?
+                                <Text style={MainStyle.screenTitle}>
+                                    Are you sure you want to delete
+                                    <Text style={{fontStyle: "italic"}}> {name}</Text> ?
                                 </Text>
                                 <Pressable style={MainStyle.secondaryButton} onPress={() => setDeleteModal(false)}>
                                     <Text style={MainStyle.buttonText}>No</Text>
