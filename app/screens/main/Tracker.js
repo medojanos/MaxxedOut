@@ -25,8 +25,8 @@ export default function Tracker() {
     const [durationTimer, setDurationTimer] = useState("00:00");
     
     const restingInterval = useRef(null);
-    const [restingTimer, setRestingTimer] = useState(displayTime(userData.preferences.restingTime || 0));
-    const [remainingTime, setRemainingTime] = useState(userData.preferences.restingTime || 0);
+    const [restingTimer, setRestingTimer] = useState(displayTime(userData.preferences?.restingTime || 0));
+    const [remainingTime, setRemainingTime] = useState(userData.preferences?.restingTime || 0);
     const [notificationId, setNotificationId] = useState(null);
 
     const [workoutModal, setWorkoutModal] = useState(false);
