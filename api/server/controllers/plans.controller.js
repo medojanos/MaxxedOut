@@ -129,7 +129,7 @@ export const updatePlan = (req, res) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
 
             let completed = 0;
-
+            
             function Check(err) {
                 if (err) return res.status(500).json({success: false, message: "Database error"}); 
                 completed++;

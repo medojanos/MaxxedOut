@@ -21,7 +21,8 @@ const CreateWorkoutStyle = StyleSheet.create({
 
 export default function CreateWorkout() {
     const [searchModal, setSearchModal] = useState();
-    
+    const [error, setError] = useState();
+
     const navigation = useNavigation();
 
     const {planDraft, setPlanDraft, token, Refresh} = useContext(Context);
@@ -67,15 +68,22 @@ export default function CreateWorkout() {
 
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
+            {error ? <Text style={MainStyle.lightText}>{error}</Text> : null}
             <TextInput 
                 placeholder="Enter workout name..." 
                 value={planDraft.name || ""}
                 style={MainStyle.input} 
-                onChangeText={text => setPlanDraft(prev => ({...prev, name : text}))}>
+                onChangeText={text => { 
+                    setPlanDraft(prev => ({...prev, name : text}));
+                    setError();
+                }}>
             </TextInput>
             <Pressable
                 style={MainStyle.button}
-                onPress={() => setSearchModal(true)}>
+                onPress={() => {
+                    setSearchModal(true);
+                    setError();
+                }}>
                 <Text style={MainStyle.buttonText}>Add exercise</Text>
             </Pressable>
             <AddExercise
@@ -129,6 +137,16 @@ export default function CreateWorkout() {
                 <Pressable
                     style={[MainStyle.button, MainStyle.buttonBlock]}
                     onPress={() => {
+                        if(planDraft.exercises.length == 0) {
+                            setError("No exercise added to plan!");
+                            return;
+                        }
+
+                        if(!planDraft.name) {
+                            setError("No plan name!");
+                            return;
+                        }
+
                         fetch(Constants.expoConfig.extra.API_URL + "/plans", {
                             method: "PUT",
                             headers: {
