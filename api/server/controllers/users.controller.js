@@ -1,6 +1,6 @@
 import db from "../config/db.js"
 import { hash, randomBytes } from 'crypto'
-import transporter from "../config/mail.js";
+import {transporter, createEmail} from "../config/mail.js";
 
 export const Register = (req, res) => {
     db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
@@ -53,8 +53,12 @@ export const forgotPassword = (req, res) => {
                     from: `"MaxxedOut" <${process.env.EMAIL_USER}>`,
                     to: req.body.email,
                     subject: "Password Recovery Code",
-                    text: `Your password recovery code is: ${code}`,
-                    html: `<h3>Your reset code is: ${code}</h3>`,
+                    html: createEmail(
+                        "Password Recovery Code", 
+                        "Your password recovery code is: ",
+                        "Please do not share it with anyone!",
+                        code),
+                    text: `Your password recovery code is: ${code} Please do not share it with anyone!`
                 });
                 res.json({ success: true, message: "Email sent!" });
             } catch (error) {

@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom"
-import Tracker from "./assets/tracker.png"
-import "./style/home.css"
+import Tracker from "../assets/tracker.png"
+import AppStore from "../assets/appstore.svg"
+import GooglePlay from "../assets/googleplay.svg"
+import "../style/home.css"
 
 export default function Home() {
   return (
@@ -39,9 +41,18 @@ export default function Home() {
                 <ion-icon name="analytics"></ion-icon>
                 <span>See results</span>
               </div>
-              <a href="https://github.com/medojanos/MaxxedOut/releases/download/v0.1.0/maxxedout-v0.1.0.apk"><button className="mb-3">DOWNLOAD the APK</button></a>
-              <br/>
-              <a href="https://github.com/medojanos/MaxxedOut"><button className="button-secondary">See it on GitHub</button></a>
+              <div className="flex justify-content-end">
+                <a href="https://github.com/medojanos/MaxxedOut">
+                  <button className="button">See it on GitHub</button>
+                </a>
+              </div>
+              <h5>Coming soon...</h5>
+              <a href="">
+                <img style={{height: "3rem"}} className="me-2 my-1" src={GooglePlay}></img>
+              </a>
+              <a href="">
+                <img style={{height: "3rem"}} src={AppStore}></img>
+              </a>
             </div>
           </div>
         </div>

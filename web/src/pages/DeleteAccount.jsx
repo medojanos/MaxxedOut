@@ -1,5 +1,5 @@
-import "./style/form.css"
-import "./main.css"
+import "../style/form.css"
+import "../main.css"
 import { useState } from "react";
 
 export default function DeleteAccount() {
