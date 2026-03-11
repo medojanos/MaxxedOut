@@ -4,12 +4,12 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import './main.css'
 
 import Navbar from './components/Navbar'
-import Home from './Home'
-import Registration from './Registration'
-import Changelog from './Changelog'
-import Docs from './Docs'
-import ForgotPassword from './ForgotPassword'
-import DeleteAccount from './DeleteAccount'
+import Home from './pages/Home'
+import Registration from './pages/Registration'
+import Changelog from './pages/Changelog'
+import Docs from './pages/Docs'
+import ForgotPassword from './pages/ForgotPassword'
+import DeleteAccount from './pages/DeleteAccount'
 import Footer from './components/Footer'
 
 createRoot(document.getElementById('root')).render(

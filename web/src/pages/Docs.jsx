@@ -5,8 +5,6 @@ export default function Docs() {
         document.getElementById("docs").innerHTML = markdown.slice(markdown.search("</b>"), markdown.length - 1);
     });
     return (
-        <section>
-            <div id="docs" className="container-lg"></div>
-        </section>
+        <section id="docs" className="content"></section>
     )
 }

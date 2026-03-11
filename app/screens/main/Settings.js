@@ -61,10 +61,12 @@ export default function Settings() {
                 </View>
                 <View style={MainStyle.inlineContainer}>
                     <Text style={MainStyle.lightText}>Nickname: </Text>
-                    <Text style={MainStyle.lightText}>{userData.nickname}</Text>
-                    <Pressable onPress={() => {setNicknameModal(true); setStatus("");}}>
-                        <Ionicons name="create" color={Var.red} size={25}></Ionicons>
-                    </Pressable>
+                    <View style={MainStyle.inlineContainer}>
+                        <Text style={[MainStyle.lightText, {marginEnd: 10}]}>{userData.nickname}</Text>
+                        <Pressable onPress={() => {setNicknameModal(true); setStatus("");}}>
+                            <Ionicons name="create" color={Var.red} size={25}></Ionicons>
+                        </Pressable>
+                    </View>
                 </View>
                 <View style={MainStyle.inlineContainer}>
                     <Text style={MainStyle.lightText}>E-mail: </Text>
@@ -93,7 +95,7 @@ export default function Settings() {
                 <View style={MainStyle.overlay}>
                     <View style={MainStyle.modal}>
                         <Text style={MainStyle.screenTitle}>Edit nickname</Text>
-                        <Text style={MainStyle.screenAltTitle}>{status}</Text>
+                        <Text style={MainStyle.lightText}>{status}</Text>
                         <View style={MainStyle.inlineContainer}>
                             <TextInput
                                 value={newNickname}
@@ -206,7 +208,7 @@ export default function Settings() {
                 <View style={MainStyle.overlay}>
                     <View style={MainStyle.modal}>
                         <Text style={MainStyle.screenTitle}>Edit password</Text>
-                        <Text style={MainStyle.screenAltTitle}>{status}</Text>
+                        <Text style={MainStyle.lightText}>{status}</Text>
                         <TextInput
                             secureTextEntry
                             placeholder="Enter current password..."
@@ -266,7 +268,7 @@ export default function Settings() {
             <View style={MainStyle.container}>
                 <View style={MainStyle.inlineContainer}>
                     <Ionicons name="information-circle" color={Var.red} size={40}></Ionicons>
-                    <Text style={MainStyle.containerTitle}>About v0.1.1</Text>
+                    <Text style={MainStyle.containerTitle}>About v{Constants.expoConfig.version}</Text>
                 </View>
                 <Text style={[MainStyle.lightText, {textAlign: 'center'}]}>© MaxxedOut. All rights reserved.</Text>
             </View>

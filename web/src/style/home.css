@@ -1,3 +1,9 @@
+@media (max-width: 992px) {
+    #hero {
+        text-align: center;
+    }
+} 
+
 #hero {
     height: 95vh;
     background-image: radial-gradient(var(--darkRed), 10% ,var(--black));
@@ -5,7 +11,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 1rem;
+    padding: 3rem;
 }
 
 #features div {

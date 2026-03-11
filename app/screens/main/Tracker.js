@@ -38,8 +38,7 @@ export default function Tracker() {
 
     const [workoutModal, setWorkoutModal] = useState(false);
 
-    const [quote, setQuote] = useState("");
-    useEffect(() => setQuote(RandomQuote()), []);
+    const [quote, setQuote] = useState(RandomQuote());
 
     useEffect(() => {
         if (!restingInterval.current) {
@@ -162,7 +161,7 @@ export default function Tracker() {
                         <View style={MainStyle.inlineContainer}>
                             <Pressable style={[MainStyle.button, MainStyle.buttonBlock]}
                                 onPress={() => setSaveModal(true)}>
-                                <Text style={MainStyle.buttonText}>Save</Text>
+                                <Text style={MainStyle.buttonText}>Done</Text>
                             </Pressable>
                             <Pressable 
                                 style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
