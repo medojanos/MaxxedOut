@@ -2,7 +2,7 @@
 <p>All notable changes to this project will be documented in this file</p>
 
 <h2>v0.1.3 [Unreleased]</h2>
-<h3>Bugfixes</h3
+<h3>Bugfixes</h3>
 <p>Notification issues</p>
 <p>Resting timer</p>
 <p>Status messages at settings</p>
