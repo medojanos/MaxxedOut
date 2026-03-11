@@ -4,16 +4,14 @@
 <h2>v0.1.3 [Unreleased]</h2>
 <h3>Bugfixes</h3
 <p>Notification issues</p>
-<p>Exercise order</p>
 <p>Resting timer</p>
+<p>Status messages at settings</p>
 
 <h2>v0.1.2 [Unreleased]</h2>
 <h3>Changes</h3>
 <p>Added cardio</p>
 <p>Push notifications</p>
 <p>Workout duration logs</p>
-<h3>Bugfixes</h3>
-<p>Background resting timer</p>
 
 <h2>v0.1.1 [Unreleased]</h2>
 <h3>Changes</h3>
