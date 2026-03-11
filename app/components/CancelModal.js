@@ -1,7 +1,13 @@
 // React
 import { View, Text, Pressable, Modal } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-export default function CancelModal(cancelModal, setCancelModal, setWorkout) {
+// Style
+import MainStyle from "../style/MainStyle";
+
+export default function CancelModal({ cancelModal, setCancelModal, setWorkout }) {
+    const navigation = useNavigation();
+    
     return (
         <Modal visible={cancelModal} transparent={true} animationType="fade">
             <View style={MainStyle.overlay}>
@@ -11,6 +17,7 @@ export default function CancelModal(cancelModal, setCancelModal, setWorkout) {
                         <Text style={MainStyle.buttonText}>No</Text>
                     </Pressable>
                     <Pressable style={MainStyle.button} onPress={() => {
+                        navigation.navigate("Home");
                         setCancelModal(false);
                         setWorkout(null);
                     }}>

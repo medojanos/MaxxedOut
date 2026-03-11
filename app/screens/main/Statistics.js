@@ -29,19 +29,6 @@ function MostImpressive(squat, bench, deadlift) {
 
     if(squat === 0 && bench === 0 && deadlift === 0) return "None";
 
-    let lifts = [];
-
-    if(bench === 0) {
-        if (squat / 1.35 == deadlift / 1.65) {
-            lifts.push("Squat");
-            lifts.push("Deadlift");
-
-            return lifts.join(" & ");
-        }
-
-        return squat / 1.35 > deadlift / 1.65 ? "Squat" : "Deadlift";
-    }
-
     const ideal = {
         squat: 1.35,
         bench: 1,
@@ -55,7 +42,8 @@ function MostImpressive(squat, bench, deadlift) {
     }
     
     const maxDiff = Math.max(ratio.squat, ratio.bench, ratio.deadlift);
-    
+    let lifts = [];
+
     if(maxDiff === ratio.squat && maxDiff === ratio.bench && maxDiff === ratio.deadlift) return "All lifts are equal";
     if(maxDiff === ratio.squat) lifts.push("Squat");
     if(maxDiff === ratio.bench) lifts.push("Bench");

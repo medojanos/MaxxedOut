@@ -8,6 +8,8 @@ import * as Notifications from "expo-notifications";
 
 // Misc
 import WorkoutModal from "../../components/WorkoutModal";
+import SaveModal from "../../components/SaveModal";
+import CancelModal from "../../components/CancelModal";
 import { Context } from "../../misc/Provider";
 import displayTime from "../../misc/DisplayTime";
 import RandomQuote from "../../misc/RandomQuote";
@@ -184,55 +186,23 @@ export default function Tracker() {
                             </View>
                         </View>
                     </Modal>
-                    <Modal visible={saveModal} transparent={true} animationType="fade">
-                        <View style={MainStyle.overlay}>
-                            <View style={MainStyle.modal}>
-                                <Text style={MainStyle.screenTitle}>Are you sure you want to save this workout?</Text>
-                                <Pressable style={MainStyle.secondaryButton} onPress={() => setSaveModal(false)}>
-                                    <Text style={MainStyle.buttonText}>No</Text>
-                                </Pressable>
-                                <Pressable style={MainStyle.button} onPress={() => {
-                                    fetch(Constants.expoConfig.extra.API_URL + "/workouts", {
-                                        method: "PUT",
-                                        headers: {
-                                            "Content-Type" : "application/json",
-                                            "Authorization" : token
-                                        },
-                                        body: JSON.stringify({
-                                            name: workout.name,
-                                            started_at: workout.started_at,
-                                            ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
-                                        })
-                                    })
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            setSaveModal(false);
-                                            setWorkout(null);
-                                        }
-                                    })
-                                }}>
-                                    <Text style={MainStyle.buttonText}>Yes</Text>
-                                </Pressable>
-                            </View>
-                        </View>
-                    </Modal>
-                    <Modal visible={cancelModal} transparent={true} animationType="fade">
-                        <View style={MainStyle.overlay}>
-                            <View style={MainStyle.modal}>
-                                <Text style={MainStyle.screenTitle}>Are you sure you want to cancel this workout?</Text>
-                                <Pressable style={MainStyle.secondaryButton} onPress={() => setCancelModal(false)}>
-                                    <Text style={MainStyle.buttonText}>No</Text>
-                                </Pressable>
-                                <Pressable style={MainStyle.button} onPress={() => {
-                                    setCancelModal(false);
-                                    setWorkout(null);
-                                }}>
-                                    <Text style={MainStyle.buttonText}>Yes</Text>
-                                </Pressable>
-                            </View>
-                        </View>
-                    </Modal>
+                    
+                    <SaveModal
+                        saveModal = {saveModal}
+                        setSaveModal = {setSaveModal}
+                        setWorkout = {setWorkout}
+                        body = {{
+                            name: workout.name,
+                            started_at: workout.started_at,
+                            ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
+                        }}
+                        token={token}>
+                    </SaveModal>
+                    <CancelModal
+                        cancelModal={cancelModal}
+                        setCancelModal={setCancelModal}
+                        setWorkout={setWorkout}>
+                    </CancelModal>
                 </>
                 : 
                 <>

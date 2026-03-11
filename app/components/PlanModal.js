@@ -195,7 +195,9 @@ export default function PlanModal({ Close, visible, id, name }) {
                                     Close();
                                 }
                             })
-                        }}><Text style={MainStyle.buttonText}>Save</Text></Pressable>
+                        }}>
+                            <Text style={MainStyle.buttonText}>Save</Text>
+                        </Pressable>
                         <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={Close}><Text style={MainStyle.buttonText}>Close</Text></Pressable>
                     </View>
                 </View>

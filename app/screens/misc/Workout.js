@@ -9,6 +9,8 @@ import dayjs from "dayjs";
 import { Context} from "../../misc/Provider";
 import Loader from "../../components/Loader";
 import ExerciseInfoModal from "../../components/ExerciseInfoModal";
+import SaveModal from "../../components/SaveModal";
+import CancelModal from "../../components/CancelModal";
 import ReArrange from "../../components/ReArrange";
 import AddExercise from "../../components/AddExercise";
 import Constants from 'expo-constants';
@@ -216,6 +218,7 @@ export default function Workout() {
                     </Pressable>
                 </View>
             ))}
+            
             <AddExercise
                 visible={searchModal}
                 addExercise={addExercise}
@@ -225,66 +228,33 @@ export default function Workout() {
             <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
                 <Text style={MainStyle.buttonText}>Add exercise</Text>
             </Pressable>
-            <Modal visible={doneModal} transparent={true} animationType="fade">
-                <View style={MainStyle.overlay}>
-                    <View style={MainStyle.modal}>
-                        <Text style={MainStyle.screenTitle}>Are you sure you want to save this workout?</Text>
-                        <Pressable style={MainStyle.secondaryButton} onPress={() => setDoneModal(false)}>
-                            <Text style={MainStyle.buttonText}>No</Text>
-                        </Pressable>
-                        <Pressable style={MainStyle.button} onPress={() => {
-                            fetch(Constants.expoConfig.extra.API_URL + "/workouts", {
-                                method: "PUT",
-                                headers: {
-                                    "Content-Type" : "application/json",
-                                    "Authorization" : token
-                                },
-                                body: JSON.stringify({
-                                    name: workout.name,
-                                    plan: workout.plan,
-                                    started_at: workout.started_at,
-                                    ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
-                                })
-                            })
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.success) {
-                                    navigation.navigate("Home");
-                                    setDoneModal(false);
-                                    setWorkout(null);
-                                }
-                            })
-                        }}>
-                            <Text style={MainStyle.buttonText}>Yes</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </Modal>
+
             <View style={MainStyle.inlineContainer}>
                 <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => setDoneModal(true)}>
                     <Text style={MainStyle.buttonText}>Done</Text>
                 </Pressable>
-                <Modal visible={cancelModal} transparent={true} animationType="fade">
-                    <View style={MainStyle.overlay}>
-                        <View style={MainStyle.modal}>
-                            <Text style={MainStyle.screenTitle}>Are you sure you want to cancel this workout?</Text>
-                            <Pressable style={MainStyle.secondaryButton} onPress={() => setCancelModal(false)}>
-                                <Text style={MainStyle.buttonText}>No</Text>
-                            </Pressable>
-                            <Pressable style={MainStyle.button} onPress={() => {
-                                navigation.navigate("Home");
-                                setCancelModal(false);
-                                setWorkout(null);
-                            }}>
-                                <Text style={MainStyle.buttonText}>Yes</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                </Modal>
                 <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setCancelModal(true)}>
                     <Text style={MainStyle.buttonText}>Cancel</Text>
                 </Pressable>
             </View>
+                        
+            <SaveModal
+                saveModal={doneModal}
+                setSaveModal={setDoneModal}
+                setWorkout={setWorkout}
+                body={{
+                    name: workout.name,
+                    plan: workout.plan,
+                    started_at: workout.started_at,
+                    ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
+                }}
+                token={token}>
+            </SaveModal>
+            <CancelModal
+                cancelModal={cancelModal}
+                setCancelModal={setCancelModal}
+                setWorkout={setWorkout}>
+            </CancelModal>
         </ScrollView>
     );
 }

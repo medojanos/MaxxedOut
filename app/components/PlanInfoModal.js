@@ -31,17 +31,17 @@ export default function PlanInfoModal({ Close, visible, id, name }) {
                 <View style={MainStyle.modal}>
                     <Text style={MainStyle.screenTitle}>{name} Details</Text>  
                     <View style={[MainStyle.inlineContainer, { marginVertical: 10 }]}>
-                        <Text style={MainStyle.lightText}>Total exercises: {planInfo?.totalExercises}</Text>
-                        <Text style={MainStyle.lightText}>Total sets: {planInfo?.totalSets}</Text>
+                        {planInfo?.totalExercises ? <Text style={MainStyle.lightText}>Total exercises: {planInfo?.totalExercises}</Text> : null }
+                        {planInfo?.totalSets ? <Text style={MainStyle.lightText}>Total sets: {planInfo?.totalSets}</Text> : null }
                     </View>
-                    <Text style={[MainStyle.containerTitle, { marginVertical: 10 }]}>Muscle groups</Text>
+                    {planInfo?.muscle_groups.length != 0 ? <Text style={[MainStyle.containerTitle, { marginVertical: 10 }]}>Muscle groups</Text> : null }
                     {planInfo?.muscle_groups.map((mg, index) => (
                         <View key={index} style={MainStyle.inlineContainer}>
                             <Text style={MainStyle.lightText}>{mg.muscle_group}</Text>
-                            <Text style={MainStyle.lightText}>{mg.sets} sets</Text>
+                            { mg.sets != 0 ? <Text style={MainStyle.lightText}>{mg.sets} sets</Text> : null }
                         </View>
                     ))}
-                    <Text style={[MainStyle.containerTitle, { marginVertical: 10 }]}>Types</Text>
+                    {planInfo?.types.length != 0 ? <Text style={[MainStyle.containerTitle, { marginVertical: 10 }]}>Types</Text> : null}
                     {planInfo?.types.map((type, index) => (
                         <View key={index} style={MainStyle.inlineContainer}>
                             <Text style={MainStyle.lightText}>{type.type}</Text>
