@@ -2,8 +2,6 @@ import db from "../config/db.js"
 import { hash, randomBytes } from 'crypto'
 import transporter from "../config/mail.js";
 
-// App
-
 export const Register = (req, res) => {
     db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});

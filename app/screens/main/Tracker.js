@@ -41,8 +41,8 @@ export default function Tracker() {
 
     useEffect(() => {
         if (!restingInterval.current) {
-            setRemainingTime(userData.preferences.restingTime || 0);
-            setRestingTimer(displayTime(userData.preferences.restingTime || 0));
+            setRemainingTime(userData.preferences?.restingTime || 0);
+            setRestingTimer(displayTime(userData.preferences?.restingTime || 0));
         }
     }, [refresh]);
 
