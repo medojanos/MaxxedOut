@@ -28,6 +28,7 @@ export default function Workout() {
     const [searchModal, setSearchModal] = useState(false);
     const [doneModal, setDoneModal] = useState(false);
     const [recentModal, setRecentModal] = useState(false);
+    const [status, setStatus] = useState();
 
     if (!workout) return <Loader></Loader>;
 
@@ -110,6 +111,7 @@ export default function Workout() {
 
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
+            <Text style={MainStyle.lightText}>{status}</Text>
             {workout.id ? 
                 <Pressable
                     style={MainStyle.secondaryButton}
@@ -137,9 +139,13 @@ export default function Workout() {
                 <TextInput 
                     style={MainStyle.input} 
                     value={workout.name} 
-                    onChangeText={text => setWorkout({...workout, name: text})}>
+                    onChangeText={text => {
+                        setWorkout({...workout, name: text});
+                        setStatus();
+                    }}>
                 </TextInput>
             }
+
             <Modal visible={doneModal} transparent={true} animationType="fade">
                 <View style={MainStyle.overlay}>
                     <View style={MainStyle.modal}></View>
@@ -175,7 +181,8 @@ export default function Workout() {
                             : 
                             <ExerciseInfoModal
                                 id={exercise.id}
-                                name={exerciseIndex+1 + ". " + exercise.name}/>
+                                name={exerciseIndex+1 + ". " + exercise.name}
+                            />
                             }
                         </View>
                         <Pressable onPress={() => deleteExercise(exerciseIndex)}>
@@ -218,17 +225,16 @@ export default function Workout() {
                     </Pressable>
                 </View>
             ))}
-            
+
             <AddExercise
                 visible={searchModal}
                 addExercise={addExercise}
                 ownIndex={workout.ownIndex}
-                Close={() => setSearchModal(false)}>
-            </AddExercise> 
+                Close={() => setSearchModal(false)}
+            /> 
             <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
                 <Text style={MainStyle.buttonText}>Add exercise</Text>
             </Pressable>
-
             <View style={MainStyle.inlineContainer}>
                 <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => setDoneModal(true)}>
                     <Text style={MainStyle.buttonText}>Done</Text>
@@ -237,7 +243,7 @@ export default function Workout() {
                     <Text style={MainStyle.buttonText}>Cancel</Text>
                 </Pressable>
             </View>
-                        
+
             <SaveModal
                 saveModal={doneModal}
                 setSaveModal={setDoneModal}
@@ -248,13 +254,12 @@ export default function Workout() {
                     started_at: workout.started_at,
                     ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
                 }}
-                token={token}>
-            </SaveModal>
+                token={token}
+                setStatus={setStatus}/>
             <CancelModal
                 cancelModal={cancelModal}
                 setCancelModal={setCancelModal}
-                setWorkout={setWorkout}>
-            </CancelModal>
+                setWorkout={setWorkout}/>
         </ScrollView>
     );
 }

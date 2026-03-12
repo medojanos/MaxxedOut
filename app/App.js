@@ -13,12 +13,28 @@ import { Context } from "./misc/Provider";
 import { getData, getJson, } from "./misc/Storage";
 import Constants from 'expo-constants';
 
+
+async function setNotifications() {
+    await Notifications.requestPermissionsAsync();
+    if (Platform.OS === "android") {
+        await Notifications.setNotificationChannelAsync("resting-timer", {
+            name: "Resting Timer",
+            importance: Notifications.AndroidImportance.HIGH,
+        });
+    }
+    Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: false
+        }),
+    });
+}
+
 export default function App() {
     const {setToken, userData, setUserData, setWorkout} = useContext(Context);
 
     const [loading, setLoading] = useState(true);
-
-    
 
     useEffect(() => {
         async function load() {
@@ -28,13 +44,7 @@ export default function App() {
                 const data = await res.json();
                 if (data.success) {
                     setToken(token);
-                    await Notifications.requestPermissionsAsync();
-                    if (Platform.OS === "android") {
-                        await Notifications.setNotificationChannelAsync("default", {
-                            name: "Resting Timer",
-                            importance: Notifications.AndroidImportance.HIGH,
-                        });
-                    }
+                    await setNotifications();
                     setUserData(await getJson("user"));
                     setWorkout(await getJson("workout"));
                 } else setUserData(undefined);

@@ -8,7 +8,7 @@ import Constants from "expo-constants";
 // Style
 import MainStyle from "../style/MainStyle";
 
-export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, token }) {
+export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, token, setStatus }) {
     const navigation = useNavigation();
 
     return (
@@ -34,6 +34,10 @@ export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, 
                                 navigation.navigate("Home");
                                 setSaveModal(false);
                                 setWorkout(null);
+                            }
+                            else {
+                                setStatus(data.message);
+                                setSaveModal(false);
                             }
                         })
                     }}>

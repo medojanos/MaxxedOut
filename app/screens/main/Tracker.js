@@ -35,10 +35,10 @@ export default function Tracker() {
     const [saveModal, setSaveModal] = useState(false);
     const [cancelModal, setCancelModal] = useState(false);
     const [cardioModal, setCardioModal] = useState(false);
-
     const [workoutModal, setWorkoutModal] = useState(false);
 
     const [quote, setQuote] = useState(RandomQuote());
+    const [status, setStatus] = useState();
 
     useEffect(() => {
         if (!restingInterval.current) {
@@ -83,7 +83,8 @@ export default function Tracker() {
                     Notifications.scheduleNotificationAsync({
                         content: {
                             title: "Resting time is over!",
-                            body: "Get back to your workout and crush it!"
+                            body: "Get back to your workout and crush it!",
+                            channelId: "resting-timer"
                         },
                         trigger: {seconds: remainingTime},
                     }).then(setNotificationId);
@@ -149,6 +150,7 @@ export default function Tracker() {
                     </>
                     :
                     <View style={MainStyle.container}>
+                        <Text style={MainStyle.lightText}>{status}</Text>
                         <View style={MainStyle.inlineContainer}>
                             <View style={MainStyle.inlineContainer}>
                                 <Text style={[MainStyle.containerTitle, {marginEnd: 10}]}>{workout.name}</Text>
@@ -177,7 +179,10 @@ export default function Tracker() {
                                 <TextInput 
                                     style={MainStyle.input}
                                     value={workout.name} 
-                                    onChangeText={text => setWorkout(prev => ({...prev, name: text}))}>
+                                    onChangeText={text => {
+                                        setWorkout(prev => ({...prev, name: text}));
+                                        setStatus();
+                                    }}>
                                 </TextInput>
                                 <Pressable style={MainStyle.button} onPress={() => setCardioModal(false)}>
                                     <Text style={MainStyle.buttonText}>OK</Text>
@@ -185,8 +190,8 @@ export default function Tracker() {
                             </View>
                         </View>
                     </Modal>
-                    
-                    <SaveModal
+
+                    <SaveModal                        
                         saveModal = {saveModal}
                         setSaveModal = {setSaveModal}
                         setWorkout = {setWorkout}
@@ -195,13 +200,14 @@ export default function Tracker() {
                             started_at: workout.started_at,
                             ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
                         }}
-                        token={token}>
-                    </SaveModal>
+                        token={token}
+                        setStatus={setStatus}
+                    />
                     <CancelModal
                         cancelModal={cancelModal}
                         setCancelModal={setCancelModal}
-                        setWorkout={setWorkout}>
-                    </CancelModal>
+                        setWorkout={setWorkout}
+                    />
                 </>
                 : 
                 <>

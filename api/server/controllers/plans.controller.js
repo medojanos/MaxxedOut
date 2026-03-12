@@ -98,9 +98,13 @@ export const getPlanInfo = (req, res) => {
 }
 
 export const addPlan = (req, res) => {
-    db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, req.body.name], function(e) {
+    const { name, exercises } = req.body;
+
+    if(!name || name.trim().length === 0) return res.status(400).json({success: false, message: "No plan name!"});
+
+    db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, name], function(e) {
         if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        if (req.body.exercises.length === 0) return res.json({success: true, message: "Workout plan created succesfully"});
+        if (exercises.length === 0) return res.json({success: true, message: "Workout plan created succesfully"});
         
         let completed = 0;
         const id = this.lastID;
@@ -108,10 +112,10 @@ export const addPlan = (req, res) => {
         function Check(err) {
             if (err) return res.status(500).json({success: false, message: "Database error"}); 
             completed++;
-            if (completed == req.body.exercises.length) res.json({success: true, message: "Workout plan created succesfully"})
+            if (completed == exercises.length) res.json({success: true, message: "Workout plan created succesfully"})
         }
 
-        req.body.exercises.forEach(exercise => {
+        exercises.forEach(exercise => {
             if (typeof exercise.id == "string") {
                 db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets) VALUES (?, ?, ?)", [id, exercise.name, exercise.sets], (e) => Check(e))
             } else {

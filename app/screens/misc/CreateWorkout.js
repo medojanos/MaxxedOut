@@ -21,7 +21,7 @@ const CreateWorkoutStyle = StyleSheet.create({
 
 export default function CreateWorkout() {
     const [searchModal, setSearchModal] = useState();
-    const [error, setError] = useState();
+    const [status, setStatus] = useState();
 
     const navigation = useNavigation();
 
@@ -68,21 +68,20 @@ export default function CreateWorkout() {
 
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
-            {error ? <Text style={MainStyle.lightText}>{error}</Text> : null}
+            <Text style={MainStyle.lightText}>{status}</Text>
             <TextInput 
                 placeholder="Enter workout name..." 
                 value={planDraft.name || ""}
                 style={MainStyle.input} 
                 onChangeText={text => { 
                     setPlanDraft(prev => ({...prev, name : text}));
-                    setError();
+                    setStatus();
                 }}>
             </TextInput>
             <Pressable
                 style={MainStyle.button}
                 onPress={() => {
                     setSearchModal(true);
-                    setError();
                 }}>
                 <Text style={MainStyle.buttonText}>Add exercise</Text>
             </Pressable>
@@ -137,16 +136,6 @@ export default function CreateWorkout() {
                 <Pressable
                     style={[MainStyle.button, MainStyle.buttonBlock]}
                     onPress={() => {
-                        if(planDraft.exercises.length == 0) {
-                            setError("No exercise added to plan!");
-                            return;
-                        }
-
-                        if(!planDraft.name) {
-                            setError("No plan name!");
-                            return;
-                        }
-
                         fetch(Constants.expoConfig.extra.API_URL + "/plans", {
                             method: "PUT",
                             headers: {
@@ -168,6 +157,9 @@ export default function CreateWorkout() {
                                 Refresh();
                                 setPlanDraft({name : "", ownIndex : 0, exercises : []});
                                 navigation.navigate("Home");
+                            }
+                            else {
+                                setStatus(data.message);
                             }
                         })
                     }}>
