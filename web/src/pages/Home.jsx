@@ -42,7 +42,7 @@ export default function Home() {
                 <span>See results</span>
               </div>
               <div className="flex justify-content-end">
-                <a href="https://github.com/medojanos/MaxxedOut">
+                <a href="https://github.com/medojanos/MaxxedOut" target="_blank">
                   <button className="button">See it on GitHub</button>
                 </a>
               </div>
