@@ -5,7 +5,7 @@
 <h3>Bugfixes</h3>
 <p>Notification issues</p>
 <p>Resting timer</p>
-<p>Status messages at settings</p>
+<p>Status messages</p>
 
 <h2>v0.1.2 [Unreleased]</h2>
 <h3>Changes</h3>
