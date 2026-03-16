@@ -191,7 +191,7 @@ export const addWorkout = (req, res) => {
         }
     
         plan.forEach(exercise => {
-            if(!exercise.id || typeof exercise.id == "string"){
+            if(!exercise.id || typeof exercise.id == "string") {
                 exercise.sets.forEach(set => {
                     db.run("INSERT INTO sets (workout_id, exercise_name, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.name, set.rep, set.weight], (e) => Check(e));
                 })          

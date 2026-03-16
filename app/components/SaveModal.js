@@ -20,6 +20,7 @@ export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, 
                         <Text style={MainStyle.buttonText}>No</Text>
                     </Pressable>
                     <Pressable style={MainStyle.button} onPress={() => {
+                        console.log(body);  
                         fetch(Constants.expoConfig.extra.API_URL + "/workouts", {
                             method: "PUT",
                             headers: {

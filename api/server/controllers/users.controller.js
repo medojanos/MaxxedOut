@@ -100,7 +100,10 @@ export const deleteUser = (req, res) => {
 }
 
 export const updateUser = (req, res) => {
+    const { nickname, email, password, currentPassword } = req.body;
+
     function update(column, columnData) {
+        if(columnData.trim().length === 0) return res.status(400).json({success: false, message: "Invalid " + column});
         db.run("UPDATE users SET " + column + " = ? WHERE id = ?", [columnData, req.user], (e) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
             db.get("SELECT email, nickname FROM users WHERE id = ?", [req.user], (e, row) => {
@@ -110,13 +113,13 @@ export const updateUser = (req, res) => {
         })
     }
 
-    if (req.body.nickname) return update("nickname", req.body.nickname);
-    if (req.body.email) return update("email", req.body.email);
-    if (req.body.password) {
-        return db.get("SELECT id FROM users WHERE password = ? AND id = ?", [hash("sha-512", req.body.currentPassword), req.user], (e, row) => {
+    if (nickname) return update("nickname", nickname);
+    if (email) return update("email", email);
+    if (password) {
+        return db.get("SELECT id FROM users WHERE password = ? AND id = ?", [hash("sha-512", currentPassword), req.user], (e, row) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
             if (!row) return res.status(401).json({success: false, message: "Invalid credentials"});
-            update("password", hash("sha-512", req.body.password))
+            update("password", hash("sha-512", password))
         })
     }
 
