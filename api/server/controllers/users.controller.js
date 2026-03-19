@@ -1,9 +1,15 @@
 import db from "../config/db.js"
 import { hash, randomBytes } from 'crypto'
 import {transporter, createEmail} from "../config/mail.js";
+import { validateHeaderName } from "http";
 
 export const Register = (req, res) => {
-    db.get("SELECT * FROM users WHERE email = ?", [req.body.email], (e, row) => {
+    const { email, password } = req.body;
+
+    if(!Validate(email) || !email.includes("@")) return returnError("Invalid email");  
+    if(!Validate(password) || password.length < 8) return returnError("Invalid password"); 
+
+    db.get("SELECT * FROM users WHERE email = ?", [email], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         if (row) { 
             return res.status(401).json({
@@ -11,7 +17,7 @@ export const Register = (req, res) => {
                 message: "Email already registered!"
             }); 
         }
-        db.run("INSERT INTO users (email, password) VALUES (?, ?)", [req.body.email, hash('sha-512', req.body.password)], (e) => {
+        db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hash('sha-512', password)], (e) => {
             if (e) return res.status(500).json({ success: false, message: "Database error"});
             res.json({success: true, message : "Successfully registered"});
         })
@@ -19,7 +25,12 @@ export const Register = (req, res) => {
 }
 
 export const Login = (req, res) => {
-    db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, row) => {
+    const { email, password } = req.body;
+
+    if(!Validate(email) || !email.includes("@")) return returnError("Invalid email");  
+    if(!Validate(password) || password.length < 8) return returnError("Invalid password"); 
+
+    db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [email, hash("sha-512", password)], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         if (!row) { 
             return res.status(401).json({
@@ -36,7 +47,11 @@ export const Login = (req, res) => {
 }
 
 export const forgotPassword = (req, res) => {
-    db.get("SELECT id FROM users WHERE email = ?", [req.body.email], (e, row) => {
+    const { email } = req.body;
+
+    if(!Validate(email) || !email.includes("@")) return returnError("Invalid email");  
+
+    db.get("SELECT id FROM users WHERE email = ?", [email], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         if (!row) { 
             return res.status(404).json({
@@ -51,12 +66,12 @@ export const forgotPassword = (req, res) => {
             try {
                 await transporter.sendMail({
                     from: `"MaxxedOut" <${process.env.EMAIL_USER}>`,
-                    to: req.body.email,
+                    to: email,
                     subject: "Password Recovery Code",
                     html: createEmail(
                         "Password Recovery Code", 
                         "Your password recovery code is: ",
-                        "Please do not share it with anyone!",
+                        "Please do not share it with anyone!",  
                         code),
                     text: `Your password recovery code is: ${code} Please do not share it with anyone!`
                 });
@@ -69,9 +84,15 @@ export const forgotPassword = (req, res) => {
 }
 
 export const resetPassword = (req, res) => {
-    db.get("SELECT c.code, u.id FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", [req.body.email], (e, row) => {
+    const { email, code, password } = req.body;
+
+    if(!Validate(email) || !email.includes("@")) return returnError("Invalid email");  
+    if(!Validate(code)) return returnError("Invalid code");  
+    if(!Validate(password) || password.length < 8) return returnError("Invalid password");  
+
+    db.get("SELECT c.code, u.id FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", [email], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        if (!row || row.code !== req.body.code) return res.status(400).json({success: false, message: "Invalid code"});
+        if (!row || row.code !== code) return res.status(400).json({success: false, message: "Invalid code"});
         db.run("UPDATE users SET password = ? WHERE id = ?", [hash("sha-512", req.body.password), row.id], (e) => {
             if (e) return res.status(500).json({success: false, message: "Database error"});
             res.json({success: true, message: "Password reset succesfully"});
@@ -80,16 +101,26 @@ export const resetPassword = (req, res) => {
 }
 
 export const verifyCode = (req, res) => {
-    db.get("SELECT c.code as code, expiry, DATETIME('now') as now FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", [req.body.email], (e, row) => {
+    const { email, code } = req.body;
+
+    if(!Validate(email) || !email.includes("@")) return returnError("Invalid email");  
+    if(!Validate(code)) return returnError("Invalid code");  
+
+    db.get("SELECT c.code as code, expiry, DATETIME('now') as now FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", [email], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
-        if (!row || row.code !== req.body.code) return res.status(400).json({success: false, message: "Invalid code"});
+        if (!row || row.code !== code) return res.status(400).json({success: false, message: "Invalid code"});
         if (row.now > row.expiry) return res.status(400).json({success: false, message: "Code expired"});
         res.json({success: true, message: "Code verified"});
     })
 }
 
 export const deleteUser = (req, res) => {
-    db.get("SELECT id FROM users WHERE email = ? AND password = ?", [req.body.email, hash("sha-512", req.body.password)], (e, row) => {
+    const { email, password } = req.body;
+
+    if(!Validate(email) || !email.includes("@")) return returnError("Invalid email");  
+    if(!Validate(password) || password.length < 8) return res.status(400).json({success: false, message: "Invalid password"});
+
+    db.get("SELECT id FROM users WHERE email = ? AND password = ?", [email, hash("sha-512", password)], (e, row) => {
         if (e) return res.status(500).json({success: false, message: "Database error"});
         if (!row) return res.status(401).json({success: false, message: "Invalid credentials"});
         db.run("DELETE FROM users WHERE id = ?", [row.id], (e) => {
@@ -138,17 +169,9 @@ export const getUsers = (req, res) => {
 export const addUser = (req, res) => {
     const {nickname, email, password} = req.body;
 
-    if(!nickname || nickname.trim().length < 3) {
-        return res.status(400).json({success: false, message: "Invalid nickname"})
-    }
-
-    if(!email || !email.includes("@")) {
-        return res.status(400).json({success: false, message: "Invalid email"})
-    }        
-    
-    if (!password || password.length < 8) {
-        return res.status(400).json({success: false, message: "Weak or no password"})
-    }
+    if(!Validate(nickname)) return returnError("Invalid nickname");  
+    if(!Validate(email) || !email.includes("@")) return returnError("Invalid email");  
+    if (!Validate(password) || password.length < 8) return returnError("Invalid password");  
 
     db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [nickname, email, hash("sha-512", password)], function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
@@ -159,17 +182,9 @@ export const addUser = (req, res) => {
 export const updateUserFromId = (req, res) => {
     const {nickname, email, password, id} = req.body;
 
-    if(!nickname || nickname.trim().length < 3) {
-        return res.status(400).json({success: false, message: "Invalid nickname"});
-    }
-
-    if(!email || !email.includes("@")) {
-        return res.status(400).json({success: false, message: "Invalid email"});
-    }
-
-    if(!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
-        return res.status(400).json({ success: false, message: "Id is required" });
-    }
+    if(!Validate(nickname)) return returnError("Invalid nickname");  
+    if(!Validate(email) || !email.includes("@")) return returnError("Invalid email");  
+    if(!validateNumber(id)) return returnError("Id is required");  
 
     const fields = ["nickname=?", "email=?"];
     const properties = [nickname, email]
@@ -206,9 +221,7 @@ export const updateUserFromId = (req, res) => {
 export const deleteUserFromId = (req, res) => {
     const { id } = req.params;
 
-    if(!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
-        return res.status(400).json({ success: false, message: "Id is required" });
-    }
+    if(!validateNumber(id)) return returnError("Id is required"); 
 
     db.run("DELETE FROM users WHERE id=?", id, function (e) {
         if (e) return res.status(500).json({success: false, message: "Database error"});
@@ -225,4 +238,20 @@ export const deleteUserFromId = (req, res) => {
         
         return res.json({success: true, message: "User deleted successfully!"});
     })
+}
+
+// Functions
+
+function Validate (param) {
+    if (!param || param.trim().length === 0) return false
+    return true
+}
+
+function validateNumber (param) {
+    if (!param || !Number.isInteger(Number(param)) || Number(param) <= 0) return false
+    return true
+}
+
+function returnError(message) {
+    return res.status(400).json({success: false, message: message});
 }

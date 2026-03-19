@@ -137,7 +137,7 @@ export default function CreateWorkout() {
                     style={[MainStyle.button, MainStyle.buttonBlock]}
                     onPress={() => {
                         fetch(Constants.expoConfig.extra.API_URL + "/plans", {
-                            method: "PUT",
+                            method: "POST",
                             headers: {
                                 "Content-Type" : "application/json",
                                 "Authorization" : token

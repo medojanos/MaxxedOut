@@ -8,7 +8,7 @@ router.get("/", authUser(), getPlans);
 router.get("/info/:id", authUser(), getPlanInfo);
 router.get("/:id", authUser(), getPlanById);
 
-router.put("/", authUser(), addPlan);
+router.post("/", authUser(), addPlan);
 
 router.patch("/:id", authUser(), updatePlan);
 
