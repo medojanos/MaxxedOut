@@ -45,6 +45,10 @@ export default function Tracker() {
             setRemainingTime(userData.preferences?.restingTime || 0);
             setRestingTimer(displayTime(userData.preferences?.restingTime || 0));
         }
+        return () => {
+            clearInterval(restingInterval.current);
+            restingInterval.current = null;
+        }
     }, [refresh]);
 
     useEffect(() => {
@@ -67,7 +71,8 @@ export default function Tracker() {
     function handleTimer(action) {
         switch (action) {
             case "start":
-                clearInterval(restingInterval.current);
+                if (restingInterval.current) return;
+                const secs = remainingTime;
                 restingInterval.current = setInterval(() => {
                     setRemainingTime(prev => {
                         if (prev <= 0) {
@@ -79,20 +84,20 @@ export default function Tracker() {
                         return newTime;
                     });
                 }, 1000);
-                if (Platform.OS === "android" && !notificationId) {
-                    Notifications.scheduleNotificationAsync({
-                        content: {
-                            title: "Resting time is over!",
-                            body: "Get back to your workout and crush it!",
-                            channelId: "resting-timer"
-                        },
-                        trigger: {seconds: remainingTime},
-                    }).then(setNotificationId);
-                }
+                const id = Notifications.scheduleNotificationAsync({
+                    content: {
+                        title: "Resting time is over!",
+                        body: "Get back to your workout!",
+                        channelId: "resting-timer"
+                    },
+                    trigger: {seconds: secs},
+                });
+                setNotificationId(id);
                 break;
             case "pause":
                 clearInterval(restingInterval.current);
-                if (Platform.OS === "android" && notificationId) {
+                restingInterval.current = null;
+                if (notificationId) {
                     Notifications.cancelScheduledNotificationAsync(notificationId);
                     setNotificationId(null);
                 }
