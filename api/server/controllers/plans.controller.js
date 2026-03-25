@@ -1,18 +1,19 @@
 import db from "../config/db.js"
+import { dbError, ReturnData, Success, Validate } from "../config/res.js";
 
 // App
 
 export const getPlans = (req, res) => {
     db.all("SELECT id, user_id, name FROM plans WHERE user_id = ?", [req.user], (e, rows) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        res.json({success: true, data: rows});
+        if (e) dbError(); 
+        ReturnData(res, rows);
     })
 }
 
 export const getPlanById = (req, res) => {
     db.all("SELECT e.id as id, COALESCE(pe.exercise_name, e.name) as name, pe.sets as sets FROM plans_exercises pe LEFT JOIN exercises e ON pe.exercise_id = e.id WHERE pe.plan_id = ?", [req.params.id], (e, rows) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        res.json({success: true, data: {plan: rows}});
+        if (e) dbError(); 
+        ReturnData(res, rows);
     })
 }
 
@@ -23,8 +24,8 @@ export const getPlanInfo = (req, res) => {
         LEFT JOIN exercises e ON pe.exercise_id = e.id 
         WHERE pe.plan_id = ?`,
         [req.params.id],
-        (err, rows) => {
-            if (err) return res.status(500).json({ success: false, message: "Database error" });
+        (e, rows) => {
+            if (e) return dbError();
 
             const exerciseTypes = {};
             const exIds = [];
@@ -52,16 +53,13 @@ export const getPlanInfo = (req, res) => {
 
             const musclegroupsMap = {};
             if (exIds.length === 0) {
-                return res.json({
-                    success: true,
-                    data: {
-                        types: Object.values(exerciseTypes),
-                        muscle_groups: [],
-                        custom: exCustom,
-                        totalExercises: rows.length,
-                        totalSets: totalSets
-                    }
-                });
+                ReturnData(res, {
+                    types: Object.values(exerciseTypes),
+                    muscle_groups: [],
+                    custom: exCustom,
+                    totalExercises: rows.length,
+                    totalSets: totalSets
+                })
             }
 
             db.all(
@@ -71,8 +69,8 @@ export const getPlanInfo = (req, res) => {
                 JOIN muscle_groups mg ON mg.id = mge.muscle_group_id 
                 WHERE pe.exercise_id IN (${exIds.map(() => "?").join(",")}) AND pe.plan_id = ?`,
                 [...exIds, req.params.id],
-                (err, mgRows) => {
-                    if (err) return res.status(500).json({ success: false, message: "Database error" });
+                (er, mgRows) => {
+                    if (er) return dbError();
 
                     mgRows.forEach(row => {
                         if (!musclegroupsMap[row.muscle_group]) {
@@ -81,15 +79,12 @@ export const getPlanInfo = (req, res) => {
                         if (row.role === "Primary") musclegroupsMap[row.muscle_group].sets += row.sets;
                     });
 
-                    res.json({
-                        success: true,
-                        data: {
-                            types: Object.values(exerciseTypes),
-                            muscle_groups: Object.values(musclegroupsMap),
-                            custom: exCustom,
-                            totalExercises: rows.length,
-                            totalSets: totalSets
-                        }
+                    ReturnData(res, {
+                        types: Object.values(exerciseTypes),
+                        muscle_groups: Object.values(musclegroupsMap),
+                        custom: exCustom,
+                        totalExercises: rows.length,
+                        totalSets: totalSets
                     });
                 }
             );
@@ -100,19 +95,19 @@ export const getPlanInfo = (req, res) => {
 export const addPlan = (req, res) => {
     const { name, exercises } = req.body;
 
-    if(!name || name.trim().length === 0) return res.status(400).json({success: false, message: "No plan name!"});
+    if(!Validate(name)) return Error(res, "Invalid plan name");
 
     db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, name], function(e) {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
-        if (exercises.length === 0) return res.json({success: true, message: "Workout plan created succesfully"});
+        if (e) return dbError();
+        if (exercises.length === 0) return Success(res, "Created workout plan");
         
         let completed = 0;
         const id = this.lastID;
 
         function Check(err) {
-            if (err) return res.status(500).json({success: false, message: "Database error"}); 
+            if (err) return dbError(); 
             completed++;
-            if (completed == exercises.length) res.json({success: true, message: "Workout plan created succesfully"})
+            if (completed == exercises.length) return Success(res, "Created workout plan")
         }
 
         exercises.forEach(exercise => {
@@ -127,17 +122,17 @@ export const addPlan = (req, res) => {
 
 export const updatePlan = (req, res) => {
     db.run("UPDATE plans SET name = ? WHERE id = ?", [req.body.name, req.params.id], (e) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        if (e) return dbError(); 
 
         db.run("DELETE FROM plans_exercises WHERE plan_id = ?", [req.params.id], function(e) {
-            if (e) return res.status(500).json({success: false, message: "Database error"});
+            if (e) return dbError();
 
             let completed = 0;
             
             function Check(err) {
-                if (err) return res.status(500).json({success: false, message: "Database error"}); 
+                if (err) return dbError(); 
                 completed++;
-                if (completed == req.body.exercises.length) res.json({success: true, message: "Workout plan updated succesfully"})
+                if (completed == req.body.exercises.length) Success(res, "Updated workout plan");
             }
 
             req.body.exercises.forEach(exercise => {
@@ -153,8 +148,8 @@ export const updatePlan = (req, res) => {
 
 export const deletePlan = (req, res) => {
     db.run("DELETE FROM plans WHERE id = ?", [req.params.id], (e) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"});
-        res.json({success: true, message: "Plan deleted succesfully"});
+        if (e) dbError();
+        Success(res, "Deleted workout plan");
     })
 }
 

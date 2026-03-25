@@ -1,4 +1,5 @@
 import db from "../config/db.js"
+import { dbError, Success } from "../config/res.js";
 
 export const getWorkoutByQuery = (req, res) => {
     const { month, date, name, limit } = req.query;
@@ -22,7 +23,7 @@ export const getWorkoutByQuery = (req, res) => {
             AND w.user_id = ?`,
             [date, req.user],
             (e, rows) => {
-                if (e) return res.status(500).json({ success: false, message: "Database error" });
+                if (e) return dbError();
                 if (rows.length === 0) return res.status(404).json({ success: false, message: "No workout that day" });
 
                 const workoutsMap = {};
@@ -67,7 +68,7 @@ export const getWorkoutByQuery = (req, res) => {
         );
     } else if (name) {
         db.get("SELECT id, name FROM workouts WHERE user_id = ? AND name = ? ORDER BY ended_at DESC LIMIT 1", [req.user, name], (e, workout) => {
-            if (e) return res.status(500).json({ success: false, message: "Database error" });
+            if (e) return dbError();
             if (!workout) return res.status(404).json({ success: false, message: "No recent workout" });
             db.all(`SELECT
                     e.id AS exercise_id,
@@ -78,7 +79,7 @@ export const getWorkoutByQuery = (req, res) => {
                     LEFT JOIN exercises e ON s.exercise_id = e.id
                     JOIN workouts w ON w.id = s.workout_id
                     WHERE s.workout_id = ?`, workout.id, (e, rows) => {
-                    if (e) return res.status(500).json({ success: false, message: "Database error" });
+                    if (e) return dbError();
 
                     const exercisesMap = {};
                     rows.forEach(r => {
@@ -104,7 +105,7 @@ export const getWorkoutByQuery = (req, res) => {
         });
     } else if (month) {
         db.all("SELECT DATE(ended_at) AS ended_at FROM workouts WHERE user_id = ? AND STRFTIME('%Y-%m', ended_at) = ?", [req.user, month], (e, rows) => {
-                if (e) return res.status(500).json({ success: false, message: "Database error" });
+                if (e) return dbError();
                 res.json({success: true, data: rows});
             }
         );
@@ -117,7 +118,7 @@ export const getWorkoutByQuery = (req, res) => {
             params.push(limit)
         };
         db.all(query, params, (e, rows) => {
-            if (e) return res.status(500).json({success: false, message: "Database error"}); 
+            if (e) dbError(); 
             res.json({success: true, data: rows});
         })
     }
@@ -126,7 +127,7 @@ export const getWorkoutByQuery = (req, res) => {
 export const getWorkoutById = (req, res) => {
     db.get(
         "SELECT id, name, strftime('%s', ended_at) - strftime('%s', started_at) AS length FROM workouts WHERE id = ?", [req.params.id], (e, workout) => {
-            if (e) return res.status(500).json({ success: false, message: "Database error" });
+            if (e) return dbError();
             db.all(
                 `SELECT 
                 e.id as exercise_id,
@@ -136,7 +137,7 @@ export const getWorkoutById = (req, res) => {
                 FROM sets s
                 LEFT JOIN exercises e ON s.exercise_id = e.id
                 WHERE s.workout_id = ?`, [workout.id],(e, rows) => {
-                    if (e) return res.status(500).json({ success: false, message: "Database error" });
+                    if (e) dbError();
                     const exercisesMap = {};
                     rows.forEach(r => {
                         if (!exercisesMap[r.exercise_name]) {
@@ -172,7 +173,7 @@ export const addWorkout = (req, res) => {
     if(!name || name.trim().length === 0) return res.status(400).json({success: false, message: "No workout name!"});
 
     db.run("INSERT INTO workouts (user_id, name, started_at, ended_at) VALUES (?, ?, ?, ?)", [req.user, name, started_at, ended_at], function(e) {
-        if (e) return res.status(500).json({success: false, message: "Database error"}); 
+        if (e) return dbError(); 
         
         let completed = 0;
         let totalSets = 0;
@@ -182,12 +183,12 @@ export const addWorkout = (req, res) => {
             totalSets += exercise.sets.length;
         });
 
-        if (totalSets == 0) return res.json({success: true, message: "Workout stored succesfully"})
+        if (totalSets == 0) return Success(res, "Workout saved");
 
         function Check(err) {
-            if (err) return res.status(500).json({success: false, message: "Database error"}); 
+            if (err) return dbError(); 
             completed++;
-            if (completed == totalSets) res.json({success: true, message: "Workout stored succesfully"})
+            if (completed == totalSets) Success(res, "Workout saved");
         }
     
         plan.forEach(exercise => {
@@ -206,7 +207,7 @@ export const addWorkout = (req, res) => {
 
 export const deleteWorkout = (req, res) => {
     db.run("DELETE FROM workouts WHERE id = ?", [req.params.id], (e) => {
-        if (e) return res.status(500).json({success: false, message: "Database error"});
-        res.json({success: true, message: "Workout deleted succesfully"});
+        if (e) return dbError();
+        Success(res, "Workout deleted");
     })
 }

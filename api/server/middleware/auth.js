@@ -16,14 +16,10 @@ export function authUser() {
     return async (req, res, next) => {
         try {
             const token = req.headers["authorization"];
-
-            if (!token)
-                return res.status(401).json({ success: false, message: "No token" });
+            if (!token) return res.status(401).json({ success: false, message: "No token" });
 
             const user = await getUserFromToken(token);
-
-            if (!user)
-                return res.status(401).json({ success: false, message: "Invalid token" });
+            if (!user) return res.status(401).json({ success: false, message: "Invalid token" });
 
             req.user = user.user_id;
 
@@ -41,7 +37,7 @@ export function authAdmin() {
         if (!key || key !== process.env.ADMIN_API_KEY) {
             return res.status(403).json({
                 success: false,
-                message: "Fuck you !!! Admin access denied"
+                message: "Admin access denied"
             });
         }
 

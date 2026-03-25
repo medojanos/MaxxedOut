@@ -1,4 +1,5 @@
 import db from "../config/db.js"
+import { dbError, ReturnData } from "../config/res.js";
 
 export const getStatistics = (req, res) => {    
     db.get(`
@@ -8,7 +9,7 @@ export const getStatistics = (req, res) => {
         AVG((strftime('%s', ended_at) - strftime('%s', started_at)) / 60.0) AS avg_duration
         FROM workouts
         WHERE user_id = ?`, [req.user], (e, workouts) => {
-        if (e) return res.status(500).json({ success: false, message: "Database error" });
+        if (e) return dbError();
 
         const maxesLifts = {"squat": 1, 
                             "bench": 2, 
@@ -36,7 +37,7 @@ export const getStatistics = (req, res) => {
             FROM sets s
             JOIN workouts w ON s.workout_id = w.id
             WHERE w.user_id = ?`, Array.from({length: 7}, () => req.user), (e, sets) => {
-            if (e) return res.status(500).json({ success: false, message: "Database error" });
+            if (e) return dbError();
 
             db.all(`
                 SELECT DISTINCT
@@ -45,24 +46,20 @@ export const getStatistics = (req, res) => {
                 FROM workouts
                 WHERE user_id = ?
                 ORDER BY year DESC, week DESC`, [req.user], (e, dates) => {
-                    if (e) return res.status(500).json({ success: false, message: "Database error" });
-                    
-                    res.json({
-                        success: true,
-                        data: {
-                            totalWorkouts: workouts.total_workouts || 0,
-                            totalDuration: Math.round(workouts.total_duration) || 0,
-                            avgDuration: Math.round(workouts.avg_duration) || 0,
-                            workoutStreak: countStreak(dates) || 0,
-                            totalWeight: sets.total_weight || 0,
-                            maxSquat: sets.max_squat || 0,
-                            repsSquat: sets.reps_squat || 0,
-                            maxBench: sets.max_bench || 0,
-                            repsBench: sets.reps_bench || 0,
-                            maxDeadlift: sets.max_deadlift || 0,
-                            repsDeadlift: sets.reps_deadlift || 0
-                        }
-                    });
+                    if (e) dbError();
+                    ReturnData(res, {
+                        totalWorkouts: workouts.total_workouts || 0,
+                        totalDuration: Math.round(workouts.total_duration) || 0,
+                        avgDuration: Math.round(workouts.avg_duration) || 0,
+                        workoutStreak: countStreak(dates) || 0,
+                        totalWeight: sets.total_weight || 0,
+                        maxSquat: sets.max_squat || 0,
+                        repsSquat: sets.reps_squat || 0,
+                        maxBench: sets.max_bench || 0,
+                        repsBench: sets.reps_bench || 0,
+                        maxDeadlift: sets.max_deadlift || 0,
+                        repsDeadlift: sets.reps_deadlift || 0
+                    })
             })
         });
     });
