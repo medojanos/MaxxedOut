@@ -10,7 +10,7 @@ export function ValidateNumber(param) {
 }
 
 export function ValidatePassword(password) {
-    if (!ValidateNumber(password)) return false;
+    if (!Validate(password)) return false;
     if (password < 8) return false;
     return true;
 }
@@ -23,6 +23,10 @@ export function dbError(res) {
     return res.status(500).json({success: false, message: "Database error"});
 }
 
+export function NotFound(res, message) {
+    return res.status(404).json({success: false, message: message});
+}
+
 export function Unauthorized(res) {
     return res.status(401).json({success: false, message: "Invalid credentials"});
 }
@@ -31,6 +35,6 @@ export function Success(res, message) {
     return res.json(200).json({success: true, message: message});
 }
 
-export function ReturnData(res, data, message) {
+export function ReturnData(res, data) {
     return res.json(200).json({success: true, data: data});
 }
