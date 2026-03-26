@@ -22,9 +22,11 @@ export default function PlanModal({ Close, visible, id, name }) {
     const { token, Refresh } = useContext(Context);
     
     useEffect(() => {
+        if(!id) return;
+
         fetch(`${Constants.expoConfig.extra.API_URL}/plans/${id}`, { headers: { "Authorization": token } })
             .then(res => res.json())
-            .then(data => setPlan({ id: id, name: name, ownIndex: 0, exercises: data.data.plan }))
+            .then(data => setPlan({ id: id, name: name, ownIndex: 0, exercises: data.data }))
     }, [id, name, token]);
 
     function addExercise(id, name) {

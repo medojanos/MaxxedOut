@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { Error, dbError, ReturnData, Success, Validate, ValidateNumber, ValidateArray } from "../config/res.js";
+import { Error, dbError, ReturnData, Success, Validate, ValidateNumber, ValidateArray } from "../config/utility.js";
 
 // App
 
@@ -16,11 +16,12 @@ export const getPlanById = (req, res) => {
     if(!ValidateNumber(id)) return Error(res, "Invalid id")
 
     db.all(`SELECT e.id as id, COALESCE(pe.exercise_name, e.name) as name, pe.sets as sets
-        FROM plans_exercises pe
-        LEFT JOIN exercises e ON pe.exercise_id = e.id
-        WHERE pe.plan_id = ?`, id, (e, rows) => {
+        FROM plans_exercises pe 
+        JOIN plans p ON p.id = pe.plan_id 
+        LEFT JOIN exercises e ON pe.exercise_id = e.id 
+        WHERE pe.plan_id = ? AND p.user_id = ?`, [req.params.id, req.user], (e, rows) => {
             if (e) return dbError(res); 
-            ReturnData(res, rows);
+            return ReturnData(res, rows);
     })
 }
 
@@ -32,8 +33,9 @@ export const getPlanInfo = (req, res) => {
     db.all(
         `SELECT e.id as exercise_id, COALESCE(pe.exercise_name, e.name) as name, e.type as type, pe.sets as sets 
         FROM plans_exercises pe 
+        JOIN plans p ON p.id = pe.plan_id 
         LEFT JOIN exercises e ON pe.exercise_id = e.id 
-        WHERE pe.plan_id = ?`, id, (e, rows) => {
+        WHERE pe.plan_id = ? AND p.user_id = ?`, [id, req.user], (e, rows) => {
             if (e) return dbError(res);
 
             const exerciseTypes = {};
@@ -168,7 +170,7 @@ export const deletePlan = (req, res) => {
 
     if(!ValidateNumber(id)) return Error(res, "Invalid plan id");
 
-    db.run("DELETE FROM plans WHERE id = ?", [id], (e) => {
+    db.run("DELETE FROM plans WHERE id = ? AND user_id = ?", [id, req.user], (e) => {
         if (e) return dbError(res);
         Success(res, "Deleted workout plan");
     })

@@ -4,19 +4,21 @@ export function Validate(param) {
 }
 
 export function ValidateArray(param) {
-    if (!param || param.length === 0) return false;
+    if (!param || param.length === 0 || !Array.isArray(param)) return false;
     return true;
 }
 
 export function ValidateNumber(param) {
     if (!Validate(param)) return false;
-    if (!Number.isInteger(Number(param)) || Number(param) <= 0) return false;
+
+    const num = Number(param);
+    if (!Number.isInteger(num) || num <= 0) return false;
     return true
 }
 
 export function ValidatePassword(password) {
     if (!Validate(password)) return false;
-    if (password.lenght < 8) return false;
+    if (password.length < 8) return false;
     return true;
 }
 

@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { dbError, ReturnData } from "../config/res.js";
+import { dbError, ReturnData } from "../config/utility.js";
 
 export const getStatistics = (req, res) => {    
     db.get(`

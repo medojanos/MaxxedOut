@@ -1,7 +1,7 @@
 import db from "../config/db.js"
 import { hash, randomBytes } from 'crypto'
 import {transporter, createEmail} from "../config/mail.js";
-import { Validate, ValidateNumber, ValidatePassword, Error, dbError, Unauthorized, Success, ReturnData, NotFound  } from "../config/res.js";
+import { Validate, ValidateNumber, ValidatePassword, Error, dbError, Unauthorized, Success, ReturnData, NotFound  } from "../config/utility.js";
 
 export const Register = (req, res) => {
     const { email, password } = req.body;
