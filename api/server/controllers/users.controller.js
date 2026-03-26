@@ -2,20 +2,19 @@ import db from "../config/db.js"
 import { hash, randomBytes } from 'crypto'
 import {transporter, createEmail} from "../config/mail.js";
 import { Validate, ValidateNumber, ValidatePassword, Error, dbError, Unauthorized, Success, ReturnData, NotFound  } from "../config/res.js";
-import { resolveMx } from "dns";
 
 export const Register = (req, res) => {
     const { email, password } = req.body;
 
-    if(!Validate(email) || !email.includes("@")) return Error("Invalid email");  
-    if(!ValidatePassword(password)) return Error("Invalid password"); 
+    if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email");  
+    if(!ValidatePassword(password)) return Error(res, "Invalid password"); 
 
     db.get("SELECT * FROM users WHERE email = ?", [email], (e, row) => {
         if (e) return dbError(res);
         if (row) return Error(res, "Email already registered");
         db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hash('sha-512', password)], (e) => {
             if (e) return dbError(res);
-            res.json({success: true, message : "Successfully registered"});
+            Success(res, "Successfully registered");
         })
     }) 
 }
@@ -42,7 +41,7 @@ export const forgotPassword = (req, res) => {
 
     if(!Validate(email) || !email.includes("@")) return Error("Invalid email");  
 
-    db.get("SELECT id FROM users WHERE email = ?", [email], (e, row) => {
+    db.get("SELECT id FROM users WHERE email = ?", email, (e, row) => {
         if (e) return dbError(res);
         if (!row) return NotFound(res, "Email not found");
 
@@ -61,9 +60,10 @@ export const forgotPassword = (req, res) => {
                         code),
                     text: `Your password recovery code is: ${code} Please do not share it with anyone!`
                 });
+
                 Success(res, "Email sent");
             } catch (error) {
-                res.status(500).json({ success: false, message: "Failed to send email!" });
+                return Error(res, "Failed to send email!");
             }
         })
     })
@@ -76,10 +76,10 @@ export const resetPassword = (req, res) => {
     if(!ValidateNumber(code)) return Error(res, "Invalid code");  
     if(!ValidatePassword(password)) return Error(res, "Invalid password");  
 
-    db.get("SELECT c.code, u.id FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", [email], (e, row) => {
-        if (e) dbError();
+    db.get("SELECT c.code, u.id FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", email, (e, row) => {
+        if (e) return dbError(res);
         if (!row || row.code !== code) return Error(res, "Invalid code");
-        db.run("UPDATE users SET password = ? WHERE id = ?", [hash("sha-512", req.body.password), row.id], (e) => {
+        db.run("UPDATE users SET password = ? WHERE id = ?", [hash("sha-512", password), row.id], (e) => {
             if (e) return dbError(res);
             Success(res, "Password restored succesfully");
         })
@@ -92,7 +92,7 @@ export const verifyCode = (req, res) => {
     if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email");  
     if(!Validate(code)) return Error(res, "Invalid code");  
 
-    db.get("SELECT c.code as code, expiry, DATETIME('now') as now FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", [email], (e, row) => {
+    db.get("SELECT c.code as code, expiry, DATETIME('now') as now FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", email, (e, row) => {
         if (e) return dbError(res);
         if (!row || row.code !== code) return Error(res, "Invalid code");
         if (row.now > row.expiry) return Error(res, "Expired code");
@@ -153,7 +153,7 @@ export const getUsers = (req, res) => {
 }
 
 export const addUser = (req, res) => {
-    const {nickname, email, password} = req.body;
+    const { nickname, email, password } = req.body;
 
     if(!Validate(nickname)) return Error(res, "Invalid nickname");  
     if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email");  
@@ -166,7 +166,7 @@ export const addUser = (req, res) => {
 }
 
 export const updateUserFromId = (req, res) => {
-    const {nickname, email, password, id} = req.body;
+    const { nickname, email, password, id } = req.body;
 
     if(!Validate(nickname)) return Error(res, "Invalid nickname");  
     if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email");  
@@ -174,7 +174,6 @@ export const updateUserFromId = (req, res) => {
 
     const fields = ["nickname=?", "email=?"];
     const properties = [nickname, email]
-
 
     if (password) 
     {
@@ -193,7 +192,7 @@ export const updateUserFromId = (req, res) => {
             if (e) return dbError(res);
         })
 
-        return Success(res, "User updated");
+        Success(res, "User updated");
     })
 }
 

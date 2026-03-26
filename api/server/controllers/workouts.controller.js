@@ -1,10 +1,10 @@
 import db from "../config/db.js"
-import { Error, dbError, Success, ReturnData, Validate } from "../config/res.js";
+import { Error, dbError, Success, ReturnData, Validate, NotFound } from "../config/res.js";
 
 export const getWorkoutByQuery = (req, res) => {
     const { month, date, name, limit } = req.query;
 
-    if (Object.keys(req.query).length > 1) return res.status(400).json({success: false, message: "Invalid query parameters"});
+    if (Object.keys(req.query).length > 1) return Error(res, "Invalid query parameters");
 
     if (date) {
         db.all(
@@ -24,7 +24,7 @@ export const getWorkoutByQuery = (req, res) => {
             [date, req.user],
             (e, rows) => {
                 if (e) return dbError(res);
-                if (rows.length === 0) return res.status(404).json({ success: false, message: "No workout that day" });
+                if (rows.length === 0) return NotFound(res, "No workout that day");
 
                 const workoutsMap = {};
 
@@ -69,7 +69,7 @@ export const getWorkoutByQuery = (req, res) => {
     } else if (name) {
         db.get("SELECT id, name FROM workouts WHERE user_id = ? AND name = ? ORDER BY ended_at DESC LIMIT 1", [req.user, name], (e, workout) => {
             if (e) return dbError(res);
-            if (!workout) return res.status(404).json({ success: false, message: "No recent workout" });
+            if (!workout) return NotFound(res, "No recent workout");
             db.all(`SELECT
                     e.id AS exercise_id,
                     COALESCE(s.exercise_name, e.name) AS exercise_name,
@@ -187,7 +187,7 @@ export const addWorkout = (req, res) => {
         function Check(err) {
             if (err) return dbError(res); 
             completed++;
-            if (completed == totalSets) Success(res, "Workout saved");
+            if (completed == totalSets) return Success(res, "Workout saved");
         }
     
         plan.forEach(exercise => {

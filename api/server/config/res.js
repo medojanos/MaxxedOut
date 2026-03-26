@@ -3,6 +3,11 @@ export function Validate(param) {
     return true;
 }
 
+export function ValidateArray(param) {
+    if (!param || param.length === 0) return false;
+    return true;
+}
+
 export function ValidateNumber(param) {
     if (!Validate(param)) return false;
     if (!Number.isInteger(Number(param)) || Number(param) <= 0) return false;
@@ -11,7 +16,7 @@ export function ValidateNumber(param) {
 
 export function ValidatePassword(password) {
     if (!Validate(password)) return false;
-    if (password < 8) return false;
+    if (password.lenght < 8) return false;
     return true;
 }
 
@@ -32,9 +37,9 @@ export function Unauthorized(res) {
 }
 
 export function Success(res, message) {
-    return res.json(200).json({success: true, message: message});
+    return res.status(200).json({success: true, message: message});
 }
 
 export function ReturnData(res, data) {
-    return res.json(200).json({success: true, data: data});
+    return res.status(200).json({success: true, data: data});
 }

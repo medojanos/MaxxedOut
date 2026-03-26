@@ -1,11 +1,15 @@
 import db from "../config/db.js"
-import { ReturnData, Validate, Error, dbError, Success, ValidateNumber } from "../config/res.js";
+import { ReturnData, Validate, Error, dbError, Success, ValidateNumber, ValidateArray, NotFound } from "../config/res.js";
 
 // App
 
 export const getAllExercises = (req, res) => {
-    db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role FROM exercises e LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id LEFT JOIN muscle_groups mg ON mge.muscle_group_id = mg.id", (e, rows) => {
+    db.all(`SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role 
+        FROM exercises e 
+        LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id 
+        LEFT JOIN muscle_groups mg ON mge.muscle_group_id = mg.id`, (e, rows) => {
         if (e) return dbError(res);
+
         const exercisesMap = {};
         
         rows.forEach(row => {
@@ -22,6 +26,7 @@ export const getAllExercises = (req, res) => {
                 if (!exercisesMap[row.id].muscle_groups[row.role]) {
                     exercisesMap[row.id].muscle_groups[row.role] = [];
                 }
+
                 exercisesMap[row.id].muscle_groups[row.role].push(row.muscle_group);
             }
         });
@@ -31,8 +36,16 @@ export const getAllExercises = (req, res) => {
 }
 
 export const getExerciseById = (req, res) => {
-    db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role FROM exercises e LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id LEFT JOIN muscle_groups mg ON mg.id=mge.muscle_group_id WHERE e.id=?", [req.params.id], (e, rows) => {
+    const { id } = req.params;
+    
+    if(!ValidateNumber(id)) return Error(res, "Invalid id");
+
+    db.all(`SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role 
+        FROM exercises e 
+        LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id 
+        LEFT JOIN muscle_groups mg ON mg.id=mge.muscle_group_id WHERE e.id=?`, id, (e, rows) => {
         if (e) return dbError(res);
+
         const musclegroupsMap = {};
 
         rows.forEach(row => {
@@ -49,7 +62,10 @@ export const getExerciseById = (req, res) => {
 // Admin
 
 export const getAllExercisesAdmin = (req, res) => {
-    db.all("SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group_name, mge.role as role, mg.id as muscle_group_id FROM exercises e LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id LEFT JOIN muscle_groups mg ON mge.muscle_group_id = mg.id", (e, rows) => {
+    db.all(`SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group_name, mge.role as role, mg.id as muscle_group_id 
+        FROM exercises e 
+        LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id 
+        LEFT JOIN muscle_groups mg ON mge.muscle_group_id = mg.id`, (e, rows) => {
         if (e) return dbError(res);
 
         const exercisesMap = {};
@@ -80,11 +96,11 @@ export const getAllExercisesAdmin = (req, res) => {
 }
 
 export const addExercise = (req, res) => {
-    const {name, type, musclesworked} = req.body;
+    const { name, type, musclesworked } = req.body;
 
     if(!Validate(name)) return Error(res, "Invalid exercise name");
     if(!Validate(type)) return Error(res, "Invalid type");
-    if(!Validate(musclesworked)) return Error(res, "Invalid muscles worked");
+    if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
 
     db.run("INSERT INTO exercises (name, type) VALUES (?, ?)", [name, type], function (e) {
         if (e) return dbError(res); 
@@ -114,21 +130,16 @@ export const addExercise = (req, res) => {
 }
 
 export const updateExercise = (req, res) => {    
-    const {id, name, type, musclesworked} = req.body;
+    const { id, name, type, musclesworked } = req.body;
 
-    if(!ValidateNumber(id)) return Error(res, "Invalid ID");
+    if(!ValidateNumber(id)) return Error(res, "Invalid id");
     if(!Validate(name)) return Error(res, "Invalid exercise name");
     if(!Validate(type)) return Error(res, "Invalid type");
-    if(!Validate(musclesworked)) return Error(res, "Invalid muscles worked");
+    if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
 
     db.run("UPDATE exercises SET name = ?, type = ? WHERE id = ?", [name, type, id], function (e) {
         if (e) return dbError(res); 
-        if (this.changes === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Exercise not found!"
-            });
-        }
+        if (this.changes === 0) return NotFound(res, "Exercise not found!");
         
         db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", id, function(e) {
             if (e) return dbError(res); 
@@ -137,19 +148,13 @@ export const updateExercise = (req, res) => {
             let responded = false;
 
             musclesworked.forEach(mg => {
-                if(!mg.id || !Number.isInteger(Number(mg.id)) || Number(mg.id) <= 0) {
-                    return res.status(400).json({success: false, message: "Invalid muscle id!"});
-                }      
-
-                if(!mg.role || mg.role.trim() === "") {
-                    return res.status(400).json({success: false, message: "Invalid muscle role!"});
-                }
+                if(!ValidateNumber(mg.id)) return NotFound(res, "Exercise not found!");
+                if(!Validate(mg.role)) return Error(res, "Invalid muscle role!");
 
                 db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, id, mg.role], function(e) {
                     if(responded) return;
                     
-                    if (e) 
-                    {
+                    if (e) {
                         responded = true;
                         return dbError(res); 
                     }
@@ -158,7 +163,7 @@ export const updateExercise = (req, res) => {
 
                     if(completed == musclesworked.length) {
                         responded = true;
-                        return res.json({success: true, message: "Exercise updated successfully!"});
+                        return Success(res, "Exercise updated successfully!");
                     }
                 })
             });
@@ -167,25 +172,18 @@ export const updateExercise = (req, res) => {
 }
 
 export const deleteExercise = (req, res) => {
-    const id  = Number(req.params.id);
+    const { id } = req.params;
     
-    if(!id || !Number.isInteger(id) || id <= 0) {
-        return res.status(400).json({ success: false, message: "Id is required" });
-    }
+    if(!ValidateNumber(id)) return Error(res, "Invalid id");
 
     db.run("DELETE FROM exercises WHERE id = ?", id, function (e) {
         if (e) return dbError(res); 
-        if (this.changes === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Exercise not found!"
-            });
-        }
+        if (this.changes === 0) return NotFound(res, "Exercise not found!");
         
         db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", id, function(e) {
             if (e) return dbError(res); 
         })
 
-        return res.json({success: true, message: "Exercise deleted successfully!"});
+        return Success(res, "Exercise deleted successfully!");
     })
 }

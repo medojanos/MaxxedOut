@@ -15,7 +15,7 @@ export const getAllMuscleGroups = (req, res) => {
 export const addMuscleGroup = (req, res) => {
     const { name } = req.body;
 
-    if (!Validate(name)) return Error("Name is required");
+    if (!Validate(name)) return Error(res, "Invalid name");
 
     db.run("INSERT INTO muscle_groups (name) VALUES (?)", name, function(e) {
         if (e) return dbError(res); 
@@ -24,10 +24,10 @@ export const addMuscleGroup = (req, res) => {
 }
 
 export const updateMuscleGroup = (req, res) => {
-    const {name, id} = req.body ?? {};
+    const { name, id } = req.body;
 
-    if (!Validate(name)) return Error("Name is required");
-    if (!ValidateNumber(id)) return Error("ID is invalid");
+    if (!Validate(name)) return Error(res, "Invalid name");
+    if (!ValidateNumber(id)) return Error(res, "Invalid id");
 
     db.run("UPDATE muscle_groups SET name=? WHERE id=?", [name, id], function(e) {
         if (e) return dbError(res); 
@@ -39,9 +39,7 @@ export const updateMuscleGroup = (req, res) => {
 export const deleteMuscleGroup = (req, res) => {
     const { id } = req.params;
 
-    if(!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
-        return res.status(400).json({ success: false, message: "Id is required" });
-    }
+    if(!ValidateNumber(id)) return Error(res, "Invalid id")
 
     db.run("DELETE FROM muscle_groups WHERE id=?", id, function(e) {
         if (e) return dbError(res); 
