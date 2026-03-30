@@ -11,6 +11,7 @@ import Docs from './pages/Docs'
 import ForgotPassword from './pages/ForgotPassword'
 import DeleteAccount from './pages/DeleteAccount'
 import Footer from './components/Footer'
+import FAQ from './pages/FAQ'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -20,6 +21,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/registration" element={<Registration />} />
       <Route path="/changelog" element={<Changelog />} />
       <Route path="/docs" element={<Docs />} />
+      <Route path="/faq" element={<FAQ />} />
       <Route path="/password-recovery" element={<ForgotPassword />} />
       <Route path="/delete-account" element={<DeleteAccount />} />
     </Routes>

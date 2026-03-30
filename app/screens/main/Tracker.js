@@ -13,14 +13,13 @@ import CancelModal from "../../components/CancelModal";
 import { Context } from "../../misc/Provider";
 import displayTime from "../../misc/DisplayTime";
 import RandomQuote from "../../misc/RandomQuote";
-import Constants from "expo-constants";
 
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
 
 export default function Tracker() {
-    const { userData, workout, setWorkout, token, refresh } = useContext(Context);
+    const { userData, workout, setWorkout, token } = useContext(Context);
 
     const navigation = useNavigation();
 
@@ -28,8 +27,9 @@ export default function Tracker() {
     const [durationTimer, setDurationTimer] = useState("00:00");
     
     const restingInterval = useRef(null);
-    const [restingTimer, setRestingTimer] = useState(displayTime(userData.preferences?.restingTime || 0));
-    const [remainingTime, setRemainingTime] = useState(userData.preferences?.restingTime || 0);
+    const [restingTimer, setRestingTimer] = useState(displayTime(userData.preferences?.restingTime));
+    const [remainingTime, setRemainingTime] = useState(userData.preferences?.restingTime);
+    const [endRestingTime, setEndRestingTime] = useState(null);
     const [notificationId, setNotificationId] = useState(null);
 
     const [saveModal, setSaveModal] = useState(false);
@@ -38,74 +38,81 @@ export default function Tracker() {
     const [workoutModal, setWorkoutModal] = useState(false);
 
     const [quote, setQuote] = useState(RandomQuote());
-    const [status, setStatus] = useState();
+
+    const [status, setStatus] = useState("");
+
+    useEffect(() => {
+        return () => {
+            if (durationInterval.current) clearInterval(durationInterval.current);
+            if (restingInterval.current) clearInterval(restingInterval.current);
+        };
+    }, []);
 
     useEffect(() => {
         if (!restingInterval.current) {
-            setRemainingTime(userData.preferences?.restingTime || 0);
-            setRestingTimer(displayTime(userData.preferences?.restingTime || 0));
+            setRemainingTime(userData.preferences?.restingTime);
+            setRestingTimer(displayTime(userData.preferences?.restingTime));
         }
-        return () => {
-            clearInterval(restingInterval.current);
-            restingInterval.current = null;
-        }
-    }, [refresh]);
+    }, [userData]);
 
     useEffect(() => {
         if (!workout) return;
-        if (!durationInterval.current) {
-            setDurationTimer("00:00");
-            durationInterval.current = setInterval(() => {
-                setDurationTimer(() => {
-                    const diff = Math.floor((new Date() - new Date(workout.started_at)) / 1000);
-                    return displayTime(diff);
-                });
-            }, 1000);
-        }
-        return () => {
-            clearInterval(durationInterval.current);
-            durationInterval.current = null;
-        }
-    }, [workout]);
+        clearInterval(durationInterval.current);
+        durationInterval.current = setInterval(() => {
+            const diff = Math.floor((Date.now() - new Date(workout.started_at)) / 1000);
+            setDurationTimer(displayTime(diff));
+        }, 1000);
+        return () => clearInterval(durationInterval.current);
+    }, [workout?.started_at]);
 
-    function handleTimer(action) {
+    async function handleTimer(action) {
         switch (action) {
             case "start":
                 if (restingInterval.current) return;
                 const secs = remainingTime;
+                const end = new Date(Date.now() + remainingTime * 1000 + 1000);
+                setEndRestingTime(end);
                 restingInterval.current = setInterval(() => {
-                    setRemainingTime(prev => {
-                        if (prev <= 0) {
-                            handleTimer("reset");
-                            return 0;
-                        }
-                        const newTime = prev - 1;
-                        setRestingTimer(displayTime(newTime));
-                        return newTime;
-                    });
+                    const now = new Date();
+                    const diff = Math.floor((end - now) / 1000);
+                    if (diff <= 0) {
+                        handleTimer("reset");
+                        return;
+                    }
+                    setRemainingTime(diff);
+                    setRestingTimer(displayTime(diff));
                 }, 1000);
-                const id = Notifications.scheduleNotificationAsync({
-                    content: {
-                        title: "Resting time is over!",
-                        body: "Get back to your workout!",
-                        channelId: "resting-timer"
-                    },
-                    trigger: {seconds: secs},
-                });
-                setNotificationId(id);
+                if (Platform.OS != "web") {
+                    const id = await Notifications.scheduleNotificationAsync({
+                        content: {
+                            title: "Resting time is over!",
+                            body: "Get back to your workout!",
+                            channelId: "resting-timer"
+                        },
+                        trigger: {seconds: secs}
+                    });
+                    setNotificationId(id);
+                }
                 break;
             case "pause":
                 clearInterval(restingInterval.current);
                 restingInterval.current = null;
-                if (notificationId) {
-                    Notifications.cancelScheduledNotificationAsync(notificationId);
+                if (endRestingTime) {
+                    const now = new Date();
+                    const diff = Math.max(0, Math.floor((endRestingTime - now) / 1000));
+                    setRemainingTime(diff);
+                    setRestingTimer(displayTime(diff));
+                }
+                if (notificationId && Platform.OS != "web") {
+                    await Notifications.cancelScheduledNotificationAsync(notificationId);
                     setNotificationId(null);
                 }
                 break;
             case "reset":
                 handleTimer("pause");
-                setRemainingTime(userData.preferences.restingTime || 0);
-                setRestingTimer(displayTime(userData.preferences.restingTime || 0));
+                setEndRestingTime(null);
+                setRemainingTime(userData.preferences.restingTime);
+                setRestingTimer(displayTime(userData.preferences.restingTime));
                 break;
         }
     }
@@ -137,19 +144,16 @@ export default function Tracker() {
                             </View>
                             <View style={MainStyle.inlineContainer}>
                                 <Pressable
-                                    style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
-                                    onPress={() => {handleTimer("reset")}}>
-                                    <Text style={MainStyle.buttonText}>Reset</Text>
-                                </Pressable>
-                                <Pressable
-                                    style={[MainStyle.button, MainStyle.buttonBlock]}
-                                    onPress={() => {handleTimer("start")}}>
-                                    <Text style={MainStyle.buttonText}>Start</Text>
-                                </Pressable>
-                                <Pressable
-                                    style={[MainStyle.secondaryButton, MainStyle.buttonBlock]}
                                     onPress={() => {handleTimer("pause")}}>
-                                    <Text style={MainStyle.buttonText}>Pause</Text>
+                                    <Ionicons name="pause-circle" size={50} color={Var.navyBlue}></Ionicons>
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => {handleTimer("start")}}>
+                                    <Ionicons name="play-circle" size={60} color={Var.red}></Ionicons>
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => {handleTimer("reset")}}>
+                                    <Ionicons name="stop-circle" size={50} color={Var.navyBlue}></Ionicons>
                                 </Pressable>
                             </View>
                         </View>
@@ -187,7 +191,7 @@ export default function Tracker() {
                                     value={workout.name} 
                                     onChangeText={text => {
                                         setWorkout(prev => ({...prev, name: text}));
-                                        setStatus();
+                                        setStatus("");
                                     }}>
                                 </TextInput>
                                 <Pressable style={MainStyle.button} onPress={() => setCardioModal(false)}>

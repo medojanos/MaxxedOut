@@ -72,21 +72,6 @@ export default function Settings() {
                     <Text style={MainStyle.lightText}>E-mail: </Text>
                     <Text style={MainStyle.lightText}>{userData.email}</Text>
                 </View>
-                {/*<View style={MainStyle.inlineContainer}>
-                    <Text style={MainStyle.lightText}>Weight: </Text>
-                    <View style={MainStyle.inlineContainer}>
-                        <TextInput
-                            keyboardType="numeric"
-                            style={[MainStyle.input, MainStyle.setInput]}
-                            value={userData.weight?.toString() !== "0" ? userData.weight?.toString() : "" || ""}
-                            onChangeText={text => {
-                                if (!/^\d+(\.\d{0,1})?$/.test(text) && text !== "") return;
-                                setUserData(prev => ({...prev, weight: text}));
-                                Refresh()
-                                }}>
-                        </TextInput>
-                    </View>
-                </View>*/}
             </View>
             <Modal 
                 animationType="fade"
@@ -123,17 +108,15 @@ export default function Settings() {
                                         "nickname" : newNickname
                                     })
                                 })
-                                .then(res => res.json())
+                                .then(res => res.json()
                                 .then(data => {
-                                    if (data.success) {
+                                    setStatus(data.message);
+                                    if (res.ok) {
                                         setUserData(data.data);
-                                        setStatus(data.message);
                                         setSaveDisabled(true);
                                         setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
-                                    } else {
-                                        setStatus(data.message);
                                     }
-                                })
+                                }))
                             }}>
                                 <Text style={MainStyle.buttonText}>Save</Text>
                             </Pressable>
@@ -245,17 +228,16 @@ export default function Settings() {
                                         "currentPassword": currentPassword
                                     })
                                 })
-                                .then(res => res.json())
+                                .then(res => res.json()
                                 .then(data => {
-                                    if (data.success) {
+                                    setStatus(data.message);
+                                    if (res.ok) {
                                         setUserData(data.data);
-                                        setStatus(data.message);
                                         setSaveDisabled(true);
                                         setTimeout(() => {setPasswordModal(false); setSaveDisabled(false)}, 2000);
-                                    } else {
-                                        setStatus(data.message);
                                     }
-                                })}}>
+                                }))
+                            }}>
                                 <Text style={MainStyle.buttonText}>Save</Text>
                             </Pressable>
                             <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setPasswordModal(false)}>
@@ -270,6 +252,10 @@ export default function Settings() {
                     <Ionicons name="information-circle" color={Var.red} size={40}></Ionicons>
                     <Text style={MainStyle.containerTitle}>About v{Constants.expoConfig.version}</Text>
                 </View>
+                <Text style={MainStyle.lightText}>Having trouble? Contact us at:</Text>
+                <Text style={[MainStyle.lightText, MainStyle.link, {marginVertical: 10, textAlign: "right"}]} onPress={() => Linking.openURL("mailto:maxxedout@meadowhub.net")}>
+                    maxxedout@meadowhub.net
+                </Text>
                 <Text style={[MainStyle.lightText, {textAlign: 'center'}]}>© MaxxedOut. All rights reserved.</Text>
             </View>
         </ScrollView>

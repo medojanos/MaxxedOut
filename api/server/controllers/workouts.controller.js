@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { Error, dbError, Success, ReturnData, Validate, NotFound } from "../config/utility.js";
+import { Error, dbError, Success, ReturnData, Validate, ValidateNumber, NotFound } from "../config/utility.js";
 
 export const getWorkoutByQuery = (req, res) => {
     const { month, date, name, limit } = req.query;

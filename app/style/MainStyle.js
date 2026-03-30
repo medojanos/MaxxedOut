@@ -20,6 +20,11 @@ export default StyleSheet.create({
         fontWeight: "bold"
     },
 
+    link : {
+        color: Var.red,
+        textDecorationLine: "underline"
+    },
+
     container : {
         padding: 20,
         backgroundColor: Var.darkGray,

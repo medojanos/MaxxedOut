@@ -1,7 +1,6 @@
 // React
 import { View, ScrollView, Text, Pressable, TextInput, Modal } from "react-native";
 import { useContext, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import dayjs from "dayjs";
 
@@ -21,8 +20,6 @@ import MainStyle from "../../style/MainStyle"
 
 export default function Workout() {
     const {token, workout, setWorkout} = useContext(Context);
-
-    const navigation = useNavigation();
 
     const [cancelModal, setCancelModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
@@ -117,9 +114,9 @@ export default function Workout() {
                     style={MainStyle.secondaryButton}
                     onPress={() => {
                         fetch(Constants.expoConfig.extra.API_URL + "/workouts?name=" + encodeURIComponent(workout.name), { headers: { Authorization: token } })
-                        .then(res => res.json())
+                        .then(res => res.json()
                         .then(data => {
-                            if (data.success) {
+                            if (res.ok) {
                                 setWorkout(prev => ({
                                     ...prev, 
                                     plan: prev.plan.map(ex => {
@@ -131,7 +128,7 @@ export default function Workout() {
                             else {
                                 setRecentModal(true);
                             }
-                        })
+                        }))
                     }}>
                     <Text style={MainStyle.buttonText}>Import recent</Text>
                 </Pressable>

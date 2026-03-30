@@ -24,6 +24,6 @@ router.post("/verify-code", verifyCode);
 
 router.patch("/user", authUser(), updateUser);
 
-router.delete("/user", authUser(), deleteUser);
+router.delete("/user", deleteUser);
 
 export default router;

@@ -3,6 +3,9 @@ export default function Changelog() {
     .then(res => res.text())
     .then(markdown => document.getElementById("changelog").innerHTML = markdown.slice(markdown.search("</p>", markdown.length - 1)));
     return (
-        <section id="changelog" className="content"></section>
+        <section>
+            <h2>Releases</h2>
+            <div id="changelog" className="content"></div>
+        </section>
     )
 }

@@ -1,7 +1,13 @@
 <h1>Change Log</h1>
 <p>All notable changes to this project will be documented in this file</p>
 
+<h2>v0.2.0 [Unreleased]</h2>
+<h3>Changes</h3>
+<p>Full UI change</p>
+
 <h2>v0.1.3 [Unreleased]</h2>
+<h3>Changes</h3>
+<p>Resting timer UI</p>
 <h3>Bugfixes</h3>
 <p>Notification issues</p>
 <p>Resting timer</p>

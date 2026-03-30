@@ -40,6 +40,7 @@ export default function Registration() {
             window.location.href = "/";
         }, 2000);
     })
+    .catch(setStatus);
   }
   
   function HandleInput(e){

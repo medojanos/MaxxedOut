@@ -28,18 +28,17 @@ export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, 
                             },
                             body: JSON.stringify(body)
                         })
-                        .then(res => res.json())
+                        .then(res => res.json()
                         .then(data => {
-                            if (data.success) {
+                            if (res.ok) {
                                 navigation.navigate("Home");
                                 setSaveModal(false);
                                 setWorkout(null);
-                            }
-                            else {
+                            } else {
                                 setStatus(data.message);
                                 setSaveModal(false);
                             }
-                        })
+                        }))
                     }}>
                         <Text style={MainStyle.buttonText}>Yes</Text>
                     </Pressable>

@@ -23,7 +23,6 @@ export const Login = (req, res) => {
     const { email, password } = req.body;
 
     if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email");  
-    if(!ValidatePassword(password)) return Error(res, "Invalid password"); 
 
     db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [email, hash("sha-512", password)], (e, row) => {
         if (e) return dbError(res);
@@ -103,8 +102,7 @@ export const verifyCode = (req, res) => {
 export const deleteUser = (req, res) => {
     const { email, password } = req.body;
 
-    if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email");  
-    if(!ValidatePassword(password)) return Error(res, "Invalid password");
+    if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email"); 
 
     db.get("SELECT id FROM users WHERE email = ? AND password = ?", [email, hash("sha-512", password)], (e, row) => {
         if (e) return dbError(res);

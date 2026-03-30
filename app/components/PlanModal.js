@@ -22,11 +22,11 @@ export default function PlanModal({ Close, visible, id, name }) {
     const { token, Refresh } = useContext(Context);
     
     useEffect(() => {
-        if(!id) return;
+        if (!id) return;
 
         fetch(`${Constants.expoConfig.extra.API_URL}/plans/${id}`, { headers: { "Authorization": token } })
-            .then(res => res.json())
-            .then(data => setPlan({ id: id, name: name, ownIndex: 0, exercises: data.data }))
+        .then(res => res.json())
+        .then(data => setPlan({ id: id, name: name, ownIndex: 0, exercises: data.data }))
     }, [id, name, token]);
 
     function addExercise(id, name) {
@@ -166,14 +166,14 @@ export default function PlanModal({ Close, visible, id, name }) {
                                 </Pressable>
                                 <Pressable style={MainStyle.button} onPress={() => {
                                     fetch(Constants.expoConfig.extra.API_URL + "/plans/" + id, {method: "DELETE", headers: {"Authorization" : token}})
-                                    .then(res => res.json())
+                                    .then(res => res.json()
                                     .then(data => {
-                                        if (data.success) {
+                                        if (res.ok) {
                                             setDeleteModal(false);
                                             Refresh();
                                             Close();
                                         }
-                                    })
+                                    }))
                                 }}>
                                     <Text style={MainStyle.buttonText}>Yes</Text>
                                 </Pressable>
@@ -190,13 +190,13 @@ export default function PlanModal({ Close, visible, id, name }) {
                                 },
                                 body: JSON.stringify(plan)
                             })
-                            .then(res => res.json())
+                            .then(res => res.json()
                             .then(data => {
-                                if (data.success) {
+                                if (res.ok) {
                                     Refresh();
                                     Close();
                                 }
-                            })
+                            }))
                         }}>
                             <Text style={MainStyle.buttonText}>Save</Text>
                         </Pressable>

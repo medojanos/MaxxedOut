@@ -7,8 +7,9 @@ export default function Navbar() {
                 <Link to="/"><h3 id="brand">MaxxedOut</h3></Link>
                 <div>
                     <Link to="https://github.com/medojanos/MaxxedOut" target="_blank">GitHub</Link>
-                    <Link to="/changelog" className="mx-3">Change Log</Link>
+                    <Link to="/changelog">Change Log</Link>
                     <Link to="/docs">Docs</Link>
+                    <Link to="/faq">FAQ</Link>
                 </div>
             </div>
         </nav>

@@ -22,6 +22,7 @@ export default function DeleteAccount() {
     })
     .then(res => res.json())
     .then(data => setStatus(data.message))
+    .catch(setStatus);
   }
 
   function HandleInput(e){
@@ -31,7 +32,6 @@ export default function DeleteAccount() {
         break;
       case "password":
         setPassword(e.target.value); 
-        evaluatePwdStrength(e.target.value);
         break;
     }
   }
@@ -44,7 +44,7 @@ export default function DeleteAccount() {
           <input name="email" type="email" autoComplete="on" onInput={HandleInput} required placeholder="E-mail address"></input>
           <input name="password" type="password" onInput={HandleInput} required placeholder="Password"></input>
           <input type="checkbox" required className="checkbox"></input>
-          <label for="checkbox">I understand that this action is irreversible</label>
+          <label htmlFor="checkbox">I understand that this action is irreversible</label>
           <input type="submit" value={"Delete my account"}></input>
           {status}
         </form>

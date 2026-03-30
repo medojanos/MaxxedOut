@@ -151,9 +151,9 @@ export default function CreateWorkout() {
                                 }))
                             })
                         })
-                        .then(res => res.json())
+                        .then(res => res.json()
                         .then(data => {
-                            if (data.success) {
+                            if (res.ok) {
                                 Refresh();
                                 setPlanDraft({name : "", ownIndex : 0, exercises : []});
                                 navigation.navigate("Home");
@@ -161,7 +161,7 @@ export default function CreateWorkout() {
                             else {
                                 setStatus(data.message);
                             }
-                        })
+                        }))
                     }}>
                     <Text style={MainStyle.buttonText}>Save</Text>
                 </Pressable>

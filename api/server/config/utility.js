@@ -23,25 +23,25 @@ export function ValidatePassword(password) {
 }
 
 export function Error(res, message) {
-    return res.status(400).json({success: false, message: message});
+    return res.status(400).json({message: message});
 }
 
 export function dbError(res) {
-    return res.status(500).json({success: false, message: "Database error"});
+    return res.status(500).json({message: "Database error"});
 }
 
 export function NotFound(res, message) {
-    return res.status(404).json({success: false, message: message});
+    return res.status(404).json({message: message});
 }
 
 export function Unauthorized(res) {
-    return res.status(401).json({success: false, message: "Invalid credentials"});
+    return res.status(401).json({message: "Invalid credentials"});
 }
 
 export function Success(res, message) {
-    return res.status(200).json({success: true, message: message});
+    return res.status(200).json({message: message});
 }
 
 export function ReturnData(res, data) {
-    return res.status(200).json({success: true, data: data});
+    return res.status(200).json({data: data});
 }

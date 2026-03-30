@@ -65,14 +65,14 @@ export default function LogModal({visible, Close, workouts, status}) {
                                             method: "DELETE",
                                             headers: {"Authorization" : token}
                                         })
-                                        .then(res => res.json())
+                                        .then(res => res.json()
                                         .then(data => {
-                                            if (data.success) {
+                                            if (res.ok) {
                                                 Refresh();
                                                 setDeleteModal(false);
                                                 Close();
                                             }
-                                        })
+                                        }))
                                     }}>
                                     <Text style={MainStyle.buttonText}>Delete</Text>
                                 </Pressable>

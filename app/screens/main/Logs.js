@@ -31,8 +31,8 @@ export default function Logs() {
 
     useEffect(() => {
         fetch(Constants.expoConfig.extra.API_URL + "/workouts/" + "?limit=5", {headers: {"Authorization" : token}})
-        .then(res => res.json())
-        .then(data => data.success ? setLatest(data.data) : setStatus(data.message))
+        .then(res => res.json()
+        .then(data => res.ok ? setLatest(data.data) : setStatus(data.message)))
         
         const date = new Date();
         fetchMarkedDates({year: date.getFullYear(), month: date.getMonth() + 1});
@@ -40,16 +40,14 @@ export default function Logs() {
 
     function fetchMarkedDates(date) {
         fetch(Constants.expoConfig.extra.API_URL + "/workouts" + "?month=" + date.year + "-" + String(date.month).padStart(2, '0'), {headers: {"Authorization" : token}})
-        .then(res => res.json())
+        .then(res => res.json()
         .then(data => {
-            if (data.success) {
-                const marks = {};
-                data.data.forEach(workout => {
-                    marks[workout.ended_at] = {marked: true, dotColor: Var.red};
-                })
-                setMarkedDates(marks);
-            }
-        })
+            const marks = {};
+            data.data.forEach(workout => {
+                marks[workout.ended_at] = {marked: true, dotColor: Var.red};
+            })
+            setMarkedDates(marks);
+        }))
     }
 
     return (
@@ -63,13 +61,13 @@ export default function Logs() {
                 enableSwipeMonths
                 onDayPress={day => {
                     fetch(Constants.expoConfig.extra.API_URL + "/workouts?date=" + day.dateString, {headers: {"Authorization" : token}})
-                    .then(res => res.json())
+                    .then(res => res.json()
                     .then(data => {
                         setStatus();
                         setWorkouts();
-                        data.success ? setWorkouts(data.data) : setStatus(data.message);
+                        res.ok ? setWorkouts(data.data) : setStatus(data.message);
                         setLogModal(true);
-                    })
+                    }))
                 }}
                 theme={{
                     todayTextColor : Var.red,
@@ -98,13 +96,13 @@ export default function Logs() {
                             style={MainStyle.secondaryButton}
                             onPress={() => {
                                 fetch(Constants.expoConfig.extra.API_URL + "/workouts/" + workout.id, {headers: {"Authorization" : token}})
-                                .then(res => res.json())
+                                .then(res => res.json()
                                 .then(data => {
                                     setStatus();
                                     setWorkouts();
-                                    data.success ? setWorkouts(data.data) : setStatus(data.message);
+                                    res.ok ? setWorkouts(data.data) : setStatus(data.message);
                                     setLogModal(true);
-                                })
+                                }))
                             }}>
                             <Text style={MainStyle.buttonText}>View details</Text>
                         </Pressable>

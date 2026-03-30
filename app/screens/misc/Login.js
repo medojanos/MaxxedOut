@@ -1,7 +1,6 @@
 // React
-import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Linking, Alert } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, Linking } from "react-native";
 import { useContext, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import { Context } from "../../misc/Provider";
@@ -32,14 +31,6 @@ export default function Login() {
     const { setToken, setUserData } = useContext(Context);
 
     function Authenticate() {
-        if (!email) {
-            setStatus("Enter a valid email");
-            return;
-        }
-        if (!password) {
-            setStatus("Enter a valid password");
-            return;
-        }
         fetch(Constants.expoConfig.extra.API_URL + "/login", {
             method: "POST",
             headers: {
@@ -50,17 +41,19 @@ export default function Login() {
                 password: password
             })
         })
-        .then(res => res.json())
+        .then(res => res.json()
         .then(data => {
-            if (data.success) {
-                setStatus(data.message);
+            if (res.ok) {
                 setToken(data.data.token);
                 setUserData(data.data.userData);
             } else {
-                setStatus(data.message);
+                throw new Error(data.message);
             }
-        })
-        .catch(() => setStatus("Something went wrong. Please try again later."))
+        }
+        ))
+        .catch(err => {
+            setStatus(err.message || "An error occurred. Please try again later.");
+        });
     }
 
     return (

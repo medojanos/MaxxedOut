@@ -49,10 +49,10 @@ export default function WorkoutModal({Close, visible}) {
                                     style={[MainStyle.button, WorkoutModalStyle.workoutButton]} 
                                     onPress={() => {
                                         fetch(Constants.expoConfig.extra.API_URL + "/plans/" + plan.id, { headers: { Authorization: token } })
-                                        .then(res => res.json())
+                                        .then(res => res.json()
                                         .then(data => {
-                                            if (data.success) setWorkout({id: plan.id, name: plan.name, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss"), ownIndex : 0, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": 0, "rep": 0}))}))});
-                                        });
+                                            setWorkout({id: plan.id, name: plan.name, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss"), ownIndex : 0, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": 0, "rep": 0}))}))});
+                                        }));
                                         Close();
                                         navigation.navigate("Workout");
                                 }}>

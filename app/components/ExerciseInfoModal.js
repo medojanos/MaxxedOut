@@ -20,8 +20,8 @@ export default function ExerciseInfoModal({id, name}) {
 
     useEffect(() => {
         fetch(Constants.expoConfig.extra.API_URL + "/exercises/" + id, { headers: { "Authorization": token } })
-            .then(res => res.json())
-            .then(data => setExerciseInfos(data.data))
+        .then(res => res.json())
+        .then(data => setExerciseInfos(data.data))
     }, [id, token]);
 
     return (
