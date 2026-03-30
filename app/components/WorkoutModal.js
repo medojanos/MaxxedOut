@@ -25,13 +25,11 @@ export default function WorkoutModal({Close, visible}) {
     const { token, setWorkout, refresh } = useContext(Context);
     const navigation = useNavigation();
     
-
     useEffect(() => {
         fetch(Constants.expoConfig.extra.API_URL + "/plans", { headers: { "Authorization": token } })
         .then(res => res.json())
         .then(data => setPlans(data.data))
     }, [refresh])
-
 
     return (
         <Modal 
@@ -53,7 +51,7 @@ export default function WorkoutModal({Close, visible}) {
                                         fetch(Constants.expoConfig.extra.API_URL + "/plans/" + plan.id, { headers: { Authorization: token } })
                                         .then(res => res.json())
                                         .then(data => {
-                                            if (data.success) setWorkout({id: plan.id, name: plan.name, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss"), ownIndex : 0, plan: Array.from(data.data.plan, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": 0, "rep": 0}))}))});
+                                            if (data.success) setWorkout({id: plan.id, name: plan.name, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss"), ownIndex : 0, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": 0, "rep": 0}))}))});
                                         });
                                         Close();
                                         navigation.navigate("Workout");

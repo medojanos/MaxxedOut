@@ -117,7 +117,8 @@ export default function Tracker() {
             {
             workout ?
                 <>
-                    {workout.type !== "cardio" ? <>
+                    {workout.type !== "cardio" ? 
+                    <>
                         <View style={MainStyle.container}>
                             <View style={MainStyle.inlineContainer}>
                                 <Text style={MainStyle.strongText}>{workout.name}</Text>
