@@ -33,7 +33,7 @@ namespace admin
 
         private async void Exercises_load(object sender, EventArgs e)
         {
-            ExercisesList = await ApiClient.SafeGet<List<ExercisesDB>>("/exercises/admin");
+            ExercisesList = await ApiClient.Get<List<ExercisesDB>>("/exercises/admin");
             ExercisesList.ForEach(exercise => Rows.Items.Add(exercise));
 
             mgSource.DataSource = MuscleGroupsList.MuscleGroups;
@@ -218,7 +218,7 @@ namespace admin
                 }
             );
 
-            if (ApiResult.ensureSuccess(result))
+            if (result != null)
             {
                 Rows.Items.Add(new ExercisesDB(result.data.GetProperty("id").GetInt32(), exercise.Text, type.Text, Musclesworked.Items.Cast<MusclesworkedDB>().ToList()));
             }
@@ -250,7 +250,7 @@ namespace admin
                 }).ToList()
             });
 
-            if (ApiResult.ensureSuccess(result))
+            if (result != null)
             {
                 ExerciseObj.Musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList();
                 ExerciseObj.Name = exercise.Text;
@@ -273,7 +273,7 @@ namespace admin
 
             var result = await ApiClient.SafeDelete<ApiResult>($"/exercises/admin/{Exercise.Id}");
 
-            if (ApiResult.ensureSuccess(result))
+            if (result != null)
             {
                 ExercisesList.Remove(Exercise);
                 Rows.Items.Remove(Exercise);

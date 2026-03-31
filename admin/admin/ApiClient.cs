@@ -38,137 +38,84 @@ namespace admin
 
         // Get
 
-        public static async Task<T> Get<T>(string url)
+        public static async Task<T> Get<T> (string url)
         {
-            var response = await Client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<T>(options);
-        }
-        public static async Task<T> SafeGet<T>(string url)
-        {
-            try
+            return SafeExecute(async () =>
             {
-                var response = await Get<ApiResult>(url);
-                // MessageBox.Show(response.data.ToString());
-                return JsonSerializer.Deserialize<T>(response.data.GetRawText(), options);
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error with request: {ex.ToString()}");
-                return default;
-            }
-            catch (JsonException ex)
-            {
-                MessageBox.Show($"Data error: {ex.ToString()}");
-                return default;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.ToString()}");
-                return default;
-            }
+                var response = await Client.GetAsync(url);
+                return await HandleResponse<T>(response);
+            });
         }
 
         // Post
 
-        public static async Task<TResponse> Post<TRequest, TResponse>(string url, TRequest data)
+        public static Task<TResponse> Post<TRequest, TResponse>(string url, TRequest data)
         {
-            var response = await Client.PostAsJsonAsync(url, data, options);
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<TResponse>(options);
-        }
-        public static async Task<TResponse> SafePost<TRequest, TResponse>(string url, TRequest data)
-        {
-            try
+            return SafeExecute(async () =>
             {
-                return await Post<TRequest, TResponse>(url, data);
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error with request: {ex.ToString()}");
-                return default;
-            }
-            catch (JsonException ex)
-            {
-                MessageBox.Show($"Data error: {ex.ToString()}");
-                return default;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.ToString()}");
-                return default;
-            }
+                var response = await Client.PostAsJsonAsync(url, data, options);
+                return await HandleResponse<TResponse>(response);
+            });
         }
 
         // Put
 
-        public static async Task<TResponse> Put<TRequest, TResponse>(string url, TRequest data)
+        public static Task<TResponse> Put<TRequest, TResponse>(string url, TRequest data)
         {
-            var response = await Client.PutAsJsonAsync(url, data, new JsonSerializerOptions
+            return SafeExecute(async () =>
             {
-                PropertyNameCaseInsensitive = true
+                var response = await Client.PutAsJsonAsync(url, data, options);
+                return await HandleResponse<TResponse>(response);
             });
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<TResponse>();
-        }
-
-        public static async Task<TResponse> SafePut<TRequest, TResponse>(string url, TRequest data)
-        {
-            try
-            {
-                return await Put<TRequest, TResponse>(url, data);
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error with request: {ex.ToString()}");
-                return default;
-            }
-            catch (JsonException ex)
-            {
-                MessageBox.Show($"Data error: {ex.ToString()}");
-                return default;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.ToString()}");
-                return default;
-            }
         }
 
         // Delete
 
-        public static async Task<T> Delete<T>(string url)
+        public static Task<T> Delete<T>(string url)
         {
-            var response = await Client.DeleteAsync(url);
-            response.EnsureSuccessStatusCode();
+            return SafeExecute(async () =>
+            {
+                var response = await Client.DeleteAsync(url);
+                return await HandleResponse<T>(response);
+            });
+        }
+
+        // Utiliy 
+
+        private static async Task<T> SafeExecute<T>(Func<Task<T>> action)
+        {
+            try
+            {
+                return await action();
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Request error: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show($"JSON error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unexpected error: {ex.Message}");
+            }
+
+            return default;
+        }
+
+        private static async Task<T> HandleResponse<T> (HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                MessageBox.Show($"API error: {response.StatusCode} - {errorContent}");
+                return default;
+            }
 
             if (response.Content == null || response.Content.Headers.ContentLength == 0) return default;
 
             return await response.Content.ReadFromJsonAsync<T>(options);
-        }
-        public static async Task<T> SafeDelete<T>(string url)
-        {
-            try
-            {
-                return await Delete<T>(url);
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error with request: {ex.ToString()}");
-                return default;
-            }
-            catch (JsonException ex)
-            {
-                MessageBox.Show($"Data error: {ex.ToString()}");
-                return default;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.ToString()}");
-                return default;
-            }
         }
     }
 }
