@@ -1,13 +1,9 @@
+import {ReturnData, NoContent} from "../config/utility.js";
+
 export const authU = (req, res) => {
-    res.json({
-        success: true,
-        userId: req.user
-    });
+    ReturnData(res, {userId: req.user});
 };
 
 export const authA = (req, res) => {
-    res.json({
-        success: true,
-        message: "Admin authorized"
-    });
+    NoContent(res);
 };

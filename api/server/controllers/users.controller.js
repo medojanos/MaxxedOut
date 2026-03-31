@@ -1,7 +1,7 @@
 import db from "../config/db.js"
 import { hash, randomBytes } from 'crypto'
 import {transporter, createEmail} from "../config/mail.js";
-import { Validate, ValidateNumber, ValidatePassword, Error, dbError, Unauthorized, Success, ReturnData, NotFound  } from "../config/utility.js";
+import { Validate, ValidateNumber, ValidatePassword, Error, dbError, Unauthorized, Success, ReturnData, NotFound, NoContent  } from "../config/utility.js";
 
 export const Register = (req, res) => {
     const { email, password } = req.body;
@@ -12,7 +12,7 @@ export const Register = (req, res) => {
     db.get("SELECT * FROM users WHERE email = ?", [email], (e, row) => {
         if (e) return dbError(res);
         if (row) return Error(res, "Email already registered");
-        db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hash('sha-512', password)], (e) => {
+        db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hash('sha-256', password)], (e) => {
             if (e) return dbError(res);
             Success(res, "Successfully registered");
         })
@@ -24,7 +24,7 @@ export const Login = (req, res) => {
 
     if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email");  
 
-    db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [email, hash("sha-512", password)], (e, row) => {
+    db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [email, hash("sha-256", password)], (e, row) => {
         if (e) return dbError(res);
         if (!row) return Unauthorized(res);
         let token = randomBytes(32).toString('hex');
@@ -78,7 +78,7 @@ export const resetPassword = (req, res) => {
     db.get("SELECT c.code, u.id FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", email, (e, row) => {
         if (e) return dbError(res);
         if (!row || row.code !== code) return Error(res, "Invalid code");
-        db.run("UPDATE users SET password = ? WHERE id = ?", [hash("sha-512", password), row.id], (e) => {
+        db.run("UPDATE users SET password = ? WHERE id = ?", [hash("sha-256", password), row.id], (e) => {
             if (e) return dbError(res);
             Success(res, "Password restored succesfully");
         })
@@ -95,7 +95,7 @@ export const verifyCode = (req, res) => {
         if (e) return dbError(res);
         if (!row || row.code !== code) return Error(res, "Invalid code");
         if (row.now > row.expiry) return Error(res, "Expired code");
-        Success(res, "Code verified");
+        NoContent(res);
     })
 }
 
@@ -104,7 +104,7 @@ export const deleteUser = (req, res) => {
 
     if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email"); 
 
-    db.get("SELECT id FROM users WHERE email = ? AND password = ?", [email, hash("sha-512", password)], (e, row) => {
+    db.get("SELECT id FROM users WHERE email = ? AND password = ?", [email, hash("sha-256", password)], (e, row) => {
         if (e) return dbError(res);
         if (!row) return Unauthorized(res);
         db.run("DELETE FROM users WHERE id = ?", [row.id], (e) => {
@@ -123,7 +123,7 @@ export const updateUser = (req, res) => {
             if (e) return dbError(res);
             db.get("SELECT email, nickname FROM users WHERE id = ?", [req.user], (e, row) => {
                 if (e) return dbError(res);
-                res.status(200).json({success : true, message : "Profile updated succesfully", data : row});
+                res.status(201).json({success : true, message : "Profile updated succesfully", data : row});
             })
         })
     }
@@ -131,10 +131,10 @@ export const updateUser = (req, res) => {
     if (nickname) return update("nickname", nickname);
     if (email) return update("email", email);
     if (password) {
-        return db.get("SELECT id FROM users WHERE password = ? AND id = ?", [hash("sha-512", currentPassword), req.user], (e, row) => {
+        return db.get("SELECT id FROM users WHERE password = ? AND id = ?", [hash("sha-256", currentPassword), req.user], (e, row) => {
             if (e) return dbError(res);
             if (!row) return Unauthorized(res);
-            update("password", hash("sha-512", password))
+            update("password", hash("sha-256", password))
         })
     }
 
@@ -157,9 +157,9 @@ export const addUser = (req, res) => {
     if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email");  
     if (!ValidatePassword(password)) return Error(res, "Invalid password");  
 
-    db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [nickname, email, hash("sha-512", password)], function (e) {
+    db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [nickname, email, hash("sha-256", password)], function (e) {
         if (e) return dbError(res);
-        Success(res, "User registered");
+        NoContent(res);
     });
 }
 
@@ -176,7 +176,7 @@ export const updateUserFromId = (req, res) => {
     if (password) 
     {
         if (!ValidatePassword(password)) return Error(res, "Weak password");
-        properties.push(hash("sha-512", password));
+        properties.push(hash("sha-256", password));
         fields.push("password=?");
     }
 
@@ -190,7 +190,7 @@ export const updateUserFromId = (req, res) => {
             if (e) return dbError(res);
         })
 
-        Success(res, "User updated");
+        NoContent(res);
     })
 }
 
@@ -207,6 +207,6 @@ export const deleteUserFromId = (req, res) => {
             if (e) return dbError(res);
         })
         
-        Success(res, "User deleted");
+        NoContent(res);
     })
 }

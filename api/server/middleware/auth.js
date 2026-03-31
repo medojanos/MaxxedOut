@@ -1,4 +1,5 @@
 import db from "../config/db.js"
+import {Unauthorized, dbError} from "../config/utility.js"
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -16,16 +17,16 @@ export function authUser() {
     return async (req, res, next) => {
         try {
             const token = req.headers["authorization"];
-            if (!token) return res.status(401).json({ success: false, message: "No token" });
+            if (!token) return Unauthorized(res, "No token");
 
             const user = await getUserFromToken(token);
-            if (!user) return res.status(401).json({ success: false, message: "Invalid token" });
+            if (!user) return Unauthorized(res, "Invalid token");
 
             req.user = user.user_id;
 
             next();
         } catch {
-            res.status(500).json({ success: false, message: "Auth error" });
+            dbError(res);
         }
     };
 }
@@ -35,10 +36,7 @@ export function authAdmin() {
         const key = req.headers["authorization"];
 
         if (!key || key !== process.env.ADMIN_API_KEY) {
-            return res.status(403).json({
-                success: false,
-                message: "Admin access denied"
-            });
+            return Unauthorized(res, "Admin access denied");
         }
 
         next();

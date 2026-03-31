@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { ReturnData, Validate, Error, dbError, ValidateNumber, Success, NotFound } from "../config/utility.js";
+import { ReturnData, Validate, Error, dbError, ValidateNumber, Success, NotFound, NoContent } from "../config/utility.js";
 
 // App
 
@@ -32,7 +32,7 @@ export const updateMuscleGroup = (req, res) => {
     db.run("UPDATE muscle_groups SET name=? WHERE id=?", [name, id], function(e) {
         if (e) return dbError(res); 
         if (this.changes === 0) return NotFound(res, "Muscle group not found")
-        Success(res, "Updated muscle group")
+        NoContent(res);
     })
 }
 
@@ -44,6 +44,6 @@ export const deleteMuscleGroup = (req, res) => {
     db.run("DELETE FROM muscle_groups WHERE id=?", id, function(e) {
         if (e) return dbError(res); 
         if (this.changes === 0) return NotFound(res, "Muscle group not found");
-        Success(res, "Deleted muscle group");
+        NoContent(res);
     })
 }

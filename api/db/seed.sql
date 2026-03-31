@@ -1,8 +1,6 @@
 -- Users
 INSERT INTO users (email, password, nickname) VALUES 
-('johndoe@yahoo.com', 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db', 'John'),
-('janedoe@gmail.com', 'a1b2c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdef', 'Jane'),
-('bobsmith@hotmail.com', 'f1e2d3c4b5a697887766554433221100ffeeddccbbaa99887766554433221100', 'Bob');
+('johndoe@yahoo.com', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 'John');
 
 -- Muscle Groups
 INSERT INTO muscle_groups (name) VALUES 

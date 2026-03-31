@@ -68,9 +68,9 @@ export default function Tracker() {
     async function handleTimer(action) {
         switch (action) {
             case "start":
-                if (restingInterval.current) return;
-                const secs = remainingTime;
-                const end = new Date(Date.now() + remainingTime * 1000 + 1000);
+                if (restingInterval.current || !remainingTime) return;
+                const secs = Math.max(1, remainingTime);
+                const end = new Date(Date.now() + secs * 1000 + 1000);
                 setEndRestingTime(end);
                 restingInterval.current = setInterval(() => {
                     const now = new Date();
@@ -87,9 +87,14 @@ export default function Tracker() {
                         content: {
                             title: "Resting time is over!",
                             body: "Get back to your workout!",
-                            channelId: "resting-timer"
+                            sound: "default",
+                            priority: Notifications.AndroidNotificationPriority.HIGH,
                         },
-                        trigger: {seconds: secs}
+                        trigger: {
+                            type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+                            seconds: secs,
+                            channelId: "resting-timer"
+                        }
                     });
                     setNotificationId(id);
                 }
@@ -109,7 +114,7 @@ export default function Tracker() {
                 }
                 break;
             case "reset":
-                handleTimer("pause");
+                await handleTimer("pause");
                 setEndRestingTime(null);
                 setRemainingTime(userData.preferences.restingTime);
                 setRestingTimer(displayTime(userData.preferences.restingTime));

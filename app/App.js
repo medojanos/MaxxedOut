@@ -13,22 +13,29 @@ import { Context } from "./misc/Provider";
 import { getData, getJson, } from "./misc/Storage";
 import Constants from 'expo-constants';
 
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false
+    }),
+});
 
 async function setNotifications() {
-    await Notifications.requestPermissionsAsync();
     if (Platform.OS === "android") {
         await Notifications.setNotificationChannelAsync("resting-timer", {
             name: "Resting Timer",
             importance: Notifications.AndroidImportance.HIGH,
+            sound: "default",
+            vibrationPattern: [0, 250, 250, 250],
         });
     }
-    Notifications.setNotificationHandler({
-        handleNotification: async () => ({
-            shouldShowAlert: true,
-            shouldPlaySound: true,
-            shouldSetBadge: false
-        }),
-    });
+    const permissions = await Notifications.getPermissionsAsync();
+    if (!permissions.granted) {
+        await Notifications.requestPermissionsAsync();
+    }
 }
 
 export default function App() {
@@ -40,11 +47,11 @@ export default function App() {
         async function load() {
             try {
                 const token = await getData("token");
+                if (!token) return;
                 const res = await fetch(Constants.expoConfig.extra.API_URL + "/auth", {headers: {"Authorization" : token}});
-                const data = await res.json();
-                if (data.success) {
-                    setToken(token);
+                if (res.ok) {
                     await setNotifications();
+                    setToken(token);
                     setUserData(await getJson("user"));
                     setWorkout(await getJson("workout"));
                 } else setUserData(undefined);

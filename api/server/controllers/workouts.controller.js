@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { Error, dbError, Success, ReturnData, Validate, ValidateNumber, NotFound } from "../config/utility.js";
+import { Error, dbError, Success, ReturnData, Validate, ValidateNumber, NotFound, NoContent } from "../config/utility.js";
 
 export const getWorkoutByQuery = (req, res) => {
     const { month, date, name, limit } = req.query;
@@ -182,12 +182,12 @@ export const addWorkout = (req, res) => {
             totalSets += exercise.sets.length;
         });
 
-        if (totalSets == 0) return Success(res, "Workout saved");
+        if (totalSets == 0) return NoContent(res);
 
         function Check(err) {
             if (err) return dbError(res); 
             completed++;
-            if (completed == totalSets) return Success(res, "Workout saved");
+            if (completed == totalSets) return NoContent(res);
         }
     
         plan.forEach(exercise => {
@@ -211,6 +211,6 @@ export const deleteWorkout = (req, res) => {
 
     db.run("DELETE FROM workouts WHERE id = ?", [id], (e) => {
         if (e) return dbError(res);
-        Success(res, "Workout deleted");
+        NoContent(res);
     })
 }

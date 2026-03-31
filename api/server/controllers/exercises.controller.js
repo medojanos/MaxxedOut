@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { ReturnData, Validate, Error, dbError, Success, ValidateNumber, ValidateArray, NotFound } from "../config/utility.js";
+import { ReturnData, Validate, Error, dbError, Success, ValidateNumber, ValidateArray, NotFound, NoContent } from "../config/utility.js";
 
 // App
 
@@ -122,7 +122,7 @@ export const addExercise = (req, res) => {
         
                 if(completed == musclesworked.length) {
                     responded = true;
-                    return Success(res, "Added exercise");
+                    return NoContent(res);
                 }
             })
         });
@@ -163,7 +163,7 @@ export const updateExercise = (req, res) => {
 
                     if(completed == musclesworked.length) {
                         responded = true;
-                        return Success(res, "Exercise updated successfully!");
+                        return NoContent(res);
                     }
                 })
             });
@@ -184,6 +184,6 @@ export const deleteExercise = (req, res) => {
             if (e) return dbError(res); 
         })
 
-        return Success(res, "Exercise deleted successfully!");
+        return NoContent(res);
     })
 }

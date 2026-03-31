@@ -42,6 +42,14 @@ export function Success(res, message) {
     return res.status(200).json({message: message});
 }
 
+export function Created(res, message) {
+    return res.status(201).json({message: message});
+}
+
+export function NoContent(res) {
+    return res.status(204).send();
+}
+
 export function ReturnData(res, data) {
     return res.status(200).json({data: data});
 }

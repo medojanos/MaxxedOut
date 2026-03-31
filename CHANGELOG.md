@@ -1,6 +1,11 @@
 <h1>Change Log</h1>
 <p>All notable changes to this project will be documented in this file</p>
 
+<h2>v1.0 [Unreleased]</h2>
+<h3>Changes</h3>
+<p>GYM ranks</p>
+<p>Progress bar - xp level</p>
+
 <h2>v0.2.0 [Unreleased]</h2>
 <h3>Changes</h3>
 <p>Full UI change</p>

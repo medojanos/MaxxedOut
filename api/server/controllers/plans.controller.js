@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { Error, dbError, ReturnData, Success, Validate, ValidateNumber, ValidateArray } from "../config/utility.js";
+import { Error, dbError, ReturnData, Validate, ValidateNumber, ValidateArray, Created, NoContent } from "../config/utility.js";
 
 // App
 
@@ -111,7 +111,7 @@ export const addPlan = (req, res) => {
     db.run("INSERT INTO plans (user_id, name) VALUES (?, ?)", [req.user, name], function(e) {
         if (e) return dbError(res);
 
-        if (exercises.length === 0) return Success(res, "Created workout plan");
+        if (exercises.length === 0) return Created(res, "Created workout plan");
         
         let completed = 0;
         const id = this.lastID;
@@ -119,7 +119,7 @@ export const addPlan = (req, res) => {
         function Check(err) {
             if (err) return dbError(res); 
             completed++;
-            if (completed == exercises.length) return Success(res, "Created workout plan")
+            if (completed == exercises.length) return Created(res, "Created workout plan")
         }
 
         exercises.forEach(exercise => {
@@ -151,7 +151,7 @@ export const updatePlan = (req, res) => {
             function Check(err) {
                 if (err) return dbError(res); 
                 completed++;
-                if (completed == exercises.length) return Success(res, "Updated workout plan");
+                if (completed == exercises.length) return NoContent(res);
             }
 
             exercises.forEach(exercise => {
@@ -172,7 +172,7 @@ export const deletePlan = (req, res) => {
 
     db.run("DELETE FROM plans WHERE id = ? AND user_id = ?", [id, req.user], (e) => {
         if (e) return dbError(res);
-        Success(res, "Deleted workout plan");
+        NoContent(res);
     })
 }
 
