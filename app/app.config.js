@@ -14,6 +14,10 @@ export default {
       "resizeMode": "contain",
       "backgroundColor": "#F5EDED"
     },
+    "notification": {
+      "icon": "./assets/notification-icon.png",
+      "color": "#ffffff"
+    },
     "android": {
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {

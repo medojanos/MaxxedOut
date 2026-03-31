@@ -9,7 +9,7 @@ export const getStatistics = (req, res) => {
         AVG((strftime('%s', ended_at) - strftime('%s', started_at)) / 60.0) AS avg_duration
         FROM workouts
         WHERE user_id = ?`, [req.user], (e, workouts) => {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
 
         const maxesLifts = {"squat": 1, 
                             "bench": 2, 
@@ -37,7 +37,7 @@ export const getStatistics = (req, res) => {
             FROM sets s
             JOIN workouts w ON s.workout_id = w.id
             WHERE w.user_id = ?`, Array.from({length: 7}, () => req.user), (e, sets) => {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
 
             db.all(`
                 SELECT DISTINCT
@@ -46,7 +46,7 @@ export const getStatistics = (req, res) => {
                 FROM workouts
                 WHERE user_id = ?
                 ORDER BY year DESC, week DESC`, [req.user], (e, dates) => {
-                    if (e) return dbError(res);
+                    if (e) return dbError(res, e);
                     ReturnData(res, {
                         totalWorkouts: workouts.total_workouts || 0,
                         totalDuration: Math.round(workouts.total_duration) || 0,

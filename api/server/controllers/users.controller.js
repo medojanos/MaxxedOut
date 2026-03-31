@@ -10,10 +10,10 @@ export const Register = (req, res) => {
     if(!ValidatePassword(password)) return Error(res, "Invalid password"); 
 
     db.get("SELECT * FROM users WHERE email = ?", [email], (e, row) => {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         if (row) return Error(res, "Email already registered");
         db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hash('sha-256', password)], (e) => {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
             Success(res, "Successfully registered");
         })
     }) 
@@ -25,11 +25,11 @@ export const Login = (req, res) => {
     if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email");  
 
     db.get("SELECT id, email, nickname FROM users WHERE email = ? AND password = ?", [email, hash("sha-256", password)], (e, row) => {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         if (!row) return Unauthorized(res);
         let token = randomBytes(32).toString('hex');
         db.run("INSERT INTO tokens (token, user_id) VALUES (?, ?)", [token, row.id], (e) => {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
             ReturnData(res, {token : token, userData: {email : row.email, nickname : row.nickname}});
         });
     })
@@ -41,12 +41,12 @@ export const forgotPassword = (req, res) => {
     if(!Validate(email) || !email.includes("@")) return Error("Invalid email");  
 
     db.get("SELECT id FROM users WHERE email = ?", email, (e, row) => {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         if (!row) return NotFound(res, "Email not found");
 
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         db.run("INSERT INTO codes (user_id, code) VALUES (?, ?)", [row.id, code], async (e) => {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
             try {
                 await transporter.sendMail({
                     from: `"MaxxedOut" <${process.env.EMAIL_USER}>`,
@@ -76,10 +76,10 @@ export const resetPassword = (req, res) => {
     if(!ValidatePassword(password)) return Error(res, "Invalid password");  
 
     db.get("SELECT c.code, u.id FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", email, (e, row) => {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         if (!row || row.code !== code) return Error(res, "Invalid code");
         db.run("UPDATE users SET password = ? WHERE id = ?", [hash("sha-256", password), row.id], (e) => {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
             Success(res, "Password restored succesfully");
         })
     })
@@ -92,7 +92,7 @@ export const verifyCode = (req, res) => {
     if(!Validate(code)) return Error(res, "Invalid code");  
 
     db.get("SELECT c.code as code, expiry, DATETIME('now') as now FROM codes c JOIN users u ON c.user_id = u.id WHERE u.email = ? ORDER BY c.expiry DESC LIMIT 1", email, (e, row) => {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         if (!row || row.code !== code) return Error(res, "Invalid code");
         if (row.now > row.expiry) return Error(res, "Expired code");
         NoContent(res);
@@ -105,10 +105,10 @@ export const deleteUser = (req, res) => {
     if(!Validate(email) || !email.includes("@")) return Error(res, "Invalid email"); 
 
     db.get("SELECT id FROM users WHERE email = ? AND password = ?", [email, hash("sha-256", password)], (e, row) => {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         if (!row) return Unauthorized(res);
         db.run("DELETE FROM users WHERE id = ?", [row.id], (e) => {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
             Success(res, "Account deleted succesfully");
         })
     })
@@ -120,9 +120,9 @@ export const updateUser = (req, res) => {
     function update(column, columnData) {
         if(columnData.trim().length === 0) return Error(res, "Invalid " + column);
         db.run("UPDATE users SET " + column + " = ? WHERE id = ?", [columnData, req.user], (e) => {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
             db.get("SELECT email, nickname FROM users WHERE id = ?", [req.user], (e, row) => {
-                if (e) return dbError(res);
+                if (e) return dbError(res, e);
                 res.status(201).json({success : true, message : "Profile updated succesfully", data : row});
             })
         })
@@ -132,7 +132,7 @@ export const updateUser = (req, res) => {
     if (email) return update("email", email);
     if (password) {
         return db.get("SELECT id FROM users WHERE password = ? AND id = ?", [hash("sha-256", currentPassword), req.user], (e, row) => {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
             if (!row) return Unauthorized(res);
             update("password", hash("sha-256", password))
         })
@@ -145,7 +145,7 @@ export const updateUser = (req, res) => {
 
 export const getUsers = (req, res) => {
     db.all("SELECT id, nickname, email FROM users", (e, rows) => {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         ReturnData(res, rows);
     })
 }
@@ -158,7 +158,7 @@ export const addUser = (req, res) => {
     if (!ValidatePassword(password)) return Error(res, "Invalid password");  
 
     db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [nickname, email, hash("sha-256", password)], function (e) {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         NoContent(res);
     });
 }
@@ -183,11 +183,11 @@ export const updateUserFromId = (req, res) => {
     properties.push(id);
 
     db.run(`UPDATE users SET ${fields.join(", ")} WHERE id=?`, properties, function (e) {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         if (this.changes === 0) return NotFound(res, "User not found"); 
 
         db.run("DELETE FROM tokens WHERE user_id=?", id, function(e) {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
         })
 
         NoContent(res);
@@ -200,11 +200,11 @@ export const deleteUserFromId = (req, res) => {
     if(!ValidateNumber(id)) return Error(res, "Invalid id");
 
     db.run("DELETE FROM users WHERE id=?", id, function (e) {
-        if (e) return dbError(res);
+        if (e) return dbError(res, e);
         if (this.changes === 0) return NotFound(res, "User not found");
         
         db.run("DELETE FROM tokens WHERE user_id=?", id, function(e) {
-            if (e) return dbError(res);
+            if (e) return dbError(res, e);
         })
         
         NoContent(res);

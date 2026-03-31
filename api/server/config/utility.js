@@ -26,7 +26,8 @@ export function Error(res, message) {
     return res.status(400).json({message: message});
 }
 
-export function dbError(res) {
+export function dbError(res, err) {
+    console.error(err);
     return res.status(500).json({message: "Database error"});
 }
 

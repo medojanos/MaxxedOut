@@ -14,13 +14,12 @@ import { getData, getJson, } from "./misc/Storage";
 import Constants from 'expo-constants';
 
 Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldShowBanner: true,
-        shouldShowList: true,
-        shouldPlaySound: true,
-        shouldSetBadge: false
-    }),
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
 });
 
 async function setNotifications() {
