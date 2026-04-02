@@ -1,0 +1,82 @@
+// React
+import { View, Text, Pressable, Modal, ScrollView} from "react-native";
+import { useContext, useState } from "react";
+import Ionicons from "react-native-vector-icons/Ionicons";
+
+// Misc
+import { Context } from "../../misc/Provider";
+import Constants from 'expo-constants';
+import displayTime from "../../misc/DisplayTime";
+import ModalOverlay from "../ModalOverlay";
+
+// Style
+import * as Var from "../../style/Variables"
+import MainStyle from "../../style/MainStyle"
+
+
+export default function LogModal({visible, Close, workouts, status}) {
+    const [deleteModal, setDeleteModal] = useState(false);
+    const { token, Refresh } = useContext(Context);
+
+    return (
+        <ModalOverlay visible={visible} onClose={Close}>
+            <ScrollView>
+                {workouts ? workouts.map(workout => (
+                    <View key={workout.id} style={{marginBottom: 20}}>
+                        <View style={MainStyle.inlineContainer}>
+                            <Text style={MainStyle.screenTitle}>{workout.name} - {displayTime(workout.duration)}</Text>
+                            <Pressable
+                                onPress={() => setDeleteModal(true)}>
+                                <Ionicons name="trash" size={25} color={Var.red}/>
+                            </Pressable>
+                        </View>
+                        {workout.exercises.map((exercise, exerciseIndex) => (
+                            <View key={exerciseIndex} style={MainStyle.container}>
+                                <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
+                                {exercise.sets.map((_, setIndex) => (
+                                    exercise.sets[setIndex].weight != 0 || exercise.sets[setIndex].rep != 0 ?
+                                    <View key={setIndex} style={MainStyle.inlineContainer}>
+                                        {exercise.sets[setIndex].weight != 0 ? <Text style={MainStyle.lightText}>Kg: {exercise.sets[setIndex].weight} </Text> : null}
+                                        {exercise.sets[setIndex].rep != 0 ? <Text style={MainStyle.lightText}>Rep: {exercise.sets[setIndex].rep} </Text> : null}
+                                    </View>
+                                    : null
+                                ))}
+                                {exercise.sets.filter((set) => (set.weight === 0 && set.rep === 0)).length != 0 ? <Text style={MainStyle.lightText}>You did {exercise.sets.filter((set) => (set.weight === 0 && set.rep === 0)).length} sets</Text> : null}
+                            </View>
+                        ))}
+                    </View> 
+                )) : <Text style={MainStyle.screenTitle}>{status}</Text>}
+            </ScrollView>
+            <ModalOverlay visible={deleteModal} onClose={() => setDeleteModal(false)}>
+                <Text style={MainStyle.screenTitle}>Are you sure you want to delete this log?</Text>
+                <Pressable
+                    style={MainStyle.secondaryButton}
+                    onPress={() => setDeleteModal(false)}>
+                    <Text style={MainStyle.buttonText}>Cancel</Text>
+                </Pressable>
+                <Pressable
+                    style={MainStyle.button}
+                    onPress={() => {
+                        fetch(`${Constants.expoConfig.extra.API_URL}/workouts/${workouts[0].id}`, {
+                            method: "DELETE",
+                            headers: {"Authorization" : token}
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                Refresh();
+                                setDeleteModal(false);
+                                Close();
+                            }
+                        })
+                    }}>
+                    <Text style={MainStyle.buttonText}>Yes</Text>
+                </Pressable>
+            </ModalOverlay>
+            <Pressable
+                style={MainStyle.button}
+                onPress={() => Close()}>
+                <Text style={MainStyle.buttonText}>Close</Text>
+            </Pressable>
+        </ModalOverlay>
+    )
+}

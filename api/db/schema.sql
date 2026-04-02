@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS plans_exercises (
     exercise_id INTEGER,
     exercise_name TEXT,
     sets INTEGER,
+    index INTEGER,
     FOREIGN KEY (plan_id) REFERENCES plans(id)
         ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)

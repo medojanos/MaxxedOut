@@ -40,13 +40,13 @@ INSERT INTO plans (user_id, name) VALUES
 (1, 'Full Body Blast');
 
 -- Plan Exercises
-INSERT INTO plans_exercises (plan_id, exercise_id, exercise_name, sets) VALUES
-(1, 2, NULL, 4),
-(1, 4, NULL, 3),
-(1, 6, NULL, 3),
-(2, 3, NULL, 3),
-(2, 8, NULL, 4),
-(2, 5, NULL, 3),
-(3, 1, NULL, 4),
-(3, 9, NULL, 3),
-(4, NULL, 'Custom Pushups', 3);
+INSERT INTO plans_exercises (plan_id, exercise_id, exercise_name, sets, index) VALUES
+(1, 2, NULL, 4, 1),
+(1, 4, NULL, 3, 2),
+(1, 6, NULL, 3, 3),
+(2, 8, NULL, 4, 1),
+(2, 3, NULL, 3, 2),
+(2, 5, NULL, 3, 3),
+(3, 1, NULL, 4, 1),
+(3, 9, NULL, 3, 2),
+(4, NULL, 'Custom Pushups', 3, 1);
