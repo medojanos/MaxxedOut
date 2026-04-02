@@ -7,9 +7,9 @@ import dayjs from "dayjs";
 import * as Notifications from "expo-notifications";
 
 // Misc
-import WorkoutModal from "../../components/WorkoutModal";
-import SaveModal from "../../components/SaveModal";
-import CancelModal from "../../components/CancelModal";
+import WorkoutModal from "../../components/modals/WorkoutModal";
+import SaveModal from "../../components/modals/SaveModal";
+import CancelModal from "../../components/modals/CancelModal";
 import { Context } from "../../misc/Provider";
 import displayTime from "../../misc/DisplayTime";
 import RandomQuote from "../../misc/RandomQuote";
@@ -27,8 +27,8 @@ export default function Tracker() {
     const [durationTimer, setDurationTimer] = useState("00:00");
     
     const restingInterval = useRef(null);
-    const [restingTimer, setRestingTimer] = useState(displayTime(userData.preferences?.restingTime));
-    const [remainingTime, setRemainingTime] = useState(userData.preferences?.restingTime);
+    const [remainingTime, setRemainingTime] = useState(userData.preferences?.restingTime.minutes * 60 + userData.preferences?.restingTime.seconds);
+    const [restingTimer, setRestingTimer] = useState(displayTime(userData.preferences?.restingTime.minutes * 60 + userData.preferences?.restingTime.seconds));
     const [endRestingTime, setEndRestingTime] = useState(null);
     const [notificationId, setNotificationId] = useState(null);
 
@@ -50,8 +50,9 @@ export default function Tracker() {
 
     useEffect(() => {
         if (!restingInterval.current) {
-            setRemainingTime(userData.preferences?.restingTime);
-            setRestingTimer(displayTime(userData.preferences?.restingTime));
+            const totalSeconds = userData.preferences?.restingTime.minutes * 60 + userData.preferences?.restingTime.seconds;
+            setRemainingTime(totalSeconds);
+            setRestingTimer(displayTime(totalSeconds));
         }
     }, [userData]);
 
@@ -116,8 +117,9 @@ export default function Tracker() {
             case "reset":
                 await handleTimer("pause");
                 setEndRestingTime(null);
-                setRemainingTime(userData.preferences.restingTime);
-                setRestingTimer(displayTime(userData.preferences.restingTime));
+                const totalSeconds = userData.preferences?.restingTime.minutes * 60 + userData.preferences?.restingTime.seconds;
+                setRemainingTime(totalSeconds);
+                setRestingTimer(displayTime(totalSeconds));
                 break;
         }
     }

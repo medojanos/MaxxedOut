@@ -10,7 +10,7 @@ import Constants from 'expo-constants';
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
-import LogModal from "../../components/LogModal";
+import LogModal from "../../components/modals/LogModal";
 
 const LogsStyle = StyleSheet.create({
     calendar : {
@@ -59,6 +59,7 @@ export default function Logs() {
             <Calendar 
                 style={LogsStyle.calendar} 
                 enableSwipeMonths
+                firstDay={1}
                 onDayPress={day => {
                     fetch(Constants.expoConfig.extra.API_URL + "/workouts?date=" + day.dateString, {headers: {"Authorization" : token}})
                     .then(res => res.json()
@@ -75,7 +76,7 @@ export default function Logs() {
                     arrowColor: Var.black,
                     calendarBackground : Var.black,
                     textDayStyle: {color: Var.white},
-                    textDisabledColor: Var.paleRed
+                    textDisabledColor: Var.navyBlue
                 }}
                 markedDates={markedDates}
                 onMonthChange={fetchMarkedDates}>

@@ -5,8 +5,8 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 // Misc
-import PlanModal from "../../components/PlanModal";
-import PlanInfoModal from "../../components/PlanInfoModal";
+import PlanModal from "../../components/modals/PlanModal";
+import PlanInfoModal from "../../components/modals/PlanInfoModal";
 import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
 

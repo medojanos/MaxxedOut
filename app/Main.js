@@ -40,7 +40,7 @@ function Home() {
           tabBarStyle: { height: 65, backgroundColor: Var.black, padding: 5},
           tabBarActiveTintColor: Var.red,
           tabBarInactiveTintColor: Var.paleWhite,
-          tabBarIconStyle: {height: userData.preferences?.bottomTabText == "Show" ? 30 : 50},
+          tabBarIconStyle: {height: userData.preferences?.bottomTabText == "Show" ? 35 : 50},
           tabBarShowLabel: userData.preferences?.bottomTabText == "Show" ? true : false,
           tabBarHideOnKeyboard : true,
 

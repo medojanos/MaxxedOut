@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { ReturnData, Validate, Error, dbError, ValidateNumber, Success, NotFound, NoContent } from "../config/utility.js";
+import { ReturnData, Validate, Error, dbError, ValidateNumber, NotFound, NoContent } from "../config/utility.js";
 
 // App
 

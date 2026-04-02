@@ -134,7 +134,7 @@ export const getWorkoutById = (req, res) => {
                 e.id as exercise_id,
                 COALESCE(s.exercise_name, e.name) as exercise_name,
                 rep,
-                weight
+                weight,
                 FROM sets s
                 LEFT JOIN exercises e ON s.exercise_id = e.id
                 WHERE s.workout_id = ?`, [workout.id],(e, rows) => {
