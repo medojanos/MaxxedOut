@@ -10,7 +10,6 @@
 
 <h3>For Users</h3>
 <ul>
-  <li>Multi-Platform Tracking: Log workouts on mobile, web, or desktop</li>
   <li>Detailed Statistics: Track progress with workout duration, weight lifted, and personal records</li>
   <li>Workout Plans: Create and follow personalized workout plans</li>
   <li>Exercise Database: Access a comprehensive list of exercises with muscle group information</li>
@@ -33,7 +32,6 @@
   <li>Modular Architecture: Clean separation between frontend, backend, and admin interfaces</li>
   <li>RESTful API: Well-documented API for easy integration</li>
   <li>Extensible Design: Easy to add new features and functionality</li>
-  <li>Cross-Platform Support: Works on mobile (React Native), web (React), and desktop (C#)</li>
 </ul>
 
 <hr>
@@ -43,7 +41,7 @@
 <h3>Frontend</h3>
 <ul>
   <li>Mobile App: React Native, Expo</li>
-  <li>Web App: React, Vite</li>
+  <li>Website: React, Vite</li>
   <li>UI Components: React Navigation, React Native Screens, Bootstrap (web)</li>
   <li>State Management: React Context API</li>
   <li>Styling: Native styling (mobile), CSS (web)</li>
@@ -109,7 +107,7 @@ API_PORT=6600
 WEB_URL=http://localhost:6800
 </code></pre>
 
-<p><b>Web App:</b></p>
+<p><b>Website:</b></p>
 <pre><code>VITE_API_URL=http://localhost:6600
 </code></pre>
 
@@ -124,7 +122,7 @@ npm install
 npm install
 </code></pre>
 
-<p>Web App</p>
+<p>Website</p>
 <pre><code>cd web
 npm install
 </code></pre>
@@ -140,7 +138,7 @@ npm run dev
 npm run dev
 </code></pre>
 
-<p>Web App (in a separate terminal)</p>
+<p>Website (in a separate terminal)</p>
 <pre><code>cd web
 npm start
 </code></pre>
@@ -174,7 +172,7 @@ MaxxedOut/
 │   ├── Root.js             # Root component
 │   ├── package.json        # Dependencies
 │   └── ...
-├── web/                    # Web App (React)
+├── web/                    # Website (React)
 │   ├── src/                # Source files
 │   │   ├── pages/          # Page components
 │   │   └── ...
@@ -205,7 +203,7 @@ MaxxedOut/
 <tr><td>api</td><td>ADMIN_API_KEY</td><td>Admin API key for authentication</td></tr>
 <tr><td>api</td><td>API_PORT</td><td>Port for the API server</td></tr>
 <tr><td>app</td><td>API_URL</td><td>URL of the API server</td></tr>
-<tr><td>app</td><td>WEB_URL</td><td>URL of the web application</td></tr>
+<tr><td>app</td><td>WEB_URL</td><td>URL of the website</td></tr>
 <tr><td>web</td><td>VITE_API_URL</td><td>URL of the API server</td></tr>
 </table>
 
