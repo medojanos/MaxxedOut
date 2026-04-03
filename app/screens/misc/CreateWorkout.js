@@ -145,10 +145,11 @@ export default function CreateWorkout() {
                                 },
                                 body: JSON.stringify({
                                     name: planDraft.name,
-                                    exercises: planDraft.exercises.map(ex => ({
+                                    exercises: planDraft.exercises.map((ex, index) => ({
                                         id: ex.id,
                                         name: ex.name,
-                                        sets: ex.sets
+                                        sets: ex.sets,
+                                        position: index
                                     }))
                                 })
                             })

@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { Error, dbError, Success, ReturnData, Validate, ValidateNumber, NotFound, NoContent } from "../config/utility.js";
+import { Error, dbError, ReturnData, Validate, ValidateNumber, NotFound, NoContent } from "../config/utility.js";
 
 export const getWorkoutByQuery = (req, res) => {
     const { month, date, name, limit } = req.query;
@@ -134,10 +134,11 @@ export const getWorkoutById = (req, res) => {
                 e.id as exercise_id,
                 COALESCE(s.exercise_name, e.name) as exercise_name,
                 rep,
-                weight,
+                weight
                 FROM sets s
                 LEFT JOIN exercises e ON s.exercise_id = e.id
-                WHERE s.workout_id = ?`, [workout.id],(e, rows) => {
+                WHERE s.workout_id = ?
+                ORDER BY s.position`, [workout.id],(e, rows) => {
                     if (e) return dbError(res, e);
                     const exercisesMap = {};
                     rows.forEach(r => {

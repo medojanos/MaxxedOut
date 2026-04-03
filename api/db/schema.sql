@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS sets (
     exercise_name TEXT,
     rep INTEGER,
     weight INTEGER,
+    position INTEGER,
     FOREIGN KEY (workout_id) REFERENCES workouts(id)
     ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
@@ -62,7 +63,7 @@ CREATE TABLE IF NOT EXISTS plans_exercises (
     exercise_id INTEGER,
     exercise_name TEXT,
     sets INTEGER,
-    index INTEGER,
+    position INTEGER,
     FOREIGN KEY (plan_id) REFERENCES plans(id)
         ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
