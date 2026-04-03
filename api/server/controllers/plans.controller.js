@@ -19,7 +19,8 @@ export const getPlanById = (req, res) => {
         FROM plans_exercises pe 
         JOIN plans p ON p.id = pe.plan_id 
         LEFT JOIN exercises e ON pe.exercise_id = e.id 
-        WHERE pe.plan_id = ? AND p.user_id = ?`, [req.params.id, req.user], (e, rows) => {
+        WHERE pe.plan_id = ? AND p.user_id = ?
+        ORDER BY pe.position`, [req.params.id, req.user], (e, rows) => {
             if (e) return dbError(res, e); 
             return ReturnData(res, rows);
     })
@@ -123,10 +124,10 @@ export const addPlan = (req, res) => {
         }
 
         exercises.forEach(exercise => {
-            if (typeof exercise.id == "string") {
-                db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets) VALUES (?, ?, ?)", [id, exercise.name, exercise.sets], (e) => Check(e))
+            if (typeof exercise.id == "string" || !exercise.id) {
+                db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, exercise.sets, exercise.position], (e) => Check(e))
             } else {
-                db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets) VALUES (?, ?, ?)", [id, exercise.id, exercise.sets], (e) => Check(e))
+                db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, exercise.sets, exercise.position], (e) => Check(e))
             }
         });
     })
@@ -156,9 +157,9 @@ export const updatePlan = (req, res) => {
 
             exercises.forEach(exercise => {
                 if (!exercise.id || typeof exercise.id == "string") {
-                    db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets) VALUES (?, ?, ?)", [id, exercise.name, exercise.sets], (e) => Check(e))
+                    db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, exercise.sets, exercise.position], (e) => Check(e))
                 } else {
-                    db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets) VALUES (?, ?, ?)", [id, exercise.id, exercise.sets], (e) => Check(e))
+                    db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, exercise.sets, exercise.position], (e) => Check(e))
                 }
             });
         })

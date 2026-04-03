@@ -63,43 +63,14 @@ export default function PlanModal({ Close, visible, id, name }) {
         }))
     }
 
-    function updateExercise(index, text, prop) {
-        setPlan(prev => ({
-            ...prev,
-            exercises : prev.exercises.map((exercise, i) => {
-                if (index == i) {
-                    switch (prop) {
-                        case "name":
-                            return {...exercise, name : text}
-                        case "sets":
-                            return {...exercise, sets : text}
-                    }
-                }
-                return exercise;
-            })
-        }))
-    }
-
     function deleteExercise(index) {
         setPlan(prev => ({...prev, exercises : prev.exercises.filter((_, i) => index != i)}))
-    }
-
-    function updateExerciseName(exerciseIndex, text) {
-        setPlan(prev => ({
-            ...prev,
-            exercises : prev.exercises.map((ex, exi) => {
-                if (exerciseIndex == exi) {
-                    return {...ex, name : text}
-                }
-                return ex;
-            })
-        }))
     }
 
     return (
         <ModalOverlay visible={visible} onClose={Close}>
             <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
-            <TextInput style={MainStyle.input} value={plan.name || ""} onChangeText={text => setPlan(prev => ({...prev, name: text}))}></TextInput>
+            <TextInput style={MainStyle.input} value={plan.name} onChangeText={text => setPlan(prev => ({...prev, name: text}))}></TextInput>
             <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}><Text style={MainStyle.buttonText}>Add exercise</Text></Pressable>
             <ScrollView>
                 {plan?.exercises.map((exercise, index) => (
@@ -114,7 +85,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                             <TextInput
                                 style={[MainStyle.input, {flexGrow: 1, maxWidth: "50%"}]}
                                 value={exercise.name}
-                                onChangeText={text => updateExerciseName(index, text)}>
+                                onChangeText={text => updateExercise(index, text, "name")}>
                             </TextInput>
                             :  
                             <ExerciseInfoModal
@@ -176,7 +147,14 @@ export default function PlanModal({ Close, visible, id, name }) {
                             "Authorization" : token,
                             "Content-Type" : "application/json"
                         },
-                        body: JSON.stringify(plan)
+                        body: JSON.stringify({
+                            name: plan.name,
+                            exercises: plan.exercises.map((exercise, index) => ({
+                                id: exercise.id,
+                                sets: exercise.sets,
+                                position: index
+                            }))
+                        })
                     })
                     .then(res => {
                         if (res.ok) {

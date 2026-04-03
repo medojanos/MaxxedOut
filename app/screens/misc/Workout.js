@@ -174,7 +174,7 @@ export default function Workout() {
                             typeof exercise.id == "string" || exercise.id === null ? 
                             <TextInput
                                 style={[MainStyle.input, {flexGrow: 1, maxWidth: "80%"}]}
-                                value={exercise.name}
+                                value={exercise.name || ""}
                                 onChangeText={text => updateExerciseName(exerciseIndex, text)}>
                             </TextInput>
                             : 
