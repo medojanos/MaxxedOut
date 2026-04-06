@@ -70,8 +70,16 @@ export default function PlanModal({ Close, visible, id, name }) {
     return (
         <ModalOverlay visible={visible} onClose={Close}>
             <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
-            <TextInput style={MainStyle.input} value={plan.name} onChangeText={text => setPlan(prev => ({...prev, name: text}))}></TextInput>
-            <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}><Text style={MainStyle.buttonText}>Add exercise</Text></Pressable>
+            <TextInput 
+                style={MainStyle.input} 
+                value={plan.name} 
+                onChangeText={text => setPlan(prev => ({...prev, name: text}))}>
+            </TextInput>
+            <Pressable 
+                style={MainStyle.button} 
+                onPress={() => setSearchModal(true)}>
+                    <Text style={MainStyle.buttonText}>Add exercise</Text>
+            </Pressable>
             <ScrollView>
                 {plan?.exercises.map((exercise, index) => (
                     <View key={index} style={MainStyle.container}>
@@ -81,7 +89,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                                 list={plan.exercises}
                                 onMove={newList => setPlan(prev => ({...prev, exercises : newList}))}>
                             </ReArrange>
-                            {typeof exercise.id == "string" || exercise.id == null ? 
+                            {typeof exercise.id == "string" || !exercise.id ? 
                             <TextInput
                                 style={[MainStyle.input, {flexGrow: 1, maxWidth: "50%"}]}
                                 value={exercise.name}
@@ -151,6 +159,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                             name: plan.name,
                             exercises: plan.exercises.map((exercise, index) => ({
                                 id: exercise.id,
+                                name: exercise.name,
                                 sets: exercise.sets,
                                 position: index
                             }))
