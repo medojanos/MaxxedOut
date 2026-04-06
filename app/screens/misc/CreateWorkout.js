@@ -127,6 +127,7 @@ export default function CreateWorkout() {
                                     <TextInput
                                         style={MainStyle.input}
                                         placeholder="Enter exercise name..."
+                                        value={exercise.name}
                                         onChangeText={text => updateExercise(index, text, "name")}/>
                                 ) : null}
                             </View>

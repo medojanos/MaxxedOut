@@ -117,14 +117,14 @@ export const addPlan = (req, res) => {
         let completed = 0;
         const id = this.lastID;
 
-        function Check(err) {
-            if (err) return dbError(res, e); 
+        function Check(e) {
+            if (e) return dbError(res, e); 
             completed++;
             if (completed == exercises.length) return Created(res, "Created workout plan")
         }
 
         exercises.forEach(exercise => {
-            if (typeof exercise.id == "string" || !exercise.id) {
+            if (typeof exercise.id == "string") {
                 db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, exercise.sets, exercise.position], (e) => Check(e))
             } else {
                 db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, exercise.sets, exercise.position], (e) => Check(e))
@@ -147,16 +147,18 @@ export const updatePlan = (req, res) => {
         db.run("DELETE FROM plans_exercises WHERE plan_id = ?", [id], function(e) {
             if (e) return dbError(res, e);
 
+            if (exercises.length === 0) return NoContent(res);
+
             let completed = 0;
             
-            function Check(err) {
-                if (err) return dbError(res, e); 
+            function Check(e) {
+                if (e) return dbError(res, e); 
                 completed++;
                 if (completed == exercises.length) return NoContent(res);
             }
 
             exercises.forEach(exercise => {
-                if (!exercise.id || typeof exercise.id == "string") {
+                if (typeof exercise.id == "string" || !exercise.id) {
                     db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, exercise.sets, exercise.position], (e) => Check(e))
                 } else {
                     db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, exercise.sets, exercise.position], (e) => Check(e))
