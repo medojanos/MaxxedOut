@@ -92,7 +92,7 @@ export default function Logs() {
                 {latest.length > 0 ?
                 latest.map((workout, index) => (
                     <View key={index} style={MainStyle.container}>
-                        <Text style={MainStyle.lightText}>{workout.name} - {workout.ended_at.slice(0, 16)}</Text>
+                        <Text style={MainStyle.lightText}>{workout.name} - {workout.ended_at}</Text>
                         <Pressable
                             style={MainStyle.secondaryButton}
                             onPress={() => {

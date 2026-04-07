@@ -1,10 +1,11 @@
 import { KeyboardAvoidingView } from "react-native";
 
-export default function KeyboardView({children}) {
+export default function KeyboardView({children, style}) {
     return (
         <KeyboardAvoidingView
             behavior="padding"
-            style={{ flex: 1 }}>
+            keyboardVerticalOffset={10}
+            style={{ flex: 1, ...style }}>
             {children}
         </KeyboardAvoidingView>
     );

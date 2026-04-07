@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     /* LAYOUT */
     content: {
-        paddingHorizontal: 10,
+        padding: 10,
         backgroundColor: Var.black,
         flexGrow: 1
     },
@@ -95,24 +95,22 @@ export default StyleSheet.create({
     },
     setInput : {
         width : 50,
-        marginVertical : 0,
-        marginHorizontal : 5
+        marginVertical : 5
     },
 
     /* COMPONENTS */
-    modal: {
-        backgroundColor: Var.darkGray,
-        width: "90%",
-        margin: "auto",
-        padding: 20,
-        paddingBottom: 10,
-        borderRadius: 10,
-        maxHeight: "80%"
-    },
     overlay : {
         flex: 1,
-        backgroundColor: "rgba(0,0,0,0.5)",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "rgba(0,0,0,0.5)"
     },
+    modal: {
+        width: "90%",
+        maxHeight: "80%",
+        backgroundColor: Var.darkGray,
+        padding: 20, 
+        paddingBottom: 10, 
+        borderRadius: 10
+    }
 })

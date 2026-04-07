@@ -4,7 +4,7 @@ export function Validate(param) {
 }
 
 export function ValidateArray(param) {
-    if (!param || param.length === 0 || !Array.isArray(param)) return false;
+    if (!param || !Array.isArray(param)) return false;
     return true;
 }
 
