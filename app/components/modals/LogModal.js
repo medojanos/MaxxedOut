@@ -1,5 +1,5 @@
 // React
-import { View, Text, Pressable, Modal, ScrollView} from "react-native";
+import { View, Text, Pressable, ScrollView} from "react-native";
 import { useContext, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -24,12 +24,13 @@ export default function LogModal({visible, Close, workouts, status}) {
                 {workouts ? workouts.map(workout => (
                     <View key={workout.id} style={{marginBottom: 20}}>
                         <View style={MainStyle.inlineContainer}>
-                            <Text style={MainStyle.screenTitle}>{workout.name} - {displayTime(workout.duration)}</Text>
+                            <Text style={MainStyle.screenTitle}>{workout.name}</Text>
                             <Pressable
                                 onPress={() => setDeleteModal(true)}>
                                 <Ionicons name="trash" size={25} color={Var.red}/>
                             </Pressable>
                         </View>
+                        <Text style={MainStyle.strongText}>{workout.ended_at} - {displayTime(workout.duration)}</Text>
                         {workout.exercises.map((exercise, exerciseIndex) => (
                             <View key={exerciseIndex} style={MainStyle.container}>
                                 <Text style={MainStyle.containerTitle}>{exercise.name}</Text>

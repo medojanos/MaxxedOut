@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable, TextInput, Modal, Linking } from "react-native";
+import { View, Text, ScrollView, Pressable, TextInput, Linking } from "react-native";
 import { useContext, useState } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -20,12 +20,12 @@ export default function Settings() {
 
     const [nicknameModal, setNicknameModal] = useState(false);
     const [newNickname, setNewNickname] = useState("");
-    const [status, setStatus] = useState();
+    const [status, setStatus] = useState("");
     const [passwordModal, setPasswordModal] = useState(false);
-    const [currentPassword, setCurrentPassword] = useState();
+    const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
-    const [newRepassword, setNewRepassword] = useState();
-    const [pwdStrength, setPwdStrength] = useState();
+    const [newRepassword, setNewRepassword] = useState("");
+    const [pwdStrength, setPwdStrength] = useState("");
     const [saveDisabled, setSaveDisabled] = useState(false);
     const [picker, setPicker] = useState(false);
 
@@ -81,10 +81,10 @@ export default function Settings() {
                     <TextInput
                         value={newNickname}
                         placeholder="Enter new nickname..."
-                        style={[MainStyle.input, {width: "60%"}]}
+                        style={[MainStyle.input, {width: "50%"}]}
                         onChangeText={text => {
                             setStatus("");
-                            if (text.length > 20) return setStatus("Nickname is too long");
+                            if (text.length > 20) return setStatus("Nickname cannot be longer than 20 characters");
                             setNewNickname(text);
                         }}>
                     </TextInput>
@@ -132,22 +132,22 @@ export default function Settings() {
                     <View style={MainStyle.inlineContainer}>
                         <TextInput
                             keyboardType="numeric"
-                            style={[MainStyle.input, MainStyle.setInput]}
-                            value={userData.preferences?.restingTime.minutes.toString()}
+                            style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
+                            value={userData.preferences?.restingTime.minutes.toString() || 0}
                             onChangeText={text => {
                                 if (text !== "" && !/^\d+$/.test(text)) return;
-                                setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: {...prev.preferences.restingTime, minutes: text}}}));
+                                setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: {...prev.preferences.restingTime, minutes: Number(text)}}}));
                                 Refresh()
                                 }}>
                         </TextInput>
                         <Text style={MainStyle.lightText}>mins</Text>
                         <TextInput
                             keyboardType="numeric"
-                            style={[MainStyle.input, MainStyle.setInput]}
+                            style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
                             value={userData.preferences?.restingTime.seconds.toString()}
                             onChangeText={text => {
                                 if (text !== "" && !/^\d+$/.test(text)) return;
-                                setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: {...prev.preferences.restingTime, seconds: text}}}));
+                                setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: {...prev.preferences.restingTime, seconds: Number(text)}}}));
                                 Refresh()
                                 }}>
                         </TextInput>

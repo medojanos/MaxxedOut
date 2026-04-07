@@ -20,7 +20,7 @@ export const getPlanById = (req, res) => {
         JOIN plans p ON p.id = pe.plan_id 
         LEFT JOIN exercises e ON pe.exercise_id = e.id 
         WHERE pe.plan_id = ? AND p.user_id = ?
-        ORDER BY pe.position`, [req.params.id, req.user], (e, rows) => {
+        ORDER BY pe.position`, [id, req.user], (e, rows) => {
             if (e) return dbError(res, e); 
             return ReturnData(res, rows);
     })
@@ -66,7 +66,7 @@ export const getPlanInfo = (req, res) => {
             const musclegroupsMap = {};
 
             if (exIds.length === 0) {
-                ReturnData(res, {
+                return ReturnData(res, {
                     types: Object.values(exerciseTypes),
                     muscle_groups: [],
                     custom: exCustom,
