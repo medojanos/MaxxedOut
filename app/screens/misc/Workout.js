@@ -1,6 +1,6 @@
 // React
 import { View, ScrollView, Text, Pressable, TextInput, Modal } from "react-native";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import dayjs from "dayjs";
 
@@ -28,9 +28,15 @@ export default function Workout() {
     const [recentModal, setRecentModal] = useState(false);
     const [status, setStatus] = useState();
 
-    if (!workout) return <Loader></Loader>;
+    useEffect(() => {
+        if (!status) return;
+        setTimeout(() => setStatus(""), 3000);
+    }, [status]);
+
+    if (!workout) return <Loader/>
 
     function addExercise(id, name) {
+        if (workout.plan.some(ex => ex.name === name)) return setStatus("Duplicate exercise name");
         setWorkout(prev => ({
                 ...prev,
                 ownIndex: typeof id == "string" ? prev.ownIndex + 1 : prev.ownIndex,
@@ -46,7 +52,7 @@ export default function Workout() {
         setSearchModal(false);
     }
 
-    function updateExercise (exerciseIndex, setIndex, prop, value) {
+    function updateExercise(exerciseIndex, setIndex, prop, value) {
         setWorkout(prev => ({
             ...prev,
             plan: Array.from(prev.plan, (ex, exi) => {
@@ -68,6 +74,7 @@ export default function Workout() {
     }
 
     function updateExerciseName(exerciseIndex, text) {
+        if (workout.plan.some(ex => ex.name === text)) return setStatus("Duplicate exercise name");
         setWorkout(prev => ({
             ...prev,
             plan : prev.plan.map((ex, exi) => {
@@ -110,7 +117,7 @@ export default function Workout() {
     return (
         <KeyboardView>
             <ScrollView contentContainerStyle={MainStyle.content}>
-                <Text style={MainStyle.lightText}>{status}</Text>
+                {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
                 {workout.id ? 
                     <Pressable
                         style={MainStyle.secondaryButton}
@@ -195,24 +202,22 @@ export default function Workout() {
                                 <View key={setIndex} style={MainStyle.inlineContainer}>            
                                     <Text style={MainStyle.lightText}>{setIndex+1 + "."}</Text>
                                     <TextInput 
-                                        value={workout.plan[exerciseIndex].sets[setIndex].weight ? workout.plan[exerciseIndex].sets[setIndex].weight.toString() : ""}
+                                        value={workout.plan[exerciseIndex].sets[setIndex].weight || ""}
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
                                         placeholder="kg"
                                         onChangeText={text => { 
-                                            if (!/^\d+([.,]\d*)?$/.test(text)) return;
-                                            updateExercise(exerciseIndex, setIndex, "weight", text) 
+                                            if (text == "" || /^\d+([.,]\d*)?$/.test(text)) updateExercise(exerciseIndex, setIndex, "weight", Number(text)) 
                                         }}
                                     />
                                     <Text style={MainStyle.lightText}>x</Text>
                                     <TextInput 
-                                        value={workout.plan[exerciseIndex].sets[setIndex].rep ? workout.plan[exerciseIndex].sets[setIndex].rep.toString() : ""}
+                                        value={workout.plan[exerciseIndex].sets[setIndex].rep || ""}
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
                                         placeholder="rep"
                                         onChangeText={text => { 
-                                            if (!/^\d*$/.test(text)) return;
-                                            updateExercise(exerciseIndex, setIndex, "rep", text) 
+                                            if (text == "" || /^\d*$/.test(text)) updateExercise(exerciseIndex, setIndex, "rep", Number(text)) 
                                         }}
                                     />
                                     <Pressable onPress={() => deleteSet(exerciseIndex, setIndex)}>

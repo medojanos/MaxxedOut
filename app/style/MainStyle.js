@@ -106,8 +106,7 @@ export default StyleSheet.create({
         backgroundColor: "rgba(0,0,0,0.5)"
     },
     modal: {
-        width: "90%",
-        maxHeight: "80%",
+        maxHeight: "100%",
         backgroundColor: Var.darkGray,
         padding: 20, 
         paddingBottom: 10, 

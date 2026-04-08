@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/", authUser(), getWorkoutByQuery);
 router.get("/:id", authUser(), getWorkoutById);
 
-router.put("/", authUser(), addWorkout);
+router.post("/", authUser(), addWorkout);
 
 router.delete("/:id", authUser(), deleteWorkout);
 

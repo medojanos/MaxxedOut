@@ -13,7 +13,7 @@ export default function ModalOverlay({children, onClose, visible}) {
                 <TouchableWithoutFeedback onPress={onClose}>
                     <View style={StyleSheet.absoluteFill} />
                 </TouchableWithoutFeedback>
-                <KeyboardView style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
+                <KeyboardView style={{flex: 0, maxHeight: "80%", minHeight: "auto", width: "90%"}}>
                     <View style={MainStyle.modal}>
                         {children}
                     </View>

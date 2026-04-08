@@ -25,6 +25,7 @@ export default function CreateWorkout() {
     const {planDraft, setPlanDraft, token, Refresh} = useContext(Context);
 
     function addExercise(id, name, type, muscle_groups) {
+        if (planDraft.exercises.some(ex => ex.name == name)) return setStatus("Exercise already added");
         setPlanDraft(prev => ({
                 ...prev,
                 ownIndex: typeof id == "string" ? prev.ownIndex + 1 : prev.ownIndex,
@@ -55,7 +56,7 @@ export default function CreateWorkout() {
                         case "name":
                             return {...exercise, name : text}
                         case "sets":
-                            return {...exercise, sets : text}
+                            return {...exercise, sets : Number(text)}
                     }
                 }
                 return exercise;
@@ -66,7 +67,7 @@ export default function CreateWorkout() {
     return (
         <KeyboardView>
             <ScrollView contentContainerStyle={MainStyle.content}>
-                <Text style={MainStyle.lightText}>{status}</Text>
+                {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
                 <TextInput 
                     placeholder="Enter workout name..." 
                     value={planDraft.name || ""}

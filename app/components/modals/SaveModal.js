@@ -20,7 +20,7 @@ export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, 
             </Pressable>
             <Pressable style={MainStyle.button} onPress={() => { 
                 fetch(Constants.expoConfig.extra.API_URL + "/workouts", {
-                    method: "PUT",
+                    method: "POST",
                     headers: {
                         "Content-Type" : "application/json",
                         "Authorization" : token
@@ -30,13 +30,14 @@ export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, 
                 .then(res => {
                     if (res.ok) {
                         navigation.navigate("Home");
-                        setSaveModal(false);
                         setWorkout(null);
-                    } else {
+                        setSaveModal(false);
+                    } 
+                    else res.json().then(data => {
                         setStatus(data.message);
                         setSaveModal(false);
-                    }
-                })
+                    });
+                });
             }}>
                 <Text style={MainStyle.buttonText}>Yes</Text>
             </Pressable>

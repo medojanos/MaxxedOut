@@ -58,15 +58,15 @@ export const getWorkoutByQuery = (req, res) => {
                         });
                     }
                 });
-
-                const result = Object.values(workoutsMap).map(w => ({
-                    id: w.id,
-                    name: w.name,
-                    duration: w.duration,
-                    ended_at: w.ended_at,
-                    exercises: Object.values(w.exercises)
-                }));
-
+                const result = Object.values(workoutsMap)
+                    .map(w => ({
+                            id: w.id,
+                            name: w.name,
+                            duration: w.duration,
+                            ended_at: w.ended_at,
+                            exercises: Object.values(w.exercises)
+                        })
+                    );
                 ReturnData(res, result);
             }
         );
@@ -111,7 +111,8 @@ export const getWorkoutByQuery = (req, res) => {
             }
         );
     } else if (limit) {
-        let query = "SELECT id, name, strftime('%Y-%m-%d', ended_at) AS ended_at FROM workouts WHERE user_id = ? ORDER BY ended_at DESC";
+        if (!ValidateNumber(limit)) return Error(res, "Invalid limit");
+        let query = "SELECT id, name, strftime('%Y-%m-%d', ended_at) AS ended_at FROM workouts w WHERE user_id = ? ORDER BY w.ended_at DESC";
         let params = [];
         params.push(req.user);
         if (limit) {
@@ -131,8 +132,17 @@ export const getWorkoutById = (req, res) => {
     if(!ValidateNumber(id)) return Error(res, "Invalid id");
 
     db.get(
-        "SELECT id, name, strftime('%s', ended_at) - strftime('%s', started_at) AS length, strftime('%H:%M', ended_at) AS ended_at FROM workouts WHERE id = ?", [id], (e, workout) => {
+        `SELECT 
+            id, 
+            name, 
+            strftime('%s', ended_at) - strftime('%s', started_at) AS length, 
+            strftime('%H:%M', ended_at) AS ended_at 
+            FROM workouts 
+            WHERE id = ?
+            AND user_id = ?
+            ORDER BY ended_at DESC`, [id, req.user], (e, workout) => {
             if (e) return dbError(res, e);
+            if (!workout) return NotFound(res, "Workout not found");
             db.all(
                 `SELECT 
                 e.id as exercise_id,
@@ -190,8 +200,8 @@ export const addWorkout = (req, res) => {
 
         if (totalSets == 0) return NoContent(res);
 
-        function Check(err) {
-            if (err) return dbError(res, e); 
+        function Check(e) {
+            if (e) return dbError(res, e); 
             completed++;
             if (completed == totalSets) return NoContent(res);
         }
@@ -215,7 +225,7 @@ export const deleteWorkout = (req, res) => {
 
     if(!ValidateNumber(id)) return Error(res, "Invalid id");
 
-    db.run("DELETE FROM workouts WHERE id = ?", [id], (e) => {
+    db.run("DELETE FROM workouts WHERE id = ? AND user_id = ?", [id, req.user], (e) => {
         if (e) return dbError(res, e);
         NoContent(res);
     })
