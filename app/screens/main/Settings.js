@@ -81,7 +81,7 @@ export default function Settings() {
                     <TextInput
                         value={newNickname}
                         placeholder="Enter new nickname..."
-                        style={[MainStyle.input, {width: "50%"}]}
+                        style={[MainStyle.input, {width: "60%"}]}
                         onChangeText={text => {
                             setStatus("");
                             if (text.length > 20) return setStatus("Nickname cannot be longer than 20 characters");
@@ -109,7 +109,7 @@ export default function Settings() {
                         .then(data => {
                             setStatus(data.message);
                             if (res.ok) {
-                                setUserData(data.data);
+                                setUserData(prev => ({...prev, nickname: newNickname}));
                                 setSaveDisabled(true);
                                 setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
                             }
