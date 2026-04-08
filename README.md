@@ -1,12 +1,12 @@
-<h1>MaxxedOut 💪🏋️‍♂️</h1>
+<h1>MaxxedOut</h1>
 <b>Max out your workouts</b>
 
-<h2>Overview</h2>
+<h2>💪 Overview</h2>
 <p>MaxxedOut is a comprehensive fitness application suite designed to help users track, analyze, and optimize their workout routines. The app provides a seamless experience, empowering users to achieve their fitness goals with personalized plans and powerful analytics.</p>
 
 <hr>
 
-<h2>✨ Features 🌟</h2>
+<h2>✨ Features</h2>
 
 <h3>For Users</h3>
 <ul>
