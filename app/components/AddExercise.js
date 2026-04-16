@@ -1,9 +1,11 @@
 // React
-import { View, Text, ScrollView, Pressable, TextInput, Modal } from "react-native";
+import { View, Text, ScrollView, Pressable, TextInput } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useState, useEffect } from "react";
-
 import Constants from 'expo-constants';
+
+// Misc
+import ModalOverlay from "./ModalOverlay";
 
 // Style
 import * as Var from "../style/Variables"
@@ -47,76 +49,69 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
             .includes(musclegroup));
 
     return (
-        <Modal 
-            animationType="fade"
-            transparent={true}
-            visible={visible}>
-            <View style={MainStyle.overlay}>
-                <View style={MainStyle.modal}>
-                    <Text style={MainStyle.screenTitle}>Search for exercises</Text>
-                    <TextInput 
-                        style={MainStyle.input}
-                        placeholder="Enter exercise name..."
-                        value={searchText}
-                        onChangeText={setSearchText}>
-                    </TextInput>
-                    <View style={[MainStyle.inlineContainer, {zIndex: 1}]}>
-                        <DropDownPicker
-                            open={typePicker}
-                            setOpen={setTypePicker}
-                            value={type}
-                            containerStyle={{width: "40%"}}
-                            style={MainStyle.input}
-                            textStyle={{color: Var.white}}
-                            dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
-                            items={[
-                                {label: "Type", value: ""}, 
-                                {label: "Compound", value: "Compound"},
-                                {label: "Isolation", value: "Isolation"}
-                            ]}
-                            setValue={setType}>
-                        </DropDownPicker>
-                        <DropDownPicker
-                            open={mgPicker}
-                            setOpen={setMgPicker}
-                            containerStyle={{width: "50%"}}
-                            style={MainStyle.input}
-                            value={musclegroup}
-                            textStyle={{color: Var.white}}
-                            dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
-                            items={[
-                                {label: "Muscle group", value: ""}, 
-                                ...musclegroups.map(mg => (
-                                    {label: mg.name, value: mg.name}
-                                ))
-                            ]}
-                            setValue={setMuscleGroup}>
-                        </DropDownPicker>
-                    </View>
-                    <ScrollView 
-                        style={{maxHeight: 120}}>
-                        {filteredExercises.map((exercise) => (
-                            <Pressable
-                                key={exercise.id}
-                                onPress={() => addExercise(exercise.id, exercise.name, exercise.type, exercise.muscle_groups)}>
-                                <Text style={AddExerciseStyle.listItems}>{exercise.name}</Text>
-                            </Pressable>                                  
-                        ))}
-                    </ScrollView>
-                    <Pressable 
-                        onPress={() => {
-                            addExercise("own" + (ownIndex + 1), "Own exercise " + (ownIndex + 1));
-                        }}
-                        style={MainStyle.secondaryButton}>
-                        <Text style={MainStyle.buttonText}>Add own exercise</Text>
-                    </Pressable>
-                    <Pressable
-                        style={MainStyle.button}
-                        onPress={() => Close()}>
-                        <Text style={MainStyle.buttonText}>Close</Text>
-                    </Pressable>
-                </View>
+        <ModalOverlay visible={visible} onClose={Close}>
+            <Text style={MainStyle.screenTitle}>Search for exercises</Text>
+            <TextInput 
+                style={MainStyle.input}
+                placeholder="Enter exercise name..."
+                value={searchText}
+                onChangeText={setSearchText}>
+            </TextInput>
+            <View style={[MainStyle.inlineContainer, {zIndex: 1}]}>
+                <DropDownPicker
+                    open={typePicker}
+                    setOpen={setTypePicker}
+                    value={type}
+                    containerStyle={{width: "40%"}}
+                    style={MainStyle.input}
+                    textStyle={{color: Var.white}}
+                    dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
+                    items={[
+                        {label: "Type", value: ""}, 
+                        {label: "Compound", value: "Compound"},
+                        {label: "Isolation", value: "Isolation"}
+                    ]}
+                    setValue={setType}>
+                </DropDownPicker>
+                <DropDownPicker
+                    open={mgPicker}
+                    setOpen={setMgPicker}
+                    containerStyle={{width: "50%"}}
+                    style={MainStyle.input}
+                    value={musclegroup}
+                    textStyle={{color: Var.white}}
+                    dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
+                    items={[
+                        {label: "Muscle group", value: ""}, 
+                        ...musclegroups.map(mg => (
+                            {label: mg.name, value: mg.name}
+                        ))
+                    ]}
+                    setValue={setMuscleGroup}>
+                </DropDownPicker>
             </View>
-        </Modal>
+            <ScrollView 
+                style={{maxHeight: 120}}>
+                {filteredExercises.map((exercise) => (
+                    <Pressable
+                        key={exercise.id}
+                        onPress={() => addExercise(exercise.id, exercise.name, exercise.type, exercise.muscle_groups)}>
+                        <Text style={AddExerciseStyle.listItems}>{exercise.name}</Text>
+                    </Pressable>                                  
+                ))}
+            </ScrollView>
+            <Pressable 
+                onPress={() => {
+                    addExercise("own" + (ownIndex + 1), "Own exercise " + (ownIndex + 1));
+                }}
+                style={MainStyle.secondaryButton}>
+                <Text style={MainStyle.buttonText}>Add own exercise</Text>
+            </Pressable>
+            <Pressable
+                style={MainStyle.button}
+                onPress={() => Close()}>
+                <Text style={MainStyle.buttonText}>Close</Text>
+            </Pressable>
+        </ModalOverlay>
     )
 }

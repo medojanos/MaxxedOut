@@ -1,7 +1,6 @@
 // React
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { useContext, useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 // Misc
 import { Context } from "../../misc/Provider";

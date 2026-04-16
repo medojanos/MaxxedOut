@@ -6,9 +6,8 @@ export default function Root() {
   return (
     <SafeAreaProvider>
         <Provider>
-            <App/>
+          <App/>
         </Provider>
     </SafeAreaProvider>
-    
   );
 }

@@ -19,7 +19,8 @@ export const getPlanById = (req, res) => {
         FROM plans_exercises pe 
         JOIN plans p ON p.id = pe.plan_id 
         LEFT JOIN exercises e ON pe.exercise_id = e.id 
-        WHERE pe.plan_id = ? AND p.user_id = ?`, [req.params.id, req.user], (e, rows) => {
+        WHERE pe.plan_id = ? AND p.user_id = ?
+        ORDER BY pe.position`, [id, req.user], (e, rows) => {
             if (e) return dbError(res, e); 
             return ReturnData(res, rows);
     })
@@ -65,7 +66,7 @@ export const getPlanInfo = (req, res) => {
             const musclegroupsMap = {};
 
             if (exIds.length === 0) {
-                ReturnData(res, {
+                return ReturnData(res, {
                     types: Object.values(exerciseTypes),
                     muscle_groups: [],
                     custom: exCustom,
@@ -116,17 +117,17 @@ export const addPlan = (req, res) => {
         let completed = 0;
         const id = this.lastID;
 
-        function Check(err) {
-            if (err) return dbError(res, e); 
+        function Check(e) {
+            if (e) return dbError(res, e); 
             completed++;
             if (completed == exercises.length) return Created(res, "Created workout plan")
         }
 
         exercises.forEach(exercise => {
             if (typeof exercise.id == "string") {
-                db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets) VALUES (?, ?, ?)", [id, exercise.name, exercise.sets], (e) => Check(e))
+                db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, exercise.sets, exercise.position], (e) => Check(e))
             } else {
-                db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets) VALUES (?, ?, ?)", [id, exercise.id, exercise.sets], (e) => Check(e))
+                db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, exercise.sets, exercise.position], (e) => Check(e))
             }
         });
     })
@@ -146,19 +147,21 @@ export const updatePlan = (req, res) => {
         db.run("DELETE FROM plans_exercises WHERE plan_id = ?", [id], function(e) {
             if (e) return dbError(res, e);
 
+            if (exercises.length === 0) return NoContent(res);
+
             let completed = 0;
             
-            function Check(err) {
-                if (err) return dbError(res, e); 
+            function Check(e) {
+                if (e) return dbError(res, e); 
                 completed++;
                 if (completed == exercises.length) return NoContent(res);
             }
 
             exercises.forEach(exercise => {
-                if (!exercise.id || typeof exercise.id == "string") {
-                    db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets) VALUES (?, ?, ?)", [id, exercise.name, exercise.sets], (e) => Check(e))
+                if (typeof exercise.id == "string" || !exercise.id) {
+                    db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, exercise.sets, exercise.position], (e) => Check(e))
                 } else {
-                    db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets) VALUES (?, ?, ?)", [id, exercise.id, exercise.sets], (e) => Check(e))
+                    db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, exercise.sets, exercise.position], (e) => Check(e))
                 }
             });
         })

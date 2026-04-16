@@ -9,10 +9,10 @@ using System.Windows.Forms;
 
 namespace admin
 {
-    public class ApiResult
+    public class ApiResponse<T>
     { 
-        public JsonElement data { get; set; }
+        public T data { get; set; }
 
-        public ApiResult() { }
+        public ApiResponse() { }
     }
 }

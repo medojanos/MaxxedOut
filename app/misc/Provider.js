@@ -30,7 +30,7 @@ export default function Provider({children}) {
         if (userData !== null) {
             if (userData.nickname == null) setUserData(prev => ({...prev, nickname: RandomName()}));
             if (userData.weight == null) setUserData(prev => ({...prev, weight: 0}));
-            if (userData.preferences === undefined) setUserData(prev => ({...prev, preferences: {restingTime: 90, bottomTabText: "Show"}}));
+            if (userData.preferences === undefined) setUserData(prev => ({...prev, preferences: {restingTime: {minutes: 3, seconds: 0}, bottomTabText: "Show"}}));
         }
         setJson("user", userData);
     }, [userData]);

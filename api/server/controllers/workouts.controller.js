@@ -1,5 +1,5 @@
 import db from "../config/db.js"
-import { Error, dbError, Success, ReturnData, Validate, ValidateNumber, NotFound, NoContent } from "../config/utility.js";
+import { Error, dbError, ReturnData, Validate, ValidateNumber, NotFound, NoContent } from "../config/utility.js";
 
 export const getWorkoutByQuery = (req, res) => {
     const { month, date, name, limit } = req.query;
@@ -12,6 +12,7 @@ export const getWorkoutByQuery = (req, res) => {
                 w.id AS workout_id,
                 w.name AS workout_name,
                 strftime('%s', w.ended_at) - strftime('%s', w.started_at) AS duration,
+                strftime('%H:%M', w.ended_at) AS ended_at,
                 e.id AS exercise_id,
                 COALESCE(s.exercise_name, e.name) AS exercise_name,
                 s.rep,
@@ -20,7 +21,8 @@ export const getWorkoutByQuery = (req, res) => {
             LEFT JOIN sets s ON s.workout_id = w.id
             LEFT JOIN exercises e ON s.exercise_id = e.id
             WHERE DATE(w.ended_at) = ?
-            AND w.user_id = ?`,
+            AND w.user_id = ?
+            ORDER BY s.position`,
             [date, req.user],
             (e, rows) => {
                 if (e) return dbError(res, e);
@@ -34,6 +36,7 @@ export const getWorkoutByQuery = (req, res) => {
                             id: r.workout_id,
                             name: r.workout_name,
                             duration: r.duration,
+                            ended_at: r.ended_at,
                             exercises: {}
                         };
                     }
@@ -55,14 +58,15 @@ export const getWorkoutByQuery = (req, res) => {
                         });
                     }
                 });
-
-                const result = Object.values(workoutsMap).map(w => ({
-                    id: w.id,
-                    name: w.name,
-                    duration: w.duration,
-                    exercises: Object.values(w.exercises)
-                }));
-
+                const result = Object.values(workoutsMap)
+                    .map(w => ({
+                            id: w.id,
+                            name: w.name,
+                            duration: w.duration,
+                            ended_at: w.ended_at,
+                            exercises: Object.values(w.exercises)
+                        })
+                    );
                 ReturnData(res, result);
             }
         );
@@ -107,7 +111,8 @@ export const getWorkoutByQuery = (req, res) => {
             }
         );
     } else if (limit) {
-        let query = "SELECT id, name, ended_at FROM workouts WHERE user_id = ? ORDER BY ended_at DESC";
+        if (!ValidateNumber(limit)) return Error(res, "Invalid limit");
+        let query = "SELECT id, name, strftime('%Y-%m-%d', ended_at) AS ended_at FROM workouts w WHERE user_id = ? ORDER BY w.ended_at DESC";
         let params = [];
         params.push(req.user);
         if (limit) {
@@ -127,8 +132,17 @@ export const getWorkoutById = (req, res) => {
     if(!ValidateNumber(id)) return Error(res, "Invalid id");
 
     db.get(
-        "SELECT id, name, strftime('%s', ended_at) - strftime('%s', started_at) AS length FROM workouts WHERE id = ?", [id], (e, workout) => {
+        `SELECT 
+            id, 
+            name, 
+            strftime('%s', ended_at) - strftime('%s', started_at) AS length, 
+            strftime('%H:%M', ended_at) AS ended_at 
+            FROM workouts 
+            WHERE id = ?
+            AND user_id = ?
+            ORDER BY ended_at DESC`, [id, req.user], (e, workout) => {
             if (e) return dbError(res, e);
+            if (!workout) return NotFound(res, "Workout not found");
             db.all(
                 `SELECT 
                 e.id as exercise_id,
@@ -137,7 +151,8 @@ export const getWorkoutById = (req, res) => {
                 weight
                 FROM sets s
                 LEFT JOIN exercises e ON s.exercise_id = e.id
-                WHERE s.workout_id = ?`, [workout.id],(e, rows) => {
+                WHERE s.workout_id = ?
+                ORDER BY s.position`, [workout.id],(e, rows) => {
                     if (e) return dbError(res, e);
                     const exercisesMap = {};
                     rows.forEach(r => {
@@ -158,6 +173,7 @@ export const getWorkoutById = (req, res) => {
                         id: workout.id, 
                         name: workout.name, 
                         duration: workout.length,
+                        ended_at: workout.ended_at,
                         exercises: Object.values(exercisesMap)
                     }])
                 }
@@ -184,8 +200,8 @@ export const addWorkout = (req, res) => {
 
         if (totalSets == 0) return NoContent(res);
 
-        function Check(err) {
-            if (err) return dbError(res, e); 
+        function Check(e) {
+            if (e) return dbError(res, e); 
             completed++;
             if (completed == totalSets) return NoContent(res);
         }
@@ -209,7 +225,7 @@ export const deleteWorkout = (req, res) => {
 
     if(!ValidateNumber(id)) return Error(res, "Invalid id");
 
-    db.run("DELETE FROM workouts WHERE id = ?", [id], (e) => {
+    db.run("DELETE FROM workouts WHERE id = ? AND user_id = ?", [id, req.user], (e) => {
         if (e) return dbError(res, e);
         NoContent(res);
     })

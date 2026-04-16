@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable, TextInput, Modal, Linking } from "react-native";
+import { View, Text, ScrollView, Pressable, TextInput, Linking } from "react-native";
 import { useContext, useState } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -7,6 +7,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { Context } from "../../misc/Provider";
 import RandomName from "../../misc/RandomName";
 import Constants from 'expo-constants';
+import ModalOverlay from "../../components/ModalOverlay";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -19,12 +20,12 @@ export default function Settings() {
 
     const [nicknameModal, setNicknameModal] = useState(false);
     const [newNickname, setNewNickname] = useState("");
-    const [status, setStatus] = useState();
+    const [status, setStatus] = useState("");
     const [passwordModal, setPasswordModal] = useState(false);
-    const [currentPassword, setCurrentPassword] = useState();
+    const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
-    const [newRepassword, setNewRepassword] = useState();
-    const [pwdStrength, setPwdStrength] = useState();
+    const [newRepassword, setNewRepassword] = useState("");
+    const [pwdStrength, setPwdStrength] = useState("");
     const [saveDisabled, setSaveDisabled] = useState(false);
     const [picker, setPicker] = useState(false);
 
@@ -73,60 +74,54 @@ export default function Settings() {
                     <Text style={MainStyle.lightText}>{userData.email}</Text>
                 </View>
             </View>
-            <Modal 
-                animationType="fade"
-                transparent={true}
-                visible={nicknameModal}>
-                <View style={MainStyle.overlay}>
-                    <View style={MainStyle.modal}>
-                        <Text style={MainStyle.screenTitle}>Edit nickname</Text>
-                        <Text style={MainStyle.lightText}>{status}</Text>
-                        <View style={MainStyle.inlineContainer}>
-                            <TextInput
-                                value={newNickname}
-                                placeholder="Enter new nickname..."
-                                style={MainStyle.input}
-                                onChangeText={text => {
-                                    setStatus("");
-                                    if (text.length > 20) return setStatus("Too long");
-                                    setNewNickname(text);
-                                }}>
-                            </TextInput>
-                            <Pressable onPress={() => {setNewNickname(RandomName()); setStatus("");}}>
-                                <Ionicons name="dice-outline" color={Var.red} size={25}></Ionicons>
-                            </Pressable>
-                        </View>
-                        <View style={MainStyle.inlineContainer}>
-                            <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
-                                fetch(Constants.expoConfig.extra.API_URL + "/user", {
-                                    method: "PATCH",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                        "Authorization": token
-                                    },
-                                    body: JSON.stringify({
-                                        "nickname" : newNickname
-                                    })
-                                })
-                                .then(res => res.json()
-                                .then(data => {
-                                    setStatus(data.message);
-                                    if (res.ok) {
-                                        setUserData(data.data);
-                                        setSaveDisabled(true);
-                                        setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
-                                    }
-                                }))
-                            }}>
-                                <Text style={MainStyle.buttonText}>Save</Text>
-                            </Pressable>
-                            <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setNicknameModal(false)}>
-                                <Text style={MainStyle.buttonText}>Close</Text>
-                            </Pressable>
-                        </View>
-                    </View>
+            <ModalOverlay visible={nicknameModal} onClose={() => setNicknameModal(false)}>
+                <Text style={MainStyle.screenTitle}>Edit nickname</Text>
+                <Text style={MainStyle.lightText}>{status}</Text>
+                <View style={MainStyle.inlineContainer}>
+                    <TextInput
+                        value={newNickname}
+                        placeholder="Enter new nickname..."
+                        style={[MainStyle.input, {width: "60%"}]}
+                        onChangeText={text => {
+                            setStatus("");
+                            if (text.length > 20) return setStatus("Nickname cannot be longer than 20 characters");
+                            setNewNickname(text);
+                        }}>
+                    </TextInput>
+                    <Pressable onPress={() => {setNewNickname(RandomName()); setStatus("");}}>
+                        <Ionicons name="dice-outline" color={Var.red} size={25}></Ionicons>
+                    </Pressable>
                 </View>
-            </Modal>
+                <View style={MainStyle.inlineContainer}>
+                    <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
+                        if (newNickname.length == 0) return setStatus("Nickname is too short");
+                        fetch(Constants.expoConfig.extra.API_URL + "/user", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": token
+                            },
+                            body: JSON.stringify({
+                                "nickname" : newNickname
+                            })
+                        })
+                        .then(res => res.json()
+                        .then(data => {
+                            setStatus(data.message);
+                            if (res.ok) {
+                                setUserData(prev => ({...prev, nickname: newNickname}));
+                                setSaveDisabled(true);
+                                setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
+                            }
+                        }))
+                    }}>
+                        <Text style={MainStyle.buttonText}>Save</Text>
+                    </Pressable>
+                    <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setNicknameModal(false)}>
+                        <Text style={MainStyle.buttonText}>Close</Text>
+                    </Pressable>
+                </View>
+            </ModalOverlay>
             <View style={[MainStyle.container, {zIndex: 1}]}>
                 <View style={MainStyle.inlineContainer}>
                     <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
@@ -134,16 +129,30 @@ export default function Settings() {
                 </View>
                 <View style={MainStyle.inlineContainer}>
                     <Text style={MainStyle.lightText}>Resting time:</Text>
-                    <TextInput
-                        keyboardType="numeric"
-                        style={[MainStyle.input, MainStyle.setInput]}
-                        value={userData.preferences?.restingTime.toString() !== "0" ? userData.preferences?.restingTime.toString() : "" || ""}
-                        onChangeText={text => {
-                            if (!/^\d+$/.test(text) && text !== "") return;
-                            setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: text}}));
-                            Refresh()
-                            }}>
-                    </TextInput>
+                    <View style={MainStyle.inlineContainer}>
+                        <TextInput
+                            keyboardType="numeric"
+                            style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
+                            value={userData.preferences?.restingTime.minutes.toString() || 0}
+                            onChangeText={text => {
+                                if (text !== "" && !/^\d+$/.test(text)) return;
+                                setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: {...prev.preferences.restingTime, minutes: Number(text)}}}));
+                                Refresh()
+                                }}>
+                        </TextInput>
+                        <Text style={MainStyle.lightText}>mins</Text>
+                        <TextInput
+                            keyboardType="numeric"
+                            style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
+                            value={userData.preferences?.restingTime.seconds.toString()}
+                            onChangeText={text => {
+                                if (text !== "" && !/^\d+$/.test(text)) return;
+                                setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: {...prev.preferences.restingTime, seconds: Number(text)}}}));
+                                Refresh()
+                                }}>
+                        </TextInput>
+                        <Text style={MainStyle.lightText}>seconds</Text>
+                    </View>
                 </View>
                 <View style={MainStyle.inlineContainer}>
                     <Text style={MainStyle.lightText}>Bottom tab text: </Text>
@@ -184,69 +193,62 @@ export default function Settings() {
             }}>
                 <Text style={MainStyle.buttonText}>Logout</Text>
             </Pressable>
-            <Modal 
-                animationType="fade"
-                transparent={true}
-                visible={passwordModal}>
-                <View style={MainStyle.overlay}>
-                    <View style={MainStyle.modal}>
-                        <Text style={MainStyle.screenTitle}>Edit password</Text>
-                        <Text style={MainStyle.lightText}>{status}</Text>
-                        <TextInput
-                            secureTextEntry
-                            placeholder="Enter current password..."
-                            style={MainStyle.input}
-                            onChangeText={setCurrentPassword}>
-                        </TextInput>
-                        <TextInput
-                            secureTextEntry
-                            placeholder="Enter new password..."
-                            style={MainStyle.input}
-                            onChangeText={evaluatePwdStrength}>
-                        </TextInput>
-                        <TextInput
-                            secureTextEntry
-                            placeholder="Reenter new password..."
-                            style={MainStyle.input}
-                            onChangeText={setNewRepassword}>
-                        </TextInput>
-                        <Text style={MainStyle.strongText}>{pwdStrength}</Text>
-                        <View style={MainStyle.inlineContainer}>
-                            <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
-                                setStatus("");
-                                if (pwdStrength == "") return setStatus("Enter valid password")
-                                if (pwdStrength == "Weak") return setStatus("Password is too weak");
-                                if (newPassword != newRepassword) return setStatus("Passwords do not match");
-                                fetch(Constants.expoConfig.extra.API_URL + "/user", {
-                                    method: "PATCH",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                        "Authorization": token
-                                    },
-                                    body: JSON.stringify({
-                                        "password": newPassword,
-                                        "currentPassword": currentPassword
-                                    })
-                                })
-                                .then(res => res.json()
-                                .then(data => {
-                                    setStatus(data.message);
-                                    if (res.ok) {
-                                        setUserData(data.data);
-                                        setSaveDisabled(true);
-                                        setTimeout(() => {setPasswordModal(false); setSaveDisabled(false)}, 2000);
-                                    }
-                                }))
-                            }}>
-                                <Text style={MainStyle.buttonText}>Save</Text>
-                            </Pressable>
-                            <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setPasswordModal(false)}>
-                                <Text style={MainStyle.buttonText}>Close</Text>
-                            </Pressable>
-                        </View>
-                    </View>
+            <ModalOverlay visible={passwordModal} onClose={() => setPasswordModal(false)}>
+                <Text style={MainStyle.screenTitle}>Edit password</Text>
+                <Text style={MainStyle.lightText}>{status}</Text>
+                <TextInput
+                    secureTextEntry
+                    placeholder="Enter current password..."
+                    style={MainStyle.input}
+                    onChangeText={setCurrentPassword}>
+                </TextInput>
+                <TextInput
+                    secureTextEntry
+                    placeholder="Enter new password..."
+                    style={MainStyle.input}
+                    onChangeText={evaluatePwdStrength}>
+                </TextInput>
+                <TextInput
+                    secureTextEntry
+                    placeholder="Reenter new password..."
+                    style={MainStyle.input}
+                    onChangeText={setNewRepassword}>
+                </TextInput>
+                <Text style={MainStyle.strongText}>{pwdStrength}</Text>
+                <View style={MainStyle.inlineContainer}>
+                    <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
+                        setStatus("");
+                        if (pwdStrength == "") return setStatus("Enter valid password")
+                        if (pwdStrength == "Weak") return setStatus("Password is too weak");
+                        if (newPassword != newRepassword) return setStatus("Passwords do not match");
+                        fetch(Constants.expoConfig.extra.API_URL + "/user", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": token
+                            },
+                            body: JSON.stringify({
+                                "password": newPassword,
+                                "currentPassword": currentPassword
+                            })
+                        })
+                        .then(res => res.json()
+                        .then(data => {
+                            setStatus(data.message);
+                            if (res.ok) {
+                                setUserData(data.data);
+                                setSaveDisabled(true);
+                                setTimeout(() => {setPasswordModal(false); setSaveDisabled(false)}, 2000);
+                            }
+                        }))
+                    }}>
+                        <Text style={MainStyle.buttonText}>Save</Text>
+                    </Pressable>
+                    <Pressable style={[MainStyle.secondaryButton, MainStyle.buttonBlock]} onPress={() => setPasswordModal(false)}>
+                        <Text style={MainStyle.buttonText}>Close</Text>
+                    </Pressable>
                 </View>
-            </Modal>
+            </ModalOverlay>
             <View style={MainStyle.container}>
                 <View style={MainStyle.inlineContainer}>
                     <Ionicons name="information-circle" color={Var.red} size={40}></Ionicons>

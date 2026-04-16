@@ -22,10 +22,10 @@ namespace admin
 
         public async void Home_load(object sender, EventArgs e)
         {
-            MuscleGroupsList.MuscleGroups = await ApiClient.SafeGet<BindingList<MuscleGroupsDB>>("/muscle_groups");
+            MuscleGroupsList.MuscleGroups = await ApiClient.Get<BindingList<MuscleGroupsDB>>("/muscle_groups");
         }
 
-        // Data handling
+        // UI handling
 
         private void muscleGroupsToolStripMenuItem_Click(object sender, EventArgs e)
         {

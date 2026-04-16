@@ -4,7 +4,7 @@ export default {
   "expo": {
     "name": "MaxxedOut",
     "slug": "maxxedout",
-    "version": "0.1.3",
+    "version": "0.1.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -19,7 +19,6 @@ export default {
       "color": "#ffffff"
     },
     "android": {
-      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#F5EDED"

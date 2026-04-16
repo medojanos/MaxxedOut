@@ -40,7 +40,7 @@ namespace admin
 
         public static async Task<T> Get<T> (string url)
         {
-            return SafeExecute(async () =>
+            return await SafeExecute(async () =>
             {
                 var response = await Client.GetAsync(url);
                 return await HandleResponse<T>(response);
@@ -109,13 +109,16 @@ namespace admin
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                MessageBox.Show($"API error: {response.StatusCode} - {errorContent}");
+                MessageBox.Show($"API error:\n{response.StatusCode} - {errorContent}");
                 return default;
             }
 
+            if (response.StatusCode == HttpStatusCode.NoContent) return (T)(object)true;
+
             if (response.Content == null || response.Content.Headers.ContentLength == 0) return default;
 
-            return await response.Content.ReadFromJsonAsync<T>(options);
+            var result = await response.Content.ReadFromJsonAsync<ApiResponse<T>>(options);
+            return result.data;
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static admin.ApiClient;
@@ -62,8 +63,8 @@ namespace admin
             }
             else
             { 
-                ApiResult content = await Response.Content.ReadFromJsonAsync<ApiResult>();
-                MessageBox.Show($"Bad token! \nStatus: {Response.StatusCode.GetHashCode()} {Response.StatusCode} \nSuccess: {content.success} \nMessage: {content.message}");
+                ApiResponse<JsonElement> content = await Response.Content.ReadFromJsonAsync<ApiResponse<JsonElement>>();
+                MessageBox.Show($"Bad token! \nStatus: {Response.StatusCode.GetHashCode()} {Response.StatusCode}");
                 return false;
             }
         }
