@@ -209,11 +209,11 @@ export const addWorkout = (req, res) => {
         plan.forEach(exercise => {
             if(!exercise.id || typeof exercise.id == "string") {
                 exercise.sets.forEach(set => {
-                    db.run("INSERT INTO sets (workout_id, exercise_name, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.name, set.rep, set.weight], (e) => Check(e));
+                    db.run("INSERT INTO sets (workout_id, exercise_name, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.name, Number(set.rep), Number(set.weight)], (e) => Check(e));
                 })          
             } else {
                 exercise.sets.forEach(set => {
-                    db.run("INSERT INTO sets (workout_id, exercise_id, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.id, set.rep, set.weight], (e) => Check(e));
+                    db.run("INSERT INTO sets (workout_id, exercise_id, rep, weight) VALUES (?, ?, ?, ?)", [id, exercise.id, Number(set.rep), Number(set.weight)], (e) => Check(e));
                 })  
             }
         })

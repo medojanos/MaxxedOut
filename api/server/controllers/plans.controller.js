@@ -125,9 +125,9 @@ export const addPlan = (req, res) => {
 
         exercises.forEach(exercise => {
             if (typeof exercise.id == "string") {
-                db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, exercise.sets, exercise.position], (e) => Check(e))
+                db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, Number(exercise.sets), exercise.position], (e) => Check(e))
             } else {
-                db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, exercise.sets, exercise.position], (e) => Check(e))
+                db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, Number(exercise.sets), exercise.position], (e) => Check(e))
             }
         });
     })
@@ -159,9 +159,9 @@ export const updatePlan = (req, res) => {
 
             exercises.forEach(exercise => {
                 if (typeof exercise.id == "string" || !exercise.id) {
-                    db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, exercise.sets, exercise.position], (e) => Check(e))
+                    db.run("INSERT INTO plans_exercises (plan_id, exercise_name, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.name, Number(exercise.sets), exercise.position], (e) => Check(e))
                 } else {
-                    db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, exercise.sets, exercise.position], (e) => Check(e))
+                    db.run("INSERT INTO plans_exercises (plan_id, exercise_id, sets, position) VALUES (?, ?, ?, ?)", [id, exercise.id, Number(exercise.sets), exercise.position], (e) => Check(e))
                 }
             });
         })

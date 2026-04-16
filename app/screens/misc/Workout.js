@@ -18,6 +18,7 @@ import Constants from 'expo-constants';
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 import KeyboardView from "../../components/KeyboardView";
+import ModalOverlay from "../../components/ModalOverlay";
 
 export default function Workout() {
     const {token, workout, setWorkout} = useContext(Context);
@@ -45,7 +46,7 @@ export default function Workout() {
                     {
                         id: id,
                         name: name,
-                        sets: [{ weight: 0, rep: 0}]
+                        sets: [{ weight: "", rep: ""}]
                     }
                 ]
             }));
@@ -94,7 +95,7 @@ export default function Workout() {
             plan: prev.plan.map((ex, exi) => {
                 if (exerciseIndex == exi) return {
                     ...ex,
-                    sets: [...ex.sets, { weight: 0, rep: 0 }]
+                    sets: [...ex.sets, { weight: "", rep: "" }]
                 }
                 else return ex;
             })
@@ -130,7 +131,7 @@ export default function Workout() {
                                         ...prev, 
                                         plan: prev.plan.map(ex => {
                                             const recentEx = data.data.find(r => r.name === ex.name);
-                                            return recentEx ? {...ex, sets: recentEx.sets} : ex
+                                            return recentEx ? {...ex, sets: Array.from(recentEx.sets, set => ({weight: set.weight == 0 ? "" : set.weight.toString(), rep: set.rep == 0 ? "" : set.rep.toString()}))} : ex
                                         })
                                     }))
                                 }
@@ -151,23 +152,13 @@ export default function Workout() {
                         }}>
                     </TextInput>
                 }
-
-                <Modal visible={doneModal} transparent={true} animationType="fade">
-                    <View style={MainStyle.overlay}>
-                        <View style={MainStyle.modal}></View>
-                    </View>
-                </Modal>
                 
-                <Modal visible={recentModal} transparent={true} animationType="fade">
-                    <View style={MainStyle.overlay}>
-                        <View style={MainStyle.modal}>
-                            <Text style={MainStyle.screenTitle}>No recent workout</Text>
-                            <Pressable style={MainStyle.secondaryButton} onPress={() => setRecentModal(false)}>
-                                <Text style={MainStyle.buttonText}>Close</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                </Modal>
+                <ModalOverlay visible={recentModal}>
+                    <Text style={MainStyle.screenTitle}>No recent workout</Text>
+                    <Pressable style={MainStyle.button} onPress={() => setRecentModal(false)}>
+                        <Text style={MainStyle.buttonText}>Close</Text>
+                    </Pressable>
+                </ModalOverlay>
 
                 {workout.plan?.map((exercise, exerciseIndex) => (
                     <View key={exerciseIndex} style={MainStyle.container}>
@@ -202,22 +193,22 @@ export default function Workout() {
                                 <View key={setIndex} style={MainStyle.inlineContainer}>            
                                     <Text style={MainStyle.lightText}>{setIndex+1 + "."}</Text>
                                     <TextInput 
-                                        value={workout.plan[exerciseIndex].sets[setIndex].weight || ""}
+                                        value={workout.plan[exerciseIndex].sets[setIndex].weight.toString()}
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
                                         placeholder="kg"
                                         onChangeText={text => { 
-                                            if (text == "" || /^\d+([.,]\d*)?$/.test(text)) updateExercise(exerciseIndex, setIndex, "weight", Number(text)) 
+                                            if (text == "" || /^\d+([.,]\d*)?$/.test(text)) updateExercise(exerciseIndex, setIndex, "weight", text) 
                                         }}
                                     />
                                     <Text style={MainStyle.lightText}>x</Text>
                                     <TextInput 
-                                        value={workout.plan[exerciseIndex].sets[setIndex].rep || ""}
+                                        value={workout.plan[exerciseIndex].sets[setIndex].rep.toString()}
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
                                         placeholder="rep"
                                         onChangeText={text => { 
-                                            if (text == "" || /^\d*$/.test(text)) updateExercise(exerciseIndex, setIndex, "rep", Number(text)) 
+                                            if (text == "" || /^\d*$/.test(text)) updateExercise(exerciseIndex, setIndex, "rep", text) 
                                         }}
                                     />
                                     <Pressable onPress={() => deleteSet(exerciseIndex, setIndex)}>

@@ -1,7 +1,7 @@
 <h1>Change Log</h1>
 <p>All notable changes to this project will be documented in this file</p>
 
-<h2>v0.1.5</h2>
+<h2>v0.1.5 [Unreleased]</h2>
 <h3>Bugfixes</h3>
 <p>Nickname field was too short</p>
 <p>Changing nickname defaulted settings</p>

@@ -27,7 +27,7 @@ export default function PlanModal({ Close, visible, id, name }) {
 
         fetch(`${Constants.expoConfig.extra.API_URL}/plans/${id}`, { headers: { "Authorization": token } })
         .then(res => res.json())
-        .then(data => setPlan({ id: id, name: name, ownIndex: 0, exercises: data.data }))
+        .then(data => setPlan({ id: id, name: name, ownIndex: 0, exercises: Array.from(data.data, ex => ({id: ex.id, name: ex.name, sets: ex.sets == 0 ? "" : ex.sets.toString()})) }))
     }, [id, name, token]);
 
     function addExercise(id, name) {
@@ -39,7 +39,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                     {
                         id: id,
                         name: name,
-                        sets: 0
+                        sets: ""
                     }
                 ]
             }));
@@ -107,6 +107,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                                 keyboardType="numeric"
                                 style={[MainStyle.input, MainStyle.setInput]}
                                 value={plan.exercises[index].sets.toString()}
+                                placeholder="set"
                                 onChangeText={text => {
                                     if (!/^\d*$/.test(text)) return;
                                     updateExercise(index, text, "sets");

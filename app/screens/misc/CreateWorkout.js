@@ -36,7 +36,7 @@ export default function CreateWorkout() {
                         name: name,
                         type: type || "Custom",
                         muscle_groups: muscle_groups || [],
-                        sets: 0
+                        sets: ""
                     }
                 ]
             }));
@@ -113,7 +113,8 @@ export default function CreateWorkout() {
                                     <TextInput
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
-                                        value={planDraft.exercises[index].sets.toString()}
+                                        value={planDraft.exercises[index].sets}
+                                        placeholder="set"
                                         onFocus={() => {}}
                                         onChangeText={text => {
                                             if (!/^\d*$/.test(text)) return;
