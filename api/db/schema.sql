@@ -30,9 +30,13 @@ CREATE TABLE IF NOT EXISTS sets (
     weight INTEGER,
     position INTEGER,
     FOREIGN KEY (workout_id) REFERENCES workouts(id)
-    ON DELETE CASCADE,
+        ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
-    ON DELETE CASCADE
+        ON DELETE CASCADE,
+    CHECK (
+      (exercise_id IS NOT NULL AND exercise_name IS NULL) OR
+      (exercise_id IS NULL AND exercise_name IS NOT NULL)
+   )
 );
 
 CREATE TABLE IF NOT EXISTS muscle_groups (
@@ -67,7 +71,11 @@ CREATE TABLE IF NOT EXISTS plans_exercises (
     FOREIGN KEY (plan_id) REFERENCES plans(id)
         ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    CHECK (
+      (exercise_id IS NOT NULL AND exercise_name IS NULL) OR
+      (exercise_id IS NULL AND exercise_name IS NOT NULL)
+   )
 );
 
 CREATE TABLE IF NOT EXISTS codes (

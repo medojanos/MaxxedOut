@@ -13,7 +13,6 @@
   <li>Detailed Statistics: Track progress with workout duration, weight lifted, and personal records</li>
   <li>Workout Plans: Create and follow personalized workout plans</li>
   <li>Exercise Database: Access a comprehensive list of exercises with muscle group information</li>
-  <li>Push Notifications: Get reminders and updates on your progress</li>
   <li>Resting Timer: Built-in timer for optimal rest periods</li>
   <li>Workout Streaks: Stay motivated with streak tracking</li>
   <li>Best Lift Statistics: Monitor your personal best lifts</li>
