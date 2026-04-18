@@ -32,7 +32,7 @@ namespace admin
 
         private async void Users_load(object sender, EventArgs e)
         {
-            var result = await ApiClient.SafeGet<List<UsersDB>>("/user/admin");
+            var result = await ApiClient.Get<List<UsersDB>>("/user/admin");
             if (result == null) return;
 
             UsersList = result;
@@ -108,12 +108,6 @@ namespace admin
                 return;
             }
 
-            if (UsersList.Any(user => user.Nickname == nickname.Text))
-            {
-                MessageBox.Show("Nickname already in database!");
-                return;
-            }
-
             if (UsersList.Any(user => user.Email == email.Text))
             {
                 MessageBox.Show("Email already in database!");
@@ -122,19 +116,20 @@ namespace admin
 
             if (!UsersDB.IsPwdValid(password.Text) || !UsersDB.IsEmailValid(email.Text))
             {
+                MessageBox.Show("Invalid email or password!");
                 return;
             }
 
 
-            var result = await ApiClient.SafePost<object, ApiResult>("/user/admin", new {
+            var result = await ApiClient.Post<object, JsonElement>("/user/admin", new {
                 nickname = nickname.Text,
                 email = email.Text,
                 password = password.Text
             });
 
-            if (ApiResult.ensureSuccess(result))
+            if (result.ValueKind != JsonValueKind.Undefined)
             {
-                var userObj = new UsersDB(result.data.GetProperty("id").GetInt32(), nickname.Text, email.Text, password.Text);
+                var userObj = new UsersDB(result.GetProperty("id").GetInt32(), nickname.Text, email.Text, password.Text);
 
                 UsersList.Add(userObj);
                 Rows.Items.Add(userObj);
@@ -168,14 +163,14 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafePut<object, ApiResult>("/user/admin", new {
+            var result = await ApiClient.Put<object, bool>("/user/admin", new {
                 nickname = nickname.Text,
                 email = email.Text,
                 password = string.IsNullOrWhiteSpace(password.Text) ? null : password.Text,
                 id = userObj.Id
             });
 
-            if (ApiResult.ensureSuccess(result))
+            if (result != false)
             {
                 userObj.Email = email.Text;
                 userObj.Nickname = nickname.Text;
@@ -202,9 +197,9 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<ApiResult>($"/user/admin/{userObj.Id}");
+            var result = await ApiClient.Delete<bool>($"/user/admin/{userObj.Id}");
 
-            if (ApiResult.ensureSuccess(result))
+            if (result != false)
             {
                 UsersList.Remove(userObj);
                 Rows.Items.Remove(userObj);

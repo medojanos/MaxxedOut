@@ -1,5 +1,7 @@
 export function Validate(param) {
-    if (!param || param.trim().length === 0) return false;
+    if(param === null || param === undefined) return false;
+    if(typeof param !== "string") return false;
+    if (param.trim().length === 0) return false;
     return true;
 }
 
@@ -9,10 +11,13 @@ export function ValidateArray(param) {
 }
 
 export function ValidateNumber(param) {
-    if (!Validate(param)) return false;
+    if (param === null || param === undefined) return false;
 
     const num = Number(param);
+
+    if(Number.isNaN(num)) return false;
     if (!Number.isInteger(num) || num <= 0) return false;
+    
     return true
 }
 

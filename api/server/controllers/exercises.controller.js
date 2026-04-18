@@ -122,7 +122,7 @@ export const addExercise = (req, res) => {
         
                 if(completed == musclesworked.length) {
                     responded = true;
-                    return NoContent(res);
+                    return res.status(201).json({data: {id: exerciseId}});
                 }
             })
         });

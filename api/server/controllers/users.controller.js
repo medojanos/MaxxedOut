@@ -159,7 +159,7 @@ export const addUser = (req, res) => {
 
     db.run("INSERT INTO users (nickname, email, password) VALUES (?, ?, ?)", [nickname, email, hash("sha-256", password)], function (e) {
         if (e) return dbError(res, e);
-        NoContent(res);
+        return res.status(201).json({data: {id: this.lastID}});
     });
 }
 

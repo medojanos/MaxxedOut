@@ -33,7 +33,7 @@ namespace admin
 
         private async void Exercises_load(object sender, EventArgs e)
         {
-            ExercisesList = await ApiClient.SafeGet<List<ExercisesDB>>("/exercises/admin");
+            ExercisesList = await ApiClient.Get<List<ExercisesDB>>("/exercises/admin");
             ExercisesList.ForEach(exercise => Rows.Items.Add(exercise));
 
             mgSource.DataSource = MuscleGroupsList.MuscleGroups;
@@ -78,12 +78,8 @@ namespace admin
 
             ExercisesDB exerciseObj = Rows.SelectedItem as ExercisesDB;
 
-            if (exerciseObj == null)
-            {
-                MessageBox.Show("Invalid item!");
-                return;
-            }
-
+            if (exerciseObj == null) return;
+          
             exercise.Text = exerciseObj.Name;
             type.SelectedItem = exerciseObj.Type;
 
@@ -103,7 +99,7 @@ namespace admin
             }
 
             MusclesworkedDB selectedMuscleworked = Musclesworked.SelectedItem as MusclesworkedDB;
-            musclegroups.SelectedItem = selectedMuscleworked.Musclegroup;
+            musclegroups.SelectedValue = selectedMuscleworked.Musclegroup.Id;
             role.SelectedItem = selectedMuscleworked.Role;
         }
 
@@ -208,7 +204,7 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafePost<object, ApiResult>("exercises/admin", new {
+            var result = await ApiClient.Post<object, JsonElement>("exercises/admin", new {
                     name = exercise.Text,
                     type = type.Text,
                     musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().Select(mgworked => new {
@@ -218,9 +214,9 @@ namespace admin
                 }
             );
 
-            if (ApiResult.ensureSuccess(result))
+            if (result.ValueKind != JsonValueKind.Undefined)
             {
-                Rows.Items.Add(new ExercisesDB(result.data.GetProperty("id").GetInt32(), exercise.Text, type.Text, Musclesworked.Items.Cast<MusclesworkedDB>().ToList()));
+                Rows.Items.Add(new ExercisesDB(result.GetProperty("id").GetInt32(), exercise.Text, type.Text, Musclesworked.Items.Cast<MusclesworkedDB>().ToList()));
             }
         }
 
@@ -240,7 +236,7 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafePut<object, ApiResult>($"/exercises/admin", new {
+            var result = await ApiClient.Put<object, bool>($"/exercises/admin", new {
                 id = ExerciseObj.Id,
                 name = exercise.Text,
                 type = type.Text,
@@ -250,7 +246,7 @@ namespace admin
                 }).ToList()
             });
 
-            if (ApiResult.ensureSuccess(result))
+            if (result != false)
             {
                 ExerciseObj.Musclesworked = Musclesworked.Items.Cast<MusclesworkedDB>().ToList();
                 ExerciseObj.Name = exercise.Text;
@@ -271,12 +267,14 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<ApiResult>($"/exercises/admin/{Exercise.Id}");
+            var result = await ApiClient.Delete<bool>($"/exercises/admin/{Exercise.Id}");
 
-            if (ApiResult.ensureSuccess(result))
+            if (result != false)
             {
                 ExercisesList.Remove(Exercise);
                 Rows.Items.Remove(Exercise);
+
+                Rows.SelectedItem = null;
             }
         }
 

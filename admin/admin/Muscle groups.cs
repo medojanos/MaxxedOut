@@ -19,7 +19,7 @@ namespace admin
 {
     public partial class Muscle_groups : Form
     {
-        private BindingList<MuscleGroupsDB> MGList = MuscleGroupsList.MuscleGroups;
+        private BindingList<MuscleGroupsDB> MGList;
         private BindingSource mgSource = new BindingSource();
 
         public Muscle_groups()
@@ -31,6 +31,7 @@ namespace admin
         }
         private async void Muscle_groups_load(object sender, EventArgs e)
         {
+            MGList = MuscleGroupsList.MuscleGroups;
             mgSource.DataSource = MuscleGroupsList.MuscleGroups;
             Rows.DataSource = mgSource;
             Rows.DisplayMember = "Name";
@@ -96,13 +97,13 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafePost<object, ApiResult>("muscle_groups/admin", new {
+            var result = await ApiClient.Post<object, JsonElement>("muscle_groups/admin", new {
                 name = name.Text
             });
 
-            if (ApiResult.ensureSuccess(result))
+            if (result.ValueKind != JsonValueKind.Undefined)
             {
-                MGList.Add(new MuscleGroupsDB(result.data.GetProperty("id").GetInt32(), name.Text));
+                MGList.Add(new MuscleGroupsDB(result.GetProperty("id").GetInt32(), name.Text));
             }
         }
 
@@ -134,12 +135,12 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafePut<object, ApiResult>("muscle_groups/admin", new {
+            var result = await ApiClient.Put<object, bool>("muscle_groups/admin", new {
                 id = mgObj.Id,
                 name = name.Text
             });
 
-            if (ApiResult.ensureSuccess(result))
+            if (result != false)
             {
                 mgObj.Name = name.Text;
             }
@@ -164,8 +165,9 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.SafeDelete<ApiResult>($"muscle_groups/admin/{mgObj.Id}");
-            if (ApiResult.ensureSuccess(result))
+            var result = await ApiClient.Delete<bool>($"muscle_groups/admin/{mgObj.Id}");
+
+            if (result != false)
             {
                 MGList.Remove(mgObj);
                 name.Clear();

@@ -19,7 +19,7 @@ export const addMuscleGroup = (req, res) => {
 
     db.run("INSERT INTO muscle_groups (name) VALUES (?)", name, function(e) {
         if (e) return dbError(res, e); 
-        return res.status(201).json({success: true, data: {id: this.lastID}});
+        return res.status(201).json({data: {id: this.lastID}});
     });
 }
 

@@ -244,7 +244,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiClient.cs" />
-    <Compile Include="ApiResult.cs" />
+    <Compile Include="ApiResponse.cs" />
     <Compile Include="Exercises.cs">
       <SubType>Form</SubType>
     </Compile>
