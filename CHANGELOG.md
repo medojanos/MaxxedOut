@@ -1,6 +1,14 @@
 <h1>Change Log</h1>
 <p>All notable changes to this project will be documented in this file</p>
 
+<h2>v0.1.6</h2>
+<h3>Bugfixes</h3>
+<p>Couldn't save workout</p>
+<p>Bottom tab height</p>
+<p>Input bugs</p>
+<h3>Changes</h3>
+<p>Import recent modal button color</p>
+
 <h2>v0.1.5 [Unreleased]</h2>
 <h3>Bugfixes</h3>
 <p>Nickname field was too short</p>
