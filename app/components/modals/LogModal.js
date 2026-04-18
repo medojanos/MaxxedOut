@@ -30,7 +30,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                                 <Ionicons name="trash" size={25} color={Var.red}/>
                             </Pressable>
                         </View>
-                        <Text style={MainStyle.strongText}>Duration: {displayTime(workout.duration)}</Text>
+                        <Text style={MainStyle.strongText}>{displayTime(workout.duration, "h m s")}</Text>
                         {workout.exercises.map((exercise, exerciseIndex) => (
                             <View key={exerciseIndex} style={MainStyle.container}>
                                 <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
