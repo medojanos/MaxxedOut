@@ -8,6 +8,7 @@
 <p>Input bugs</p>
 <h3>Changes</h3>
 <p>Import recent modal button color</p>
+<p>Display time in log modal duration</p>
 
 <h2>v0.1.5 [Unreleased]</h2>
 <h3>Bugfixes</h3>
