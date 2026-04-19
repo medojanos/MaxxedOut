@@ -1,5 +1,5 @@
 // React
-import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
+import { View, Text, ScrollView, Pressable, StyleSheet, Alert } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -13,6 +13,7 @@ import Constants from 'expo-constants';
 //Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
+import AlertBox from "../../components/AlertBox";
 const WorkoutsStyle = StyleSheet.create({
     addPlan : {
         backgroundColor: Var.darkGray,
@@ -26,9 +27,11 @@ const WorkoutsStyle = StyleSheet.create({
 export default function Workouts() {
     const [planModal, setPlanModal] = useState(false);
     const [planInfoModal, setPlanInfoModal] = useState(false);
-    const [plans, setPlans] = useState([]);
+    const [plans, setPlans] = useState();
     const [planId, setPlanId] = useState();
     const [planName, setPlanName] = useState();
+
+    const [alert, setAlert] = useState(false);
 
     const {token, refresh, Refresh} = useContext(Context);
     
@@ -38,8 +41,8 @@ export default function Workouts() {
         fetch(Constants.expoConfig.extra.API_URL + "/plans", { headers: { "Authorization": token } })
         .then(res => res.json())
         .then(data => setPlans(data.data))
+        .catch(() => setAlert(true))
     }, [refresh])
-
 
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
@@ -49,13 +52,12 @@ export default function Workouts() {
                 <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
             </Pressable>
             {
-                plans.length > 0 ? 
+                plans ? plans.length > 0 ? 
                 plans.map(plan => (
                     <View key={plan.id} style={MainStyle.container}>
                         <View style={MainStyle.inlineContainer}>
                             <Text style={MainStyle.containerTitle}>{plan.name}</Text>
                             <Pressable onPress={() => {
-                                Refresh();
                                 setPlanId(plan.id);
                                 setPlanName(plan.name);
                                 setPlanInfoModal(true);
@@ -74,6 +76,8 @@ export default function Workouts() {
                 )) 
                 : 
                 <Text style={MainStyle.lightText}>Your plans will be displayed here!</Text>
+                :
+                <AlertBox message="Could not load workout plans" visible={alert}></AlertBox>
             }
             <PlanModal visible={planModal} Close={() => setPlanModal(false)} id={planId} name={planName}></PlanModal>
             <PlanInfoModal visible={planInfoModal} Close={() => setPlanInfoModal(false)} id={planId} name={planName}></PlanInfoModal>

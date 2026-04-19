@@ -45,15 +45,24 @@ export default function App() {
     useEffect(() => {
         async function load() {
             try {
+                await setNotifications();
+
                 const token = await getData("token");
                 if (!token) return;
+
                 const res = await fetch(Constants.expoConfig.extra.API_URL + "/auth", {headers: {"Authorization" : token}});
+
                 if (res.ok) {
-                    await setNotifications();
                     setToken(token);
                     setUserData(await getJson("user"));
                     setWorkout(await getJson("workout"));
-                } else setUserData(undefined);
+                } 
+                else setUserData(null);
+            }
+            catch {
+                const user = await getJson("user");
+                if (!user) return;
+                setUserData(user);
             }
             finally {
                 setLoading(false);
@@ -63,5 +72,6 @@ export default function App() {
     }, [])
 
     if (loading) return <Loader/>;
+    
     return userData ? <Main/> : <Login/>
 }

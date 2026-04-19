@@ -156,18 +156,15 @@ export default function CreateWorkout() {
                                     }))
                                 })
                             })
-                            .then(res => res.json()
-                            .then(data => {
+                            .then(res => {
                                 if (res.ok) {
                                     Refresh();
                                     setPlanDraft({name : "", ownIndex : 0, exercises : []});
                                     navigation.navigate("Home");
-                                }
-                                else {
-                                    setStatus(data.message);
-                                }
-                            }))
-                        }}>
+                                } else res.json().then(data => setStatus(data.message))
+                            })
+                            .catch(() => setStatus("Network error"))
+                            }}>
                         <Text style={MainStyle.buttonText}>Save</Text>
                     </Pressable>
                     <Pressable

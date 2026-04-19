@@ -19,6 +19,7 @@ export default function PlanModal({ Close, visible, id, name }) {
     const [plan, setPlan] = useState({ id: 0, name: "", ownIndex: 0, exercises: [] });
     const [deleteModal, setDeleteModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
+    const [status, setStatus] = useState("");
 
     const { token, Refresh } = useContext(Context);
     
@@ -70,6 +71,7 @@ export default function PlanModal({ Close, visible, id, name }) {
     return (
         <ModalOverlay visible={visible} onClose={Close}>
             <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
+            <Text>{status}</Text>
             <TextInput 
                 style={MainStyle.input} 
                 value={plan.name} 
@@ -170,7 +172,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                         if (res.ok) {
                             Refresh();
                             Close();
-                        }
+                        } else res.json().then(data => setStatus(data.message))
                     })
                 }}>
                     <Text style={MainStyle.buttonText}>Save</Text>

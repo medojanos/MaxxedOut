@@ -6,9 +6,9 @@ export const Context = createContext();
 
 export default function Provider({children}) {
     const [planDraft, setPlanDraft] = useState({name : "", ownIndex : 0, exercises : []});
-    const [userData, setUserData] = useState();
-    const [workout, setWorkout] = useState();
-    const [token, setToken] = useState();
+    const [userData, setUserData] = useState(undefined);
+    const [workout, setWorkout] = useState(undefined);
+    const [token, setToken] = useState(undefined);
     const [refresh, setRefresh] = useState(0);
 
     function Refresh() {
@@ -28,9 +28,8 @@ export default function Provider({children}) {
     useEffect(() => {
         if (userData === undefined) return;
         if (userData !== null) {
-            if (userData.nickname == null) setUserData(prev => ({...prev, nickname: RandomName()}));
-            if (userData.weight == null) setUserData(prev => ({...prev, weight: 0}));
-            if (userData.preferences === undefined) setUserData(prev => ({...prev, preferences: {restingTime: {minutes: 3, seconds: 0}, bottomTabText: "Show"}}));
+            if (userData?.nickname == null) setUserData(prev => ({...prev, nickname: RandomName()}));
+            if (userData?.preferences == null) setUserData(prev => ({...prev, preferences: {restingTime: {minutes: 3, seconds: 0}, bottomTabText: "Show"}}));
         }
         setJson("user", userData);
     }, [userData]);

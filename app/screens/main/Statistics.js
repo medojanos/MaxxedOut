@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 // Misc
 import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
+import AlertBox from "../../components/AlertBox";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -55,13 +56,15 @@ export default function Statistics() {
     const [statistics, setStatistics] = useState();
     const [oneRepMaxes, setOneRepMaxes] = useState([]);
     const [weight, setWeight] = useState(null);
+    const [offline, setOffline] = useState(false);
 
     const {token, userData, workout, refresh} = useContext(Context);
 
     useEffect(() => {
         fetch(Constants.expoConfig.extra.API_URL + "/statistics", { headers: { "Authorization": token } })
         .then(res => res.json())
-        .then(data => setStatistics(data.data));
+        .then(data => setStatistics(data.data))
+        .catch(() => setOffline(true));
     }, [workout, refresh]);
 
     useEffect(() => {
@@ -101,9 +104,6 @@ export default function Statistics() {
                     <Text style={MainStyle.lightText}>{statistics.avgDuration} minutes</Text>
                 </View>
                 <Text style={StatisticsStyle.statTitle}>Strength & volume</Text>
-                {//weight ? <Text style={MainStyle.lightText}>{weight}</Text> : null
-                    // Rank depending on weight and one rep maxes (Bronze, Silver, Gold, Platinum, Diamond, etc.)
-                }
                 {oneRepMaxes.some(max => max !== 0) ?
                     <View>
                         <View style={[MainStyle.container, {}]}>
@@ -147,7 +147,8 @@ export default function Statistics() {
                 </View>
             </View> 
             :
-            <Text style={MainStyle.strongText}>Failed to get statistics</Text>}
+            <AlertBox message="Could not get statistics" heading="It looks like you are offline" visible={offline}></AlertBox>
+            }
         </ScrollView>
     );
 }

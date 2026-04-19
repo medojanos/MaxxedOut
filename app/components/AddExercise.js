@@ -6,6 +6,7 @@ import Constants from 'expo-constants';
 
 // Misc
 import ModalOverlay from "./ModalOverlay";
+import AlertBox from "./AlertBox";
 
 // Style
 import * as Var from "../style/Variables"
@@ -24,6 +25,8 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const [exercises, setExercises] = useState([]);
     const [musclegroups, setMuscleGroups] = useState([]);
 
+    const [offline, setOffline] = useState(false);
+
     const [searchText, setSearchText] = useState("");
     const [type, setType] = useState("");
     const [musclegroup, setMuscleGroup] = useState("");
@@ -34,6 +37,7 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
         fetch(Constants.expoConfig.extra.API_URL + "/exercises")
         .then(res => res.json())
         .then(data => setExercises(data.data))
+        .catch(() => setOffline(true));
 
         fetch(Constants.expoConfig.extra.API_URL + "/muscle_groups")
         .then(res => res.json())
@@ -57,6 +61,7 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                 value={searchText}
                 onChangeText={setSearchText}>
             </TextInput>
+            <AlertBox message="Could not load exercises" visible={offline}></AlertBox>
             <View style={[MainStyle.inlineContainer, {zIndex: 1}]}>
                 <DropDownPicker
                     open={typePicker}
