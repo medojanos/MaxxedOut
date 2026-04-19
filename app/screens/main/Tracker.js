@@ -17,11 +17,13 @@ import RandomQuote from "../../misc/RandomQuote";
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
+import AlertBox from "../../components/AlertBox";
 
 export default function Tracker() {
     const { userData, workout, setWorkout, token } = useContext(Context);
 
     const navigation = useNavigation();
+    const [offline, setOffline] = useState();
 
     const durationInterval = useRef(null);
     const [durationTimer, setDurationTimer] = useState("00:00");
@@ -233,16 +235,20 @@ export default function Tracker() {
                         onPress={() => {setWorkoutModal(true)}}>
                         <Ionicons style={{margin: "auto"}} name="add-circle" size={50} color={Var.black}></Ionicons>
                     </Pressable> 
-                    <View style={MainStyle.container}>
-                        <View style={MainStyle.inlineContainer}>
-                            <Text style={MainStyle.containerTitle}>Cardio</Text>
-                            <Pressable style={[MainStyle.button, MainStyle.buttonBlock, {margin: 0}]} onPress={() => {
-                                setWorkout({name: "Cardio", type: "cardio", started_at: dayjs().format("YYYY-MM-DD HH:mm:ss")})
-                            }}>
-                                <Text style={MainStyle.buttonText}>Start</Text>
-                            </Pressable>
-                        </View>
-                    </View>
+                    { !offline ? 
+                        <View style={MainStyle.container}>
+                            <View style={MainStyle.inlineContainer}>
+                                <Text style={MainStyle.containerTitle}>Cardio</Text>
+                                <Pressable style={[MainStyle.button, MainStyle.buttonBlock, {margin: 0}]} onPress={() => {
+                                    setWorkout({name: "Cardio", type: "cardio", started_at: dayjs().format("YYYY-MM-DD HH:mm:ss")})
+                                }}>
+                                    <Text style={MainStyle.buttonText}>Start</Text>
+                                </Pressable>
+                            </View>
+                        </View> 
+                        : 
+                        <AlertBox heading="Check your internet connection" visible={offline}></AlertBox>
+                    }
                 </>
             }
             <View style={{flexGrow: 1, justifyContent: "center", alignItems: "center"}}>
@@ -252,7 +258,8 @@ export default function Tracker() {
             </View>
             <WorkoutModal 
                 visible={workoutModal} 
-                Close={() => setWorkoutModal(false)}>
+                Close={() => setWorkoutModal(false)}
+                isOffline={setOffline}>
             </WorkoutModal>
         </ScrollView>
     );

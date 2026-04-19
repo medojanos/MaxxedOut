@@ -105,15 +105,14 @@ export default function Settings() {
                                 "nickname" : newNickname
                             })
                         })
-                        .then(res => res.json()
-                        .then(data => {
-                            setStatus(data.message);
+                        .then(res => {
                             if (res.ok) {
                                 setUserData(prev => ({...prev, nickname: newNickname}));
                                 setSaveDisabled(true);
                                 setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
                             }
-                        }))
+                        })
+                        .catch(() => setStatus("Network error"));
                     }}>
                         <Text style={MainStyle.buttonText}>Save</Text>
                     </Pressable>
@@ -232,15 +231,14 @@ export default function Settings() {
                                 "currentPassword": currentPassword
                             })
                         })
-                        .then(res => res.json()
-                        .then(data => {
-                            setStatus(data.message);
+                        .then(res => {
                             if (res.ok) {
                                 setUserData(data.data);
                                 setSaveDisabled(true);
                                 setTimeout(() => {setPasswordModal(false); setSaveDisabled(false)}, 2000);
                             }
-                        }))
+                        })
+                        .catch(() => setStatus("Network error"));
                     }}>
                         <Text style={MainStyle.buttonText}>Save</Text>
                     </Pressable>

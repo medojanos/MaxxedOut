@@ -6,6 +6,7 @@ import { Calendar } from "react-native-calendars";
 // Misc
 import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
+import AlertBox from "../../components/AlertBox";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -23,16 +24,19 @@ const LogsStyle = StyleSheet.create({
 
 export default function Logs() {
     const [workouts, setWorkouts] = useState();
-    const [latest, setLatest] = useState([]);
+    const [latest, setLatest] = useState();
     const [logModal, setLogModal] = useState(false);
     const [status, setStatus] = useState();
     const [markedDates, setMarkedDates] = useState({});
+    const [offline, setOffline] = useState(false);
+
     const { token, workout, refresh } = useContext(Context);
 
     useEffect(() => {
         fetch(Constants.expoConfig.extra.API_URL + "/workouts/" + "?limit=5", {headers: {"Authorization" : token}})
         .then(res => res.json()
         .then(data => res.ok ? setLatest(data.data) : setStatus(data.message)))
+        .catch(() => setOffline(true))
         
         const date = new Date();
         fetchMarkedDates({year: date.getFullYear(), month: date.getMonth() + 1});
@@ -69,6 +73,10 @@ export default function Logs() {
                         res.ok ? setWorkouts(data.data) : setStatus(data.message);
                         setLogModal(true);
                     }))
+                    .catch(() => {
+                        setStatus("Network error")
+                        setLogModal(true);
+                    })
                 }}
                 theme={{
                     todayTextColor : Var.red,
@@ -89,26 +97,32 @@ export default function Logs() {
             </LogModal>
             <View style={MainStyle.container}>
                 <Text style={MainStyle.containerTitle}>Recent logs</Text>
-                {latest.length > 0 ?
-                latest.map((workout, index) => (
-                    <View key={index} style={MainStyle.container}>
-                        <Text style={MainStyle.lightText}>{workout.name} - {workout.ended_at}</Text>
-                        <Pressable
-                            style={MainStyle.secondaryButton}
-                            onPress={() => {
-                                fetch(Constants.expoConfig.extra.API_URL + "/workouts/" + workout.id, {headers: {"Authorization" : token}})
-                                .then(res => res.json()
-                                .then(data => {
-                                    setStatus();
-                                    setWorkouts();
-                                    res.ok ? setWorkouts(data.data) : setStatus(data.message);
-                                    setLogModal(true);
-                                }))
-                            }}>
-                            <Text style={MainStyle.buttonText}>View details</Text>
-                        </Pressable>
-                    </View>
-                )) : <Text style={MainStyle.lightText}>Your logs will be displayed here!</Text>}
+                {latest ?
+                    latest.length > 0 ?
+                    latest.map((workout, index) => (
+                        <View key={index} style={MainStyle.container}>
+                            <Text style={MainStyle.lightText}>{workout.name} - {workout.ended_at}</Text>
+                            <Pressable
+                                style={MainStyle.secondaryButton}
+                                onPress={() => {
+                                    fetch(Constants.expoConfig.extra.API_URL + "/workouts/" + workout.id, {headers: {"Authorization" : token}})
+                                    .then(res => res.json()
+                                    .then(data => {
+                                        setStatus();
+                                        setWorkouts();
+                                        res.ok ? setWorkouts(data.data) : setStatus(data.message);
+                                        setLogModal(true);
+                                    }))
+                                }}>
+                                <Text style={MainStyle.buttonText}>View details</Text>
+                            </Pressable>
+                        </View>
+                    )) 
+                    : 
+                    <Text style={MainStyle.lightText}>Your logs will be displayed here!</Text>
+                    :
+                    <AlertBox message="Could not load workout logs" visible={offline}></AlertBox>
+                }
             </View>
         </ScrollView>
     );

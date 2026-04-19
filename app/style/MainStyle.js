@@ -111,5 +111,16 @@ export default StyleSheet.create({
         padding: 20, 
         paddingBottom: 10, 
         borderRadius: 10
+    },
+    alertBox: {
+        borderRadius: 10,
+        borderColor: Var.red,
+        backgroundColor: Var.black,
+        paddingVertical: 20,
+        paddingHorizontal: 30,
+        borderWidth: 1,
+        marginVertical: 10,
+        width: "auto",
+        margin: "auto"
     }
 })
