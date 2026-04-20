@@ -14,7 +14,7 @@ import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
 
 export default function Settings() {
-    const {userData, setUserData, setWorkout} = useContext(Context);
+    const {userData, setUserData, setWorkout, setToken} = useContext(Context);
 
     const { token, Refresh } = useContext(Context);
 
@@ -188,6 +188,7 @@ export default function Settings() {
             </View>
             <Pressable style={MainStyle.button} onPress={() => {
                 setUserData(null);
+                setToken(null);
                 setWorkout(null);
             }}>
                 <Text style={MainStyle.buttonText}>Logout</Text>

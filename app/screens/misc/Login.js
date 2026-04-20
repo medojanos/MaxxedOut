@@ -9,6 +9,7 @@ import Constants from 'expo-constants';
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
+import AlertBox from "../../components/AlertBox";
 const LoginStyle = StyleSheet.create({
     statusText : {
         color: Var.white,
@@ -27,6 +28,7 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [status, setStatus] = useState(); 
+    const [alert, setAlert] = useState(false);
 
     const { setToken, setUserData } = useContext(Context);
 
@@ -47,12 +49,14 @@ export default function Login() {
                 setToken(data.data.token);
                 setUserData(data.data.userData);
             } else {
-                throw new Error(data.message);
+                setStatus(data.message);
+                setAlert(true)
             }
         }
         ))
-        .catch(err => {
-            setStatus(err.message || "An error occurred. Please try again later.");
+        .catch(() => {
+            setStatus("Please try again later.");
+            setAlert(true)
         });
     }
 
@@ -73,7 +77,7 @@ export default function Login() {
                         style={MainStyle.input}
                         onChangeText={setPassword}
                         secureTextEntry/>
-                <Text style={[MainStyle.lightText, {textAlign: "center"}]}>{status}</Text>
+                <AlertBox message={status} heading="Oops! Something happened" visible={alert}></AlertBox>
                 </View>
             </View>
             <View style={{height: "20%"}}>

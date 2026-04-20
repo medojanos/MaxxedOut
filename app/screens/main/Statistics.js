@@ -147,7 +147,7 @@ export default function Statistics() {
                 </View>
             </View> 
             :
-            <AlertBox message="Could not get statistics" heading="It looks like you are offline" visible={offline}></AlertBox>
+            <AlertBox message="Could not load your statistics" visible={offline}></AlertBox>
             }
         </ScrollView>
     );

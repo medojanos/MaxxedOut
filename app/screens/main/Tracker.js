@@ -247,7 +247,7 @@ export default function Tracker() {
                             </View>
                         </View> 
                         : 
-                        <AlertBox heading="Check your internet connection" visible={offline}></AlertBox>
+                        <AlertBox heading="Oops! Something happened." message="Please check your internet connection" visible={offline}></AlertBox>
                     }
                 </>
             }

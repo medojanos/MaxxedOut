@@ -1,6 +1,10 @@
 <h1>Change Log</h1>
 <p>All notable changes to this project will be documented in this file</p>
 
+<h2>v0.1.7</h2>
+<h3>Changes</h3>
+<p>Improved responsiveness when offline</p>
+
 <h2>v0.1.6</h2>
 <h3>Bugfixes</h3>
 <p>Couldn't save workout</p>
