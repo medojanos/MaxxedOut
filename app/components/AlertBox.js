@@ -6,7 +6,7 @@ import * as Var from "../style/Variables"
 export default function AlertBox({message, heading, visible}) {
     return visible ? 
         <View style={MainStyle.alertBox}>
-            <Text style={MainStyle.containerTitle}>{heading}</Text>
-            <Text style={[MainStyle.lightText, {textAlign: "center"}]}>{message}</Text>
+            {heading ? <Text style={MainStyle.containerTitle}>{heading}</Text> : null}
+            {message ? <Text style={[MainStyle.lightText, {textAlign: "center"}]}>{message}</Text> : null}
         </View> : null
 }
