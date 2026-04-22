@@ -102,13 +102,13 @@ namespace admin
 
         private async void addButton_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrWhiteSpace(nickname.Text) || string.IsNullOrWhiteSpace(email.Text) || string.IsNullOrWhiteSpace(password.Text))
+            if(string.IsNullOrWhiteSpace(nickname.Text) || string.IsNullOrWhiteSpace(email.Text.Trim()) || string.IsNullOrWhiteSpace(password.Text.Trim()))
             {
                 MessageBox.Show("Nickname, email nor password can be blank!");
                 return;
             }
 
-            if (UsersList.Any(user => user.Email == email.Text))
+            if (UsersList.Any(user => user.Email == email.Text.Trim()))
             {
                 MessageBox.Show("Email already in database!");
                 return;
@@ -122,14 +122,14 @@ namespace admin
 
 
             var result = await ApiClient.Post<object, JsonElement>("/user/admin", new {
-                nickname = nickname.Text,
-                email = email.Text,
-                password = password.Text
+                nickname = nickname.Text.Trim(),
+                email = email.Text.Trim(),
+                password = password.Text.Trim()
             });
 
             if (result.ValueKind != JsonValueKind.Undefined)
             {
-                var userObj = new UsersDB(result.GetProperty("id").GetInt32(), nickname.Text, email.Text, password.Text);
+                var userObj = new UsersDB(result.GetProperty("id").GetInt32(), nickname.Text.Trim(), email.Text.Trim(), password.Text.Trim());
 
                 UsersList.Add(userObj);
                 Rows.Items.Add(userObj);
@@ -146,36 +146,37 @@ namespace admin
 
             UsersDB userObj = Rows.SelectedItem as UsersDB;
 
-            if(userObj == null)
-            {
-                MessageBox.Show("Invalid item!");
-                return;
-            }
-
             if (string.IsNullOrWhiteSpace(nickname.Text) || string.IsNullOrWhiteSpace(email.Text))
             {
                 MessageBox.Show("Nickname and email can't be blank!");
                 return;
             }
 
-            if (!UsersDB.IsEmailValid(email.Text))
+            if (!UsersDB.IsEmailValid(email.Text.Trim()))
             {
+                MessageBox.Show("Invalid email!");
+                return;
+            }
+
+            if (UsersList.Any(user => user.Email == email.Text.Trim() && user.Id != userObj.Id))
+            {
+                MessageBox.Show("Email already in database!");
                 return;
             }
 
             var result = await ApiClient.Put<object, bool>("/user/admin", new {
-                nickname = nickname.Text,
-                email = email.Text,
-                password = string.IsNullOrWhiteSpace(password.Text) ? null : password.Text,
+                nickname = nickname.Text.Trim(),
+                email = email.Text.Trim(),
+                password = string.IsNullOrWhiteSpace(password.Text) ? null : password.Text.Trim(),
                 id = userObj.Id
             });
 
             if (result != false)
             {
-                userObj.Email = email.Text;
-                userObj.Nickname = nickname.Text;
+                userObj.Email = email.Text.Trim();
+                userObj.Nickname = nickname.Text.Trim();
 
-                if (!string.IsNullOrWhiteSpace(password.Text) && UsersDB.IsPwdValid(password.Text)) userObj.Password = password.Text;
+                if (!string.IsNullOrWhiteSpace(password.Text.Trim()) && UsersDB.IsPwdValid(password.Text.Trim())) userObj.Password = password.Text.Trim();
 
                 Rows.Items[Rows.SelectedIndex] = userObj;
             }

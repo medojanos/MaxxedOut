@@ -151,6 +151,7 @@
             // 
             // musclegroups
             // 
+            this.musclegroups.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.musclegroups.FormattingEnabled = true;
             this.musclegroups.Location = new System.Drawing.Point(10, 177);
             this.musclegroups.Name = "musclegroups";
@@ -159,6 +160,7 @@
             // 
             // role
             // 
+            this.role.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.role.FormattingEnabled = true;
             this.role.Location = new System.Drawing.Point(10, 204);
             this.role.Name = "role";
@@ -195,6 +197,7 @@
             // 
             // type
             // 
+            this.type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.type.FormattingEnabled = true;
             this.type.Location = new System.Drawing.Point(10, 296);
             this.type.Name = "type";

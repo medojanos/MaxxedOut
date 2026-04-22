@@ -98,7 +98,7 @@ namespace admin
             }
 
             var result = await ApiClient.Post<object, JsonElement>("muscle_groups/admin", new {
-                name = name.Text
+                name = name.Text.Trim()
             });
 
             if (result.ValueKind != JsonValueKind.Undefined)
@@ -112,6 +112,12 @@ namespace admin
             if (Rows.SelectedIndex < 0)
             {
                 MessageBox.Show("Need to select an item first to save it!");
+                return;
+            }
+
+            if (MGList.Any(musclegroup => musclegroup.Name == name.Text.Trim()))
+            {
+                MessageBox.Show("Muscle group already in database!");
                 return;
             }
 
@@ -129,7 +135,7 @@ namespace admin
                 return;
             }
 
-            if (mgObj.Name == name.Text)
+            if (mgObj.Name == name.Text.Trim())
             {
                 MessageBox.Show("Name can't be the same!");
                 return;
@@ -137,12 +143,12 @@ namespace admin
 
             var result = await ApiClient.Put<object, bool>("muscle_groups/admin", new {
                 id = mgObj.Id,
-                name = name.Text
+                name = name.Text.Trim()
             });
 
             if (result != false)
             {
-                mgObj.Name = name.Text;
+                mgObj.Name = name.Text.Trim();
             }
 
             Rows.DisplayMember = null;

@@ -99,7 +99,7 @@ export const addExercise = (req, res) => {
     const { name, type, musclesworked } = req.body;
 
     if(!Validate(name)) return Error(res, "Invalid exercise name");
-    if(!Validate(type)) return Error(res, "Invalid type");
+    if(!Validate(type) || (type !== "Compound" && type !== "Isolation")) return Error(res, "Invalid type");
     if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
 
     db.run("INSERT INTO exercises (name, type) VALUES (?, ?)", [name, type], function (e) {
@@ -134,7 +134,7 @@ export const updateExercise = (req, res) => {
 
     if(!ValidateNumber(id)) return Error(res, "Invalid id");
     if(!Validate(name)) return Error(res, "Invalid exercise name");
-    if(!Validate(type)) return Error(res, "Invalid type");
+    if(!Validate(type) || (type !== "Compound" && type !== "Isolation")) return Error(res, "Invalid type");
     if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
 
     db.run("UPDATE exercises SET name = ?, type = ? WHERE id = ?", [name, type, id], function (e) {

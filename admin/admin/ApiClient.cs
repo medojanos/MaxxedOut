@@ -108,8 +108,8 @@ namespace admin
         {
             if (!response.IsSuccessStatusCode)
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                MessageBox.Show($"API error:\n{response.StatusCode} - {errorContent}");
+                var errorContent = await response.Content.ReadFromJsonAsync<ApiResponse<bool>>(options);
+                MessageBox.Show($"API error:\n{response.StatusCode.GetHashCode()} {response.StatusCode} - {errorContent.message}");
                 return default;
             }
 
