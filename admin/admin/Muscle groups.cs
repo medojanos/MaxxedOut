@@ -70,6 +70,8 @@ namespace admin
             {
                 mgSource.DataSource = MGList.Where(musclegroup => musclegroup.Name.ToLower().Contains(search.Text.ToLower())).ToList();
             }
+
+            Rows.ClearSelected();
         }
 
         private void Rows_SelectedIndexChanged(object sender, EventArgs e)

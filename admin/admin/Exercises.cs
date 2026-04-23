@@ -191,7 +191,7 @@ namespace admin
 
         private async void addButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(exercise.Text) || string.IsNullOrWhiteSpace(type.Text) || Musclesworked.Items.Count == 0)
+            if (string.IsNullOrWhiteSpace(exercise.Text) || string.IsNullOrWhiteSpace(type.Text))
             {
                 MessageBox.Show("Every field needs to be filled!");
                 return;
@@ -215,6 +215,7 @@ namespace admin
 
             if (result.ValueKind != JsonValueKind.Undefined)
             {
+                Console.WriteLine(result.GetProperty("id").GetInt32());
                 Rows.Items.Add(new ExercisesDB(result.GetProperty("id").GetInt32(), exercise.Text.Trim(), type.Text.Trim(), Musclesworked.Items.Cast<MusclesworkedDB>().ToList()));
             }
         }
@@ -229,7 +230,7 @@ namespace admin
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(exercise.Text) || string.IsNullOrWhiteSpace(type.Text) || Musclesworked.Items.Count == 0)
+            if (string.IsNullOrWhiteSpace(exercise.Text) || string.IsNullOrWhiteSpace(type.Text))
             {
                 MessageBox.Show("Every field needs to be filled!");
                 return;
