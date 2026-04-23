@@ -53,24 +53,28 @@
             // Rows
             // 
             this.Rows.FormattingEnabled = true;
-            this.Rows.Location = new System.Drawing.Point(297, 11);
+            this.Rows.ItemHeight = 16;
+            this.Rows.Location = new System.Drawing.Point(396, 14);
+            this.Rows.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Rows.Name = "Rows";
-            this.Rows.Size = new System.Drawing.Size(273, 420);
+            this.Rows.Size = new System.Drawing.Size(363, 516);
             this.Rows.TabIndex = 1;
             this.Rows.SelectedIndexChanged += new System.EventHandler(this.Rows_SelectedIndexChanged);
             // 
             // search
             // 
-            this.search.Location = new System.Drawing.Point(10, 11);
+            this.search.Location = new System.Drawing.Point(13, 14);
+            this.search.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.search.Name = "search";
-            this.search.Size = new System.Drawing.Size(200, 20);
+            this.search.Size = new System.Drawing.Size(265, 22);
             this.search.TabIndex = 2;
             // 
             // searchButton
             // 
-            this.searchButton.Location = new System.Drawing.Point(216, 9);
+            this.searchButton.Location = new System.Drawing.Point(288, 11);
+            this.searchButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(75, 23);
+            this.searchButton.Size = new System.Drawing.Size(100, 28);
             this.searchButton.TabIndex = 3;
             this.searchButton.Text = "Search";
             this.searchButton.UseVisualStyleBackColor = true;
@@ -78,9 +82,10 @@
             // 
             // deleteButton
             // 
-            this.deleteButton.Location = new System.Drawing.Point(216, 385);
+            this.deleteButton.Location = new System.Drawing.Point(288, 474);
+            this.deleteButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.deleteButton.Name = "deleteButton";
-            this.deleteButton.Size = new System.Drawing.Size(75, 23);
+            this.deleteButton.Size = new System.Drawing.Size(100, 28);
             this.deleteButton.TabIndex = 4;
             this.deleteButton.Text = "Delete";
             this.deleteButton.UseVisualStyleBackColor = true;
@@ -88,9 +93,10 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(216, 356);
+            this.saveButton.Location = new System.Drawing.Point(288, 438);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.Size = new System.Drawing.Size(100, 28);
             this.saveButton.TabIndex = 24;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -98,9 +104,10 @@
             // 
             // addButton
             // 
-            this.addButton.Location = new System.Drawing.Point(10, 356);
+            this.addButton.Location = new System.Drawing.Point(13, 438);
+            this.addButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(75, 23);
+            this.addButton.Size = new System.Drawing.Size(100, 28);
             this.addButton.TabIndex = 23;
             this.addButton.Text = "Add";
             this.addButton.UseVisualStyleBackColor = true;
@@ -109,43 +116,49 @@
             // musclegroupsLabel
             // 
             this.musclegroupsLabel.AutoSize = true;
-            this.musclegroupsLabel.Location = new System.Drawing.Point(214, 180);
+            this.musclegroupsLabel.Location = new System.Drawing.Point(285, 222);
+            this.musclegroupsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.musclegroupsLabel.Name = "musclegroupsLabel";
-            this.musclegroupsLabel.Size = new System.Drawing.Size(76, 13);
+            this.musclegroupsLabel.Size = new System.Drawing.Size(95, 16);
             this.musclegroupsLabel.TabIndex = 22;
             this.musclegroupsLabel.Text = "Muscle groups";
             // 
             // exercise
             // 
-            this.exercise.Location = new System.Drawing.Point(10, 327);
+            this.exercise.Location = new System.Drawing.Point(13, 402);
+            this.exercise.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.exercise.Name = "exercise";
-            this.exercise.Size = new System.Drawing.Size(200, 20);
+            this.exercise.Size = new System.Drawing.Size(265, 22);
             this.exercise.TabIndex = 25;
             // 
             // exerciseLabel
             // 
             this.exerciseLabel.AutoSize = true;
-            this.exerciseLabel.Location = new System.Drawing.Point(237, 330);
+            this.exerciseLabel.Location = new System.Drawing.Point(316, 406);
+            this.exerciseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.exerciseLabel.Name = "exerciseLabel";
-            this.exerciseLabel.Size = new System.Drawing.Size(47, 13);
+            this.exerciseLabel.Size = new System.Drawing.Size(44, 16);
             this.exerciseLabel.TabIndex = 26;
-            this.exerciseLabel.Text = "Exercise";
+            this.exerciseLabel.Text = "Name";
             // 
             // typeLabel
             // 
             this.typeLabel.AutoSize = true;
-            this.typeLabel.Location = new System.Drawing.Point(237, 304);
+            this.typeLabel.Location = new System.Drawing.Point(316, 374);
+            this.typeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.typeLabel.Name = "typeLabel";
-            this.typeLabel.Size = new System.Drawing.Size(31, 13);
+            this.typeLabel.Size = new System.Drawing.Size(39, 16);
             this.typeLabel.TabIndex = 28;
             this.typeLabel.Text = "Type";
             // 
             // Musclesworked
             // 
             this.Musclesworked.FormattingEnabled = true;
-            this.Musclesworked.Location = new System.Drawing.Point(10, 50);
+            this.Musclesworked.ItemHeight = 16;
+            this.Musclesworked.Location = new System.Drawing.Point(13, 62);
+            this.Musclesworked.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Musclesworked.Name = "Musclesworked";
-            this.Musclesworked.Size = new System.Drawing.Size(200, 121);
+            this.Musclesworked.Size = new System.Drawing.Size(265, 148);
             this.Musclesworked.TabIndex = 29;
             this.Musclesworked.SelectedIndexChanged += new System.EventHandler(this.Musclesworked_SelectedIndexChanged);
             // 
@@ -153,43 +166,48 @@
             // 
             this.musclegroups.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.musclegroups.FormattingEnabled = true;
-            this.musclegroups.Location = new System.Drawing.Point(10, 177);
+            this.musclegroups.Location = new System.Drawing.Point(13, 218);
+            this.musclegroups.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.musclegroups.Name = "musclegroups";
-            this.musclegroups.Size = new System.Drawing.Size(200, 21);
+            this.musclegroups.Size = new System.Drawing.Size(265, 24);
             this.musclegroups.TabIndex = 30;
             // 
             // role
             // 
             this.role.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.role.FormattingEnabled = true;
-            this.role.Location = new System.Drawing.Point(10, 204);
+            this.role.Location = new System.Drawing.Point(13, 251);
+            this.role.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.role.Name = "role";
-            this.role.Size = new System.Drawing.Size(200, 21);
+            this.role.Size = new System.Drawing.Size(265, 24);
             this.role.TabIndex = 31;
             // 
             // roleLabel
             // 
             this.roleLabel.AutoSize = true;
-            this.roleLabel.Location = new System.Drawing.Point(237, 206);
+            this.roleLabel.Location = new System.Drawing.Point(316, 254);
+            this.roleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.roleLabel.Name = "roleLabel";
-            this.roleLabel.Size = new System.Drawing.Size(29, 13);
+            this.roleLabel.Size = new System.Drawing.Size(36, 16);
             this.roleLabel.TabIndex = 32;
             this.roleLabel.Text = "Role";
             // 
             // musclesworkedLabel
             // 
             this.musclesworkedLabel.AutoSize = true;
-            this.musclesworkedLabel.Location = new System.Drawing.Point(213, 50);
+            this.musclesworkedLabel.Location = new System.Drawing.Point(284, 62);
+            this.musclesworkedLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.musclesworkedLabel.Name = "musclesworkedLabel";
-            this.musclesworkedLabel.Size = new System.Drawing.Size(84, 13);
+            this.musclesworkedLabel.Size = new System.Drawing.Size(104, 16);
             this.musclesworkedLabel.TabIndex = 33;
             this.musclesworkedLabel.Text = "Muscles worked";
             // 
             // addmuscleworkedButton
             // 
-            this.addmuscleworkedButton.Location = new System.Drawing.Point(10, 231);
+            this.addmuscleworkedButton.Location = new System.Drawing.Point(13, 284);
+            this.addmuscleworkedButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.addmuscleworkedButton.Name = "addmuscleworkedButton";
-            this.addmuscleworkedButton.Size = new System.Drawing.Size(200, 23);
+            this.addmuscleworkedButton.Size = new System.Drawing.Size(267, 28);
             this.addmuscleworkedButton.TabIndex = 34;
             this.addmuscleworkedButton.Text = "Add muscle worked";
             this.addmuscleworkedButton.UseVisualStyleBackColor = true;
@@ -199,16 +217,18 @@
             // 
             this.type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.type.FormattingEnabled = true;
-            this.type.Location = new System.Drawing.Point(10, 296);
+            this.type.Location = new System.Drawing.Point(13, 364);
+            this.type.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.type.Name = "type";
-            this.type.Size = new System.Drawing.Size(200, 21);
+            this.type.Size = new System.Drawing.Size(265, 24);
             this.type.TabIndex = 35;
             // 
             // deletemuscleworkedButton
             // 
-            this.deletemuscleworkedButton.Location = new System.Drawing.Point(216, 260);
+            this.deletemuscleworkedButton.Location = new System.Drawing.Point(288, 320);
+            this.deletemuscleworkedButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.deletemuscleworkedButton.Name = "deletemuscleworkedButton";
-            this.deletemuscleworkedButton.Size = new System.Drawing.Size(75, 23);
+            this.deletemuscleworkedButton.Size = new System.Drawing.Size(100, 28);
             this.deletemuscleworkedButton.TabIndex = 36;
             this.deletemuscleworkedButton.Text = "Delete";
             this.deletemuscleworkedButton.UseVisualStyleBackColor = true;
@@ -216,9 +236,10 @@
             // 
             // savemuscleworkedButton
             // 
-            this.savemuscleworkedButton.Location = new System.Drawing.Point(216, 231);
+            this.savemuscleworkedButton.Location = new System.Drawing.Point(288, 284);
+            this.savemuscleworkedButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.savemuscleworkedButton.Name = "savemuscleworkedButton";
-            this.savemuscleworkedButton.Size = new System.Drawing.Size(75, 23);
+            this.savemuscleworkedButton.Size = new System.Drawing.Size(100, 28);
             this.savemuscleworkedButton.TabIndex = 37;
             this.savemuscleworkedButton.Text = "Save";
             this.savemuscleworkedButton.UseVisualStyleBackColor = true;
@@ -226,9 +247,10 @@
             // 
             // clearButton
             // 
-            this.clearButton.Location = new System.Drawing.Point(12, 426);
+            this.clearButton.Location = new System.Drawing.Point(13, 502);
+            this.clearButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.clearButton.Name = "clearButton";
-            this.clearButton.Size = new System.Drawing.Size(75, 23);
+            this.clearButton.Size = new System.Drawing.Size(100, 28);
             this.clearButton.TabIndex = 38;
             this.clearButton.Text = "Clear";
             this.clearButton.UseVisualStyleBackColor = true;
@@ -236,9 +258,9 @@
             // 
             // Exercises
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 461);
+            this.ClientSize = new System.Drawing.Size(779, 540);
             this.Controls.Add(this.clearButton);
             this.Controls.Add(this.savemuscleworkedButton);
             this.Controls.Add(this.deletemuscleworkedButton);
@@ -260,6 +282,7 @@
             this.Controls.Add(this.search);
             this.Controls.Add(this.Rows);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Exercises";
             this.Text = "Exercises";
             this.ResumeLayout(false);

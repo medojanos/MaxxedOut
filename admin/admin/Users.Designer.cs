@@ -45,9 +45,10 @@
             // 
             // deleteButton
             // 
-            this.deleteButton.Location = new System.Drawing.Point(216, 300);
+            this.deleteButton.Location = new System.Drawing.Point(288, 369);
+            this.deleteButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.deleteButton.Name = "deleteButton";
-            this.deleteButton.Size = new System.Drawing.Size(75, 23);
+            this.deleteButton.Size = new System.Drawing.Size(100, 28);
             this.deleteButton.TabIndex = 8;
             this.deleteButton.Text = "Delete";
             this.deleteButton.UseVisualStyleBackColor = true;
@@ -55,39 +56,45 @@
             // 
             // search
             // 
-            this.search.Location = new System.Drawing.Point(10, 11);
+            this.search.Location = new System.Drawing.Point(13, 14);
+            this.search.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.search.Name = "search";
-            this.search.Size = new System.Drawing.Size(200, 20);
+            this.search.Size = new System.Drawing.Size(265, 22);
             this.search.TabIndex = 6;
             // 
             // Rows
             // 
             this.Rows.FormattingEnabled = true;
-            this.Rows.Location = new System.Drawing.Point(297, 11);
+            this.Rows.ItemHeight = 16;
+            this.Rows.Location = new System.Drawing.Point(396, 14);
+            this.Rows.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Rows.Name = "Rows";
-            this.Rows.Size = new System.Drawing.Size(273, 420);
+            this.Rows.Size = new System.Drawing.Size(363, 516);
             this.Rows.TabIndex = 10;
             this.Rows.SelectedIndexChanged += new System.EventHandler(this.Rows_SelectedIndexChanged);
             // 
             // nickname
             // 
-            this.nickname.Location = new System.Drawing.Point(10, 162);
+            this.nickname.Location = new System.Drawing.Point(13, 199);
+            this.nickname.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.nickname.Name = "nickname";
-            this.nickname.Size = new System.Drawing.Size(200, 20);
+            this.nickname.Size = new System.Drawing.Size(265, 22);
             this.nickname.TabIndex = 13;
             // 
             // email
             // 
-            this.email.Location = new System.Drawing.Point(10, 188);
+            this.email.Location = new System.Drawing.Point(13, 231);
+            this.email.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.email.Name = "email";
-            this.email.Size = new System.Drawing.Size(200, 20);
+            this.email.Size = new System.Drawing.Size(265, 22);
             this.email.TabIndex = 14;
             // 
             // addButton
             // 
-            this.addButton.Location = new System.Drawing.Point(10, 271);
+            this.addButton.Location = new System.Drawing.Point(13, 334);
+            this.addButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(75, 23);
+            this.addButton.Size = new System.Drawing.Size(100, 28);
             this.addButton.TabIndex = 15;
             this.addButton.Text = "Add";
             this.addButton.UseVisualStyleBackColor = true;
@@ -95,9 +102,10 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(216, 271);
+            this.saveButton.Location = new System.Drawing.Point(288, 334);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.Size = new System.Drawing.Size(100, 28);
             this.saveButton.TabIndex = 16;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -106,42 +114,47 @@
             // nicknameLabel
             // 
             this.nicknameLabel.AutoSize = true;
-            this.nicknameLabel.Location = new System.Drawing.Point(225, 166);
+            this.nicknameLabel.Location = new System.Drawing.Point(300, 204);
+            this.nicknameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.nicknameLabel.Name = "nicknameLabel";
-            this.nicknameLabel.Size = new System.Drawing.Size(55, 13);
+            this.nicknameLabel.Size = new System.Drawing.Size(68, 16);
             this.nicknameLabel.TabIndex = 19;
             this.nicknameLabel.Text = "Nickname";
             // 
             // emailLabel
             // 
             this.emailLabel.AutoSize = true;
-            this.emailLabel.Location = new System.Drawing.Point(237, 192);
+            this.emailLabel.Location = new System.Drawing.Point(316, 236);
+            this.emailLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.emailLabel.Name = "emailLabel";
-            this.emailLabel.Size = new System.Drawing.Size(32, 13);
+            this.emailLabel.Size = new System.Drawing.Size(41, 16);
             this.emailLabel.TabIndex = 20;
             this.emailLabel.Text = "Email";
             // 
             // password
             // 
-            this.password.Location = new System.Drawing.Point(10, 245);
+            this.password.Location = new System.Drawing.Point(13, 302);
+            this.password.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.password.Name = "password";
-            this.password.Size = new System.Drawing.Size(200, 20);
+            this.password.Size = new System.Drawing.Size(265, 22);
             this.password.TabIndex = 21;
             // 
             // passwordLabel
             // 
             this.passwordLabel.AutoSize = true;
-            this.passwordLabel.Location = new System.Drawing.Point(225, 248);
+            this.passwordLabel.Location = new System.Drawing.Point(300, 305);
+            this.passwordLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.passwordLabel.Name = "passwordLabel";
-            this.passwordLabel.Size = new System.Drawing.Size(53, 13);
+            this.passwordLabel.Size = new System.Drawing.Size(67, 16);
             this.passwordLabel.TabIndex = 22;
             this.passwordLabel.Text = "Password";
             // 
             // searchButton
             // 
-            this.searchButton.Location = new System.Drawing.Point(216, 11);
+            this.searchButton.Location = new System.Drawing.Point(288, 14);
+            this.searchButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(75, 23);
+            this.searchButton.Size = new System.Drawing.Size(100, 28);
             this.searchButton.TabIndex = 23;
             this.searchButton.Text = "Search";
             this.searchButton.UseVisualStyleBackColor = true;
@@ -149,9 +162,10 @@
             // 
             // clearButton
             // 
-            this.clearButton.Location = new System.Drawing.Point(10, 426);
+            this.clearButton.Location = new System.Drawing.Point(13, 502);
+            this.clearButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.clearButton.Name = "clearButton";
-            this.clearButton.Size = new System.Drawing.Size(75, 23);
+            this.clearButton.Size = new System.Drawing.Size(100, 28);
             this.clearButton.TabIndex = 39;
             this.clearButton.Text = "Clear";
             this.clearButton.UseVisualStyleBackColor = true;
@@ -159,9 +173,9 @@
             // 
             // Users
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 461);
+            this.ClientSize = new System.Drawing.Size(779, 540);
             this.Controls.Add(this.clearButton);
             this.Controls.Add(this.searchButton);
             this.Controls.Add(this.passwordLabel);
@@ -176,6 +190,7 @@
             this.Controls.Add(this.deleteButton);
             this.Controls.Add(this.search);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Users";
             this.Text = "Users";
             this.ResumeLayout(false);
