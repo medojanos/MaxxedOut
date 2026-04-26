@@ -9,9 +9,9 @@ export default function Docs() {
             <h2>Documentation</h2>
             <p>Download whole documentation</p>
             <p>
-                <a href="">English</a>
+                <a href="https://raw.githubusercontent.com/medojanos/MaxxedOut/refs/heads/main/documents/Documentation_MaxxedOut-EN.docx">English</a>
                 <span> | </span>
-                <a href="">Hungarian</a>
+                <a href="https://raw.githubusercontent.com/medojanos/MaxxedOut/refs/heads/main/documents/Documentation_MaxxedOut-HU.docx">Hungarian</a>
             </p>
             <div id="readme" className="content"></div>
         </section>
