@@ -30,7 +30,6 @@ namespace admin
 
             ApiClient.Initialize($"{apiUrl}/");
 
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);  
 
@@ -51,20 +50,27 @@ namespace admin
                 return false;
             }
 
-            if (ApiClient.Client.DefaultRequestHeaders.Authorization != null) ApiClient.Client.DefaultRequestHeaders.Authorization = null;
-
-            ApiClient.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
-
-            var Response = await ApiClient.Client.GetAsync("auth/admin"); 
-
-            if (Response.IsSuccessStatusCode)
+            try
             {
-                return true;
+                if (ApiClient.Client.DefaultRequestHeaders.Authorization != null) ApiClient.Client.DefaultRequestHeaders.Authorization = null;
+                ApiClient.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiKey);
+
+                var Response = await ApiClient.Client.GetAsync("auth/admin");
+
+                if (Response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    ApiResponse<JsonElement> content = await Response.Content.ReadFromJsonAsync<ApiResponse<JsonElement>>();
+                    MessageBox.Show($"Bad token! \nStatus: {Response.StatusCode.GetHashCode()} {Response.StatusCode}");
+                    return false;
+                }
             }
-            else
-            { 
-                ApiResponse<JsonElement> content = await Response.Content.ReadFromJsonAsync<ApiResponse<JsonElement>>();
-                MessageBox.Show($"Bad token! \nStatus: {Response.StatusCode.GetHashCode()} {Response.StatusCode}");
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error connecting to backend! \n{ex.Message}");
                 return false;
             }
         }

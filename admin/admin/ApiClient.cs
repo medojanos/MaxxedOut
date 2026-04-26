@@ -25,10 +25,18 @@ namespace admin
         {
             if (_initialized) return;
 
-            Client = new HttpClient 
-            { 
-                BaseAddress = new Uri(apiUrl) 
-            };
+            try
+            {
+                Client = new HttpClient
+                {
+                    BaseAddress = new Uri(apiUrl)
+                };
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show($"Failed to initialize API client: \n{ex.Message}");
+                return;
+            }
 
             Client.DefaultRequestHeaders.Clear();
             Client.DefaultRequestHeaders.Add("Accept", "application/json");

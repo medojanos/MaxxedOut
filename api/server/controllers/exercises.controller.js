@@ -100,32 +100,40 @@ export const addExercise = (req, res) => {
 
     if(!Validate(name)) return Error(res, "Invalid exercise name");
     if(!Validate(type) || (type !== "Compound" && type !== "Isolation")) return Error(res, "Invalid type");
-    if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
+    if(musclesworked.length !== 0) {
+        if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
+    }
 
     db.run("INSERT INTO exercises (name, type) VALUES (?, ?)", [name, type], function (e) {
         if (e) return dbError(res, e); 
 
         const exerciseId = this.lastID;
-        let completed = 0;
-        let responded = false;
 
-        musclesworked.forEach(mg => {
-            db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, exerciseId, mg.role], function(e) {
-                if(responded) return;
-                
-                if (e) {
-                    responded = true;
-                    return dbError(res, e);
-                } 
+        if(musclesworked.length !== 0) {
+            let completed = 0;
+            let responded = false;
 
-                completed++;
-        
-                if(completed == musclesworked.length) {
-                    responded = true;
-                    return res.status(201).json({data: {id: exerciseId}});
-                }
-            })
-        });
+            musclesworked.forEach(mg => {
+                db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, exerciseId, mg.role], function(e) {
+                    if(responded) return;
+                    
+                    if (e) {
+                        responded = true;
+                        return dbError(res, e);
+                    } 
+
+                    completed++;
+            
+                    if(completed == musclesworked.length) {
+                        responded = true;
+                        return res.status(201).json({data: {id: exerciseId}});
+                    }
+                })
+            });
+        }
+        else {
+            return res.status(201).json({data: {id: exerciseId}});
+        }
     })
 }
 
@@ -135,7 +143,9 @@ export const updateExercise = (req, res) => {
     if(!ValidateNumber(id)) return Error(res, "Invalid id");
     if(!Validate(name)) return Error(res, "Invalid exercise name");
     if(!Validate(type) || (type !== "Compound" && type !== "Isolation")) return Error(res, "Invalid type");
-    if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
+    if(musclesworked.length !== 0) {
+        if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
+    }
 
     db.run("UPDATE exercises SET name = ?, type = ? WHERE id = ?", [name, type, id], function (e) {
         if (e) return dbError(res, e); 
@@ -144,29 +154,34 @@ export const updateExercise = (req, res) => {
         db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", id, function(e) {
             if (e) return dbError(res, e); 
 
-            let completed = 0;
-            let responded = false;
+            if (musclesworked.length !== 0) {
+                let completed = 0;
+                let responded = false;
 
-            musclesworked.forEach(mg => {
-                if(!ValidateNumber(mg.id)) return NotFound(res, "Exercise not found!");
-                if(!Validate(mg.role)) return Error(res, "Invalid muscle role!");
+                musclesworked.forEach(mg => {
+                    if(!ValidateNumber(mg.id)) return NotFound(res, "Exercise not found!");
+                    if(!Validate(mg.role)) return Error(res, "Invalid muscle role!");
 
-                db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, id, mg.role], function(e) {
-                    if(responded) return;
-                    
-                    if (e) {
-                        responded = true;
-                        return dbError(res, e); 
-                    }
+                    db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, id, mg.role], function(e) {
+                        if(responded) return;
+                        
+                        if (e) {
+                            responded = true;
+                            return dbError(res, e); 
+                        }
 
-                    completed ++;
+                        completed ++;
 
-                    if(completed == musclesworked.length) {
-                        responded = true;
-                        return NoContent(res);
-                    }
-                })
-            });
+                        if(completed == musclesworked.length) {
+                            responded = true;
+                            return NoContent(res);
+                        }
+                    })
+                });
+            }
+            else {
+                return NoContent(res);
+            }
         })
     })
 }

@@ -131,6 +131,8 @@ namespace admin
             {
                 var userObj = new UsersDB(result.GetProperty("id").GetInt32(), nickname.Text.Trim(), email.Text.Trim(), password.Text.Trim());
 
+                MessageBox.Show($"{userObj.Nickname} added succesfully!");
+
                 UsersList.Add(userObj);
                 Rows.Items.Add(userObj);
             }
@@ -178,6 +180,8 @@ namespace admin
 
                 if (!string.IsNullOrWhiteSpace(password.Text.Trim()) && UsersDB.IsPwdValid(password.Text.Trim())) userObj.Password = password.Text.Trim();
 
+                MessageBox.Show($"{userObj.Nickname} updated succesfully!");
+
                 Rows.Items[Rows.SelectedIndex] = userObj;
             }
         }
@@ -204,6 +208,8 @@ namespace admin
             {
                 UsersList.Remove(userObj);
                 Rows.Items.Remove(userObj);
+
+                MessageBox.Show($"{userObj.Nickname} deleted succesfully!");
 
                 nickname.Clear();
                 email.Clear();
