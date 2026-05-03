@@ -1,12 +1,14 @@
 import db from "../config/db.js"
-import {Unauthorized, dbError} from "../config/utility.js"
+import {Unauthorized, dbError, Error} from "../config/utility.js"
+import { Validate } from "../config/utility.js";
+import {createHash} from "crypto";
 
 import dotenv from 'dotenv';
 dotenv.config();
 
-async function getUserFromToken(token) {
+async function getUser(token) {
     return new Promise((res, rej) => {
-        db.get("SELECT user_id FROM tokens WHERE token = ?", [token], (e, row) => {
+        db.get("SELECT user_id, expiry FROM access_tokens WHERE token = ? ", [createHash('sha256').update(token).digest('hex')], (e, row) => {
             if (e) rej(e)
             row ? res(row) : res(null)
         })
@@ -16,14 +18,15 @@ async function getUserFromToken(token) {
 export function authUser() {
     return async (req, res, next) => {
         try {
-            const token = req.headers["authorization"];
-            if (!token) return Unauthorized(res, "No token");
+            const access_token = req.headers["authorization"];
+            if (!Validate(access_token)) return Error(res, "Invalid token");
 
-            const user = await getUserFromToken(token);
-            if (!user) return Unauthorized(res, "Invalid token");
+            const user = await getUser(access_token);
+            if (!user) return Unauthorized(res);
+
+            if (new Date().getTime() > user.expiry) return Error(res, "TOKEN_EXPIRED");
 
             req.user = user.user_id;
-
             next();
         } catch {
             dbError(res);

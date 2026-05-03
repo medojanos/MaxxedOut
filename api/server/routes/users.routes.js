@@ -1,5 +1,5 @@
 import express from 'express'
-import { Register, Login, forgotPassword, resetPassword, verifyCode, updateUser, deleteUser, getUsers, addUser, updateUserFromId , deleteUserFromId } from "../controllers/users.controller.js"
+import { Register, Login, forgotPassword, resetPassword, verifyCode, updateUser, deleteUser, getUsers, addUser, updateUserFromId , deleteUserFromId, RefreshToken } from "../controllers/users.controller.js"
 import { authUser, authAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -25,5 +25,7 @@ router.post("/verify-code", verifyCode);
 router.patch("/user", authUser(), updateUser);
 
 router.delete("/user", deleteUser);
+
+router.post("/refresh", RefreshToken);
 
 export default router;
