@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY NOT NULL,
     email TEXT NOT NULL,
     nickname TEXT,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    UNIQUE(email)
 );
 
 CREATE TABLE IF NOT EXISTS workouts (
@@ -18,7 +19,8 @@ CREATE TABLE IF NOT EXISTS workouts (
 CREATE TABLE IF NOT EXISTS exercises (
     id INTEGER PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
-    type TEXT NOT NULL CHECK (type IN ('Compound', 'Isolation'))
+    type TEXT NOT NULL CHECK (type IN ('Compound', 'Isolation')),
+    UNIQUE(name)
 );
 
 CREATE TABLE IF NOT EXISTS sets (
@@ -81,15 +83,23 @@ CREATE TABLE IF NOT EXISTS plans_exercises (
 CREATE TABLE IF NOT EXISTS codes (
     code TEXT PRIMARY KEY NOT NULL,
     user_id INTEGER NOT NULL,
-    expiry DATETIME DEFAULT (DATETIME('now', '+10 minutes')),
+    expiry INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
         ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS tokens (
+CREATE TABLE IF NOT EXISTS access_tokens (
     token TEXT PRIMARY KEY NOT NULL,
     user_id INTEGER NOT NULL,
-    expiry DATETIME DEFAULT (DATETIME('now', '+7 days')),
+    expiry INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    token TEXT PRIMARY KEY NOT NULL,
+    user_id INTEGER NOT NULL,
+    expiry INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
         ON DELETE CASCADE
 );
