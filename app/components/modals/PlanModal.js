@@ -10,6 +10,7 @@ import ExerciseInfoModal from "./ExerciseInfoModal";
 import ReArrange from "../ReArrange";
 import Constants from 'expo-constants';
 import ModalOverlay from "../ModalOverlay";
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -21,12 +22,18 @@ export default function PlanModal({ Close, visible, id, name }) {
     const [searchModal, setSearchModal] = useState(false);
     const [status, setStatus] = useState("");
 
+    const apiFetch = useApiFetch();
+
     const { token, Refresh } = useContext(Context);
+
+    useEffect(() => {
+        setStatus("");
+    }, [name]);
     
     useEffect(() => {
         if (!id) return;
 
-        fetch(`${Constants.expoConfig.extra.API_URL}/plans/${id}`, { headers: { "Authorization": token } })
+        apiFetch("/plans/" + id)
         .then(res => res.json())
         .then(data => setPlan({ id: id, name: name, ownIndex: 0, exercises: Array.from(data.data, ex => ({id: ex.id, name: ex.name, sets: ex.sets == 0 ? "" : ex.sets.toString()})) }))
     }, [id, name, token]);
@@ -71,7 +78,7 @@ export default function PlanModal({ Close, visible, id, name }) {
     return (
         <ModalOverlay visible={visible} onClose={Close}>
             <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
-            <Text>{status}</Text>
+            <Text style={MainStyle.lightText}>{status}</Text>
             <TextInput 
                 style={MainStyle.input} 
                 value={plan.name} 
@@ -138,7 +145,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                     <Text style={MainStyle.buttonText}>No</Text>
                 </Pressable>
                 <Pressable style={MainStyle.button} onPress={() => {
-                    fetch(Constants.expoConfig.extra.API_URL + "/plans/" + id, {method: "DELETE", headers: {"Authorization" : token}})
+                    apiFetch("/plans/" + id, { method: "DELETE"})
                     .then(res => {
                         if (res.ok) {
                             setDeleteModal(false);
@@ -152,7 +159,7 @@ export default function PlanModal({ Close, visible, id, name }) {
             </ModalOverlay>
             <View style={MainStyle.inlineContainer}>
                 <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
-                    fetch(Constants.expoConfig.extra.API_URL + "/plans/" + id, {
+                    apiFetch("/plans/" + id, {
                         method: "PATCH",
                         headers: {
                             "Authorization" : token,
@@ -172,8 +179,9 @@ export default function PlanModal({ Close, visible, id, name }) {
                         if (res.ok) {
                             Refresh();
                             Close();
-                        } else res.json().then(data => setStatus(data.message))
+                        } else res.json().then(data => setStatus(data.error))
                     })
+                    .catch(() => setStatus("Network error"))
                 }}>
                     <Text style={MainStyle.buttonText}>Save</Text>
                 </Pressable>

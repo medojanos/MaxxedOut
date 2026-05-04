@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 // Misc
 import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -26,34 +27,35 @@ const LoginStyle = StyleSheet.create({
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [status, setStatus] = useState(); 
+    const [status, setStatus] = useState(null); 
 
-    const { setToken, setUserData } = useContext(Context);
+    const { setRefreshToken, setAccessToken, setUserData } = useContext(Context);
 
-    function Authenticate() {
-        fetch(Constants.expoConfig.extra.API_URL + "/login", {
-            method: "POST",
-            headers: {
-                "Content-Type" : "application/json"
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
+    const apiFetch = useApiFetch();
+
+    async function Authenticate() {
+        try {
+            const res = await apiFetch("/auth/login", {
+                method: "POST",
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
             })
-        })
-        .then(res => res.json()
-        .then(data => {
+
+            const data = await res.json();
+            
             if (res.ok) {
-                setToken(data.data.token);
+                setRefreshToken(data.data.refresh_token);
+                setAccessToken(data.data.access_token);
                 setUserData(data.data.userData);
             } else {
-                throw new Error(data.message);
+                throw new Error(data.error);
             }
         }
-        ))
-        .catch(err => {
+        catch (err) {
             setStatus(err.message || "An error occurred. Please try again later.");
-        });
+        };
     }
 
     return (

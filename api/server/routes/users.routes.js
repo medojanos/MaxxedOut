@@ -1,31 +1,15 @@
 import express from 'express'
-import { Register, Login, forgotPassword, resetPassword, verifyCode, updateUser, deleteUser, getUsers, addUser, updateUserFromId , deleteUserFromId, RefreshToken } from "../controllers/users.controller.js"
+import { updateUser, deleteUser, getUsers, addUser, updateUserFromId , deleteUserFromId } from "../controllers/users.controller.js";
 import { authUser, authAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Admin
+router.get("/admin", authAdmin(), getUsers);
+router.post("/admin", authAdmin(), addUser);
+router.put("/admin", authAdmin(), updateUserFromId);
+router.delete("/admin/:id", authAdmin(), deleteUserFromId);
 
-router.get("/user/admin", authAdmin(), getUsers);
-
-router.post("/user/admin", authAdmin(), addUser);
-
-router.put("/user/admin", authAdmin(), updateUserFromId);
-
-router.delete("/user/admin/:id", authAdmin(), deleteUserFromId);
-
-// App
-
-router.post("/register", Register);
-router.post("/login", Login);
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", resetPassword);
-router.post("/verify-code", verifyCode);
-
-router.patch("/user", authUser(), updateUser);
-
-router.delete("/user", deleteUser);
-
-router.post("/refresh", RefreshToken);
+router.patch("/", authUser(), updateUser);
+router.delete("/", deleteUser);
 
 export default router;

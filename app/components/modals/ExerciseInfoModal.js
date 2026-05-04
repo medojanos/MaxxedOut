@@ -6,22 +6,22 @@ import { useContext, useEffect, useState } from "react";
 import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
 import ModalOverlay from "../ModalOverlay";
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import MainStyle from "../../style/MainStyle"
-
 
 export default function ExerciseInfoModal({id, name, maxWidth}) {
     const [exerciseInfos, setExerciseInfos] = useState();
     const [visible, setVisible] = useState(false);
 
-    const {token} = useContext(Context);
+    const apiFetch = useApiFetch();
 
     useEffect(() => {
-        fetch(Constants.expoConfig.extra.API_URL + "/exercises/" + id, { headers: { "Authorization": token } })
+        apiFetch("/exercises/" + id)
         .then(res => res.json())
         .then(data => setExerciseInfos(data.data))
-    }, [id, token]);
+    }, [id]);
 
     return (
         <>

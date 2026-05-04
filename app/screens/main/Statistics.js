@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
 import AlertBox from "../../components/AlertBox";
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -58,10 +59,12 @@ export default function Statistics() {
     const [weight, setWeight] = useState(null);
     const [offline, setOffline] = useState(false);
 
+    const apiFetch = useApiFetch();
+
     const {token, userData, workout, refresh} = useContext(Context);
 
     useEffect(() => {
-        fetch(Constants.expoConfig.extra.API_URL + "/statistics", { headers: { "Authorization": token } })
+        apiFetch("/statistics")
         .then(res => res.json())
         .then(data => setStatistics(data.data))
         .catch(() => setOffline(true));

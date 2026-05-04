@@ -37,7 +37,7 @@ function createEmail(subject, primary, secondary, main) {
         </div>
         <p>${secondary}</p>
         <hr>
-        <h3 style="text-align: center;">2026 © MaxxedOut</h3>
+        <h3 style="text-align: center;">${new Date().getFullYear()} © MaxxedOut</h3>
       </div>
     </div>`
   )

@@ -5,12 +5,14 @@ import { useNavigation } from "@react-navigation/native";
 // Misc
 import Constants from "expo-constants";
 import ModalOverlay from "../ModalOverlay";
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import MainStyle from "../../style/MainStyle";
 
-export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, token, setStatus }) {
+export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, setStatus }) {
     const navigation = useNavigation();
+    const apiFetch = useApiFetch();
 
     return (
         <ModalOverlay visible={saveModal} onClose={() => setSaveModal(false)}>
@@ -19,24 +21,20 @@ export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, 
                 <Text style={MainStyle.buttonText}>No</Text>
             </Pressable>
             <Pressable style={MainStyle.button} onPress={() => { 
-                fetch(Constants.expoConfig.extra.API_URL + "/workouts", {
+                apiFetch("/workouts", {
                     method: "POST",
-                    headers: {
-                        "Content-Type" : "application/json",
-                        "Authorization" : token
-                    },
                     body: JSON.stringify(body)
                 })
-                .then(res => {
+                .then(async res => {
                     if (res.ok) {
                         navigation.navigate("Home");
                         setWorkout(null);
-                        setSaveModal(false);
                     } 
-                    else res.json().then(data => {
-                        setStatus(data.message);
-                        setSaveModal(false);
-                    });
+                    else {
+                        const data = await res.json();
+                        setStatus(data.error);
+                    }
+                    setSaveModal(false);
                 });
             }}>
                 <Text style={MainStyle.buttonText}>Yes</Text>

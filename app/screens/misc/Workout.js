@@ -13,6 +13,7 @@ import CancelModal from "../../components/modals/CancelModal";
 import ReArrange from "../../components/ReArrange";
 import AddExercise from "../../components/AddExercise";
 import Constants from 'expo-constants';
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -21,7 +22,9 @@ import KeyboardView from "../../components/KeyboardView";
 import ModalOverlay from "../../components/ModalOverlay";
 
 export default function Workout() {
-    const {token, workout, setWorkout} = useContext(Context);
+    const { workout, setWorkout} = useContext(Context);
+
+    const apiFetch = useApiFetch();
 
     const [cancelModal, setCancelModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
@@ -123,9 +126,9 @@ export default function Workout() {
                     <Pressable
                         style={MainStyle.secondaryButton}
                         onPress={() => {
-                            fetch(Constants.expoConfig.extra.API_URL + "/workouts?name=" + encodeURIComponent(workout.name), { headers: { Authorization: token } })
-                            .then(res => res.json()
-                            .then(data => {
+                            apiFetch("/workouts?name=" + encodeURIComponent(workout.name))
+                            .then(async res => {
+                                const data = await res.json();
                                 if (res.ok) {
                                     setWorkout(prev => ({
                                         ...prev, 
@@ -138,7 +141,7 @@ export default function Workout() {
                                 else {
                                     setRecentModal(true);
                                 }
-                            }))
+                            })
                         }}>
                         <Text style={MainStyle.buttonText}>Import recent</Text>
                     </Pressable>
@@ -251,7 +254,6 @@ export default function Workout() {
                         started_at: workout.started_at,
                         ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
                     }}
-                    token={token}
                     setStatus={setStatus}/>
                 <CancelModal
                     cancelModal={cancelModal}

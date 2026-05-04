@@ -9,6 +9,7 @@ import PlanModal from "../../components/modals/PlanModal";
 import PlanInfoModal from "../../components/modals/PlanInfoModal";
 import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
+import useApiFetch from "../../misc/ApiFetch";
 
 //Style
 import * as Var from "../../style/Variables"
@@ -35,10 +36,11 @@ export default function Workouts() {
 
     const {token, refresh, Refresh} = useContext(Context);
     
+    const apiFetch = useApiFetch();
     const navigation = useNavigation();
 
     useEffect(() => {
-        fetch(Constants.expoConfig.extra.API_URL + "/plans", { headers: { "Authorization": token } })
+        apiFetch("/plans")
         .then(res => res.json())
         .then(data => setPlans(data.data))
         .catch(() => setAlert(true))

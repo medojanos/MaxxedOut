@@ -8,17 +8,30 @@ export default function Provider({children}) {
     const [planDraft, setPlanDraft] = useState({name : "", ownIndex : 0, exercises : []});
     const [userData, setUserData] = useState(undefined);
     const [workout, setWorkout] = useState(undefined);
-    const [token, setToken] = useState(undefined);
     const [refresh, setRefresh] = useState(0);
+    const [refreshToken, setRefreshToken] = useState(undefined);
+    const [accessToken, setAccessToken] = useState(undefined);
+
+    function Logout() {
+        setUserData(null);
+        setWorkout(null);
+        setRefreshToken(null);
+        setAccessToken(null);
+    }
 
     function Refresh() {
         setRefresh(prev => prev + 1);
     }
 
-    useEffect( () => {
-        if (token === undefined) return;
-        setData("token", token);
-    }, [token])
+    useEffect(() => {
+        if (refreshToken === undefined) return;
+        setData("refresh_token", refreshToken);
+    }, [refreshToken]);
+
+    useEffect(() => {
+        if (accessToken === undefined) return;
+        setData("access_token", accessToken);
+    }, [accessToken]);
 
     useEffect( () => {
         if (workout === undefined) return;
@@ -35,7 +48,7 @@ export default function Provider({children}) {
     }, [userData]);
     
     return (
-        <Context.Provider value={{planDraft, setPlanDraft, userData, setUserData, workout, setWorkout, token, setToken, refresh, Refresh}}>
+        <Context.Provider value={{planDraft, setPlanDraft, userData, setUserData, workout, setWorkout, refresh, Refresh, refreshToken, setRefreshToken, accessToken, setAccessToken, Logout}}>
             {children}
         </Context.Provider>
     );

@@ -12,6 +12,7 @@ import Loader from "./components/Loader";
 import { Context } from "./misc/Provider";
 import { getData, getJson, } from "./misc/Storage";
 import Constants from 'expo-constants';
+import useApiFetch from "./misc/ApiFetch";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -38,26 +39,23 @@ async function setNotifications() {
 }
 
 export default function App() {
-    const {setToken, userData, setUserData, setWorkout} = useContext(Context);
+    const { userData, setUserData, setWorkout} = useContext(Context);
+
+    const apiFetch = useApiFetch();
 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        async function load() {
+        async function Load() {
             try {
                 await setNotifications();
 
-                const token = await getData("token");
-                if (!token) return;
-
-                const res = await fetch(Constants.expoConfig.extra.API_URL + "/auth", {headers: {"Authorization" : token}});
-
-                if (res.ok) {
-                    setToken(token);
-                    setUserData(await getJson("user"));
-                    setWorkout(await getJson("workout"));
-                } 
-                else setUserData(null);
+                const refreshToken = await getData("refresh_token");
+                if (!refreshToken) return;
+                const res = await apiFetch("/auth");
+                if (!res.ok) return setUserData(null);
+                setUserData(await getJson("user"));
+                setWorkout(await getJson("workout"));
             }
             catch {
                 const user = await getJson("user");
@@ -68,7 +66,7 @@ export default function App() {
                 setLoading(false);
             }
         };
-        load();
+        Load();
     }, [])
 
     if (loading) return <Loader/>;

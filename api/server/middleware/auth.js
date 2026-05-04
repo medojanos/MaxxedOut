@@ -9,7 +9,7 @@ dotenv.config();
 async function getUser(token) {
     return new Promise((res, rej) => {
         db.get("SELECT user_id, expiry FROM access_tokens WHERE token = ? ", [createHash('sha256').update(token).digest('hex')], (e, row) => {
-            if (e) rej(e)
+            if (e) return rej(e)
             row ? res(row) : res(null)
         })
     })
@@ -24,7 +24,7 @@ export function authUser() {
             const user = await getUser(access_token);
             if (!user) return Unauthorized(res);
 
-            if (new Date().getTime() > user.expiry) return Error(res, "TOKEN_EXPIRED");
+            if (new Date().getTime() > user.expiry) return Unauthorized(res);
 
             req.user = user.user_id;
             next();

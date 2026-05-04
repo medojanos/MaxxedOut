@@ -8,15 +8,14 @@ import { Context } from "../../misc/Provider";
 import RandomName from "../../misc/RandomName";
 import Constants from 'expo-constants';
 import ModalOverlay from "../../components/ModalOverlay";
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
 
 export default function Settings() {
-    const {userData, setUserData, setWorkout} = useContext(Context);
-
-    const { token, Refresh } = useContext(Context);
+    const {userData, Refresh, Logout, setUserData} = useContext(Context);
 
     const [nicknameModal, setNicknameModal] = useState(false);
     const [newNickname, setNewNickname] = useState("");
@@ -28,6 +27,8 @@ export default function Settings() {
     const [pwdStrength, setPwdStrength] = useState("");
     const [saveDisabled, setSaveDisabled] = useState(false);
     const [picker, setPicker] = useState(false);
+
+    const apiFetch = useApiFetch();
 
     function evaluatePwdStrength(password){
         setStatus("");
@@ -95,12 +96,8 @@ export default function Settings() {
                 <View style={MainStyle.inlineContainer}>
                     <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
                         if (newNickname.length == 0) return setStatus("Nickname is too short");
-                        fetch(Constants.expoConfig.extra.API_URL + "/user", {
+                        apiFetch("/users", {
                             method: "PATCH",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": token
-                            },
                             body: JSON.stringify({
                                 "nickname" : newNickname
                             })
@@ -110,7 +107,7 @@ export default function Settings() {
                                 setUserData(prev => ({...prev, nickname: newNickname}));
                                 setSaveDisabled(true);
                                 setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
-                            }
+                            };
                         })
                         .catch(() => setStatus("Network error"));
                     }}>
@@ -186,10 +183,7 @@ export default function Settings() {
                     </View>
                 </Pressable>
             </View>
-            <Pressable style={MainStyle.button} onPress={() => {
-                setUserData(null);
-                setWorkout(null);
-            }}>
+            <Pressable style={MainStyle.button} onPress={() => Logout()}>
                 <Text style={MainStyle.buttonText}>Logout</Text>
             </Pressable>
             <ModalOverlay visible={passwordModal} onClose={() => setPasswordModal(false)}>
@@ -220,12 +214,8 @@ export default function Settings() {
                         if (pwdStrength == "") return setStatus("Enter valid password")
                         if (pwdStrength == "Weak") return setStatus("Password is too weak");
                         if (newPassword != newRepassword) return setStatus("Passwords do not match");
-                        fetch(Constants.expoConfig.extra.API_URL + "/user", {
+                        apiFetch("/users", {
                             method: "PATCH",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": token
-                            },
                             body: JSON.stringify({
                                 "password": newPassword,
                                 "currentPassword": currentPassword
@@ -233,7 +223,6 @@ export default function Settings() {
                         })
                         .then(res => {
                             if (res.ok) {
-                                setUserData(data.data);
                                 setSaveDisabled(true);
                                 setTimeout(() => {setPasswordModal(false); setSaveDisabled(false)}, 2000);
                             }
