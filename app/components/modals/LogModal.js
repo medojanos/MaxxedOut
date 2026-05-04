@@ -8,6 +8,7 @@ import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
 import displayTime from "../../misc/DisplayTime";
 import ModalOverlay from "../ModalOverlay";
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -16,7 +17,8 @@ import MainStyle from "../../style/MainStyle"
 
 export default function LogModal({visible, Close, workouts, status}) {
     const [deleteModal, setDeleteModal] = useState(false);
-    const { token, Refresh } = useContext(Context);
+    const { Refresh } = useContext(Context);
+    const apiFetch = useApiFetch();
 
     return (
         <ModalOverlay visible={visible} onClose={Close}>
@@ -58,9 +60,8 @@ export default function LogModal({visible, Close, workouts, status}) {
                 <Pressable
                     style={MainStyle.button}
                     onPress={() => {
-                        fetch(`${Constants.expoConfig.extra.API_URL}/workouts/${workouts[0].id}`, {
-                            method: "DELETE",
-                            headers: {"Authorization" : token}
+                        apiFetch("/workouts/" + workouts[0].id, {
+                            method: "DELETE"
                         })
                         .then(res => {
                             if (res.ok) {

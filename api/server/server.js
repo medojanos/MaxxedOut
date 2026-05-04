@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 
 app.use("/muscle_groups", muscleGroupsRoutes);
 app.use("/exercises", exercisesRoutes);
-app.use("/", usersRoutes);
+app.use("/users", usersRoutes);
 app.use("/plans", plansRoutes);
 app.use("/workouts", workoutsRoutes);
 app.use("/statistics", statisticsRoutes);

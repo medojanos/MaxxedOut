@@ -11,6 +11,7 @@ import ExerciseInfoModal from "../../components/modals/ExerciseInfoModal";
 import ReArrange from "../../components/ReArrange";
 import Constants from 'expo-constants';
 import KeyboardView from "../../components/KeyboardView";
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -21,6 +22,7 @@ export default function CreateWorkout() {
     const [status, setStatus] = useState();
 
     const navigation = useNavigation();
+    const apiFetch = useApiFetch();
 
     const {planDraft, setPlanDraft, token, Refresh} = useContext(Context);
 
@@ -140,12 +142,8 @@ export default function CreateWorkout() {
                     <Pressable
                         style={[MainStyle.button, MainStyle.buttonBlock]}
                         onPress={() => {
-                            fetch(Constants.expoConfig.extra.API_URL + "/plans", {
+                            apiFetch("/plans", {
                                 method: "POST",
-                                headers: {
-                                    "Content-Type" : "application/json",
-                                    "Authorization" : token
-                                },
                                 body: JSON.stringify({
                                     name: planDraft.name,
                                     exercises: planDraft.exercises.map((ex, index) => ({
@@ -156,12 +154,15 @@ export default function CreateWorkout() {
                                     }))
                                 })
                             })
-                            .then(res => {
+                            .then(async res => {
                                 if (res.ok) {
                                     Refresh();
                                     setPlanDraft({name : "", ownIndex : 0, exercises : []});
                                     navigation.navigate("Home");
-                                } else res.json().then(data => setStatus(data.message))
+                                } else {
+                                    const data = await res.json();
+                                    setStatus(data.error);
+                                }
                             })
                             .catch(() => setStatus("Network error"))
                             }}>

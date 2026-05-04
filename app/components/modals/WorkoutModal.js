@@ -9,6 +9,7 @@ import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
 import ModalOverlay from "../ModalOverlay";
 import AlertBox from "../AlertBox";
+import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -25,11 +26,13 @@ export default function WorkoutModal({Close, visible, isOffline}) {
     const [plans, setPlans] = useState();
     const [offline, setOffline] = useState(false);
 
-    const { token, setWorkout, refresh } = useContext(Context);
+    const { setWorkout, refresh } = useContext(Context);
+
+    const apiFetch = useApiFetch();
     const navigation = useNavigation();
     
     useEffect(() => {
-        fetch(Constants.expoConfig.extra.API_URL + "/plans", { headers: { "Authorization": token } })
+        apiFetch("/plans")
         .then(res => res.json())
         .then(data => setPlans(data.data))
         .catch(() => {
@@ -48,7 +51,7 @@ export default function WorkoutModal({Close, visible, isOffline}) {
                         key={plan.id}
                         style={[MainStyle.button, WorkoutModalStyle.workoutButton]} 
                         onPress={() => {
-                            fetch(Constants.expoConfig.extra.API_URL + "/plans/" + plan.id, { headers: { Authorization: token } })
+                            apiFetch("/plans/" + plan.id)
                             .then(res => res.json())
                             .then(data => {
                                 setWorkout({id: plan.id, name: plan.name, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss"), ownIndex : 0, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": "", "rep": ""}))}))});

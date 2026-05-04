@@ -7,6 +7,7 @@ import Constants from 'expo-constants';
 // Misc
 import ModalOverlay from "./ModalOverlay";
 import AlertBox from "./AlertBox";
+import useApiFetch from "../misc/ApiFetch";
 
 // Style
 import * as Var from "../style/Variables"
@@ -33,13 +34,15 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
     const [mgPicker, setMgPicker] = useState(false);
     const [typePicker, setTypePicker] = useState(false);
 
+    const apiFetch = useApiFetch();
+
     useEffect(() => {
-        fetch(Constants.expoConfig.extra.API_URL + "/exercises")
+        apiFetch("/exercises")
         .then(res => res.json())
         .then(data => setExercises(data.data))
         .catch(() => setOffline(true));
 
-        fetch(Constants.expoConfig.extra.API_URL + "/muscle_groups")
+        apiFetch("/muscle_groups")
         .then(res => res.json())
         .then(data => setMuscleGroups(data.data))
     },[])

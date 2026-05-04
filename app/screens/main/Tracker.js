@@ -23,7 +23,7 @@ export default function Tracker() {
     const { userData, workout, setWorkout, token } = useContext(Context);
 
     const navigation = useNavigation();
-    const [offline, setOffline] = useState();
+    const [offline, setOffline] = useState(false);
 
     const durationInterval = useRef(null);
     const [durationTimer, setDurationTimer] = useState("00:00");
