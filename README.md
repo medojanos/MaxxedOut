@@ -50,7 +50,7 @@
 <ul>
   <li>Server: Node.js, Express</li>
   <li>Database: SQLite</li>
-  <li>Authentication: JWT (JSON Web Tokens)</li>
+  <li>Authentication: Token Based Authentication</li>
   <li>Email Service: Nodemailer</li>
   <li>Environment Management: Dotenv</li>
 </ul>
