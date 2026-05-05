@@ -119,25 +119,27 @@ export const forgotPassword = (req, res) => {
         if (!row) return NotFound(res, "Email not found");
 
         const code = Math.floor(100000 + Math.random() * 900000).toString();
-        db.run("INSERT INTO codes (user_id, code, expiry) VALUES (?, ?, ?)", [row.id, code, Date.now() + 60 * 60 * 1000], async (e) => {
+        db.run("DELETE FROM codes WHERE user_id = ?", [row.id], e => {
             if (e) return dbError(res, e);
-            try {
-                await transporter.sendMail({
-                    from: `"MaxxedOut" <${process.env.EMAIL_USER}>`,
-                    to: email,
-                    subject: "Password Recovery Code",
-                    html: createEmail(
-                        "Password Recovery Code", 
-                        "Your password recovery code is: ",
-                        "Please do not share it with anyone!",  
-                        code),
-                    text: `Your password recovery code is: ${code} Please do not share it with anyone!`
-                });
-
-                Success(res, "Email sent");
-            } catch (error) {
-                return Error(res, "Failed to send email!");
-            }
+            db.run("INSERT INTO codes (user_id, code, expiry) VALUES (?, ?, ?)", [row.id, code, Date.now() + 15 * 60 * 1000], async (e) => {
+                if (e) return dbError(res, e);
+                try {
+                    await transporter.sendMail({
+                        from: `"MaxxedOut" <${process.env.EMAIL_USER}>`,
+                        to: email,
+                        subject: "Password Recovery Code",
+                        html: createEmail(
+                            "Password Recovery Code", 
+                            "Your password recovery code is: ",
+                            "The code will expire in 15 minutes. Please do not share it with anyone!",  
+                            code),
+                        text: `Your password recovery code is: ${code} The code will expire in 15 minutes. Please do not share it with anyone!`
+                    });
+                    NoContent(res);
+                } catch (error) {
+                    return Error(res, "Failed to send email!");
+                }
+            })
         })
     })
 }

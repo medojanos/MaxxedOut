@@ -33,9 +33,9 @@ export default function Registration() {
             password: password
         })
     })
-    .then(res => res.json())
-    .then(data => {
-        if(data.error) return setStatus(data.error);
+    .then(async res => {
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error);
         setStatus(data.message);
         setTimeout(() => {
             window.location.href = "/";

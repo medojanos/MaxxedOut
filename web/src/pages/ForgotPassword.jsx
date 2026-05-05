@@ -13,33 +13,33 @@ export default function ForgotPassword() {
 
     function SendCode(event){
         event.preventDefault();
-        fetch(import.meta.env.VITE_API_URL + "/forgot-password", {
+        fetch(import.meta.env.VITE_API_URL + "/auth/forgot-password", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({email: email}),
         })
-        .then(res => res.json())
-        .then(data => {
-            setStatus("");
-            data.success ? setStep(1) : setStatus(data.message);
+        .then(async res => {
+            if (res.ok) return setStep(1);
+            const data = await res.json();
+            setStatus(data.error);
         });
     }
 
     function VerifyCode(event){
         event.preventDefault();
-        fetch(import.meta.env.VITE_API_URL + "/verify-code", {
+        fetch(import.meta.env.VITE_API_URL + "/auth/verify-code", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({email: email, code: code}),
         })
-        .then(res => res.json())
-        .then(data => {
-            setStatus("");
-            data.success ? setStep(2) : setStatus(data.message);
+        .then(async res => {
+            if (res.ok) return setStep(2);
+            const data = await res.json();
+            setStatus(data.error);
         })
     }
 
@@ -49,23 +49,22 @@ export default function ForgotPassword() {
             setStatus("Passwords do not match");
             return;
         }
-        fetch(import.meta.env.VITE_API_URL + "/reset-password", {
+        fetch(import.meta.env.VITE_API_URL + "/auth/reset-password", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({email: email, code: code, password: password}),
         })
-        .then(res => res.json())
-        .then(data => {
-            setStatus(data.message);
-            if(data.success){
-                setStatus("Password successfully changed! Redirecting to homepage...");
-                setTimeout(() => {
-                    window.location.href = "/";
-                }, 2000);
-            }
+        .then(async res => {
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setStatus(data.message + " Redirecting to login page...");
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 2000);
         })
+        .catch(setStatus)
     }
 
     function HandleInput(e){
