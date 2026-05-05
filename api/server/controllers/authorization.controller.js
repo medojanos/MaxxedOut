@@ -1,4 +1,4 @@
-import {ReturnData, NoContent} from "../config/utility.js";
+import {ReturnData, NoContent, Success} from "../config/utility.js";
 import { createHash, randomBytes } from "crypto";
 import db from "../config/db.js";
 import bcrypt from "bcrypt";
@@ -36,10 +36,9 @@ export const loginUser = (req, res) => {
 
     db.get("SELECT id, email, nickname, password FROM users WHERE email = ?", [email], (e, row) => {
         if (e) return dbError(res, e);
-        if (!row) return NotFound(res, "Email not found");
 
         const authorized = bcrypt.compareSync(password, row.password);
-        if (!authorized) return Unauthorized(res);
+        if (!authorized || !row) return Unauthorized(res);
 
         const refresh_token = randomBytes(64).toString('hex');
         const access_token = randomBytes(32).toString('hex');

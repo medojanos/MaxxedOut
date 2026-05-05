@@ -5,7 +5,6 @@ import { useContext, useState } from "react";
 // Misc
 import { Context } from "../../misc/Provider";
 import Constants from 'expo-constants';
-import useApiFetch from "../../misc/ApiFetch";
 
 // Style
 import * as Var from "../../style/Variables"
@@ -29,15 +28,15 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [status, setStatus] = useState(null); 
+    const [alert, setAlert] = useState(false);
 
     const { setRefreshToken, setAccessToken, setUserData } = useContext(Context);
 
-    const apiFetch = useApiFetch();
-
     async function Authenticate() {
         try {
-            const res = await apiFetch("/auth/login", {
+            const res = await fetch(Constants.expoConfig.extra.API_URL + "/auth/login", {
                 method: "POST",
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
                     email: email,
                     password: password
@@ -45,7 +44,7 @@ export default function Login() {
             })
 
             const data = await res.json();
-            
+
             if (res.ok) {
                 setRefreshToken(data.data.refresh_token);
                 setAccessToken(data.data.access_token);
@@ -56,6 +55,7 @@ export default function Login() {
         }
         catch (err) {
             setStatus(err.message || "An error occurred. Please try again later.");
+            setAlert(true);
         };
     }
 

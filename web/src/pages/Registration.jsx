@@ -23,7 +23,7 @@ export default function Registration() {
         return;
     }
 
-    fetch(import.meta.env.VITE_API_URL + "/register", {
+    fetch(import.meta.env.VITE_API_URL + "/auth/register", {
         method: "POST",
         headers: {
             "Content-Type" : "application/json"
@@ -35,12 +35,13 @@ export default function Registration() {
     })
     .then(res => res.json())
     .then(data => {
+        if(data.error) return setStatus(data.error);
         setStatus(data.message);
         setTimeout(() => {
             window.location.href = "/";
         }, 2000);
     })
-    .catch(setStatus);
+    .catch(setStatus)
   }
   
   function HandleInput(e){
