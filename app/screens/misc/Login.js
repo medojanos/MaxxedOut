@@ -51,6 +51,7 @@ export default function Login() {
                 setUserData(data.data.userData);
             } else {
                 setStatus(data.error);
+                setAlert(true);
             }
         }
         catch (err) {
