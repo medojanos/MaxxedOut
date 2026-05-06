@@ -50,11 +50,11 @@ export default function Login() {
                 setAccessToken(data.data.access_token);
                 setUserData(data.data.userData);
             } else {
-                throw new Error(data.error);
+                setStatus(data.error);
             }
         }
         catch (err) {
-            setStatus(err.message || "An error occurred. Please try again later.");
+            setStatus("An error occurred. Please try again later.");
             setAlert(true);
         };
     }
