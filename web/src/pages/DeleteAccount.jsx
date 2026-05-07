@@ -10,7 +10,7 @@ export default function DeleteAccount() {
   function HandleForm(event){
     event.preventDefault();
 
-    fetch(import.meta.env.VITE_API_URL + "/user", {
+    fetch(import.meta.env.VITE_API_URL + "/auth/user", {
       method: "DELETE",
       headers: {
         "Content-Type" : "application/json"
@@ -20,8 +20,11 @@ export default function DeleteAccount() {
         password: password
       })
     })
-    .then(res => res.json())
-    .then(data => setStatus(data.message))
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setStatus(data.message);
+    })
     .catch(setStatus);
   }
 
