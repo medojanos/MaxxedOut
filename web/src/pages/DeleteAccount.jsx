@@ -10,7 +10,7 @@ export default function DeleteAccount() {
   function HandleForm(event){
     event.preventDefault();
 
-    fetch(import.meta.env.VITE_API_URL + "/auth/user", {
+    fetch(import.meta.env.VITE_API_URL + "/users", {
       method: "DELETE",
       headers: {
         "Content-Type" : "application/json"
