@@ -93,7 +93,7 @@ namespace admin
                 return;
             }
 
-            if(MGList.Any(musclegroup => musclegroup.Name == name.Text))
+            if(MGList.Any(musclegroup => musclegroup.Name.Trim() == name.Text.Trim()))
             {
                 MessageBox.Show("Muscle group already in database!");
                 return;

@@ -32,7 +32,7 @@ namespace admin
 
         private async void Users_load(object sender, EventArgs e)
         {
-            var result = await ApiClient.Get<List<UsersDB>>("/user/admin");
+            var result = await ApiClient.Get<List<UsersDB>>("/users/admin");
             if (result == null) return;
 
             UsersList = result;
@@ -121,7 +121,7 @@ namespace admin
             }
 
 
-            var result = await ApiClient.Post<object, JsonElement>("/user/admin", new {
+            var result = await ApiClient.Post<object, JsonElement>("/users/admin", new {
                 nickname = nickname.Text.Trim(),
                 email = email.Text.Trim(),
                 password = password.Text.Trim()
@@ -166,7 +166,7 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.Put<object, bool>("/user/admin", new {
+            var result = await ApiClient.Put<object, bool>("/users/admin", new {
                 nickname = nickname.Text.Trim(),
                 email = email.Text.Trim(),
                 password = string.IsNullOrWhiteSpace(password.Text) ? null : password.Text.Trim(),
@@ -202,7 +202,7 @@ namespace admin
                 return;
             }
 
-            var result = await ApiClient.Delete<bool>($"/user/admin/{userObj.Id}");
+            var result = await ApiClient.Delete<bool>($"/users/admin/{userObj.Id}");
 
             if (result != false)
             {

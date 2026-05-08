@@ -92,10 +92,6 @@ export const updateUserFromId = (req, res) => {
         if (e) return dbError(res, e);
         if (this.changes === 0) return NotFound(res, "User not found"); 
 
-        db.run("DELETE FROM tokens WHERE user_id=?", id, function(e) {
-            if (e) return dbError(res, e);
-        })
-
         NoContent(res);
     })
 }
@@ -108,10 +104,6 @@ export const deleteUserFromId = (req, res) => {
     db.run("DELETE FROM users WHERE id=?", id, function (e) {
         if (e) return dbError(res, e);
         if (this.changes === 0) return NotFound(res, "User not found");
-        
-        db.run("DELETE FROM tokens WHERE user_id=?", id, function(e) {
-            if (e) return dbError(res, e);
-        })
         
         NoContent(res);
     })
