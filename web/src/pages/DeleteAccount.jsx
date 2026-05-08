@@ -24,8 +24,9 @@ export default function DeleteAccount() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setStatus(data.message);
+      setTimeout(() => window.location.href = "/", 2000);
     })
-    .catch(setStatus);
+    .catch(err => setStatus(err.message));
   }
 
   function HandleInput(e){

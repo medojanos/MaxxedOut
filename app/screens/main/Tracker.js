@@ -18,6 +18,7 @@ import RandomQuote from "../../misc/RandomQuote";
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
 import AlertBox from "../../components/AlertBox";
+import ModalOverlay from "../../components/ModalOverlay";
 
 export default function Tracker() {
     const { userData, workout, setWorkout, token } = useContext(Context);
@@ -192,23 +193,18 @@ export default function Tracker() {
                         </View>
                     </View> 
                     }
-                    <Modal visible={cardioModal} transparent={true} animationType="fade">
-                        <View style={MainStyle.overlay}>
-                            <View style={MainStyle.modal}>
-                                <TextInput 
-                                    style={MainStyle.input}
-                                    value={workout.name} 
-                                    onChangeText={text => {
-                                        setWorkout(prev => ({...prev, name: text}));
-                                        setStatus("");
-                                    }}>
-                                </TextInput>
-                                <Pressable style={MainStyle.button} onPress={() => setCardioModal(false)}>
-                                    <Text style={MainStyle.buttonText}>OK</Text>
-                                </Pressable>
-                            </View>
-                        </View>
-                    </Modal>
+                    <ModalOverlay visible={cardioModal} onClose={() => setCardioModal(false)}>
+                        <TextInput 
+                            style={MainStyle.input}
+                            value={workout.name} 
+                            onChangeText={text => {
+                                setWorkout(prev => ({...prev, name: text}));
+                            }}>
+                        </TextInput>
+                        <Pressable style={MainStyle.button} onPress={() => setCardioModal(false)}>
+                            <Text style={MainStyle.buttonText}>OK</Text>
+                        </Pressable>
+                    </ModalOverlay>
 
                     <SaveModal                        
                         saveModal = {saveModal}
@@ -247,7 +243,7 @@ export default function Tracker() {
                             </View>
                         </View> 
                         : 
-                        <AlertBox heading="Oops! Something happened." message="Please check your internet connection" visible={offline}></AlertBox>
+                        <AlertBox heading="Oops! Something went wrong." message="Please try again later." visible={offline}></AlertBox>
                     }
                 </>
             }

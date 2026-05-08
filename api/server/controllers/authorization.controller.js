@@ -79,11 +79,11 @@ export const refreshAccessToken = (req, res) => {
     db.get("SELECT user_id, expiry FROM refresh_tokens WHERE token = ?", [createHash('sha256').update(refresh_token).digest('hex')], (e, row) => {
         if (e) return dbError(res, e);
         if (!row) return Unauthorized(res);
-        
-        const new_access_token = randomBytes(32).toString('hex');
-        const new_refresh_token = randomBytes(64).toString('hex');
 
         if (Date.now() > row.expiry) return Unauthorized(res);
+
+        const new_access_token = randomBytes(32).toString('hex');
+        const new_refresh_token = randomBytes(64).toString('hex');
 
         function rollback(res, e) {
             db.run("ROLLBACK");

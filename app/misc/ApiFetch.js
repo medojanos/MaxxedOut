@@ -3,6 +3,8 @@ import { useCallback, useContext } from "react";
 import { Context } from "./Provider";
 import { getData } from "./Storage";
 
+let isRefreshing = false;
+
 export default function useApiFetch() {
     const { Logout, setRefreshToken, setAccessToken } = useContext(Context);
 
@@ -22,6 +24,10 @@ export default function useApiFetch() {
 
         if (response.status !== 401) return response;
 
+        while (isRefreshing) await new Promise(res => setTimeout(res, 50));
+
+        isRefreshing = true;
+
         const refreshToken = await getData("refresh_token");
         const refresh_response = await fetch(
             Constants.expoConfig.extra.API_URL + "/auth/refresh",
@@ -34,8 +40,10 @@ export default function useApiFetch() {
             }
         );
 
+        isRefreshing = false;
+
         if (!refresh_response.ok) {
-            Logout();
+            return Logout();
         }
 
         const refresh_data = await refresh_response.json();

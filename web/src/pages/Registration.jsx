@@ -41,7 +41,7 @@ export default function Registration() {
             window.location.href = "/";
         }, 2000);
     })
-    .catch(setStatus)
+    .catch(err => setStatus(err.message));
   }
   
   function HandleInput(e){

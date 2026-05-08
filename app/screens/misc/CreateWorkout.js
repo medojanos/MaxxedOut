@@ -2,7 +2,7 @@
 import { View, Text, Pressable, TextInput, ScrollView } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 // Misc
 import { Context } from "../../misc/Provider";
@@ -19,12 +19,18 @@ import MainStyle from "../../style/MainStyle"
 
 export default function CreateWorkout() {
     const [searchModal, setSearchModal] = useState();
-    const [status, setStatus] = useState();
+    const [status, setStatus] = useState("");
 
     const navigation = useNavigation();
     const apiFetch = useApiFetch();
 
     const {planDraft, setPlanDraft, token, Refresh} = useContext(Context);
+
+    useEffect(() => {
+        if (!status) return;
+        const timeout = setTimeout(() => setStatus(""), 2000)
+        return () => clearTimeout(timeout);
+    }, [status])
 
     function addExercise(id, name, type, muscle_groups) {
         if (planDraft.exercises.some(ex => ex.name == name)) return setStatus("Exercise already added");
@@ -56,9 +62,13 @@ export default function CreateWorkout() {
                 if (index == i) {
                     switch (prop) {
                         case "name":
+                            if (planDraft.exercises.some(ex => ex.name == text)) {
+                                setStatus("Cannot have duplicate exercise names");
+                                return exercise;
+                            };
                             return {...exercise, name : text}
                         case "sets":
-                            return {...exercise, sets : Number(text)}
+                            return {...exercise, sets : text}
                     }
                 }
                 return exercise;
@@ -76,7 +86,7 @@ export default function CreateWorkout() {
                     style={MainStyle.input} 
                     onChangeText={text => { 
                         setPlanDraft(prev => ({...prev, name : text}));
-                        setStatus();
+                        setStatus("");
                     }}>
                 </TextInput>
                 <Pressable

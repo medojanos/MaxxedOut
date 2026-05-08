@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Pressable, TextInput, Linking } from "react-native";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -25,10 +25,15 @@ export default function Settings() {
     const [newPassword, setNewPassword] = useState("");
     const [newRepassword, setNewRepassword] = useState("");
     const [pwdStrength, setPwdStrength] = useState("");
-    const [saveDisabled, setSaveDisabled] = useState(false);
     const [picker, setPicker] = useState(false);
 
     const apiFetch = useApiFetch();
+
+    useEffect(() => {
+        if (!status) return;
+        const timeout = setTimeout(() => setStatus(""), 2000)
+        return () => clearTimeout(timeout);
+    }, [status])
 
     function evaluatePwdStrength(password){
         setStatus("");
@@ -65,7 +70,7 @@ export default function Settings() {
                     <Text style={MainStyle.lightText}>Nickname: </Text>
                     <View style={MainStyle.inlineContainer}>
                         <Text style={[MainStyle.lightText, {marginEnd: 10}]}>{userData.nickname}</Text>
-                        <Pressable onPress={() => {setNicknameModal(true); setStatus("");}}>
+                        <Pressable onPress={() => {setNicknameModal(true); setStatus(null);}}>
                             <Ionicons name="create" color={Var.red} size={25}></Ionicons>
                         </Pressable>
                     </View>
@@ -77,39 +82,37 @@ export default function Settings() {
             </View>
             <ModalOverlay visible={nicknameModal} onClose={() => setNicknameModal(false)}>
                 <Text style={MainStyle.screenTitle}>Edit nickname</Text>
-                <Text style={MainStyle.lightText}>{status}</Text>
+                {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
                 <View style={MainStyle.inlineContainer}>
                     <TextInput
                         value={newNickname}
                         placeholder="Enter new nickname..."
                         style={[MainStyle.input, {width: "60%"}]}
                         onChangeText={text => {
-                            setStatus("");
                             if (text.length > 20) return setStatus("Nickname cannot be longer than 20 characters");
                             setNewNickname(text);
                         }}>
                     </TextInput>
-                    <Pressable onPress={() => {setNewNickname(RandomName()); setStatus("");}}>
+                    <Pressable onPress={() => {setNewNickname(RandomName());}}>
                         <Ionicons name="dice-outline" color={Var.red} size={25}></Ionicons>
                     </Pressable>
                 </View>
                 <View style={MainStyle.inlineContainer}>
-                    <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
-                        if (newNickname.length == 0) return setStatus("Nickname is too short");
+                    <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
                         apiFetch("/users", {
                             method: "PATCH",
                             body: JSON.stringify({
                                 "nickname" : newNickname
                             })
                         })
-                        .then(res => {
-                            if (res.ok) {
-                                setUserData(prev => ({...prev, nickname: newNickname}));
-                                setSaveDisabled(true);
-                                setTimeout(() => {setNicknameModal(false); setSaveDisabled(false)}, 1000);
-                            };
+                        .then(async res => {
+                            const data = await res.json();
+                            if (!res.ok) throw new Error(data.error)
+                            setUserData(prev => ({...prev, nickname: newNickname}));
+                            setStatus(data.message);
+                            setTimeout(() => {setNicknameModal(false)}, 2000);
                         })
-                        .catch(() => setStatus("Network error"));
+                        .catch(err => setStatus(err.message));
                     }}>
                         <Text style={MainStyle.buttonText}>Save</Text>
                     </Pressable>
@@ -131,7 +134,7 @@ export default function Settings() {
                             style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
                             value={userData.preferences?.restingTime.minutes.toString() || 0}
                             onChangeText={text => {
-                                if (text !== "" && !/^\d+$/.test(text)) return;
+                                if (text !== "" && !/^\d+$/.test(text) || Number(text) > 59) return;
                                 setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: {...prev.preferences.restingTime, minutes: Number(text)}}}));
                                 Refresh()
                                 }}>
@@ -142,7 +145,7 @@ export default function Settings() {
                             style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
                             value={userData.preferences?.restingTime.seconds.toString()}
                             onChangeText={text => {
-                                if (text !== "" && !/^\d+$/.test(text)) return;
+                                if (text !== "" && !/^\d+$/.test(text) || Number(text) > 59) return;
                                 setUserData(prev => ({...prev, preferences: {...prev.preferences, restingTime: {...prev.preferences.restingTime, seconds: Number(text)}}}));
                                 Refresh()
                                 }}>
@@ -172,7 +175,7 @@ export default function Settings() {
                 </View>
 
                 <Pressable style={MainStyle.secondaryButton}>
-                    <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength(""); setStatus("")}}>Password reset</Text>
+                    <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength("")}}>Password reset</Text>
                 </Pressable>
                 <Pressable 
                     style={MainStyle.button} 
@@ -188,7 +191,7 @@ export default function Settings() {
             </Pressable>
             <ModalOverlay visible={passwordModal} onClose={() => setPasswordModal(false)}>
                 <Text style={MainStyle.screenTitle}>Edit password</Text>
-                <Text style={MainStyle.lightText}>{status}</Text>
+                {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
                 <TextInput
                     secureTextEntry
                     placeholder="Enter current password..."
@@ -207,9 +210,9 @@ export default function Settings() {
                     style={MainStyle.input}
                     onChangeText={setNewRepassword}>
                 </TextInput>
-                <Text style={MainStyle.strongText}>{pwdStrength}</Text>
+                {pwdStrength ? <Text style={MainStyle.strongText}>{pwdStrength}</Text> : null}
                 <View style={MainStyle.inlineContainer}>
-                    <Pressable disabled={saveDisabled} style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
+                    <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
                         setStatus("");
                         if (pwdStrength == "") return setStatus("Enter valid password")
                         if (pwdStrength == "Weak") return setStatus("Password is too weak");
@@ -222,12 +225,12 @@ export default function Settings() {
                             })
                         })
                         .then(res => {
-                            if (res.ok) {
-                                setSaveDisabled(true);
-                                setTimeout(() => {setPasswordModal(false); setSaveDisabled(false)}, 2000);
-                            }
+                            const data = res.json();
+                            if (!res.ok) throw new Error(data.error)
+                            setStatus(data.message);
+                            setTimeout(() => {setPasswordModal(false)}, 2000);
                         })
-                        .catch(() => setStatus("Network error"));
+                        .catch(err => setStatus(err.message));
                     }}>
                         <Text style={MainStyle.buttonText}>Save</Text>
                     </Pressable>

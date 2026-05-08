@@ -23,8 +23,9 @@ export default function ForgotPassword() {
         .then(async res => {
             if (res.ok) return setStep(1);
             const data = await res.json();
-            setStatus(data.error);
-        });
+            throw new Error(data.error);
+        })
+        .catch(err => setStatus(err.message));
     }
 
     function VerifyCode(event){
@@ -39,8 +40,9 @@ export default function ForgotPassword() {
         .then(async res => {
             if (res.ok) return setStep(2);
             const data = await res.json();
-            setStatus(data.error);
+            throw new Error(data.error);
         })
+        .catch(err => setStatus(err.message));
     }
 
     function ResetPassword(event){
@@ -64,7 +66,7 @@ export default function ForgotPassword() {
                 window.location.href = "/";
             }, 2000);
         })
-        .catch(setStatus)
+        .catch(err => setStatus(err.message));
     }
 
     function HandleInput(e){

@@ -27,8 +27,10 @@ export default function PlanModal({ Close, visible, id, name }) {
     const { token, Refresh } = useContext(Context);
 
     useEffect(() => {
-        setStatus("");
-    }, [name]);
+        if (!status) return;
+        const timeout = setTimeout(() => setStatus(""), 2000)
+        return () => clearTimeout(timeout);
+    }, [status])
     
     useEffect(() => {
         if (!id) return;
@@ -39,6 +41,7 @@ export default function PlanModal({ Close, visible, id, name }) {
     }, [id, name, token]);
 
     function addExercise(id, name) {
+        if (plan.exercises.some(ex => ex.name == name)) return setStatus("Exercise already added");
         setPlan(prev => ({
                 ...prev,
                 ownIndex: prev.ownIndex + 1,
@@ -61,6 +64,10 @@ export default function PlanModal({ Close, visible, id, name }) {
                 if (index == i) {
                     switch (prop) {
                         case "name":
+                            if (plan.exercises.some(ex => ex.name == text)) {
+                                setStatus("Cannot have duplicate exercise names");
+                                return exercise;
+                            };
                             return {...exercise, name : text}
                         case "sets":
                             return {...exercise, sets : text}
@@ -78,7 +85,7 @@ export default function PlanModal({ Close, visible, id, name }) {
     return (
         <ModalOverlay visible={visible} onClose={Close}>
             <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
-            <Text style={MainStyle.lightText}>{status}</Text>
+            {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
             <TextInput 
                 style={MainStyle.input} 
                 value={plan.name} 

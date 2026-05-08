@@ -28,11 +28,15 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [status, setStatus] = useState(null); 
+    const [heading, setHeading] = useState(null);
     const [alert, setAlert] = useState(false);
 
     const { setRefreshToken, setAccessToken, setUserData } = useContext(Context);
 
     async function Authenticate() {
+        setAlert(false)
+        setHeading(null)
+        setStatus(null)
         try {
             const res = await fetch(Constants.expoConfig.extra.API_URL + "/auth/login", {
                 method: "POST",
@@ -50,13 +54,14 @@ export default function Login() {
                 setAccessToken(data.data.access_token);
                 setUserData(data.data.userData);
             } else {
+                setAlert(true)
                 setStatus(data.error);
-                setAlert(true);
             }
         }
-        catch (err) {
-            setStatus("An error occurred. Please try again later.");
-            setAlert(true);
+        catch (error) {
+            setAlert(true)
+            setHeading("Oops! Something went wrong.")
+            setStatus("Please try again later.")
         };
     }
 
@@ -77,7 +82,7 @@ export default function Login() {
                         style={MainStyle.input}
                         onChangeText={setPassword}
                         secureTextEntry/>
-                <AlertBox message={status} heading="Oops! Something happened" visible={alert}></AlertBox>
+                <AlertBox closable heading={heading} message={status} onClose={() => setAlert(false)} visible={alert}/>
                 </View>
             </View>
             <View style={{height: "20%"}}>
