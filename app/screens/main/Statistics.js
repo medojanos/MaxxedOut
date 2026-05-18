@@ -23,6 +23,7 @@ const StatisticsStyle = StyleSheet.create({
 })
 
 function OneRepMax(weight, reps) {
+    if (reps >= 15) return weight;
     return Math.round(weight / (1.0278 - 0.0278 * reps));
 }
 
@@ -130,7 +131,7 @@ export default function Statistics() {
                                 <Text style={MainStyle.strongText}>1 Rep Max</Text>
                                 <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[0] != 0 ? `${oneRepMaxes[0]} kg` : "No record"}</Text></Text>
                                 <Text style={MainStyle.lightText}>Bench: <Text style={MainStyle.strongText}>{oneRepMaxes[1] != 0 ? `${oneRepMaxes[1]} kg` : "No record"}</Text></Text>
-                                <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[2] != 0 ? `${oneRepMaxes[2]} kg` : "No record"}</Text></Text>
+                                <Text style={MainStyle.lightText}>Deadlift: <Text style={MainStyle.strongText}>{oneRepMaxes[2] != 0 ? `${oneRepMaxes[2]} kg` : "No record"}</Text></Text>
                             </View>
                             <View style={[MainStyle.container, {width: "45%", height: "85%"}]}>
                                 <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Total</Text>

@@ -28,7 +28,7 @@ export const updateUser = (req, res) => {
             if (e) return dbError(res, e);
             db.get("SELECT email, nickname FROM users WHERE id = ?", [req.user], (e, row) => {
                 if (e) return dbError(res, e);
-                res.status(201).json({success : true, message : "Profile updated succesfully", data : row});
+                Success(res, "Profile updated succesfully");
             })
         })
     }
@@ -91,8 +91,13 @@ export const updateUserFromId = (req, res) => {
     db.run(`UPDATE users SET ${fields.join(", ")} WHERE id=?`, properties, function (e) {
         if (e) return dbError(res, e);
         if (this.changes === 0) return NotFound(res, "User not found"); 
-
-        NoContent(res);
+        db.run("DELETE FROM refresh_tokens WHERE user_id=?", id, function (e) {
+            if (e) return dbError(res, e);
+            db.run("DELETE FROM access_tokens WHERE user_id=?", id, function (e) {
+                if (e) return dbError(res, e);
+                NoContent(res);
+            })
+        })
     })
 }
 
@@ -104,7 +109,6 @@ export const deleteUserFromId = (req, res) => {
     db.run("DELETE FROM users WHERE id=?", id, function (e) {
         if (e) return dbError(res, e);
         if (this.changes === 0) return NotFound(res, "User not found");
-        
         NoContent(res);
     })
 }
