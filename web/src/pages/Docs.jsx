@@ -7,12 +7,7 @@ export default function Docs() {
     return (
         <section>
             <h2>Documentation</h2>
-            <p>Download whole documentation</p>
-            <p>
-                <a href="https://raw.githubusercontent.com/medojanos/MaxxedOut/refs/heads/main/documents/Documentation_MaxxedOut-EN.pdf">English</a>
-                <span> | </span>
-                <a href="https://raw.githubusercontent.com/medojanos/MaxxedOut/refs/heads/main/documents/Documentation_MaxxedOut-HU.pdf">Hungarian</a>
-            </p>
+            <p>You can download the whole documentation: <a href="https://raw.githubusercontent.com/medojanos/MaxxedOut/refs/heads/main/documents/Documentation_MaxxedOut-EN.pdf">Here</a></p>
             <div id="readme" className="content"></div>
         </section>
     )
