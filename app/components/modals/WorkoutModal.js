@@ -54,7 +54,7 @@ export default function WorkoutModal({Close, visible, isOffline}) {
                             apiFetch("/plans/" + plan.id)
                             .then(res => res.json())
                             .then(data => {
-                                setWorkout({id: plan.id, name: plan.name, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss"), ownIndex : 0, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, sets: Array.from({length: exercise.sets}, () => ({"weight": "", "rep": ""}))}))});
+                                setWorkout({id: plan.id, name: plan.name, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss"), ownIndex : 0, plan: Array.from(data.data, exercise => ({id: exercise.id, name: exercise.name, type: exercise.type, sets: Array.from({length: exercise.sets}, () => ({"weight": "", "rep": ""}))}))});
                             });
                             Close();
                             navigation.navigate("Workout");

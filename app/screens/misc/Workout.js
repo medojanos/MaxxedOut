@@ -5,7 +5,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import dayjs from "dayjs";
 
 // Misc
-import { Context} from "../../misc/Provider";
+import { Context } from "../../misc/Provider";
 import Loader from "../../components/Loader";
 import ExerciseInfoModal from "../../components/modals/ExerciseInfoModal";
 import SaveModal from "../../components/modals/SaveModal";
@@ -22,7 +22,7 @@ import KeyboardView from "../../components/KeyboardView";
 import ModalOverlay from "../../components/ModalOverlay";
 
 export default function Workout() {
-    const { workout, setWorkout} = useContext(Context);
+    const { workout, setWorkout } = useContext(Context);
 
     const apiFetch = useApiFetch();
 
@@ -37,22 +37,22 @@ export default function Workout() {
         setTimeout(() => setStatus(""), 3000);
     }, [status]);
 
-    if (!workout) return <Loader/>
+    if (!workout) return <Loader />
 
     function addExercise(id, name) {
         if (workout.plan.some(ex => ex.name === name)) return setStatus("Duplicate exercise name");
         setWorkout(prev => ({
-                ...prev,
-                ownIndex: typeof id == "string" ? prev.ownIndex + 1 : prev.ownIndex,
-                plan: [
-                    ...prev.plan, 
-                    {
-                        id: id,
-                        name: name,
-                        sets: [{ weight: "", rep: ""}]
-                    }
-                ]
-            }));
+            ...prev,
+            ownIndex: typeof id == "string" ? prev.ownIndex + 1 : prev.ownIndex,
+            plan: [
+                ...prev.plan,
+                {
+                    id: id,
+                    name: name,
+                    sets: [{ weight: "", rep: "" }]
+                }
+            ]
+        }));
         setSearchModal(false);
     }
 
@@ -60,18 +60,20 @@ export default function Workout() {
         setWorkout(prev => ({
             ...prev,
             plan: Array.from(prev.plan, (ex, exi) => {
-                if(exerciseIndex == exi){
-                    return {...ex, sets: Array.from(ex.sets, (set, seti) => {
-                        if (setIndex == seti){
-                            switch(prop){
-                                case "weight":
-                                    return {...set, weight: value}
-                                case "rep":
-                                    return {...set, rep: value}
-                            }  
-                        }
-                        else return set
-                    })}
+                if (exerciseIndex == exi) {
+                    return {
+                        ...ex, sets: Array.from(ex.sets, (set, seti) => {
+                            if (setIndex == seti) {
+                                switch (prop) {
+                                    case "weight":
+                                        return { ...set, weight: value }
+                                    case "rep":
+                                        return { ...set, rep: value }
+                                }
+                            }
+                            else return set
+                        })
+                    }
                 } else return ex
             })
         }))
@@ -81,15 +83,15 @@ export default function Workout() {
         if (workout.plan.some(ex => ex.name === text)) return setStatus("Duplicate exercise name");
         setWorkout(prev => ({
             ...prev,
-            plan : prev.plan.map((ex, exi) => {
-                if (exerciseIndex == exi) return {...ex, name : text}
+            plan: prev.plan.map((ex, exi) => {
+                if (exerciseIndex == exi) return { ...ex, name: text }
                 return ex;
             })
         }))
     }
 
     function deleteExercise(exerciseIndex) {
-        setWorkout(prev => ({...prev, plan : prev.plan.filter((_, index) => exerciseIndex != index)}))
+        setWorkout(prev => ({ ...prev, plan: prev.plan.filter((_, index) => exerciseIndex != index) }))
     }
 
     function addSet(exerciseIndex) {
@@ -122,40 +124,40 @@ export default function Workout() {
         <KeyboardView>
             <ScrollView contentContainerStyle={MainStyle.content}>
                 {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
-                {workout.id ? 
+                {workout.id ?
                     <Pressable
                         style={MainStyle.secondaryButton}
                         onPress={() => {
                             apiFetch("/workouts?name=" + encodeURIComponent(workout.name))
-                            .then(async res => {
-                                const data = await res.json();
-                                if (res.ok) {
-                                    setWorkout(prev => ({
-                                        ...prev, 
-                                        plan: prev.plan.map(ex => {
-                                            const recentEx = data.data.find(r => r.name === ex.name);
-                                            return recentEx ? {...ex, sets: Array.from(recentEx.sets, set => ({weight: set.weight == 0 ? "" : set.weight.toString(), rep: set.rep == 0 ? "" : set.rep.toString()}))} : ex
-                                        })
-                                    }))
-                                }
-                                else {
-                                    setRecentModal(true);
-                                }
-                            })
+                                .then(async res => {
+                                    const data = await res.json();
+                                    if (res.ok) {
+                                        setWorkout(prev => ({
+                                            ...prev,
+                                            plan: prev.plan.map(ex => {
+                                                const recentEx = data.data.find(r => r.name === ex.name);
+                                                return recentEx ? { ...ex, sets: Array.from(recentEx.sets, set => ({ weight: set.weight == 0 ? "" : set.weight.toString(), rep: set.rep == 0 ? "" : set.rep.toString() })) } : ex
+                                            })
+                                        }))
+                                    }
+                                    else {
+                                        setRecentModal(true);
+                                    }
+                                })
                         }}>
                         <Text style={MainStyle.buttonText}>Import recent</Text>
                     </Pressable>
                     :
-                    <TextInput 
-                        style={MainStyle.input} 
-                        value={workout.name} 
+                    <TextInput
+                        style={MainStyle.input}
+                        value={workout.name}
                         onChangeText={text => {
-                            setWorkout({...workout, name: text});
+                            setWorkout({ ...workout, name: text });
                             setStatus();
                         }}>
                     </TextInput>
                 }
-                
+
                 <ModalOverlay visible={recentModal}>
                     <Text style={MainStyle.screenTitle}>No recent workout</Text>
                     <Pressable style={MainStyle.button} onPress={() => setRecentModal(false)}>
@@ -169,21 +171,21 @@ export default function Workout() {
                             <ReArrange
                                 index={exerciseIndex}
                                 list={workout.plan}
-                                onMove={newList => setWorkout(prev => ({...prev, plan : newList}))}>
+                                onMove={newList => setWorkout(prev => ({ ...prev, plan: newList }))}>
                             </ReArrange>
                             {
-                            typeof exercise.id == "string" || exercise.id === null ? 
-                            <TextInput
-                                style={[MainStyle.input, {flexGrow: 1, maxWidth: "80%"}]}
-                                value={exercise.name || ""}
-                                onChangeText={text => updateExerciseName(exerciseIndex, text)}>
-                            </TextInput>
-                            : 
-                            <ExerciseInfoModal
-                                id={exercise.id}
-                                name={exercise.name}
-                                maxWidth={"80%"}
-                            />
+                                typeof exercise.id == "string" || exercise.id === null ?
+                                    <TextInput
+                                        style={[MainStyle.input, { flexGrow: 1, maxWidth: "80%" }]}
+                                        value={exercise.name || ""}
+                                        onChangeText={text => updateExerciseName(exerciseIndex, text)}>
+                                    </TextInput>
+                                    :
+                                    <ExerciseInfoModal
+                                        id={exercise.id}
+                                        name={exercise.name}
+                                        maxWidth={"80%"}
+                                    />
                             }
                             <View>
                                 <Pressable onPress={() => deleteExercise(exerciseIndex)}>
@@ -193,25 +195,25 @@ export default function Workout() {
                         </View>
                         {
                             exercise.sets?.map((_, setIndex) => (
-                                <View key={setIndex} style={MainStyle.inlineContainer}>            
-                                    <Text style={MainStyle.lightText}>{setIndex+1 + "."}</Text>
-                                    <TextInput 
+                                <View key={setIndex} style={MainStyle.inlineContainer}>
+                                    <Text style={MainStyle.lightText}>{setIndex + 1 + "."}</Text>
+                                    <TextInput
                                         value={workout.plan[exerciseIndex].sets[setIndex].weight.toString()}
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
                                         placeholder="kg"
-                                        onChangeText={text => { 
-                                            if (text == "" || /^\d+([.,]\d*)?$/.test(text)) updateExercise(exerciseIndex, setIndex, "weight", text) 
+                                        onChangeText={text => {
+                                            if (text == "" || /^\d+([.,]\d*)?$/.test(text)) updateExercise(exerciseIndex, setIndex, "weight", text)
                                         }}
                                     />
                                     <Text style={MainStyle.lightText}>x</Text>
-                                    <TextInput 
+                                    <TextInput
                                         value={workout.plan[exerciseIndex].sets[setIndex].rep.toString()}
                                         keyboardType="numeric"
                                         style={[MainStyle.input, MainStyle.setInput]}
                                         placeholder="rep"
-                                        onChangeText={text => { 
-                                            if (text == "" || /^\d*$/.test(text)) updateExercise(exerciseIndex, setIndex, "rep", text) 
+                                        onChangeText={text => {
+                                            if (text == "" || /^\d*$/.test(text)) updateExercise(exerciseIndex, setIndex, "rep", text)
                                         }}
                                     />
                                     <Pressable onPress={() => deleteSet(exerciseIndex, setIndex)}>
@@ -221,7 +223,7 @@ export default function Workout() {
                             ))
                         }
                         <Pressable onPress={() => addSet(exerciseIndex)}>
-                            <Ionicons name="add-circle-outline" color={Var.red} size={25} style={{margin: "auto"}}></Ionicons>
+                            <Ionicons name="add-circle-outline" color={Var.red} size={25} style={{ margin: "auto" }}></Ionicons>
                         </Pressable>
                     </View>
                 ))}
@@ -231,7 +233,7 @@ export default function Workout() {
                     addExercise={addExercise}
                     ownIndex={workout.ownIndex}
                     Close={() => setSearchModal(false)}
-                /> 
+                />
                 <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
                     <Text style={MainStyle.buttonText}>Add exercise</Text>
                 </Pressable>
@@ -254,11 +256,11 @@ export default function Workout() {
                         started_at: workout.started_at,
                         ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss")
                     }}
-                    setStatus={setStatus}/>
+                    setStatus={setStatus} />
                 <CancelModal
                     cancelModal={cancelModal}
                     setCancelModal={setCancelModal}
-                    setWorkout={setWorkout}/>
+                    setWorkout={setWorkout} />
             </ScrollView>
         </KeyboardView>
     );

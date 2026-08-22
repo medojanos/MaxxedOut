@@ -15,13 +15,14 @@ export const getPlanById = (req, res) => {
 
     if(!ValidateNumber(id)) return Error(res, "Invalid id")
 
-    db.all(`SELECT e.id as id, COALESCE(pe.exercise_name, e.name) as name, pe.sets as sets
+    db.all(`SELECT e.id as id, COALESCE(pe.exercise_name, e.name) as name, pe.sets as sets, e.type as type
         FROM plans_exercises pe 
         JOIN plans p ON p.id = pe.plan_id 
         LEFT JOIN exercises e ON pe.exercise_id = e.id 
         WHERE pe.plan_id = ? AND p.user_id = ?
         ORDER BY pe.position`, [id, req.user], (e, rows) => {
             if (e) return dbError(res, e); 
+            console.log(rows);
             return ReturnData(res, rows);
     })
 }

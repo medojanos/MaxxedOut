@@ -44,6 +44,13 @@ export default function Tracker() {
 
     const [status, setStatus] = useState("");
 
+    const [estimatedTime, setEstimatedTime] = useState(0);
+
+    useEffect(() => {
+        console.log("workout.plan", workout.plan);
+        setEstimatedTime(calculateEstimatedTime(workout.plan));
+    }, [workout.plan]);
+
     useEffect(() => {
         return () => {
             if (durationInterval.current) clearInterval(durationInterval.current);
@@ -126,6 +133,22 @@ export default function Tracker() {
                 break;
         }
     }
+    
+    function calculateEstimatedTime(plan) {
+        let time = 0;
+        let restTime = 0;
+
+        plan.forEach(ex => {
+            ex.type === "Compound" ? restTime = 300 : restTime = 180;
+            ex.sets.forEach(set => {
+                if (!set.weight && !set.rep) time += restTime;
+            })
+
+            time += 120;
+        })
+
+        return time;
+    }
 
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
@@ -141,6 +164,7 @@ export default function Tracker() {
                                 <Text style={MainStyle.strongText}>{workout.name}</Text>
                                 <Text style={MainStyle.lightText}>{durationTimer}</Text>
                             </View>
+                            {estimatedTime ? <Text style={MainStyle.lightText}>Estimated time: {displayTime(estimatedTime)}</Text> : null}
                             <Pressable
                                 style={MainStyle.button}
                                 onPress={() => navigation.navigate("Workout")}>
