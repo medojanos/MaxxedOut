@@ -47,9 +47,10 @@ export default function Tracker() {
     const [estimatedTime, setEstimatedTime] = useState(0);
 
     useEffect(() => {
-        console.log("workout.plan", workout.plan);
-        setEstimatedTime(calculateEstimatedTime(workout.plan));
-    }, [workout.plan]);
+        if (workout?.plan) {
+            setEstimatedTime(calculateEstimatedTime(workout.plan));
+        }
+    }, [workout?.plan]);
 
     useEffect(() => {
         return () => {
@@ -164,7 +165,7 @@ export default function Tracker() {
                                 <Text style={MainStyle.strongText}>{workout.name}</Text>
                                 <Text style={MainStyle.lightText}>{durationTimer}</Text>
                             </View>
-                            {estimatedTime ? <Text style={MainStyle.lightText}>Estimated time: {displayTime(estimatedTime)}</Text> : null}
+                            {estimatedTime ? <Text style={MainStyle.lightText}>Estimated time remaining:{displayTime(estimatedTime,"h m")}</Text> : null}
                             <Pressable
                                 style={MainStyle.button}
                                 onPress={() => navigation.navigate("Workout")}>

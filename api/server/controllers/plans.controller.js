@@ -22,7 +22,6 @@ export const getPlanById = (req, res) => {
         WHERE pe.plan_id = ? AND p.user_id = ?
         ORDER BY pe.position`, [id, req.user], (e, rows) => {
             if (e) return dbError(res, e); 
-            console.log(rows);
             return ReturnData(res, rows);
     })
 }

@@ -10,33 +10,11 @@ export const getStatistics = (req, res) => {
         FROM workouts
         WHERE user_id = ?`, [req.user], (e, workouts) => {
         if (e) return dbError(res, e);
-
-        const maxesLifts = {"squat": 1, 
-                            "bench": 2, 
-                            "deadlift": 3
-        };
-
-        let query = [];
-
-        for (const [key, value] of Object.entries(maxesLifts)) {
-            query.push(`
-                        (SELECT weight FROM sets 
-                        JOIN workouts ON sets.workout_id = workouts.id 
-                        WHERE exercise_id = ${value} AND workouts.user_id = ? 
-                        ORDER BY weight DESC LIMIT 1) AS max_${key}, 
-                        (SELECT rep FROM sets 
-                        JOIN workouts ON sets.workout_id = workouts.id 
-                        WHERE exercise_id = ${value} AND workouts.user_id = ? 
-                        ORDER BY weight DESC, rep DESC LIMIT 1) AS reps_${key}`
-            );
-        };
-
         db.get(`SELECT 
-            SUM(s.weight * s.rep) AS total_weight,
-            ${query.join(", ")}
+            SUM(s.weight * s.rep) AS total_weight
             FROM sets s
             JOIN workouts w ON s.workout_id = w.id
-            WHERE w.user_id = ?`, Array.from({length: 7}, () => req.user), (e, sets) => {
+            WHERE w.user_id = ?`, [req.user], (e, sets) => {
             if (e) return dbError(res, e);
 
             db.all(`
@@ -52,17 +30,44 @@ export const getStatistics = (req, res) => {
                         totalDuration: Math.round(workouts.total_duration) || 0,
                         avgDuration: Math.round(workouts.avg_duration) || 0,
                         workoutStreak: countStreak(dates) || 0,
-                        totalWeight: sets.total_weight || 0,
-                        maxSquat: sets.max_squat || 0,
-                        repsSquat: sets.reps_squat || 0,
-                        maxBench: sets.max_bench || 0,
-                        repsBench: sets.reps_bench || 0,
-                        maxDeadlift: sets.max_deadlift || 0,
-                        repsDeadlift: sets.reps_deadlift || 0
+                        totalWeight: sets.total_weight || 0
                     })
             })
         });
     });
+}
+
+export const getAllExercisesWithStats = (req, res) => { 
+    db.all(`
+        SELECT id, name, weight, reps, one_rep_max
+        FROM (
+            SELECT
+                e.id,
+                e.name,
+                s.weight,
+                s.rep AS reps,
+                CASE
+                    WHEN s.rep >= 15 THEN s.weight
+                    ELSE ROUND(s.weight / (1.0278 - 0.0278 * s.rep))
+                END AS one_rep_max,
+                ROW_NUMBER() OVER (
+                    PARTITION BY e.id
+                    ORDER BY
+                        CASE
+                            WHEN s.rep >= 15 THEN s.weight
+                            ELSE ROUND(s.weight / (1.0278 - 0.0278 * s.rep))
+                        END DESC
+                ) AS rn
+            FROM sets s
+            JOIN workouts w ON s.workout_id = w.id
+            JOIN exercises e ON s.exercise_id = e.id
+            WHERE w.user_id = ?
+        )
+        WHERE rn = 1
+    `, [req.user], (e, exercises) => {
+        if (e) return dbError(res, e);
+        ReturnData(res, exercises);
+    })
 }
 
 function countStreak(dates){

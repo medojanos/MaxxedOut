@@ -1,5 +1,5 @@
 // React
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet, TextInput } from "react-native";
 import { useContext, useEffect, useState } from "react";
 
 // Misc
@@ -19,13 +19,14 @@ const StatisticsStyle = StyleSheet.create({
         fontWeight: "bold",
         marginTop : 20,
         textAlign: "right"
+    },
+    listItems : {
+        backgroundColor: Var.navyBlue,
+        padding: 5,
+        fontSize: 15,
+        color: Var.white,
     }
 })
-
-function OneRepMax(weight, reps) {
-    if (reps >= 15) return weight;
-    return Math.round(weight / (1.0278 - 0.0278 * reps));
-}
 
 function MostImpressive(squat, bench, deadlift) {
 
@@ -59,10 +60,17 @@ export default function Statistics() {
     const [oneRepMaxes, setOneRepMaxes] = useState([]);
     const [weight, setWeight] = useState(null);
     const [offline, setOffline] = useState(false);
+    const [exercises, setExercises] = useState([]);
+    const [searchText, setSearchText] = useState("");
 
     const apiFetch = useApiFetch();
 
     const {token, userData, workout, refresh} = useContext(Context);
+
+    const filteredExercises = exercises
+        .filter(ex => ex?.name?.toLowerCase().includes(searchText.toLowerCase()))
+        .flat()
+
 
     useEffect(() => {
         apiFetch("/statistics")
@@ -72,11 +80,18 @@ export default function Statistics() {
     }, [workout, refresh]);
 
     useEffect(() => {
-        if(statistics) {
+        apiFetch("/statistics/getExercises")
+        .then(res => res.json())
+        .then(data => setExercises(data.data))
+        .catch(() => setOffline(true));
+    }, [workout, refresh]);
+
+    useEffect(() => {
+        if(exercises) {
             setOneRepMaxes([
-                    OneRepMax(statistics.maxSquat, statistics.repsSquat || 1), 
-                    OneRepMax(statistics.maxBench, statistics.repsBench || 1), 
-                    OneRepMax(statistics.maxDeadlift, statistics.repsDeadlift || 1)
+                    {onerm: exercises.find(e => e.id === 1)?.one_rep_max, weight: exercises.find(e => e.id === 1)?.weight, reps: exercises.find(e => e.id === 1)?.reps},
+                    {onerm: exercises.find(e => e.id === 2)?.one_rep_max, weight: exercises.find(e => e.id === 2)?.weight, reps: exercises.find(e => e.id === 2)?.reps}, 
+                    {onerm: exercises.find(e => e.id === 3)?.one_rep_max, weight: exercises.find(e => e.id === 3)?.weight, reps: exercises.find(e => e.id === 3)?.reps}
             ]);
             if (userData?.weight) setWeight(userData.weight);
         }
@@ -114,29 +129,29 @@ export default function Statistics() {
                             <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Personal records</Text>
                             <View style={MainStyle.inlineContainer}>
                                 <Text style={MainStyle.lightText}>Squat: </Text>
-                                <Text style={MainStyle.strongText}>{statistics.maxSquat != 0 ? `${statistics.maxSquat} kg` : "No record"} {statistics.repsSquat != 0 ? `x ${statistics.repsSquat}` : null}</Text>
+                                <Text style={MainStyle.strongText}>{oneRepMaxes[0].onerm != 0 ? `${oneRepMaxes[0].weight} kg` : "No record"} {oneRepMaxes[0].reps != 0 ? `x ${oneRepMaxes[0].reps}` : null}</Text>
                             </View>
                             <View style={MainStyle.inlineContainer}>
                                 <Text style={MainStyle.lightText}>Bench: </Text>
-                                <Text style={MainStyle.strongText}>{statistics.maxBench != 0 ? `${statistics.maxBench} kg` : "No record"} {statistics.repsBench != 0 ? `x ${statistics.repsBench}` : null}</Text>
+                                <Text style={MainStyle.strongText}>{oneRepMaxes[1].onerm != 0 ? `${oneRepMaxes[1].weight} kg` : "No record"} {oneRepMaxes[1].reps != 0 ? `x ${oneRepMaxes[1].reps}` : null}</Text>
                             </View>
                             <View style={MainStyle.inlineContainer}>
                                 <Text style={MainStyle.lightText}>Deadlift: </Text>
-                                <Text style={MainStyle.strongText}>{statistics.maxDeadlift != 0 ? `${statistics.maxDeadlift} kg` : "No record"} {statistics.repsDeadlift != 0 ? `x ${statistics.repsDeadlift}` : null}</Text>
+                                <Text style={MainStyle.strongText}>{oneRepMaxes[2].onerm != 0 ? `${oneRepMaxes[2].weight} kg` : "No record"} {oneRepMaxes[2].reps != 0 ? `x ${oneRepMaxes[2].reps}` : null}</Text>
                             </View>
-                            <Text style={[MainStyle.lightText, {textAlign: "center"}]}>Best lift: <Text style={MainStyle.strongText}>{MostImpressive(...oneRepMaxes)}</Text></Text>
+                            <Text style={[MainStyle.lightText, {textAlign: "center"}]}>Best lift: <Text style={MainStyle.strongText}>{MostImpressive(...oneRepMaxes.map(max => max.onerm))}</Text></Text>
                         </View>
                         <View style={MainStyle.inlineContainer}>
                             <View style={[MainStyle.container, {width: "50%"}]}>
                                 <Text style={MainStyle.strongText}>1 Rep Max</Text>
-                                <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[0] != 0 ? `${oneRepMaxes[0]} kg` : "No record"}</Text></Text>
-                                <Text style={MainStyle.lightText}>Bench: <Text style={MainStyle.strongText}>{oneRepMaxes[1] != 0 ? `${oneRepMaxes[1]} kg` : "No record"}</Text></Text>
-                                <Text style={MainStyle.lightText}>Deadlift: <Text style={MainStyle.strongText}>{oneRepMaxes[2] != 0 ? `${oneRepMaxes[2]} kg` : "No record"}</Text></Text>
+                                <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[0].onerm != 0 ? `${oneRepMaxes[0].onerm} kg` : "No record"}</Text></Text>
+                                <Text style={MainStyle.lightText}>Bench: <Text style={MainStyle.strongText}>{oneRepMaxes[1].onerm != 0 ? `${oneRepMaxes[1].onerm} kg` : "No record"}</Text></Text>
+                                <Text style={MainStyle.lightText}>Deadlift: <Text style={MainStyle.strongText}>{oneRepMaxes[2].onerm != 0 ? `${oneRepMaxes[2].onerm} kg` : "No record"}</Text></Text>
                             </View>
                             <View style={[MainStyle.container, {width: "45%", height: "85%"}]}>
                                 <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Total</Text>
                                 <View style={{justifyContent: "center", alignItems: "center", flex: 1}}>
-                                    <Text style={[MainStyle.strongText, {textAlign: "right"}]}>{oneRepMaxes[0] + oneRepMaxes[1] + oneRepMaxes[2]} kg</Text>
+                                    <Text style={[MainStyle.strongText, {textAlign: "right"}]}>{oneRepMaxes[0].onerm + oneRepMaxes[1].onerm + oneRepMaxes[2].onerm} kg</Text>
                                 </View>
                             </View>
                         </View>
@@ -148,6 +163,25 @@ export default function Statistics() {
                 <View style={MainStyle.container}>
                     <Text style={MainStyle.strongText}>Total volume lifted</Text>
                     <Text style={MainStyle.lightText}>{statistics.totalWeight} kg</Text>
+                </View>
+
+                <View style={MainStyle.container}>
+                    <Text style={MainStyle.strongText}>Stats for every exercise</Text>
+                    <View style={[MainStyle.inlineContainer]}>
+                        <Text style={MainStyle.lightText}>Search for exercises</Text>
+                        <TextInput 
+                            style={MainStyle.input}
+                            placeholder="Enter exercise name..."
+                            value={searchText}
+                            onChangeText={setSearchText}>
+                        </TextInput>
+                    </View>
+                    <ScrollView 
+                        style={{maxHeight: 120, borderRadius: 10}}>
+                        {filteredExercises.map((exercise) => (
+                            exercise.weight && exercise.id !== 1 && exercise.id !== 2 && exercise.id !== 3 ? <Text id={exercise.id} style={[MainStyle.lightText, StatisticsStyle.listItems]}>{exercise.name} - {exercise.weight}kg x {exercise.reps} - {exercise.one_rep_max}kg</Text> : null
+                        ))}
+                    </ScrollView>
                 </View>
             </View> 
             :
