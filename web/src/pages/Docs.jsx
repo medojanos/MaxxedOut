@@ -7,7 +7,7 @@ export default function Docs() {
     return (
         <section>
             <h2>Documentation</h2>
-            <p>You can download the whole documentation: <a href="https://raw.githubusercontent.com/medojanos/MaxxedOut/refs/heads/main/documents/Documentation_MaxxedOut-EN.pdf">Here</a></p>
+            <p>You can download the whole documentation: <a href=""><s>Here</s></a></p>
             <div id="readme" className="content"></div>
         </section>
     )
