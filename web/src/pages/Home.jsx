@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
-import Tracker from "../assets/tracker.png"
-import AppStore from "../assets/appstore.svg"
-import GooglePlay from "../assets/googleplay.svg"
+import Tracker from "/tracker.png"
+import AppStore from "/appstore.svg"
+import GooglePlay from "/googleplay.svg"
 import "../style/home.css"
 
 export default function Home() {
