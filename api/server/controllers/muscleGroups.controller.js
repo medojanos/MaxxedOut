@@ -3,47 +3,64 @@ import { ReturnData, Validate, Error, dbError, ValidateNumber, NotFound, NoConte
 
 // App
 
-export const getAllMuscleGroups = (req, res) => {
-    db.all("SELECT * FROM muscle_groups", (e, rows) => {
-        if (e) return dbError(res, e);
-        ReturnData(res, rows);
-    })  
-}
+export const getAllMuscleGroups = async (req, res) => {
+    try {
+        const [rows] = await db.query("SELECT * FROM muscle_groups");
+        return ReturnData(res, rows);
+    } catch (e) {
+        return dbError(res, e);
+    }
+};
 
 // Admin
 
-export const addMuscleGroup = (req, res) => {
+export const addMuscleGroup = async (req, res) => {
     const { name } = req.body;
 
     if (!Validate(name)) return Error(res, "Invalid name");
 
-    db.run("INSERT INTO muscle_groups (name) VALUES (?)", name, function(e) {
-        if (e) return dbError(res, e); 
-        return res.status(201).json({data: {id: this.lastID}});
-    });
-}
+    try {
+        const [result] = await db.query(
+            "INSERT INTO muscle_groups (name) VALUES (?)",
+            [name]
+        );
+        return res.status(201).json({ data: { id: result.insertId } });
+    } catch (e) {
+        return dbError(res, e);
+    }
+};
 
-export const updateMuscleGroup = (req, res) => {
+export const updateMuscleGroup = async (req, res) => {
     const { name, id } = req.body;
 
     if (!Validate(name)) return Error(res, "Invalid name");
     if (!ValidateNumber(id)) return Error(res, "Invalid id");
 
-    db.run("UPDATE muscle_groups SET name=? WHERE id=?", [name, id], function(e) {
-        if (e) return dbError(res, e); 
-        if (this.changes === 0) return NotFound(res, "Muscle group not found")
-        NoContent(res);
-    })
-}
+    try {
+        const [result] = await db.query(
+            "UPDATE muscle_groups SET name = ? WHERE id = ?",
+            [name, id]
+        );
+        if (result.affectedRows === 0) return NotFound(res, "Muscle group not found");
+        return NoContent(res);
+    } catch (e) {
+        return dbError(res, e);
+    }
+};
 
-export const deleteMuscleGroup = (req, res) => {
+export const deleteMuscleGroup = async (req, res) => {
     const { id } = req.params;
 
-    if(!ValidateNumber(id)) return Error(res, "Invalid id")
+    if (!ValidateNumber(id)) return Error(res, "Invalid id");
 
-    db.run("DELETE FROM muscle_groups WHERE id=?", id, function(e) {
-        if (e) return dbError(res, e); 
-        if (this.changes === 0) return NotFound(res, "Muscle group not found");
-        NoContent(res);
-    })
-}
+    try {
+        const [result] = await db.query(
+            "DELETE FROM muscle_groups WHERE id = ?",
+            [id]
+        );
+        if (result.affectedRows === 0) return NotFound(res, "Muscle group not found");
+        return NoContent(res);
+    } catch (e) {
+        return dbError(res, e);
+    }
+};

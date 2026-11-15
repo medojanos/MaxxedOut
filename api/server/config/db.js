@@ -1,15 +1,16 @@
-import sqlite3 from 'sqlite3'
-import { fileURLToPath } from 'url'
-import path from 'path'
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
-const dbPath = path.join(dirname, '..', '..', 'db', 'maxxedout.db')
-
-const db = new sqlite3.Database(dbPath, (e) => {
-    if (e) return console.error("Database error: ", e)
-    db.run("PRAGMA foreign_keys = ON;")
-    console.log("Database opened successfully")
-})
+const db = mysql.createPool({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 
 export default db;
