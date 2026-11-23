@@ -214,7 +214,7 @@ export const addWorkout = async (req, res) => {
 
         const [result] = await connection.query(
             "INSERT INTO workouts (user_id, name, started_at, ended_at) VALUES (?, ?, ?, ?)",
-            [req.user, name, formatForMariaDB(started_at), formatForMariaDB(ended_at)]
+            [req.user, name, started_at, ended_at]
         );
 
         const workoutId = result.insertId;

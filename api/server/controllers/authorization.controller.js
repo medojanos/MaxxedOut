@@ -225,7 +225,7 @@ export const resetPassword = async (req, res) => {
             [email]
         );
 
-        const row = rows;
+        const row = rows[0];
         if (!row || String(row.code) !== String(code)) {
             return Error(res, "Invalid code");
         }
@@ -265,7 +265,7 @@ export const verifyCode = async (req, res) => {
             [email]
         );
 
-        const row = rows;
+        const row = rows[0];
         if (!row || String(row.code) !== String(code)) {
             return Error(res, "Invalid code");
         }

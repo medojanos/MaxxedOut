@@ -13,7 +13,7 @@ export const getPlans = async (req, res) => {
     }
 }
 
-export const getPlanById = (req, res) => {
+export const getPlanById = async (req, res) => {
     const { id } = req.params;
 
     if(!ValidateNumber(id)) return Error(res, "Invalid id")
