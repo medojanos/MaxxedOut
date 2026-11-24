@@ -58,18 +58,23 @@ function MostImpressive(squat, bench, deadlift) {
 export default function Statistics() {
     const [statistics, setStatistics] = useState();
     const [oneRepMaxes, setOneRepMaxes] = useState([]);
-    const [weight, setWeight] = useState(null);
     const [offline, setOffline] = useState(false);
+
     const [exercises, setExercises] = useState([]);
+
+    /*
     const [searchText, setSearchText] = useState("");
+    */
 
     const apiFetch = useApiFetch();
 
-    const {token, userData, workout, refresh} = useContext(Context);
+    const { workout, refresh} = useContext(Context);
 
+    /*
     const filteredExercises = exercises
         .filter(ex => ex?.name?.toLowerCase().includes(searchText.toLowerCase()))
         .flat()
+    */
 
 
     useEffect(() => {
@@ -86,16 +91,17 @@ export default function Statistics() {
         .catch(() => setOffline(true));
     }, [workout, refresh]);
 
+    
     useEffect(() => {
         if(exercises) {
             setOneRepMaxes([
-                    {onerm: exercises.find(e => e.id === 1)?.one_rep_max, weight: exercises.find(e => e.id === 1)?.weight, reps: exercises.find(e => e.id === 1)?.reps},
-                    {onerm: exercises.find(e => e.id === 2)?.one_rep_max, weight: exercises.find(e => e.id === 2)?.weight, reps: exercises.find(e => e.id === 2)?.reps}, 
-                    {onerm: exercises.find(e => e.id === 3)?.one_rep_max, weight: exercises.find(e => e.id === 3)?.weight, reps: exercises.find(e => e.id === 3)?.reps}
+                {onerm: Math.round(exercises.find(e => e.id === 1)?.one_rep_max || 0), weight: exercises.find(e => e.id === 1)?.weight || 0, reps: exercises.find(e => e.id === 1)?.reps || 0},
+                {onerm: Math.round(exercises.find(e => e.id === 2)?.one_rep_max || 0), weight: exercises.find(e => e.id === 2)?.weight || 0, reps: exercises.find(e => e.id === 2)?.reps || 0}, 
+                {onerm: Math.round(exercises.find(e => e.id === 3)?.one_rep_max || 0), weight: exercises.find(e => e.id === 3)?.weight || 0, reps: exercises.find(e => e.id === 3)?.reps || 0}
             ]);
-            if (userData?.weight) setWeight(userData.weight);
         }
     }, [statistics])
+    
 
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
@@ -151,7 +157,7 @@ export default function Statistics() {
                             <View style={[MainStyle.container, {width: "45%", height: "85%"}]}>
                                 <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Total</Text>
                                 <View style={{justifyContent: "center", alignItems: "center", flex: 1}}>
-                                    <Text style={[MainStyle.strongText, {textAlign: "right"}]}>{oneRepMaxes[0].onerm + oneRepMaxes[1].onerm + oneRepMaxes[2].onerm} kg</Text>
+                                    <Text style={[MainStyle.strongText, {textAlign: "right"}]}>{Math.round(oneRepMaxes[0].onerm + oneRepMaxes[1].onerm + oneRepMaxes[2].onerm)} kg</Text>
                                 </View>
                             </View>
                         </View>
@@ -164,7 +170,7 @@ export default function Statistics() {
                     <Text style={MainStyle.strongText}>Total volume lifted</Text>
                     <Text style={MainStyle.lightText}>{statistics.totalWeight} kg</Text>
                 </View>
-
+                {/*
                 <View style={MainStyle.container}>
                     <Text style={MainStyle.strongText}>Stats for every exercise</Text>
                     <View style={[MainStyle.inlineContainer]}>
@@ -183,6 +189,7 @@ export default function Statistics() {
                         ))}
                     </ScrollView>
                 </View>
+                */}
             </View> 
             :
             <AlertBox message="Could not load your statistics" visible={offline}></AlertBox>
