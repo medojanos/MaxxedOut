@@ -3,12 +3,14 @@ import { ReturnData, Validate, Error, dbError, Success, ValidateNumber, Validate
 
 // App
 
-export const getAllExercises = (req, res) => {
-    db.all(`SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role 
-        FROM exercises e 
-        LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id 
-        LEFT JOIN muscle_groups mg ON mge.muscle_group_id = mg.id`, (e, rows) => {
-        if (e) return dbError(res, e);
+export const getAllExercises = async (req, res) => {
+    try {
+        const [rows] = await db.query(
+            `SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role 
+             FROM exercises e 
+             LEFT JOIN muscle_groups_exercises mge ON e.id = mge.exercise_id 
+             LEFT JOIN muscle_groups mg ON mge.muscle_group_id = mg.id`
+        );
 
         const exercisesMap = {};
         
@@ -31,20 +33,31 @@ export const getAllExercises = (req, res) => {
             }
         });
 
-        ReturnData(res, Object.values(exercisesMap))
-    })  
-}
+        return ReturnData(res, Object.values(exercisesMap));
 
-export const getExerciseById = (req, res) => {
+    } catch (e) {
+        return dbError(res, e);
+    }
+};
+
+export const getExerciseById = async (req, res) => {
     const { id } = req.params;
     
-    if(!ValidateNumber(id)) return Error(res, "Invalid id");
+    if (!ValidateNumber(id)) return Error(res, "Invalid id");
 
-    db.all(`SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role 
-        FROM exercises e 
-        LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id 
-        LEFT JOIN muscle_groups mg ON mg.id=mge.muscle_group_id WHERE e.id=?`, id, (e, rows) => {
-        if (e) return dbError(res, e);
+    try {
+        const [rows] = await db.query(
+            `SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group, mge.role as role 
+             FROM exercises e 
+             LEFT JOIN muscle_groups_exercises mge ON e.id = mge.exercise_id 
+             LEFT JOIN muscle_groups mg ON mg.id = mge.muscle_group_id 
+             WHERE e.id = ?`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return NotFound(res, "Exercise not found");
+        }
 
         const musclegroupsMap = {};
 
@@ -55,18 +68,27 @@ export const getExerciseById = (req, res) => {
             }
         });
 
-        ReturnData(res, {type: rows[0].type, muscle_groups: musclegroupsMap, name: rows[0].name});
-    })
-}
+        return ReturnData(res, {
+            type: rows[0].type,
+            muscle_groups: musclegroupsMap,
+            name: rows[0].name
+        });
+
+    } catch (e) {
+        return dbError(res, e);
+    }
+};
 
 // Admin
 
-export const getAllExercisesAdmin = (req, res) => {
-    db.all(`SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group_name, mge.role as role, mg.id as muscle_group_id 
-        FROM exercises e 
-        LEFT JOIN muscle_groups_exercises mge ON e.id=mge.exercise_id 
-        LEFT JOIN muscle_groups mg ON mge.muscle_group_id = mg.id`, (e, rows) => {
-        if (e) return dbError(res, e);
+export const getAllExercisesAdmin = async (req, res) => {
+    try {
+        const [rows] = await db.query(
+            `SELECT e.id as id, e.name as name, e.type as type, mg.name as muscle_group_name, mge.role as role, mg.id as muscle_group_id 
+             FROM exercises e 
+             LEFT JOIN muscle_groups_exercises mge ON e.id = mge.exercise_id 
+             LEFT JOIN muscle_groups mg ON mge.muscle_group_id = mg.id`
+        );
 
         const exercisesMap = {};
         
@@ -91,114 +113,147 @@ export const getAllExercisesAdmin = (req, res) => {
             }
         });
 
-        ReturnData(res, Object.values(exercisesMap));
-    })  
-}
+        return ReturnData(res, Object.values(exercisesMap));
 
-export const addExercise = (req, res) => {
+    } catch (e) {
+        return dbError(res, e);
+    }
+};
+
+export const addExercise = async (req, res) => {
     const { name, type, musclesworked } = req.body;
 
-    if(!Validate(name)) return Error(res, "Invalid exercise name");
-    if(!Validate(type) || (type !== "Compound" && type !== "Isolation")) return Error(res, "Invalid type");
-    if(musclesworked.length !== 0) {
-        if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
+    if (!Validate(name)) return Error(res, "Invalid exercise name");
+    if (!Validate(type) || (type !== "Compound" && type !== "Isolation")) return Error(res, "Invalid type");
+    if (!Array.isArray(musclesworked)) return Error(res, "Invalid muscles worked");
+    if (musclesworked.length !== 0 && !ValidateArray(musclesworked)) {
+        return Error(res, "Invalid muscles worked");
     }
 
-    db.run("INSERT INTO exercises (name, type) VALUES (?, ?)", [name, type], function (e) {
-        if (e) return dbError(res, e); 
+    const connection = await db.getConnection();
 
-        const exerciseId = this.lastID;
+    try {
+        await connection.beginTransaction();
 
-        if(musclesworked.length !== 0) {
-            let completed = 0;
-            let responded = false;
+        const [result] = await connection.query(
+            "INSERT INTO exercises (name, type) VALUES (?, ?)",
+            [name, type]
+        );
 
-            musclesworked.forEach(mg => {
-                db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, exerciseId, mg.role], function(e) {
-                    if(responded) return;
-                    
-                    if (e) {
-                        responded = true;
-                        return dbError(res, e);
-                    } 
+        const exerciseId = result.insertId;
 
-                    completed++;
-            
-                    if(completed == musclesworked.length) {
-                        responded = true;
-                        return res.status(201).json({data: {id: exerciseId}});
-                    }
-                })
+        if (musclesworked.length !== 0) {
+            const insertPromises = musclesworked.map(mg => {
+                return connection.query(
+                    "INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)",
+                    [mg.id, exerciseId, mg.role]
+                );
             });
-        }
-        else {
-            return res.status(201).json({data: {id: exerciseId}});
-        }
-    })
-}
 
-export const updateExercise = (req, res) => {    
+            await Promise.all(insertPromises);
+        }
+
+        await connection.commit();
+        return res.status(201).json({ data: { id: exerciseId } });
+
+    } catch (e) {
+        await connection.rollback();
+        return dbError(res, e);
+    } finally {
+        connection.release();
+    }
+};
+
+export const updateExercise = async (req, res) => {    
     const { id, name, type, musclesworked } = req.body;
 
-    if(!ValidateNumber(id)) return Error(res, "Invalid id");
-    if(!Validate(name)) return Error(res, "Invalid exercise name");
-    if(!Validate(type) || (type !== "Compound" && type !== "Isolation")) return Error(res, "Invalid type");
-    if(musclesworked.length !== 0) {
-        if(!ValidateArray(musclesworked)) return Error(res, "Invalid muscles worked");
+    if (!ValidateNumber(id)) return Error(res, "Invalid id");
+    if (!Validate(name)) return Error(res, "Invalid exercise name");
+    if (!Validate(type) || (type !== "Compound" && type !== "Isolation")) return Error(res, "Invalid type");
+    if (!Array.isArray(musclesworked)) return Error(res, "Invalid muscles worked");
+    if (musclesworked.length !== 0 && !ValidateArray(musclesworked)) {
+        return Error(res, "Invalid muscles worked");
     }
 
-    db.run("UPDATE exercises SET name = ?, type = ? WHERE id = ?", [name, type, id], function (e) {
-        if (e) return dbError(res, e); 
-        if (this.changes === 0) return NotFound(res, "Exercise not found!");
+    for (const mg of musclesworked) {
+        if (!ValidateNumber(mg.id)) return NotFound(res, "Exercise not found!");
+        if (!Validate(mg.role)) return Error(res, "Invalid muscle role!");
+    }
+
+    const connection = await db.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        const [result] = await connection.query(
+            "UPDATE exercises SET name = ?, type = ? WHERE id = ?",
+            [name, type, id]
+        );
+
+        if (result.affectedRows === 0) {
+            await connection.rollback();
+            return NotFound(res, "Exercise not found!");
+        }
         
-        db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", id, function(e) {
-            if (e) return dbError(res, e); 
+        await connection.query(
+            "DELETE FROM muscle_groups_exercises WHERE exercise_id = ?",
+            [id]
+        );
 
-            if (musclesworked.length !== 0) {
-                let completed = 0;
-                let responded = false;
+        if (musclesworked.length !== 0) {
+            const insertPromises = musclesworked.map(mg => {
+                return connection.query(
+                    "INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)",
+                    [mg.id, id, mg.role]
+                );
+            });
 
-                musclesworked.forEach(mg => {
-                    if(!ValidateNumber(mg.id)) return NotFound(res, "Exercise not found!");
-                    if(!Validate(mg.role)) return Error(res, "Invalid muscle role!");
+            await Promise.all(insertPromises);
+        }
 
-                    db.run("INSERT INTO muscle_groups_exercises (muscle_group_id, exercise_id, role) VALUES (?, ?, ?)", [mg.id, id, mg.role], function(e) {
-                        if(responded) return;
-                        
-                        if (e) {
-                            responded = true;
-                            return dbError(res, e); 
-                        }
+        await connection.commit();
+        return NoContent(res);
 
-                        completed ++;
+    } catch (e) {
+        await connection.rollback();
+        return dbError(res, e);
+    } finally {
+        connection.release();
+    }
+};
 
-                        if(completed == musclesworked.length) {
-                            responded = true;
-                            return NoContent(res);
-                        }
-                    })
-                });
-            }
-            else {
-                return NoContent(res);
-            }
-        })
-    })
-}
-
-export const deleteExercise = (req, res) => {
+export const deleteExercise = async (req, res) => {
     const { id } = req.params;
     
-    if(!ValidateNumber(id)) return Error(res, "Invalid id");
+    if (!ValidateNumber(id)) return Error(res, "Invalid id");
 
-    db.run("DELETE FROM exercises WHERE id = ?", id, function (e) {
-        if (e) return dbError(res, e); 
-        if (this.changes === 0) return NotFound(res, "Exercise not found!");
-        
-        db.run("DELETE FROM muscle_groups_exercises WHERE exercise_id = ?", id, function(e) {
-            if (e) return dbError(res, e); 
-        })
+    const connection = await db.getConnection();
 
+    try {
+        await connection.beginTransaction();
+
+        await connection.query(
+            "DELETE FROM muscle_groups_exercises WHERE exercise_id = ?",
+            [id]
+        );
+
+        const [result] = await connection.query(
+            "DELETE FROM exercises WHERE id = ?",
+            [id]
+        );
+
+        if (result.affectedRows === 0) {
+            await connection.rollback();
+            return NotFound(res, "Exercise not found!");
+        }
+
+        await connection.commit();
         return NoContent(res);
-    })
-}
+
+    } catch (e) {
+        await connection.rollback();
+        return dbError(res, e);
+    } finally {
+        connection.release();
+    }
+};

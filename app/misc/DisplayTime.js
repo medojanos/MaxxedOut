@@ -16,7 +16,7 @@ export default function displayTime(sec, format) {
 
     return format
         .replaceAll('d', days + 'd')
-        .replaceAll('h', hours + 'h')
-        .replaceAll('m', minutes + 'm')
-        .replaceAll('s', seconds + 's');
+        .replaceAll('h', hours > 0 ? ' ' + hours + 'h' : '')
+        .replaceAll('m', minutes > 0 ? minutes + 'm' : '')
+        .replaceAll('s', seconds > 0 ? seconds + 's' : '');
 }
