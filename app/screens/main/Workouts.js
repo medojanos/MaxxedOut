@@ -8,21 +8,15 @@ import { useNavigation } from "@react-navigation/native";
 import PlanModal from "../../components/modals/PlanModal";
 import PlanInfoModal from "../../components/modals/PlanInfoModal";
 import { Context } from "../../misc/Provider";
-import Constants from 'expo-constants';
 import useApiFetch from "../../misc/ApiFetch";
 
 //Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 import AlertBox from "../../components/AlertBox";
+
 const WorkoutsStyle = StyleSheet.create({
-    addPlan : {
-        backgroundColor: Var.darkGray,
-        alignItems: "center",
-        marginVertical: 20,
-        padding: 5,
-        borderRadius: 5
-    }
+
 })
 
 export default function Workouts() {
@@ -34,7 +28,7 @@ export default function Workouts() {
 
     const [alert, setAlert] = useState(false);
 
-    const {token, refresh, Refresh} = useContext(Context);
+    const { refresh } = useContext(Context);
     
     const apiFetch = useApiFetch();
     const navigation = useNavigation();
@@ -49,9 +43,9 @@ export default function Workouts() {
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
             <Text style={MainStyle.screenTitle}>Workouts</Text>
-            <Text style={MainStyle.strongText}>Create or edit your workout plans</Text>
-            <Pressable style={WorkoutsStyle.addPlan} onPress={() => {navigation.navigate("CreateWorkout")}}>
-                <Ionicons name="add-circle-outline" size={50} color={Var.red}></Ionicons>
+            <Text style={[MainStyle.lightText, {marginBottom: 15}]}>Create or edit your workout plans</Text>
+            <Pressable style={MainStyle.button} onPress={() => {navigation.navigate("CreateWorkout")}}>
+                <Ionicons style={{margin: "auto"}} name="add-circle" size={50} color={Var.black}></Ionicons>
             </Pressable>
             {
                 plans ? plans.length > 0 ? 
@@ -64,7 +58,7 @@ export default function Workouts() {
                                 setPlanName(plan.name);
                                 setPlanInfoModal(true);
                             }}>
-                                <Ionicons name="information-circle-outline" size={25} color={Var.paleWhite}></Ionicons>
+                                <Ionicons name="information-circle-outline" size={25} color={Var.white}></Ionicons>
                             </Pressable>
                         </View>
                         <Pressable style={MainStyle.secondaryButton} onPress={() => {

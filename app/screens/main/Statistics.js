@@ -1,32 +1,14 @@
 // React
-import { View, Text, ScrollView, StyleSheet, TextInput } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { useContext, useEffect, useState } from "react";
 
 // Misc
 import { Context } from "../../misc/Provider";
-import Constants from 'expo-constants';
 import AlertBox from "../../components/AlertBox";
 import useApiFetch from "../../misc/ApiFetch";
 
 // Style
-import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
-
-const StatisticsStyle = StyleSheet.create({
-    statTitle : {
-        color: Var.white,
-        fontSize : 20,
-        fontWeight: "bold",
-        marginTop : 20,
-        textAlign: "right"
-    },
-    listItems : {
-        backgroundColor: Var.navyBlue,
-        padding: 5,
-        fontSize: 15,
-        color: Var.white,
-    }
-})
 
 function MostImpressive(squat, bench, deadlift) {
 
@@ -62,20 +44,9 @@ export default function Statistics() {
 
     const [exercises, setExercises] = useState([]);
 
-    /*
-    const [searchText, setSearchText] = useState("");
-    */
-
     const apiFetch = useApiFetch();
 
     const { workout, refresh} = useContext(Context);
-
-    /*
-    const filteredExercises = exercises
-        .filter(ex => ex?.name?.toLowerCase().includes(searchText.toLowerCase()))
-        .flat()
-    */
-
 
     useEffect(() => {
         apiFetch("/statistics")
@@ -100,7 +71,7 @@ export default function Statistics() {
                 {onerm: Math.round(exercises.find(e => e.id === 3)?.one_rep_max || 0), weight: exercises.find(e => e.id === 3)?.weight || 0, reps: exercises.find(e => e.id === 3)?.reps || 0}
             ]);
         }
-    }, [statistics])
+    }, [exercises])
     
 
     return (
@@ -108,88 +79,74 @@ export default function Statistics() {
             {statistics && oneRepMaxes ? 
             <View>
                 <Text style={MainStyle.screenTitle}>Statistics</Text>
-                <Text style={MainStyle.strongText}>Datas of all your workouts</Text>
-                <Text style={StatisticsStyle.statTitle}>Consistency</Text>
+                <Text style={[MainStyle.lightText, {marginBottom: 15}]}>Your training progress at a glance</Text>
+                <Text style={MainStyle.containerTitle}>Consistency</Text>
                 <View style={MainStyle.container}>
-                    <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Weekly workout streak</Text>
-                    <Text style={[MainStyle.lightText, {textAlign: "center"}]}>{statistics.workoutStreak} weeks</Text>
+                    <Text style={MainStyle.lightText}>WEEKLY WORKOUT STREAK</Text>
+                    <Text style={MainStyle.containerTitle}>{statistics.workoutStreak} weeks</Text>
                 </View>
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, {alignItems: "stretch"}]}>
                     <View style={[MainStyle.container, {width: "48%"}]}>
-                        <Text style={MainStyle.strongText}>Workouts completed</Text>
-                        <Text style={MainStyle.lightText}>{statistics.totalWorkouts} workouts</Text>
+                        <Text style={MainStyle.lightText}>WORKOUTS</Text>
+                        <Text style={MainStyle.strongText}>{statistics.totalWorkouts} completed</Text>
                     </View>
                     <View style={[MainStyle.container, {width: "48%"}]}>
-                        <Text style={[MainStyle.strongText, {textAlign: "right"}]}>Time spent working out</Text>
-                        <Text style={[MainStyle.lightText, {textAlign: "right"}]}>{statistics.totalDuration} minutes</Text>
+                        <Text style={MainStyle.lightText}>TIME WORKING OUT</Text>
+                        <Text style={MainStyle.strongText}>{statistics.totalDuration} minutes</Text>
                     </View>
                 </View>
-                <View style={MainStyle.container}>
-                    <Text style={MainStyle.strongText}>Average workout duration</Text>
-                    <Text style={MainStyle.lightText}>{statistics.avgDuration} minutes</Text>
+                <View style={[MainStyle.container, {marginBottom: 20}]}>
+                    <Text style={MainStyle.lightText}>AVERAGE SESSION</Text>
+                    <Text style={MainStyle.strongText}>{statistics.avgDuration} minutes</Text>
                 </View>
-                <Text style={StatisticsStyle.statTitle}>Strength & volume</Text>
-                {oneRepMaxes.some(max => max !== 0) ?
+                <Text style={MainStyle.containerTitle}>Strength & volume</Text>
+                {oneRepMaxes.some(max => max.onerm > 0) ?
                     <View>
-                        <View style={[MainStyle.container, {}]}>
-                            <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Personal records</Text>
-                            <View style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.lightText}>Squat: </Text>
-                                <Text style={MainStyle.strongText}>{oneRepMaxes[0].onerm != 0 ? `${oneRepMaxes[0].weight} kg` : "No record"} {oneRepMaxes[0].reps != 0 ? `x ${oneRepMaxes[0].reps}` : null}</Text>
-                            </View>
-                            <View style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.lightText}>Bench: </Text>
-                                <Text style={MainStyle.strongText}>{oneRepMaxes[1].onerm != 0 ? `${oneRepMaxes[1].weight} kg` : "No record"} {oneRepMaxes[1].reps != 0 ? `x ${oneRepMaxes[1].reps}` : null}</Text>
-                            </View>
-                            <View style={MainStyle.inlineContainer}>
-                                <Text style={MainStyle.lightText}>Deadlift: </Text>
-                                <Text style={MainStyle.strongText}>{oneRepMaxes[2].onerm != 0 ? `${oneRepMaxes[2].weight} kg` : "No record"} {oneRepMaxes[2].reps != 0 ? `x ${oneRepMaxes[2].reps}` : null}</Text>
-                            </View>
-                            <Text style={[MainStyle.lightText, {textAlign: "center"}]}>Best lift: <Text style={MainStyle.strongText}>{MostImpressive(...oneRepMaxes.map(max => max.onerm))}</Text></Text>
+                        <View style={MainStyle.container}>
+                            <Text style={MainStyle.strongText}>Personal records</Text>
+                            {["Squat", "Bench", "Deadlift"].map((lift, index) => (
+                                <View key={lift} style={MainStyle.inlineContainer}>
+                                    <Text style={MainStyle.lightText}>{lift}</Text>
+                                    <Text style={MainStyle.strongText}>
+                                        {oneRepMaxes[index].onerm > 0
+                                            ? `${oneRepMaxes[index].weight} kg x ${oneRepMaxes[index].reps}`
+                                            : "No record"}
+                                    </Text>
+                                </View>
+                            ))}
+                            <Text style={[MainStyle.lightText, {textAlign: "center"}]}>
+                                Best lift: <Text style={MainStyle.strongText}>{MostImpressive(...oneRepMaxes.map(max => max.onerm))}</Text>
+                            </Text>
                         </View>
                         <View style={MainStyle.inlineContainer}>
-                            <View style={[MainStyle.container, {width: "50%"}]}>
-                                <Text style={MainStyle.strongText}>1 Rep Max</Text>
-                                <Text style={MainStyle.lightText}>Squat: <Text style={MainStyle.strongText}>{oneRepMaxes[0].onerm != 0 ? `${oneRepMaxes[0].onerm} kg` : "No record"}</Text></Text>
-                                <Text style={MainStyle.lightText}>Bench: <Text style={MainStyle.strongText}>{oneRepMaxes[1].onerm != 0 ? `${oneRepMaxes[1].onerm} kg` : "No record"}</Text></Text>
-                                <Text style={MainStyle.lightText}>Deadlift: <Text style={MainStyle.strongText}>{oneRepMaxes[2].onerm != 0 ? `${oneRepMaxes[2].onerm} kg` : "No record"}</Text></Text>
-                            </View>
-                            <View style={[MainStyle.container, {width: "45%", height: "85%"}]}>
-                                <Text style={[MainStyle.strongText, {textAlign: "center"}]}>Total</Text>
-                                <View style={{justifyContent: "center", alignItems: "center", flex: 1}}>
-                                    <Text style={[MainStyle.strongText, {textAlign: "right"}]}>{Math.round(oneRepMaxes[0].onerm + oneRepMaxes[1].onerm + oneRepMaxes[2].onerm)} kg</Text>
+                            {["Squat", "Bench", "Deadlift"].map((lift, index) => (
+                                <View key={lift} style={[MainStyle.container, {width: "31%", alignItems: "center"}]}>
+                                    <Text style={MainStyle.lightText}>{lift}</Text>
+                                    <Text style={MainStyle.strongText}>
+                                        {oneRepMaxes[index].onerm > 0 ? `${oneRepMaxes[index].onerm} kg` : "-"}
+                                    </Text>
+                                    <Text style={MainStyle.lightText}>1RM</Text>
                                 </View>
-                            </View>
+                            ))}
+                        </View>
+                        <View style={[MainStyle.container, {alignItems: "center"}]}>
+                            <Text style={MainStyle.lightText}>COMBINED 1RM</Text>
+                            <Text style={MainStyle.containerTitle}>
+                                {Math.round(oneRepMaxes[0].onerm + oneRepMaxes[1].onerm + oneRepMaxes[2].onerm)} kg
+                            </Text>
                         </View>
                     </View>
                     :
-                    null
+                    <View style={MainStyle.container}>
+                        <Text style={MainStyle.strongText}>No personal records yet</Text>
+                        <Text style={MainStyle.lightText}>Log a lift to start tracking your strength.</Text>
+                    </View>
                 }
                 
                 <View style={MainStyle.container}>
-                    <Text style={MainStyle.strongText}>Total volume lifted</Text>
-                    <Text style={MainStyle.lightText}>{statistics.totalWeight} kg</Text>
+                    <Text style={MainStyle.lightText}>TOTAL VOLUME LIFTED</Text>
+                    <Text style={MainStyle.strongText}>{statistics.totalWeight} kg</Text>
                 </View>
-                {/*
-                <View style={MainStyle.container}>
-                    <Text style={MainStyle.strongText}>Stats for every exercise</Text>
-                    <View style={[MainStyle.inlineContainer]}>
-                        <Text style={MainStyle.lightText}>Search for exercises</Text>
-                        <TextInput 
-                            style={MainStyle.input}
-                            placeholder="Enter exercise name..."
-                            value={searchText}
-                            onChangeText={setSearchText}>
-                        </TextInput>
-                    </View>
-                    <ScrollView 
-                        style={{maxHeight: 120, borderRadius: 10}}>
-                        {filteredExercises.map((exercise) => (
-                            exercise.weight && exercise.id !== 1 && exercise.id !== 2 && exercise.id !== 3 ? <Text id={exercise.id} style={[MainStyle.lightText, StatisticsStyle.listItems]}>{exercise.name} - {exercise.weight}kg x {exercise.reps} - {exercise.one_rep_max}kg</Text> : null
-                        ))}
-                    </ScrollView>
-                </View>
-                */}
             </View> 
             :
             <AlertBox message="Could not load your statistics" visible={offline}></AlertBox>

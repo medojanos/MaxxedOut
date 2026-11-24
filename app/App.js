@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 import * as Notifications from 'expo-notifications';
 import { Platform } from "react-native";
+import * as NavigationBar from "expo-navigation-bar";
 
 // Screens
 import Login from "./screens/misc/Login";
@@ -11,7 +12,6 @@ import Loader from "./components/Loader";
 // Misc
 import { Context } from "./misc/Provider";
 import { getData, getJson, } from "./misc/Storage";
-import Constants from 'expo-constants';
 import useApiFetch from "./misc/ApiFetch";
 
 Notifications.setNotificationHandler({
@@ -23,8 +23,9 @@ Notifications.setNotificationHandler({
   }),
 });
 
-async function setNotifications() {
+async function loadSettings() {
     if (Platform.OS === "android") {
+        NavigationBar.setVisibilityAsync("hidden");
         await Notifications.setNotificationChannelAsync("resting-timer", {
             name: "Resting Timer",
             importance: Notifications.AndroidImportance.HIGH,
@@ -48,7 +49,7 @@ export default function App() {
     useEffect(() => {
         async function Load() {
             try {
-                await setNotifications();
+                await loadSettings();
 
                 const refreshToken = await getData("refresh_token");
                 if (!refreshToken) return;

@@ -26,6 +26,9 @@ export default {
       "edgeToEdgeEnabled": true,
       "package": "com.medojanos.maxxedout"
     },
+    "androidNavigationBar": {
+      "visible": "immersive"
+    },
     "extra": {
       "eas": {
         "projectId": "648275ea-05c3-4716-be3f-e0bdd47054e1"

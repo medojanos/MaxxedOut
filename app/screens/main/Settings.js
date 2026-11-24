@@ -59,19 +59,19 @@ export default function Settings() {
         <ScrollView contentContainerStyle={MainStyle.content}>
             <View>
                 <Text style={MainStyle.screenTitle}>Settings</Text>
-                <Text style={MainStyle.strongText}>Manage your account and preferences</Text>
+                <Text style={[MainStyle.lightText, {marginBottom:15}]}>Manage your account and preferences</Text>
             </View>
-            <View style={MainStyle.container}>
-                <View style={MainStyle.inlineContainer}>
-                    <Ionicons name="person-circle" color={Var.red} size={40}></Ionicons>
-                    <Text style={MainStyle.containerTitle}>Profile</Text>
-                </View>
+            <View style={MainStyle.inlineContainer}>
+                <Text style={MainStyle.containerTitle}>Profile</Text>
+                <Ionicons name="person-circle" color={Var.red} size={30}></Ionicons>
+            </View>
+            <View style={[MainStyle.container, {marginBottom: 20}]}>
                 <View style={MainStyle.inlineContainer}>
                     <Text style={MainStyle.lightText}>Nickname: </Text>
                     <View style={MainStyle.inlineContainer}>
                         <Text style={[MainStyle.lightText, {marginEnd: 10}]}>{userData.nickname}</Text>
                         <Pressable onPress={() => {setNicknameModal(true); setStatus(null);}}>
-                            <Ionicons name="create" color={Var.red} size={25}></Ionicons>
+                            <Ionicons name="create" color={Var.red} size={20}></Ionicons>
                         </Pressable>
                     </View>
                 </View>
@@ -81,7 +81,7 @@ export default function Settings() {
                 </View>
             </View>
             <ModalOverlay visible={nicknameModal} onClose={() => setNicknameModal(false)}>
-                <Text style={MainStyle.screenTitle}>Edit nickname</Text>
+                <Text style={[MainStyle.containerTitle, {marginBottom: 10}]}>Edit nickname</Text>
                 {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
                 <View style={MainStyle.inlineContainer}>
                     <TextInput
@@ -121,14 +121,14 @@ export default function Settings() {
                     </Pressable>
                 </View>
             </ModalOverlay>
-            <View style={[MainStyle.container, {zIndex: 1}]}>
-                <View style={MainStyle.inlineContainer}>
-                    <Ionicons name="contrast" color={Var.red} size={40}></Ionicons>
-                    <Text style={MainStyle.containerTitle}>Preferences</Text>
-                </View>
+            <View style={MainStyle.inlineContainer}>
+                <Text style={MainStyle.containerTitle}>Preferences</Text>
+                <Ionicons name="contrast" color={Var.red} size={30}></Ionicons>
+            </View>
+            <View style={[MainStyle.container, {zIndex: 1, marginBottom: 20}]}>
                 <View style={MainStyle.inlineContainer}>
                     <Text style={MainStyle.lightText}>Resting time:</Text>
-                    <View style={MainStyle.inlineContainer}>
+                    <View style={[MainStyle.inlineContainer, {justifyContent: "center"}]}>
                         <TextInput
                             keyboardType="numeric"
                             style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
@@ -139,7 +139,7 @@ export default function Settings() {
                                 Refresh()
                                 }}>
                         </TextInput>
-                        <Text style={MainStyle.lightText}>mins</Text>
+                        <Text style={MainStyle.strongText}>:</Text>
                         <TextInput
                             keyboardType="numeric"
                             style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
@@ -150,7 +150,6 @@ export default function Settings() {
                                 Refresh()
                                 }}>
                         </TextInput>
-                        <Text style={MainStyle.lightText}>seconds</Text>
                     </View>
                 </View>
                 <View style={MainStyle.inlineContainer}>
@@ -162,33 +161,48 @@ export default function Settings() {
                         style={MainStyle.input}
                         textStyle={{color: Var.white}}
                         value={userData.preferences?.bottomTabText || "Show"}
-                        dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
+                        dropDownContainerStyle={{backgroundColor: Var.black, borderColor: Var.gray}}
                         items={[{label: "Show", value: "Show"}, {label: "Hide", value: "Hide"}]}
                         setValue={value => setUserData(prev => ({...prev, preferences: {...prev.preferences, bottomTabText: value()}}))}>
                     </DropDownPicker>
                 </View>
             </View>
-            <View style={MainStyle.container}>
-                <View style={MainStyle.inlineContainer}>
-                    <Ionicons name="key" color={Var.red} size={40}></Ionicons>
-                    <Text style={MainStyle.containerTitle}>Account</Text>
-                </View>
-
+            <View style={MainStyle.inlineContainer}>
+                <Text style={MainStyle.containerTitle}>Account</Text>
+                <Ionicons name="key" color={Var.red} size={30}></Ionicons>
+            </View>
+            <View style={[MainStyle.container, {marginBottom: 20}]}>
                 <Pressable style={MainStyle.secondaryButton}>
                     <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength("")}}>Password reset</Text>
                 </Pressable>
                 <Pressable 
-                    style={MainStyle.button} 
+                    style={[MainStyle.secondaryButton, {borderColor: Var.red}]} 
                     onPress={() => Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/delete-account")}>
                     <View style={[MainStyle.inlineContainer, {justifyContent: "center"}]}>
                         <Text style={MainStyle.buttonText}>Delete account</Text>
-                        <Ionicons name="link" color={Var.paleWhite} size={20}></Ionicons>
+                        <Ionicons name="link" color={Var.white} size={20}></Ionicons>
                     </View>
                 </Pressable>
+                <Pressable style={MainStyle.button} onPress={() => Logout()}>
+                    <Text style={MainStyle.buttonText}>Logout</Text>
+                </Pressable>
             </View>
-            <Pressable style={MainStyle.button} onPress={() => Logout()}>
-                <Text style={MainStyle.buttonText}>Logout</Text>
-            </Pressable>
+            <View style={MainStyle.inlineContainer}>
+                <Text style={MainStyle.containerTitle}>About</Text>
+                <Ionicons name="information-circle" color={Var.red} size={30}></Ionicons>
+            </View>
+            <View style={MainStyle.container}>
+                <View style={MainStyle.inlineContainer}>
+                    <Text style={MainStyle.strongText}>Version</Text>
+                    <Text style={MainStyle.lightText}>v{Constants.expoConfig.version}</Text>
+                </View>
+                <View style={MainStyle.inlineContainer}>
+                    <Text style={MainStyle.strongText}>Contact</Text>
+                    <Text style={[MainStyle.lightText, MainStyle.link]} onPress={() => Linking.openURL("mailto:maxxedout@meadowhub.net")}>
+                        maxxedout@meadowhub.net
+                    </Text>
+                </View>
+            </View>
             <ModalOverlay visible={passwordModal} onClose={() => setPasswordModal(false)}>
                 <Text style={MainStyle.screenTitle}>Edit password</Text>
                 {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
@@ -239,17 +253,6 @@ export default function Settings() {
                     </Pressable>
                 </View>
             </ModalOverlay>
-            <View style={MainStyle.container}>
-                <View style={MainStyle.inlineContainer}>
-                    <Ionicons name="information-circle" color={Var.red} size={40}></Ionicons>
-                    <Text style={MainStyle.containerTitle}>About v{Constants.expoConfig.version}</Text>
-                </View>
-                <Text style={MainStyle.lightText}>Having trouble? Contact us at:</Text>
-                <Text style={[MainStyle.lightText, MainStyle.link, {marginVertical: 10, textAlign: "right"}]} onPress={() => Linking.openURL("mailto:maxxedout@meadowhub.net")}>
-                    maxxedout@meadowhub.net
-                </Text>
-                <Text style={[MainStyle.lightText, {textAlign: 'center'}]}>© MaxxedOut. All rights reserved.</Text>
-            </View>
         </ScrollView>
     );
 }

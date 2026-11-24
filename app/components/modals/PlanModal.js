@@ -84,7 +84,7 @@ export default function PlanModal({ Close, visible, id, name }) {
 
     return (
         <ModalOverlay visible={visible} onClose={Close}>
-            <Text style={MainStyle.screenTitle}>Edit workout plan</Text>
+            <Text style={MainStyle.containerTitle}>Edit workout plan</Text>
             {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
             <TextInput 
                 style={MainStyle.input} 
@@ -130,7 +130,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                                 }}>
                             </TextInput>
                             <Pressable onPress={() => deleteExercise(index)}>
-                                <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
+                                <Ionicons name="trash" color={Var.red} size={20}></Ionicons>
                             </Pressable>
                         </View>
                     </View>

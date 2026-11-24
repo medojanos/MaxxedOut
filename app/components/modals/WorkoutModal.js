@@ -14,11 +14,11 @@ import useApiFetch from "../../misc/ApiFetch";
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
+
+
 const WorkoutModalStyle = StyleSheet.create({
-    workoutButton:{
-        backgroundColor: Var.black,
-        borderColor: Var.navyBlue,
-        borderWidth: 2
+    listItem : {
+        borderColor: Var.red
     }
 })
 
@@ -43,13 +43,13 @@ export default function WorkoutModal({Close, visible, isOffline}) {
 
     return (
         <ModalOverlay visible={visible} onClose={Close}>
-            <Text style={MainStyle.screenTitle}>Select a workout</Text>
+            <Text style={[MainStyle.containerTitle, {marginBottom: 10}]}>Select a workout</Text>
             {
                 plans ? plans.length != 0 ? 
                 plans.map(plan => (
                     <Pressable 
                         key={plan.id}
-                        style={[MainStyle.button, WorkoutModalStyle.workoutButton]} 
+                        style={[MainStyle.secondaryButton, {marginBottom: 5}]} 
                         onPress={() => {
                             apiFetch("/plans/" + plan.id)
                             .then(res => res.json())
@@ -64,7 +64,7 @@ export default function WorkoutModal({Close, visible, isOffline}) {
                 :
                 <View style={MainStyle.inlineContainer}>
                     <Text style={[MainStyle.lightText, {fontWeight: "bold"}]}>No workout plan?</Text>
-                    <Pressable style={[MainStyle.button, WorkoutModalStyle.workoutButton]} onPress={() => {navigation.navigate("CreateWorkout"); Close();}}>
+                    <Pressable style={[MainStyle.button]} onPress={() => {navigation.navigate("CreateWorkout"); Close();}}>
                         <Text style={MainStyle.buttonText}>Create one</Text>
                     </Pressable> 
                 </View>
@@ -74,13 +74,13 @@ export default function WorkoutModal({Close, visible, isOffline}) {
             {
                 plans ?
                 <Pressable
-                    style={MainStyle.secondaryButton}
+                    style={[MainStyle.secondaryButton, {borderColor: Var.red}]}
                     onPress={() => {
                         setWorkout({name: "New workout", plan: [], ownIndex : 0, started_at: dayjs().format("YYYY-MM-DD HH:mm:ss")});
                         Close();
                         navigation.navigate("Workout");
                     }}>
-                    <Text style={MainStyle.buttonText}>Start a new one</Text>
+                    <Text style={MainStyle.buttonText}>Start a blank</Text>
                 </Pressable> : null
             }
             <Pressable style={MainStyle.button} onPress={Close}><Text style={MainStyle.buttonText}>Close</Text></Pressable>

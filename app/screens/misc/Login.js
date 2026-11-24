@@ -70,7 +70,7 @@ export default function Login() {
             <View style={{height: "10%", alignItems: "center", justifyContent: "center"}}>
                 <Text style={MainStyle.titleText}>MaxxedOut</Text>
             </View>
-            <View style={{height: "70%"}}>
+            <View style={{height: "50%"}}>
                 <View style={{marginVertical: "auto"}}>
                     <Text style={[MainStyle.screenTitle, {textAlign: "center"}]}>Log In</Text>
                     <TextInput 
@@ -85,7 +85,7 @@ export default function Login() {
                 <AlertBox closable heading={heading} message={status} onClose={() => setAlert(false)} visible={alert}/>
                 </View>
             </View>
-            <View style={{height: "20%"}}>
+            <View style={{height: "40%"}}>
                 <Pressable
                     onPress={Authenticate}
                     style={MainStyle.button}>
@@ -95,7 +95,7 @@ export default function Login() {
                     onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/password-recovery")}}>
                     <Text style={[MainStyle.strongText, LoginStyle.forgotPassword]}>Forgot password?</Text>
                 </Pressable>
-                <View style={{marginTop: "auto"}}>
+                <View style={{marginBottom: 20, marginTop: "auto"}}>
                     <View style={[MainStyle.inlineContainer, {margin: "auto"}]}>
                         <Text style={[MainStyle.lightText, {marginEnd: 5}]}>Don't have an account?</Text>
                         <Pressable

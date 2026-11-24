@@ -11,11 +11,11 @@ export default StyleSheet.create({
     container : {
         padding: 20,
         backgroundColor: Var.darkGray,
-        borderRadius: 15,
+        borderRadius: Var.borderRadius,
         width: "100%",
-        marginVertical : 10,
+        marginVertical : 5,
         borderWidth: 1,
-        borderColor: Var.navyBlue
+        borderColor: Var.gray
     },
     inlineContainer : {
         flexDirection: "row",
@@ -27,12 +27,12 @@ export default StyleSheet.create({
     /* HEADINGS */
     titleText : {
         color: Var.white,
-        fontSize: Var.fontSize * 1.5,
+        fontSize: Var.fontSize * 1.8,
         fontWeight: "bold"
     },
     screenTitle : {
         color: Var.white,
-        fontSize : Var.fontSize * 1.3,
+        fontSize : Var.fontSize * 1.6,
         fontWeight: "bold"
     },
     containerTitle : {
@@ -72,30 +72,33 @@ export default StyleSheet.create({
     /* BUTTONS, INPUTS */
     button : {
         backgroundColor: Var.red,
-        borderRadius: 10,
-        marginVertical : 10
+        borderRadius: Var.borderRadius,
+        marginVertical: 5
     },
     secondaryButton : {
-        backgroundColor : Var.navyBlue,
-        borderRadius : 10,
-        marginVertical : 10
+        backgroundColor : Var.black,
+        borderRadius : Var.borderRadius,
+        borderColor: Var.gray,
+        marginVertical: 5,
+        borderWidth: 1
     },
     buttonBlock : {
         width : Var.fontSize * 5,
     },
 
     input : {
-        backgroundColor: Var.navyBlue,
+        backgroundColor: Var.black,
         color: Var.white,
         padding: 10,
-        marginVertical: 10,
-        borderRadius: 10,
+        borderRadius: Var.borderRadius,
         borderWidth: 0,
-        maxWidth: "100%"
+        maxWidth: "100%",
+        borderColor: Var.gray,
+        borderWidth: 1
     },
     setInput : {
-        width : 50,
-        marginVertical : 5
+        textAlign: "center",
+        minWidth : 50
     },
 
     /* COMPONENTS */
@@ -110,10 +113,10 @@ export default StyleSheet.create({
         backgroundColor: Var.darkGray,
         padding: 20, 
         paddingBottom: 10, 
-        borderRadius: 10
+        borderRadius: Var.borderRadius
     },
     alertBox: {
-        borderRadius: 10,
+        borderRadius: Var.borderRadius,
         borderColor: Var.red,
         backgroundColor: Var.black,
         paddingVertical: 20,
@@ -122,5 +125,10 @@ export default StyleSheet.create({
         marginVertical: 10,
         width: "auto",
         margin: "auto"
+    },
+    line : {
+        borderWidth: 0.5,
+        borderColor:'black',
+        margin:10,
     }
 })

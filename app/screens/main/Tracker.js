@@ -1,5 +1,5 @@
 // React
-import { View, Text, ScrollView, Pressable, Platform, Modal, TextInput } from "react-native";
+import { View, Text, ScrollView, Pressable, Platform, TextInput } from "react-native";
 import { useState, useContext, useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -154,7 +154,7 @@ export default function Tracker() {
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
             <Text style={MainStyle.titleText}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
-            <Text style={MainStyle.screenTitle}>Tracker</Text>
+            <Text style={[MainStyle.screenTitle, {marginBottom: 15}]}>Tracker</Text>
             {
             workout ?
                 <>
@@ -165,7 +165,9 @@ export default function Tracker() {
                                 <Text style={MainStyle.strongText}>{workout.name}</Text>
                                 <Text style={MainStyle.lightText}>{durationTimer}</Text>
                             </View>
-                            {estimatedTime ? <Text style={MainStyle.lightText}>Estimated time remaining:{displayTime(estimatedTime,"h m")}</Text> : null}
+                            {/*
+                            estimatedTime ? <Text style={MainStyle.lightText}>Estimated time remaining:{displayTime(estimatedTime,"h m")}</Text> : null
+                            */}
                             <Pressable
                                 style={MainStyle.button}
                                 onPress={() => navigation.navigate("Workout")}>
@@ -180,7 +182,7 @@ export default function Tracker() {
                             <View style={MainStyle.inlineContainer}>
                                 <Pressable
                                     onPress={() => {handleTimer("pause")}}>
-                                    <Ionicons name="pause-circle" size={50} color={Var.navyBlue}></Ionicons>
+                                    <Ionicons name="pause-circle" size={50} color={Var.gray}></Ionicons>
                                 </Pressable>
                                 <Pressable
                                     onPress={() => {handleTimer("start")}}>
@@ -188,7 +190,7 @@ export default function Tracker() {
                                 </Pressable>
                                 <Pressable
                                     onPress={() => {handleTimer("reset")}}>
-                                    <Ionicons name="stop-circle" size={50} color={Var.navyBlue}></Ionicons>
+                                    <Ionicons name="stop-circle" size={50} color={Var.gray}></Ionicons>
                                 </Pressable>
                             </View>
                         </View>
@@ -251,11 +253,20 @@ export default function Tracker() {
                 </>
                 : 
                 <>
-                    <Pressable 
-                        style={MainStyle.button}
-                        onPress={() => {setWorkoutModal(true)}}>
-                        <Ionicons style={{margin: "auto"}} name="add-circle" size={50} color={Var.black}></Ionicons>
-                    </Pressable> 
+                    <View style={[MainStyle.inlineContainer, {
+                        backgroundColor: Var.red,
+                        borderRadius: Var.borderRadius,
+                        padding: 20
+                    }]}>
+                        <View>
+                            <Text style={MainStyle.containerTitle}>Choose a workout</Text>
+                            <Text style={MainStyle.lightText}>Or start a blank one</Text>
+                        </View>
+                        <Pressable
+                            onPress={() => {setWorkoutModal(true)}}>
+                            <Ionicons style={{margin: "auto"}} name="play-circle" size={50} color={Var.white}></Ionicons>
+                        </Pressable> 
+                    </View>
                     { !offline ? 
                         <View style={MainStyle.container}>
                             <View style={MainStyle.inlineContainer}>

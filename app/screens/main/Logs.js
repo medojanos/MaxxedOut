@@ -16,8 +16,8 @@ import LogModal from "../../components/modals/LogModal";
 
 const LogsStyle = StyleSheet.create({
     calendar : {
-        backgroundColor: Var.red,
-        borderRadius: 10,
+        backgroundColor: Var.darkGray,
+        borderRadius: Var.borderRadius,
         padding: 10,
         marginVertical : 20
     }
@@ -81,7 +81,7 @@ export default function Logs() {
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
             <View>
-                <Text style={MainStyle.screenTitle}>Logs</Text>
+                <Text style={MainStyle.screenTitle}>Training log.</Text>
                 <Text style={MainStyle.strongText}>Keep track of your previous workouts</Text>
             </View>
             <Calendar 
@@ -92,10 +92,15 @@ export default function Logs() {
                 theme={{
                     todayTextColor : Var.red,
                     monthTextColor: Var.white,
-                    arrowColor: Var.black,
-                    calendarBackground : Var.black,
+                    arrowColor: Var.white,
+                    arrowStyle: {
+                        backgroundColor: Var.gray,
+                        borderRadius: Var.borderRadius,
+                        padding: 5
+                    },
+                    calendarBackground : Var.darkGray,
                     textDayStyle: {color: Var.white},
-                    textDisabledColor: Var.navyBlue
+                    textDisabledColor: Var.gray
                 }}
                 markedDates={markedDates}
                 onMonthChange={fetchMarkedDates}>
@@ -106,26 +111,24 @@ export default function Logs() {
                 Close={() => setLogModal(false)}
                 workouts={workouts}>
             </LogModal>
-            <View style={MainStyle.container}>
-                <Text style={MainStyle.containerTitle}>Recent logs</Text>
-                {latest ?
-                    latest.length > 0 ?
-                    latest.map((workout, index) => (
-                        <View key={index} style={MainStyle.container}>
-                            <Text style={MainStyle.lightText}>{workout.name} - {workout.ended_at}</Text>
-                            <Pressable
-                                style={MainStyle.secondaryButton}
-                                onPress={() => fetchWorkouts("/workouts/", workout.id)}>
-                                <Text style={MainStyle.buttonText}>View details</Text>
-                            </Pressable>
-                        </View>
-                    )) 
-                    : 
-                    <Text style={MainStyle.lightText}>Your logs will be displayed here!</Text>
-                    :
-                    <AlertBox message="Could not load workout logs" visible={offline}></AlertBox>
-                }
-            </View>
+            <Text style={MainStyle.containerTitle}>Latest session</Text>
+            {latest ?
+                latest.length > 0 ?
+                latest.map((workout, index) => (
+                    <View key={index} style={MainStyle.container}>
+                        <Text style={MainStyle.lightText}>{workout.name} - {workout.ended_at}</Text>
+                        <Pressable
+                            style={MainStyle.secondaryButton}
+                            onPress={() => fetchWorkouts("/workouts/", workout.id)}>
+                            <Text style={MainStyle.buttonText}>View details</Text>
+                        </Pressable>
+                    </View>
+                )) 
+                : 
+                <Text style={MainStyle.lightText}>Your logs will be displayed here!</Text>
+                :
+                <AlertBox message="Could not load workout logs" visible={offline}></AlertBox>
+            }
         </ScrollView>
     );
 }

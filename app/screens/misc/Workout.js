@@ -189,7 +189,7 @@ export default function Workout() {
                             }
                             <View>
                                 <Pressable onPress={() => deleteExercise(exerciseIndex)}>
-                                    <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
+                                    <Ionicons name="trash" color={Var.red} size={20}></Ionicons>
                                 </Pressable>
                             </View>
                         </View>
@@ -217,7 +217,7 @@ export default function Workout() {
                                         }}
                                     />
                                     <Pressable onPress={() => deleteSet(exerciseIndex, setIndex)}>
-                                        <Ionicons name="close" color={Var.paleWhite} size={30}></Ionicons>
+                                        <Ionicons name="close" color={Var.gray} size={30}></Ionicons>
                                     </Pressable>
                                 </View>
                             ))
@@ -234,7 +234,7 @@ export default function Workout() {
                     ownIndex={workout.ownIndex}
                     Close={() => setSearchModal(false)}
                 />
-                <Pressable style={MainStyle.button} onPress={() => setSearchModal(true)}>
+                <Pressable style={[MainStyle.button, {marginVertical: 10}]} onPress={() => setSearchModal(true)}>
                     <Text style={MainStyle.buttonText}>Add exercise</Text>
                 </Pressable>
                 <View style={MainStyle.inlineContainer}>
