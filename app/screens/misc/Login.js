@@ -75,7 +75,7 @@ export default function Login() {
                     <Text style={[MainStyle.screenTitle, {textAlign: "center"}]}>Log In</Text>
                     <TextInput 
                         placeholder="Enter your email..."
-                        style={MainStyle.input}
+                        style={[MainStyle.input, {marginVertical: 10}]}
                         onChangeText={setEmail}/>
                     <TextInput 
                         placeholder="Enter your password..."

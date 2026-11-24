@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { setData, setJson } from "./Storage";
+import { removeData, setData, setJson } from "./Storage";
 import RandomName from "./RandomName";
 
 export const Context = createContext();
@@ -25,12 +25,14 @@ export default function Provider({children}) {
 
     useEffect(() => {
         if (refreshToken === undefined) return;
-        setData("refresh_token", refreshToken);
+        if (refreshToken === null) removeData("refresh_token");
+        else setData("refresh_token", refreshToken);
     }, [refreshToken]);
 
     useEffect(() => {
         if (accessToken === undefined) return;
-        setData("access_token", accessToken);
+        if (accessToken === null) removeData("access_token");
+        else setData("access_token", accessToken);
     }, [accessToken]);
 
     useEffect( () => {

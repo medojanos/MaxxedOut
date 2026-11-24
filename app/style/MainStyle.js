@@ -98,7 +98,7 @@ export default StyleSheet.create({
     },
     setInput : {
         textAlign: "center",
-        minWidth : 50
+        width : 50
     },
 
     /* COMPONENTS */

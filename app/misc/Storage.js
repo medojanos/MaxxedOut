@@ -7,6 +7,13 @@ export async function setData(key, value) {
         console.log(e)
     }
 };
+export async function removeData(key) {
+    try {
+        await AsyncStorage.removeItem(key);
+    } catch (e) {
+        console.log(e)
+    }
+};
 export async function setJson(key, value) {
     try {
         await AsyncStorage.setItem(key, JSON.stringify(value));
