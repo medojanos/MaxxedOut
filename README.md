@@ -62,47 +62,6 @@ npm run dev
 
 <hr>
 
-<h2>📁 Project Structure</h2>
-<pre><code>
-MaxxedOut/
-├── admin/                  # Admin Interface (C# Windows Forms)
-│   ├── ApiClient.cs        # API communication client
-│   ├── Models/             # Data models
-│   ├── Forms/              # UI forms
-│   ├── Program.cs          # Entry point
-│   └── ...
-├── api/                    # Backend API (Node.js, Express)
-│   ├── db/                 # Database scripts and migrations
-│   │   ├── schema.sql      # Database schema
-│   │   ├── seed.sql        # Initial data seed
-│   │   └── migration.js    # Database initialization script
-│   ├── server/             # Server code
-│   │   ├── config/         # Configuration files
-│   │   ├── controllers/    # Route controllers
-│   │   ├── middleware/     # Middleware functions
-│   │   ├── routes/         # Route definitions
-│   │   └── server.js       # Server entry point
-│   ├── package.json        # Node.js dependencies
-│   └── ...
-├── app/                    # Mobile App (React Native)
-│   ├── index.js            # Entry point
-│   ├── Root.js             # Root component
-│   ├── package.json        # Dependencies
-│   └── ...
-├── web/                    # Website (React)
-│   ├── src/                # Source files
-│   │   ├── pages/          # Page components
-│   │   └── ...
-│   ├── index.html          # HTML entry point
-│   ├── package.json        # Dependencies
-│   └── ...
-├── CHANGELOG.md            # Change log
-├── README.md               # Project documentation
-└── ...
-</code></pre>
-
-<hr>
-
 <h2>🔧 Configuration</h2>
 
 <h3>Environment Variables</h3>
