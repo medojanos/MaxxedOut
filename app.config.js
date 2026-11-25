@@ -4,7 +4,7 @@ export default {
   "expo": {
     "name": "MaxxedOut",
     "slug": "maxxedout",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
