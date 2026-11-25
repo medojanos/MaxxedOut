@@ -43,13 +43,13 @@ export default function WorkoutModal({Close, visible, isOffline}) {
 
     return (
         <ModalOverlay visible={visible} onClose={Close}>
-            <Text style={[MainStyle.containerTitle, {marginBottom: 10}]}>Select a workout</Text>
+            <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>Select a workout</Text>
             {
                 plans ? plans.length != 0 ? 
                 plans.map(plan => (
                     <Pressable 
                         key={plan.id}
-                        style={[MainStyle.secondaryButton, {marginBottom: 5}]} 
+                        style={[MainStyle.secondaryButton, MainStyle.spacingAfterExtraSmall]}
                         onPress={() => {
                             apiFetch("/plans/" + plan.id)
                             .then(res => res.json())

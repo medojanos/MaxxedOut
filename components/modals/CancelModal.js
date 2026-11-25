@@ -13,7 +13,7 @@ export default function CancelModal({ cancelModal, setCancelModal, setWorkout })
     
     return (
         <ModalOverlay visible={cancelModal} onClose={() => setCancelModal(false)}>
-            <Text style={[MainStyle.containerTitle, {marginBottom: 10}]}>Are you sure you want to cancel this workout?</Text>
+            <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>Are you sure you want to cancel this workout?</Text>
             <Pressable style={MainStyle.secondaryButton} onPress={() => setCancelModal(false)}>
                 <Text style={MainStyle.buttonText}>No</Text>
             </Pressable>

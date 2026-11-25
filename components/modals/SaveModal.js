@@ -16,7 +16,7 @@ export default function SaveModal( { saveModal, setSaveModal, setWorkout, body, 
 
     return (
         <ModalOverlay visible={saveModal} onClose={() => setSaveModal(false)}>
-            <Text style={[MainStyle.containerTitle, {marginBottom: 10}]}>Are you sure you want to save this workout?</Text>
+            <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>Are you sure you want to save this workout?</Text>
             <Pressable style={MainStyle.secondaryButton} onPress={() => setSaveModal(false)}>
                 <Text style={MainStyle.buttonText}>No</Text>
             </Pressable>

@@ -59,17 +59,17 @@ export default function Settings() {
         <ScrollView contentContainerStyle={MainStyle.content}>
             <View>
                 <Text style={MainStyle.screenTitle}>Settings</Text>
-                <Text style={[MainStyle.lightText, {marginBottom:15}]}>Manage your account and preferences</Text>
+                <Text style={[MainStyle.lightText, MainStyle.sectionDescription]}>Manage your account and preferences</Text>
             </View>
             <View style={MainStyle.inlineContainer}>
                 <Text style={MainStyle.containerTitle}>Profile</Text>
                 <Ionicons name="person-circle" color={Var.red} size={30}></Ionicons>
             </View>
-            <View style={[MainStyle.container, {marginBottom: 20}]}>
+            <View style={[MainStyle.container, MainStyle.sectionContainer]}>
                 <View style={MainStyle.inlineContainer}>
                     <Text style={MainStyle.lightText}>Nickname: </Text>
                     <View style={MainStyle.inlineContainer}>
-                        <Text style={[MainStyle.lightText, {marginEnd: 10}]}>{userData.nickname}</Text>
+                        <Text style={[MainStyle.lightText, MainStyle.spacingEndSmall]}>{userData.nickname}</Text>
                         <Pressable onPress={() => {setNicknameModal(true); setStatus(null);}}>
                             <Ionicons name="create" color={Var.red} size={20}></Ionicons>
                         </Pressable>
@@ -81,7 +81,7 @@ export default function Settings() {
                 </View>
             </View>
             <ModalOverlay visible={nicknameModal} onClose={() => setNicknameModal(false)}>
-                <Text style={[MainStyle.containerTitle, {marginBottom: 10}]}>Edit nickname</Text>
+                <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>Edit nickname</Text>
                 {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
                 <View style={MainStyle.inlineContainer}>
                     <TextInput
@@ -125,13 +125,13 @@ export default function Settings() {
                 <Text style={MainStyle.containerTitle}>Preferences</Text>
                 <Ionicons name="contrast" color={Var.red} size={30}></Ionicons>
             </View>
-            <View style={[MainStyle.container, {zIndex: 1, marginBottom: 20}]}>
+            <View style={[MainStyle.container, MainStyle.sectionContainer, {zIndex: 1}]}>
                 <View style={MainStyle.inlineContainer}>
                     <Text style={MainStyle.lightText}>Resting time:</Text>
                     <View style={[MainStyle.inlineContainer, {justifyContent: "center"}]}>
                         <TextInput
                             keyboardType="numeric"
-                            style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
+                            style={[MainStyle.input, MainStyle.setInput, MainStyle.spacingHorizontalSmall]}
                             value={userData.preferences?.restingTime.minutes.toString() || 0}
                             onChangeText={text => {
                                 if (text !== "" && !/^\d+$/.test(text) || Number(text) > 59) return;
@@ -142,7 +142,7 @@ export default function Settings() {
                         <Text style={MainStyle.strongText}>:</Text>
                         <TextInput
                             keyboardType="numeric"
-                            style={[MainStyle.input, MainStyle.setInput, {marginHorizontal: 10}]}
+                            style={[MainStyle.input, MainStyle.setInput, MainStyle.spacingHorizontalSmall]}
                             value={userData.preferences?.restingTime.seconds.toString()}
                             onChangeText={text => {
                                 if (text !== "" && !/^\d+$/.test(text) || Number(text) > 59) return;
@@ -171,7 +171,7 @@ export default function Settings() {
                 <Text style={MainStyle.containerTitle}>Account</Text>
                 <Ionicons name="key" color={Var.red} size={30}></Ionicons>
             </View>
-            <View style={[MainStyle.container, {marginBottom: 20}]}>
+            <View style={[MainStyle.container, MainStyle.sectionContainer]}>
                 <Pressable style={MainStyle.secondaryButton}>
                     <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength("")}}>Password reset</Text>
                 </Pressable>
@@ -204,7 +204,7 @@ export default function Settings() {
                 </View>
             </View>
             <ModalOverlay visible={passwordModal} onClose={() => setPasswordModal(false)}>
-                <Text style={MainStyle.screenTitle}>Edit password</Text>
+                <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>Edit password</Text>
                 {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
                 <TextInput
                     secureTextEntry

@@ -16,7 +16,7 @@ import { StyleSheet } from "react-native";
 const AddExerciseStyle = StyleSheet.create({
     listItems : {
         backgroundColor: Var.navyBlue,
-        padding: 5,
+        padding: Var.spacing.xs,
         fontSize: 15,
         color: Var.white,
     }
@@ -57,7 +57,7 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
 
     return (
         <ModalOverlay visible={visible} onClose={Close}>
-            <Text style={MainStyle.screenTitle}>Search for exercises</Text>
+            <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>Search for exercises</Text>
             <TextInput 
                 style={MainStyle.input}
                 placeholder="Enter exercise name..."

@@ -71,11 +71,11 @@ export default function Login() {
                 <Text style={MainStyle.titleText}>MaxxedOut</Text>
             </View>
             <View style={{height: "50%"}}>
-                <View style={{marginVertical: "auto"}}>
+                <View style={MainStyle.centerVertically}>
                     <Text style={[MainStyle.screenTitle, {textAlign: "center"}]}>Log In</Text>
                     <TextInput 
                         placeholder="Enter your email..."
-                        style={[MainStyle.input, {marginVertical: 10}]}
+                        style={MainStyle.input}
                         onChangeText={setEmail}/>
                     <TextInput 
                         placeholder="Enter your password..."
@@ -95,9 +95,9 @@ export default function Login() {
                     onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/password-recovery")}}>
                     <Text style={[MainStyle.strongText, LoginStyle.forgotPassword]}>Forgot password?</Text>
                 </Pressable>
-                <View style={{marginBottom: 20, marginTop: "auto"}}>
-                    <View style={[MainStyle.inlineContainer, {margin: "auto"}]}>
-                        <Text style={[MainStyle.lightText, {marginEnd: 5}]}>Don't have an account?</Text>
+                <View style={MainStyle.bottomSection}>
+                    <View style={[MainStyle.inlineContainer, MainStyle.autoMargin]}>
+                        <Text style={[MainStyle.lightText, MainStyle.spacingEndExtraSmall]}>Don't have an account?</Text>
                         <Pressable
                             onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/registration")}}>
                             <Text style={MainStyle.strongText}>Register here!</Text>

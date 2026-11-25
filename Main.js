@@ -37,7 +37,7 @@ function Home() {
           headerStyle: { backgroundColor: Var.black, borderWidth: 1 },
           headerTitleStyle: { color: Var.white, fontSize: 30},
 
-          tabBarStyle: { height: 65, backgroundColor: Var.black, padding: 5},
+          tabBarStyle: MainStyle.tabBar,
           tabBarActiveTintColor: Var.red,
           tabBarInactiveTintColor: Var.white,
           tabBarIconStyle: {height: userData.preferences?.bottomTabText == "Show" ? 30 : 50},

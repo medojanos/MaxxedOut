@@ -24,15 +24,15 @@ export default function LogModal({visible, Close, workouts, status}) {
         <ModalOverlay visible={visible} onClose={Close}>
             <ScrollView>
                 {workouts ? workouts.map(workout => (
-                    <View key={workout.id} style={{marginBottom: 10}}>
+                    <View key={workout.id} style={MainStyle.spacingAfterSmall}>
                         <View style={MainStyle.inlineContainer}>
-                            <Text style={MainStyle.screenTitle}>{workout.name} - {workout.ended_at}</Text>
+                            <Text style={MainStyle.containerTitle}>{workout.name}</Text>
                             <Pressable
                                 onPress={() => setDeleteModal(true)}>
                                 <Ionicons name="trash" size={20} color={Var.red}/>
                             </Pressable>
                         </View>
-                        <Text style={MainStyle.strongText}>{displayTime(workout.duration, "h m s")}</Text>
+                        <Text style={MainStyle.strongText}>{workout.ended_at} - {displayTime(workout.duration, "h m s")}</Text>
                         {workout.exercises.map((exercise, exerciseIndex) => (
                             <View key={exerciseIndex} style={MainStyle.container}>
                                 <Text style={MainStyle.containerTitle}>{exercise.name}</Text>
@@ -51,7 +51,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                 )) : <Text style={MainStyle.screenTitle}>{status}</Text>}
             </ScrollView>
             <ModalOverlay visible={deleteModal} onClose={() => setDeleteModal(false)}>
-                <Text style={MainStyle.screenTitle}>Are you sure you want to delete this log?</Text>
+                <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>Are you sure you want to delete this log?</Text>
                 <Pressable
                     style={MainStyle.secondaryButton}
                     onPress={() => setDeleteModal(false)}>

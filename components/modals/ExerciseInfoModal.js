@@ -31,13 +31,13 @@ export default function ExerciseInfoModal({id, name, maxWidth}) {
                 <Text style={MainStyle.strongText}>{name}</Text>
             </Pressable>
             <ModalOverlay visible={visible} onClose={() => setVisible(false)}>
-                <Text style={MainStyle.screenTitle}>{exerciseInfos?.name}</Text>
+                <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>{exerciseInfos?.name}</Text>
                 {exerciseInfos ? (
                     <View>
                         <Text style={MainStyle.lightText}>Type: {exerciseInfos.type}</Text>
                         {Object.entries(exerciseInfos.muscle_groups).length !== 0 ? 
                             <>
-                                <Text style={[MainStyle.containerTitle, {marginVertical: 10, textAlign: "center"}]}>
+                                <Text style={[MainStyle.containerTitle, MainStyle.spacingVerticalSmall, {textAlign: "center"}]}>
                                     Muscle groups
                                 </Text>
                                 <View style={MainStyle.inlineContainer}>

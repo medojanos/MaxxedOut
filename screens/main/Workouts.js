@@ -1,5 +1,5 @@
 // React
-import { View, Text, ScrollView, Pressable, StyleSheet, Alert } from "react-native";
+import { View, Text, ScrollView, Pressable, Alert } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -14,10 +14,6 @@ import useApiFetch from "../../misc/ApiFetch";
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 import AlertBox from "../../components/AlertBox";
-
-const WorkoutsStyle = StyleSheet.create({
-
-})
 
 export default function Workouts() {
     const [planModal, setPlanModal] = useState(false);
@@ -43,9 +39,9 @@ export default function Workouts() {
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
             <Text style={MainStyle.screenTitle}>Workouts</Text>
-            <Text style={[MainStyle.lightText, {marginBottom: 15}]}>Create or edit your workout plans</Text>
+            <Text style={[MainStyle.lightText, MainStyle.sectionDescription]}>Create or edit your workout plans</Text>
             <Pressable style={MainStyle.button} onPress={() => {navigation.navigate("CreateWorkout")}}>
-                <Ionicons style={{margin: "auto"}} name="add-circle" size={50} color={Var.black}></Ionicons>
+                <Ionicons style={MainStyle.autoMargin} name="add-circle" size={50} color={Var.black}></Ionicons>
             </Pressable>
             {
                 plans ? plans.length > 0 ? 

@@ -159,7 +159,7 @@ export default function Workout() {
                 }
 
                 <ModalOverlay visible={recentModal}>
-                    <Text style={MainStyle.screenTitle}>No recent workout</Text>
+                    <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>No recent workout</Text>
                     <Pressable style={MainStyle.button} onPress={() => setRecentModal(false)}>
                         <Text style={MainStyle.buttonText}>Close</Text>
                     </Pressable>
@@ -223,7 +223,7 @@ export default function Workout() {
                             ))
                         }
                         <Pressable onPress={() => addSet(exerciseIndex)}>
-                            <Ionicons name="add-circle-outline" color={Var.red} size={25} style={{ margin: "auto" }}></Ionicons>
+                            <Ionicons name="add-circle-outline" color={Var.red} size={25} style={MainStyle.autoMargin}></Ionicons>
                         </Pressable>
                     </View>
                 ))}
@@ -234,7 +234,7 @@ export default function Workout() {
                     ownIndex={workout.ownIndex}
                     Close={() => setSearchModal(false)}
                 />
-                <Pressable style={[MainStyle.button, {marginVertical: 10}]} onPress={() => setSearchModal(true)}>
+                <Pressable style={[MainStyle.button, MainStyle.spacingVerticalSmall]} onPress={() => setSearchModal(true)}>
                     <Text style={MainStyle.buttonText}>Add exercise</Text>
                 </Pressable>
                 <View style={MainStyle.inlineContainer}>

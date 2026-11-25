@@ -1,5 +1,5 @@
 // React
-import { View, Text, ScrollView, StyleSheet, Pressable} from "react-native";
+import { View, Text, ScrollView, Pressable} from "react-native";
 import { useState, useEffect, useContext } from "react";
 import { Calendar } from "react-native-calendars";
 
@@ -13,15 +13,6 @@ import useApiFetch from "../../misc/ApiFetch";
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle"
 import LogModal from "../../components/modals/LogModal";
-
-const LogsStyle = StyleSheet.create({
-    calendar : {
-        backgroundColor: Var.darkGray,
-        borderRadius: Var.borderRadius,
-        padding: 10,
-        marginVertical : 20
-    }
-})
 
 export default function Logs() {
     const [workouts, setWorkouts] = useState();
@@ -82,10 +73,10 @@ export default function Logs() {
         <ScrollView contentContainerStyle={MainStyle.content}>
             <View>
                 <Text style={MainStyle.screenTitle}>Training log.</Text>
-                <Text style={MainStyle.strongText}>Keep track of your previous workouts</Text>
+                <Text style={[MainStyle.strongText, MainStyle.sectionDescription]}>Keep track of your previous workouts</Text>
             </View>
             <Calendar 
-                style={LogsStyle.calendar} 
+                style={MainStyle.calendar}
                 enableSwipeMonths
                 firstDay={1}
                 onDayPress={day => fetchWorkouts("/workouts?date=", day.dateString)}
@@ -93,11 +84,7 @@ export default function Logs() {
                     todayTextColor : Var.red,
                     monthTextColor: Var.white,
                     arrowColor: Var.white,
-                    arrowStyle: {
-                        backgroundColor: Var.gray,
-                        borderRadius: Var.borderRadius,
-                        padding: 5
-                    },
+                    arrowStyle: MainStyle.calendarArrow,
                     calendarBackground : Var.darkGray,
                     textDayStyle: {color: Var.white},
                     textDisabledColor: Var.gray

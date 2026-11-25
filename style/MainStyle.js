@@ -4,24 +4,93 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     /* LAYOUT */
     content: {
-        padding: 10,
+        padding: Var.spacing.sm,
         backgroundColor: Var.black,
         flexGrow: 1
     },
     container : {
-        padding: 20,
+        padding: Var.spacing.lg,
         backgroundColor: Var.darkGray,
         borderRadius: Var.borderRadius,
         width: "100%",
-        marginVertical : 5,
+        marginVertical: Var.spacing.xs,
         borderWidth: 1,
         borderColor: Var.gray
+    },
+    sectionContainer: {
+        marginBottom: Var.spacing.lg
+    },
+    callout: {
+        backgroundColor: Var.red,
+        borderRadius: Var.borderRadius,
+        padding: Var.spacing.lg
     },
     inlineContainer : {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: 5
+        marginBottom: Var.spacing.xs
+    },
+    tabBar: {
+        height: 65,
+        backgroundColor: Var.black,
+        padding: Var.spacing.xs
+    },
+    calendar: {
+        backgroundColor: Var.darkGray,
+        borderRadius: Var.borderRadius,
+        padding: Var.spacing.sm,
+        marginVertical: Var.spacing.lg
+    },
+    calendarArrow: {
+        backgroundColor: Var.gray,
+        borderRadius: Var.borderRadius,
+        padding: Var.spacing.xs
+    },
+
+    /* SPACING */
+    spacingAfterExtraSmall: {
+        marginBottom: Var.spacing.xs
+    },
+    spacingAfterSmall: {
+        marginBottom: Var.spacing.sm
+    },
+    spacingAfterLarge: {
+        marginBottom: Var.spacing.lg
+    },
+    spacingVerticalSmall: {
+        marginVertical: Var.spacing.sm
+    },
+    spacingHorizontalSmall: {
+        marginHorizontal: Var.spacing.sm
+    },
+    spacingRightSmall: {
+        marginRight: Var.spacing.sm
+    },
+    spacingEndSmall: {
+        marginEnd: Var.spacing.sm
+    },
+    spacingEndExtraSmall: {
+        marginEnd: Var.spacing.xs
+    },
+    spacingNone: {
+        margin: 0
+    },
+    autoMargin: {
+        margin: "auto"
+    },
+    centerVertically: {
+        marginVertical: "auto"
+    },
+    bottomSection: {
+        marginBottom: Var.spacing.lg,
+        marginTop: "auto"
+    },
+    sectionDescription: {
+        marginBottom: Var.spacing.md
+    },
+    modalTitle: {
+        marginBottom: Var.spacing.sm
     },
 
     /* HEADINGS */
@@ -65,7 +134,8 @@ export default StyleSheet.create({
     buttonText : {
         textAlign: "center",
         color: Var.white,
-        margin: 10,
+        paddingVertical: Var.spacing.sm,
+        paddingHorizontal: Var.spacing.sm,
         fontWeight: "bold"
     },
 
@@ -73,13 +143,13 @@ export default StyleSheet.create({
     button : {
         backgroundColor: Var.red,
         borderRadius: Var.borderRadius,
-        marginVertical: 5
+        marginVertical: Var.spacing.xs
     },
     secondaryButton : {
         backgroundColor : Var.black,
         borderRadius : Var.borderRadius,
         borderColor: Var.gray,
-        marginVertical: 5,
+        marginVertical: Var.spacing.xs,
         borderWidth: 1
     },
     buttonBlock : {
@@ -89,12 +159,13 @@ export default StyleSheet.create({
     input : {
         backgroundColor: Var.black,
         color: Var.white,
-        padding: 10,
+        padding: Var.spacing.sm,
         borderRadius: Var.borderRadius,
         borderWidth: 0,
         maxWidth: "100%",
         borderColor: Var.gray,
-        borderWidth: 1
+        borderWidth: 1,
+        marginVertical: Var.spacing.xs
     },
     setInput : {
         textAlign: "center",
@@ -111,24 +182,24 @@ export default StyleSheet.create({
     modal: {
         maxHeight: "100%",
         backgroundColor: Var.darkGray,
-        padding: 20, 
-        paddingBottom: 10, 
+        padding: Var.spacing.lg,
+        paddingBottom: Var.spacing.sm,
         borderRadius: Var.borderRadius
     },
     alertBox: {
         borderRadius: Var.borderRadius,
         borderColor: Var.red,
         backgroundColor: Var.black,
-        paddingVertical: 20,
-        paddingHorizontal: 30,
+        paddingVertical: Var.spacing.lg,
+        paddingHorizontal: Var.spacing.xl,
         borderWidth: 1,
-        marginVertical: 10,
+        marginVertical: Var.spacing.sm,
         width: "auto",
         margin: "auto"
     },
     line : {
         borderWidth: 0.5,
         borderColor:'black',
-        margin:10,
+        margin: Var.spacing.sm,
     }
 })

@@ -8,12 +8,12 @@ export default function AlertBox({message, heading, visible = true, onClose = ()
         <View style={MainStyle.alertBox}>
             {heading ? 
                 <View style={MainStyle.inlineContainer}>
-                    <Text style={[MainStyle.containerTitle, {marginEnd: 10}]}>{heading}</Text>
+                    <Text style={[MainStyle.containerTitle, MainStyle.spacingEndSmall]}>{heading}</Text>
                     { closable ? <Ionicons name="close" size={15} color={Var.red} onPress={() => onClose(false)}/> : null }
                 </View>
             : null }
             <View style={MainStyle.inlineContainer}>
-                {message ? <Text style={[MainStyle.lightText, {marginEnd: 10}]}>{message}</Text> : null}
+                {message ? <Text style={[MainStyle.lightText, MainStyle.spacingEndSmall]}>{message}</Text> : null}
                 {heading || !closable ? null : <Ionicons name="close" size={15} color={Var.red} onPress={() => onClose(false)}/>}
             </View>
         </View> : null

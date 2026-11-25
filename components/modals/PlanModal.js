@@ -84,7 +84,7 @@ export default function PlanModal({ Close, visible, id, name }) {
 
     return (
         <ModalOverlay visible={visible} onClose={Close}>
-            <Text style={MainStyle.containerTitle}>Edit workout plan</Text>
+            <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>Edit workout plan</Text>
             {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
             <TextInput 
                 style={MainStyle.input} 
@@ -144,7 +144,7 @@ export default function PlanModal({ Close, visible, id, name }) {
             </AddExercise>
             <Pressable style={MainStyle.secondaryButton} onPress={() => {setDeleteModal(true)}}><Text style={MainStyle.buttonText}>Delete workout plan</Text></Pressable>
             <ModalOverlay visible={deleteModal} onClose={() => setDeleteModal(false)}>
-                <Text style={MainStyle.screenTitle}>
+                <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>
                     Are you sure you want to delete
                     <Text style={{fontStyle: "italic"}}> {name}</Text> ?
                 </Text>

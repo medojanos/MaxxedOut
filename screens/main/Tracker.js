@@ -154,7 +154,7 @@ export default function Tracker() {
     return (
         <ScrollView contentContainerStyle={MainStyle.content}>
             <Text style={MainStyle.titleText}>{userData ? "Welcome, " + userData.nickname : ""}</Text>
-            <Text style={[MainStyle.screenTitle, {marginBottom: 15}]}>Tracker</Text>
+            <Text style={[MainStyle.screenTitle, MainStyle.sectionDescription]}>Tracker</Text>
             {
             workout ?
                 <>
@@ -200,7 +200,7 @@ export default function Tracker() {
                         <Text style={MainStyle.lightText}>{status}</Text>
                         <View style={MainStyle.inlineContainer}>
                             <View style={MainStyle.inlineContainer}>
-                                <Text style={[MainStyle.containerTitle, {marginEnd: 10}]}>{workout.name}</Text>
+                                <Text style={[MainStyle.containerTitle, MainStyle.spacingEndSmall]}>{workout.name}</Text>
                                 <Pressable onPress={() => setCardioModal(true)}>
                                     <Ionicons name="create" size={20} color={Var.red}></Ionicons>
                                 </Pressable>
@@ -253,25 +253,21 @@ export default function Tracker() {
                 </>
                 : 
                 <>
-                    <View style={[MainStyle.inlineContainer, {
-                        backgroundColor: Var.red,
-                        borderRadius: Var.borderRadius,
-                        padding: 20
-                    }]}>
+                    <View style={[MainStyle.inlineContainer, MainStyle.callout]}>
                         <View>
                             <Text style={MainStyle.containerTitle}>Choose a workout</Text>
                             <Text style={MainStyle.lightText}>Or start a blank one</Text>
                         </View>
                         <Pressable
                             onPress={() => {setWorkoutModal(true)}}>
-                            <Ionicons style={{margin: "auto"}} name="play-circle" size={50} color={Var.white}></Ionicons>
+                            <Ionicons style={MainStyle.autoMargin} name="play-circle" size={50} color={Var.white}></Ionicons>
                         </Pressable> 
                     </View>
                     { !offline ? 
                         <View style={MainStyle.container}>
                             <View style={MainStyle.inlineContainer}>
                                 <Text style={MainStyle.containerTitle}>Cardio</Text>
-                                <Pressable style={[MainStyle.button, MainStyle.buttonBlock, {margin: 0}]} onPress={() => {
+                                <Pressable style={[MainStyle.button, MainStyle.buttonBlock, MainStyle.spacingNone]} onPress={() => {
                                     setWorkout({name: "Cardio", type: "cardio", started_at: dayjs().format("YYYY-MM-DD HH:mm:ss")})
                                 }}>
                                     <Text style={MainStyle.buttonText}>Start</Text>

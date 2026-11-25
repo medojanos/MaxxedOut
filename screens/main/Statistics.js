@@ -79,7 +79,7 @@ export default function Statistics() {
             {statistics && oneRepMaxes ? 
             <View>
                 <Text style={MainStyle.screenTitle}>Statistics</Text>
-                <Text style={[MainStyle.lightText, {marginBottom: 15}]}>Your training progress at a glance</Text>
+                <Text style={[MainStyle.lightText, MainStyle.sectionDescription]}>Your training progress at a glance</Text>
                 <Text style={MainStyle.containerTitle}>Consistency</Text>
                 <View style={MainStyle.container}>
                     <Text style={MainStyle.lightText}>WEEKLY WORKOUT STREAK</Text>
@@ -95,7 +95,7 @@ export default function Statistics() {
                         <Text style={MainStyle.strongText}>{statistics.totalDuration} minutes</Text>
                     </View>
                 </View>
-                <View style={[MainStyle.container, {marginBottom: 20}]}>
+                <View style={[MainStyle.container, MainStyle.sectionContainer]}>
                     <Text style={MainStyle.lightText}>AVERAGE SESSION</Text>
                     <Text style={MainStyle.strongText}>{statistics.avgDuration} minutes</Text>
                 </View>
