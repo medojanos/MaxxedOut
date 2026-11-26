@@ -1,6 +1,10 @@
 <h1>Change Log</h1>
 <p>All notable changes to this project will be documented in this file</p>
 
+<h2>v0.2.1</h2>
+<h3>Changes</h3>
+<p>UI improvement</p>
+
 <h2>v0.2.0</h2>
 <h3>Bugfixes</h3>
 <p>Token refresh</p>
