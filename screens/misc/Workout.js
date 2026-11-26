@@ -167,7 +167,7 @@ export default function Workout() {
 
                 {workout.plan?.map((exercise, exerciseIndex) => (
                     <View key={exerciseIndex} style={MainStyle.container}>
-                        <View style={MainStyle.inlineContainer}>
+                        <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                             <ReArrange
                                 index={exerciseIndex}
                                 list={workout.plan}
@@ -189,13 +189,13 @@ export default function Workout() {
                             }
                             <View>
                                 <Pressable onPress={() => deleteExercise(exerciseIndex)}>
-                                    <Ionicons name="trash" color={Var.red} size={20}></Ionicons>
+                                    <Ionicons name="trash" color={Var.red} size={Var.iconSizes.sm}></Ionicons>
                                 </Pressable>
                             </View>
                         </View>
                         {
                             exercise.sets?.map((_, setIndex) => (
-                                <View key={setIndex} style={MainStyle.inlineContainer}>
+                                <View key={setIndex} style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                                     <Text style={MainStyle.lightText}>{setIndex + 1 + "."}</Text>
                                     <TextInput
                                         value={workout.plan[exerciseIndex].sets[setIndex].weight.toString()}
@@ -217,13 +217,13 @@ export default function Workout() {
                                         }}
                                     />
                                     <Pressable onPress={() => deleteSet(exerciseIndex, setIndex)}>
-                                        <Ionicons name="close" color={Var.gray} size={30}></Ionicons>
+                                        <Ionicons name="close" color={Var.gray} size={Var.iconSizes.lg}></Ionicons>
                                     </Pressable>
                                 </View>
                             ))
                         }
                         <Pressable onPress={() => addSet(exerciseIndex)}>
-                            <Ionicons name="add-circle-outline" color={Var.red} size={25} style={MainStyle.autoMargin}></Ionicons>
+                            <Ionicons name="add-circle-outline" color={Var.red} size={Var.iconSizes.md} style={MainStyle.autoMargin}></Ionicons>
                         </Pressable>
                     </View>
                 ))}
@@ -237,7 +237,7 @@ export default function Workout() {
                 <Pressable style={[MainStyle.button, MainStyle.spacingVerticalSmall]} onPress={() => setSearchModal(true)}>
                     <Text style={MainStyle.buttonText}>Add exercise</Text>
                 </Pressable>
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                     <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => setDoneModal(true)}>
                         <Text style={MainStyle.buttonText}>Done</Text>
                     </Pressable>

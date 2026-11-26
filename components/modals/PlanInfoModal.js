@@ -31,7 +31,7 @@ export default function PlanInfoModal({ Close, visible, id, name }) {
         <ModalOverlay visible={visible} onClose={Close}>
             <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>{name} Details</Text>
             {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
-            <View style={[MainStyle.inlineContainer, MainStyle.spacingVerticalSmall]}>
+            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone, MainStyle.spacingVerticalSmall]}>
                 {planInfo?.totalExercises ? <Text style={MainStyle.lightText}>Total exercises: {planInfo?.totalExercises}</Text> : null }
                 {planInfo?.totalSets ? <Text style={MainStyle.lightText}>Total sets: {planInfo?.totalSets}</Text> : null }
             </View>

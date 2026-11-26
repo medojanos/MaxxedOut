@@ -2,11 +2,17 @@
 const fontSize = 16;
 const borderRadius = 20;
 const spacing = {
-    xs: 5,
-    sm: 10,
-    md: 15,
-    lg: 20,
-    xl: 30
+    sm: 5,
+    md: 10,
+    lg: 20
+};
+const iconSizes = {
+    xs: 15,
+    sm: 20,
+    md: 25,
+    lg: 30,
+    xl: 50,
+    xxl: 60
 };
 
 // Colors
@@ -18,6 +24,6 @@ const red = "#dc2626";
 
 export {
     fontSize, borderRadius,
-    spacing,
+    spacing, iconSizes,
     black, darkGray, gray, white, red 
 }

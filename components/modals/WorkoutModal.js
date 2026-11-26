@@ -49,7 +49,7 @@ export default function WorkoutModal({Close, visible, isOffline}) {
                 plans.map(plan => (
                     <Pressable 
                         key={plan.id}
-                        style={[MainStyle.secondaryButton, MainStyle.spacingAfterExtraSmall]}
+                        style={[MainStyle.secondaryButton, MainStyle.spacingAfterSmall]}
                         onPress={() => {
                             apiFetch("/plans/" + plan.id)
                             .then(res => res.json())
@@ -62,7 +62,7 @@ export default function WorkoutModal({Close, visible, isOffline}) {
                         <Text style={MainStyle.buttonText}>{plan.name}</Text>
                     </Pressable>)) 
                 :
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                     <Text style={[MainStyle.lightText, {fontWeight: "bold"}]}>No workout plan?</Text>
                     <Pressable style={[MainStyle.button]} onPress={() => {navigation.navigate("CreateWorkout"); Close();}}>
                         <Text style={MainStyle.buttonText}>Create one</Text>

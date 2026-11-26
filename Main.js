@@ -40,7 +40,7 @@ function Home() {
           tabBarStyle: MainStyle.tabBar,
           tabBarActiveTintColor: Var.red,
           tabBarInactiveTintColor: Var.white,
-          tabBarIconStyle: {height: userData.preferences?.bottomTabText == "Show" ? 30 : 50},
+          tabBarIconStyle: {flex: 1},
           tabBarShowLabel: userData.preferences?.bottomTabText == "Show" ? true : false,
           tabBarHideOnKeyboard : true,
 
@@ -52,7 +52,7 @@ function Home() {
               Workouts: "list",
               Settings: "settings",
             };
-            return <Ionicons name={icons[route.name]} size={30} color={color}/>;
+            return <Ionicons name={icons[route.name]} size={Var.iconSizes.lg} color={color}/>;
           },
         })}>
         <Tab.Screen name="Statistics" component={Statistics} />

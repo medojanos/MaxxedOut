@@ -16,8 +16,8 @@ export default function ReArrange({index, list, onMove}) {
     }
     return (
         <View style={MainStyle.spacingRightSmall}>
-            <Ionicons name="chevron-up" color={Var.white} size={20} onPress={() => Move(index, index-1)}></Ionicons>
-            <Ionicons name="chevron-down" color={Var.white} size={20} onPress={() => Move(index, index+1)}></Ionicons>
+            <Ionicons name="chevron-up" color={Var.white} size={Var.iconSizes.sm} onPress={() => Move(index, index-1)}></Ionicons>
+            <Ionicons name="chevron-down" color={Var.white} size={Var.iconSizes.sm} onPress={() => Move(index, index+1)}></Ionicons>
         </View>
     )
 }

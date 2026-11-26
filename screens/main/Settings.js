@@ -13,6 +13,7 @@ import useApiFetch from "../../misc/ApiFetch";
 // Style
 import * as Var from "../../style/Variables"
 import MainStyle from "../../style/MainStyle";
+import Divider from "../../components/Divider";
 
 export default function Settings() {
     const {userData, Refresh, Logout, setUserData} = useContext(Context);
@@ -61,21 +62,22 @@ export default function Settings() {
                 <Text style={MainStyle.screenTitle}>Settings</Text>
                 <Text style={[MainStyle.lightText, MainStyle.sectionDescription]}>Manage your account and preferences</Text>
             </View>
-            <View style={MainStyle.inlineContainer}>
+            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                 <Text style={MainStyle.containerTitle}>Profile</Text>
-                <Ionicons name="person-circle" color={Var.red} size={30}></Ionicons>
+                <Ionicons name="person-circle" color={Var.red} size={Var.iconSizes.lg}></Ionicons>
             </View>
             <View style={[MainStyle.container, MainStyle.sectionContainer]}>
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, {marginBottom: 0}]}>
                     <Text style={MainStyle.lightText}>Nickname: </Text>
-                    <View style={MainStyle.inlineContainer}>
+                    <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                         <Text style={[MainStyle.lightText, MainStyle.spacingEndSmall]}>{userData.nickname}</Text>
                         <Pressable onPress={() => {setNicknameModal(true); setStatus(null);}}>
-                            <Ionicons name="create" color={Var.red} size={20}></Ionicons>
+                            <Ionicons name="create" color={Var.red} size={Var.iconSizes.sm}></Ionicons>
                         </Pressable>
                     </View>
                 </View>
-                <View style={MainStyle.inlineContainer}>
+                <Divider/>
+                <View style={[MainStyle.inlineContainer, {marginBottom: 0}]}>
                     <Text style={MainStyle.lightText}>E-mail: </Text>
                     <Text style={MainStyle.lightText}>{userData.email}</Text>
                 </View>
@@ -83,7 +85,7 @@ export default function Settings() {
             <ModalOverlay visible={nicknameModal} onClose={() => setNicknameModal(false)}>
                 <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>Edit nickname</Text>
                 {status ? <Text style={MainStyle.lightText}>{status}</Text> : null}
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                     <TextInput
                         value={newNickname}
                         placeholder="Enter new nickname..."
@@ -94,10 +96,10 @@ export default function Settings() {
                         }}>
                     </TextInput>
                     <Pressable onPress={() => {setNewNickname(RandomName());}}>
-                        <Ionicons name="dice-outline" color={Var.red} size={25}></Ionicons>
+                        <Ionicons name="dice-outline" color={Var.red} size={Var.iconSizes.md}></Ionicons>
                     </Pressable>
                 </View>
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                     <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
                         apiFetch("/users", {
                             method: "PATCH",
@@ -121,14 +123,14 @@ export default function Settings() {
                     </Pressable>
                 </View>
             </ModalOverlay>
-            <View style={MainStyle.inlineContainer}>
+            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                 <Text style={MainStyle.containerTitle}>Preferences</Text>
-                <Ionicons name="contrast" color={Var.red} size={30}></Ionicons>
+                <Ionicons name="contrast" color={Var.red} size={Var.iconSizes.lg}></Ionicons>
             </View>
             <View style={[MainStyle.container, MainStyle.sectionContainer, {zIndex: 1}]}>
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, {marginBottom: 0}]}>
                     <Text style={MainStyle.lightText}>Resting time:</Text>
-                    <View style={[MainStyle.inlineContainer, {justifyContent: "center"}]}>
+                    <View style={[MainStyle.inlineContainer, MainStyle.spacingNone, {justifyContent: "center"}]}>
                         <TextInput
                             keyboardType="numeric"
                             style={[MainStyle.input, MainStyle.setInput, MainStyle.spacingHorizontalSmall]}
@@ -152,7 +154,8 @@ export default function Settings() {
                         </TextInput>
                     </View>
                 </View>
-                <View style={MainStyle.inlineContainer}>
+                <Divider/>
+                <View style={[MainStyle.inlineContainer, {marginBottom: 0}]}>
                     <Text style={MainStyle.lightText}>Bottom tab text: </Text>
                     <DropDownPicker
                         open={picker}
@@ -161,42 +164,44 @@ export default function Settings() {
                         style={MainStyle.input}
                         textStyle={{color: Var.white}}
                         value={userData.preferences?.bottomTabText || "Show"}
-                        dropDownContainerStyle={{backgroundColor: Var.black, borderColor: Var.gray}}
+                        arrowIconStyle={{tintColor: Var.white}}
+                        dropDownContainerStyle={MainStyle.input}
                         items={[{label: "Show", value: "Show"}, {label: "Hide", value: "Hide"}]}
                         setValue={value => setUserData(prev => ({...prev, preferences: {...prev.preferences, bottomTabText: value()}}))}>
                     </DropDownPicker>
                 </View>
             </View>
-            <View style={MainStyle.inlineContainer}>
+            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                 <Text style={MainStyle.containerTitle}>Account</Text>
-                <Ionicons name="key" color={Var.red} size={30}></Ionicons>
+                <Ionicons name="key" color={Var.red} size={Var.iconSizes.lg}></Ionicons>
             </View>
-            <View style={[MainStyle.container, MainStyle.sectionContainer]}>
+            <View style={MainStyle.sectionContainer}>
                 <Pressable style={MainStyle.secondaryButton}>
                     <Text style={MainStyle.buttonText} onPress={() => {setPasswordModal(true); setPwdStrength("")}}>Password reset</Text>
                 </Pressable>
                 <Pressable 
                     style={[MainStyle.secondaryButton, {borderColor: Var.red}]} 
                     onPress={() => Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/delete-account")}>
-                    <View style={[MainStyle.inlineContainer, {justifyContent: "center"}]}>
+                    <View style={[MainStyle.inlineContainer, {justifyContent: "center", margin: 0}]}>
                         <Text style={MainStyle.buttonText}>Delete account</Text>
-                        <Ionicons name="link" color={Var.white} size={20}></Ionicons>
+                        <Ionicons name="link" color={Var.white} size={Var.iconSizes.sm}></Ionicons>
                     </View>
                 </Pressable>
                 <Pressable style={MainStyle.button} onPress={() => Logout()}>
                     <Text style={MainStyle.buttonText}>Logout</Text>
                 </Pressable>
             </View>
-            <View style={MainStyle.inlineContainer}>
+            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                 <Text style={MainStyle.containerTitle}>About</Text>
-                <Ionicons name="information-circle" color={Var.red} size={30}></Ionicons>
+                <Ionicons name="information-circle" color={Var.red} size={Var.iconSizes.lg}></Ionicons>
             </View>
             <View style={MainStyle.container}>
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, {marginBottom: 0}]}>
                     <Text style={MainStyle.strongText}>Version</Text>
                     <Text style={MainStyle.lightText}>v{Constants.expoConfig.version}</Text>
                 </View>
-                <View style={MainStyle.inlineContainer}>
+                <Divider></Divider>
+                <View style={[MainStyle.inlineContainer, {marginBottom: 0}]}>
                     <Text style={MainStyle.strongText}>Contact</Text>
                     <Text style={[MainStyle.lightText, MainStyle.link]} onPress={() => Linking.openURL("mailto:maxxedout@meadowhub.net")}>
                         maxxedout@meadowhub.net
@@ -225,7 +230,7 @@ export default function Settings() {
                     onChangeText={setNewRepassword}>
                 </TextInput>
                 {pwdStrength ? <Text style={MainStyle.strongText}>{pwdStrength}</Text> : null}
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                     <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
                         setStatus("");
                         if (pwdStrength == "") return setStatus("Enter valid password")

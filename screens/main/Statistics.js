@@ -85,7 +85,7 @@ export default function Statistics() {
                     <Text style={MainStyle.lightText}>WEEKLY WORKOUT STREAK</Text>
                     <Text style={MainStyle.containerTitle}>{statistics.workoutStreak} weeks</Text>
                 </View>
-                <View style={[MainStyle.inlineContainer, {alignItems: "stretch"}]}>
+                <View style={[MainStyle.inlineContainer, MainStyle.spacingNone, {alignItems: "stretch"}]}>
                     <View style={[MainStyle.container, {width: "48%"}]}>
                         <Text style={MainStyle.lightText}>WORKOUTS</Text>
                         <Text style={MainStyle.strongText}>{statistics.totalWorkouts} completed</Text>
@@ -118,7 +118,7 @@ export default function Statistics() {
                                 Best lift: <Text style={MainStyle.strongText}>{MostImpressive(...oneRepMaxes.map(max => max.onerm))}</Text>
                             </Text>
                         </View>
-                        <View style={MainStyle.inlineContainer}>
+                        <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                             {["Squat", "Bench", "Deadlift"].map((lift, index) => (
                                 <View key={lift} style={[MainStyle.container, {width: "31%", alignItems: "center"}]}>
                                     <Text style={MainStyle.lightText}>{lift}</Text>

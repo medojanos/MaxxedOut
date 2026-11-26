@@ -40,7 +40,7 @@ export default function ExerciseInfoModal({id, name, maxWidth}) {
                                 <Text style={[MainStyle.containerTitle, MainStyle.spacingVerticalSmall, {textAlign: "center"}]}>
                                     Muscle groups
                                 </Text>
-                                <View style={MainStyle.inlineContainer}>
+                                <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                                     {Object.entries(exerciseInfos.muscle_groups).map(
                                         ([role, muscleGroups]) => (
                                             <View key={role}>

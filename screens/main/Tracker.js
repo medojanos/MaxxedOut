@@ -161,7 +161,7 @@ export default function Tracker() {
                     {workout.type !== "cardio" ? 
                     <>
                         <View style={MainStyle.container}>
-                            <View style={MainStyle.inlineContainer}>
+                            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                                 <Text style={MainStyle.strongText}>{workout.name}</Text>
                                 <Text style={MainStyle.lightText}>{durationTimer}</Text>
                             </View>
@@ -179,18 +179,18 @@ export default function Tracker() {
                                 <Text style={MainStyle.strongText}>Resting timer</Text>
                                 <Text style={MainStyle.lightText}>{restingTimer}</Text>
                             </View>
-                            <View style={MainStyle.inlineContainer}>
+                            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                                 <Pressable
                                     onPress={() => {handleTimer("pause")}}>
-                                    <Ionicons name="pause-circle" size={50} color={Var.gray}></Ionicons>
+                                    <Ionicons name="pause-circle" size={Var.iconSizes.xl} color={Var.gray}></Ionicons>
                                 </Pressable>
                                 <Pressable
                                     onPress={() => {handleTimer("start")}}>
-                                    <Ionicons name="play-circle" size={60} color={Var.red}></Ionicons>
+                                    <Ionicons name="play-circle" size={Var.iconSizes.xxl} color={Var.red}></Ionicons>
                                 </Pressable>
                                 <Pressable
                                     onPress={() => {handleTimer("reset")}}>
-                                    <Ionicons name="stop-circle" size={50} color={Var.gray}></Ionicons>
+                                    <Ionicons name="stop-circle" size={Var.iconSizes.xl} color={Var.gray}></Ionicons>
                                 </Pressable>
                             </View>
                         </View>
@@ -198,16 +198,16 @@ export default function Tracker() {
                     :
                     <View style={MainStyle.container}>
                         <Text style={MainStyle.lightText}>{status}</Text>
-                        <View style={MainStyle.inlineContainer}>
-                            <View style={MainStyle.inlineContainer}>
+                        <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
+                            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                                 <Text style={[MainStyle.containerTitle, MainStyle.spacingEndSmall]}>{workout.name}</Text>
                                 <Pressable onPress={() => setCardioModal(true)}>
-                                    <Ionicons name="create" size={20} color={Var.red}></Ionicons>
+                                    <Ionicons name="create" size={Var.iconSizes.sm} color={Var.red}></Ionicons>
                                 </Pressable>
                             </View>
                             <Text style={MainStyle.lightText}>{durationTimer}</Text>
                         </View>
-                        <View style={MainStyle.inlineContainer}>
+                        <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                             <Pressable style={[MainStyle.button, MainStyle.buttonBlock]}
                                 onPress={() => setSaveModal(true)}>
                                 <Text style={MainStyle.buttonText}>Done</Text>
@@ -253,19 +253,19 @@ export default function Tracker() {
                 </>
                 : 
                 <>
-                    <View style={[MainStyle.inlineContainer, MainStyle.callout]}>
+                    <View style={[MainStyle.inlineContainer, MainStyle.spacingNone, MainStyle.callout]}>
                         <View>
                             <Text style={MainStyle.containerTitle}>Choose a workout</Text>
                             <Text style={MainStyle.lightText}>Or start a blank one</Text>
                         </View>
                         <Pressable
                             onPress={() => {setWorkoutModal(true)}}>
-                            <Ionicons style={MainStyle.autoMargin} name="play-circle" size={50} color={Var.white}></Ionicons>
+                            <Ionicons style={MainStyle.autoMargin} name="play-circle" size={Var.iconSizes.xl} color={Var.white}></Ionicons>
                         </Pressable> 
                     </View>
                     { !offline ? 
                         <View style={MainStyle.container}>
-                            <View style={MainStyle.inlineContainer}>
+                            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                                 <Text style={MainStyle.containerTitle}>Cardio</Text>
                                 <Pressable style={[MainStyle.button, MainStyle.buttonBlock, MainStyle.spacingNone]} onPress={() => {
                                     setWorkout({name: "Cardio", type: "cardio", started_at: dayjs().format("YYYY-MM-DD HH:mm:ss")})

@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     /* LAYOUT */
     content: {
-        padding: Var.spacing.sm,
+        padding: Var.spacing.md,
         backgroundColor: Var.black,
         flexGrow: 1
     },
@@ -13,7 +13,7 @@ export default StyleSheet.create({
         backgroundColor: Var.darkGray,
         borderRadius: Var.borderRadius,
         width: "100%",
-        marginVertical: Var.spacing.xs,
+        marginVertical: Var.spacing.sm,
         borderWidth: 1,
         borderColor: Var.gray
     },
@@ -29,29 +29,26 @@ export default StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: Var.spacing.xs
+        marginBottom: Var.spacing.sm
     },
     tabBar: {
         height: 65,
         backgroundColor: Var.black,
-        padding: Var.spacing.xs
+        padding: Var.spacing.md
     },
     calendar: {
         backgroundColor: Var.darkGray,
         borderRadius: Var.borderRadius,
-        padding: Var.spacing.sm,
-        marginVertical: Var.spacing.lg
+        padding: Var.spacing.md,
+        marginBottom: Var.spacing.lg
     },
     calendarArrow: {
         backgroundColor: Var.gray,
         borderRadius: Var.borderRadius,
-        padding: Var.spacing.xs
+        padding: Var.spacing.sm
     },
 
     /* SPACING */
-    spacingAfterExtraSmall: {
-        marginBottom: Var.spacing.xs
-    },
     spacingAfterSmall: {
         marginBottom: Var.spacing.sm
     },
@@ -70,9 +67,6 @@ export default StyleSheet.create({
     spacingEndSmall: {
         marginEnd: Var.spacing.sm
     },
-    spacingEndExtraSmall: {
-        marginEnd: Var.spacing.xs
-    },
     spacingNone: {
         margin: 0
     },
@@ -87,7 +81,7 @@ export default StyleSheet.create({
         marginTop: "auto"
     },
     sectionDescription: {
-        marginBottom: Var.spacing.md
+        marginBottom: Var.spacing.lg
     },
     modalTitle: {
         marginBottom: Var.spacing.sm
@@ -134,8 +128,8 @@ export default StyleSheet.create({
     buttonText : {
         textAlign: "center",
         color: Var.white,
-        paddingVertical: Var.spacing.sm,
-        paddingHorizontal: Var.spacing.sm,
+        paddingVertical: Var.spacing.md,
+        paddingHorizontal: Var.spacing.md,
         fontWeight: "bold"
     },
 
@@ -143,13 +137,13 @@ export default StyleSheet.create({
     button : {
         backgroundColor: Var.red,
         borderRadius: Var.borderRadius,
-        marginVertical: Var.spacing.xs
+        marginVertical: Var.spacing.sm
     },
     secondaryButton : {
         backgroundColor : Var.black,
         borderRadius : Var.borderRadius,
         borderColor: Var.gray,
-        marginVertical: Var.spacing.xs,
+        marginVertical: Var.spacing.sm,
         borderWidth: 1
     },
     buttonBlock : {
@@ -159,17 +153,18 @@ export default StyleSheet.create({
     input : {
         backgroundColor: Var.black,
         color: Var.white,
-        padding: Var.spacing.sm,
+        padding: Var.spacing.md,
         borderRadius: Var.borderRadius,
         borderWidth: 0,
         maxWidth: "100%",
         borderColor: Var.gray,
         borderWidth: 1,
-        marginVertical: Var.spacing.xs
+        marginVertical: Var.spacing.sm
     },
     setInput : {
         textAlign: "center",
-        width : 50
+        width : 50,
+        marginVertical: 0
     },
 
     /* COMPONENTS */
@@ -183,23 +178,22 @@ export default StyleSheet.create({
         maxHeight: "100%",
         backgroundColor: Var.darkGray,
         padding: Var.spacing.lg,
-        paddingBottom: Var.spacing.sm,
+        paddingBottom: Var.spacing.md,
         borderRadius: Var.borderRadius
     },
     alertBox: {
         borderRadius: Var.borderRadius,
         borderColor: Var.red,
         backgroundColor: Var.black,
-        paddingVertical: Var.spacing.lg,
-        paddingHorizontal: Var.spacing.xl,
+        padding: Var.spacing.md,
         borderWidth: 1,
         marginVertical: Var.spacing.sm,
         width: "auto",
         margin: "auto"
     },
-    line : {
-        borderWidth: 0.5,
-        borderColor:'black',
-        margin: Var.spacing.sm,
+    divider: {
+        height: 1,
+        backgroundColor: Var.gray,
+        marginVertical: Var.spacing.md,
     }
 })

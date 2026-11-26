@@ -16,7 +16,7 @@ import { StyleSheet } from "react-native";
 const AddExerciseStyle = StyleSheet.create({
     listItems : {
         backgroundColor: Var.navyBlue,
-        padding: Var.spacing.xs,
+        padding: Var.spacing.md,
         fontSize: 15,
         color: Var.white,
     }
@@ -65,7 +65,7 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                 onChangeText={setSearchText}>
             </TextInput>
             <AlertBox message="Could not load exercises" visible={offline}></AlertBox>
-            <View style={[MainStyle.inlineContainer, {zIndex: 1}]}>
+            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone, {zIndex: 1}]}>
                 <DropDownPicker
                     open={typePicker}
                     setOpen={setTypePicker}
@@ -73,7 +73,8 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                     containerStyle={{width: "40%"}}
                     style={MainStyle.input}
                     textStyle={{color: Var.white}}
-                    dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
+                    arrowIconStyle={{tintColor: Var.white}}
+                    dropDownContainerStyle={MainStyle.input}
                     items={[
                         {label: "Type", value: ""}, 
                         {label: "Compound", value: "Compound"},
@@ -88,7 +89,8 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                     style={MainStyle.input}
                     value={musclegroup}
                     textStyle={{color: Var.white}}
-                    dropDownContainerStyle={{backgroundColor: Var.navyBlue}}
+                    arrowIconStyle={{tintColor: Var.white}}
+                    dropDownContainerStyle={MainStyle.input}
                     items={[
                         {label: "Muscle group", value: ""}, 
                         ...musclegroups.map(mg => (
@@ -99,7 +101,7 @@ export default function AddExercise({visible, addExercise, ownIndex, Close}) {
                 </DropDownPicker>
             </View>
             <ScrollView 
-                style={{maxHeight: 120}}>
+                style={{maxHeight: 240}}>
                 {filteredExercises.map((exercise) => (
                     <Pressable
                         key={exercise.id}

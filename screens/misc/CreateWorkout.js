@@ -106,7 +106,7 @@ export default function CreateWorkout() {
                     planDraft.exercises.map((exercise, index) => {
                         return (
                             <View key={index} style={MainStyle.container}>
-                                <View style={MainStyle.inlineContainer}>
+                                <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                                     <ReArrange
                                         index={index}
                                         list={planDraft.exercises}
@@ -134,7 +134,7 @@ export default function CreateWorkout() {
                                         }}>
                                     </TextInput>
                                     <Pressable onPress={() => deleteExercise(index)}>
-                                        <Ionicons name="trash" color={Var.red} size={30}></Ionicons>
+                                        <Ionicons name="trash" color={Var.red} size={Var.iconSizes.sm}></Ionicons>
                                     </Pressable>
                                 </View>
                                 {typeof exercise.id == "string" ? (
@@ -148,7 +148,7 @@ export default function CreateWorkout() {
                         )
                     })
                 }
-                <View style={MainStyle.inlineContainer}>
+                <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                     <Pressable
                         style={[MainStyle.button, MainStyle.buttonBlock]}
                         onPress={() => {

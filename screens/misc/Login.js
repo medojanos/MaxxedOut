@@ -97,7 +97,7 @@ export default function Login() {
                 </Pressable>
                 <View style={MainStyle.bottomSection}>
                     <View style={[MainStyle.inlineContainer, MainStyle.autoMargin]}>
-                        <Text style={[MainStyle.lightText, MainStyle.spacingEndExtraSmall]}>Don't have an account?</Text>
+                        <Text style={[MainStyle.lightText, MainStyle.spacingEndSmall]}>Don't have an account?</Text>
                         <Pressable
                             onPress={() => {Linking.openURL(Constants.expoConfig.extra.WEB_URL + "/registration")}}>
                             <Text style={MainStyle.strongText}>Register here!</Text>

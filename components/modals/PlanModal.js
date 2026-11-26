@@ -99,7 +99,7 @@ export default function PlanModal({ Close, visible, id, name }) {
             <ScrollView>
                 {plan?.exercises.map((exercise, index) => (
                     <View key={index} style={MainStyle.container}>
-                        <View key={index} style={MainStyle.inlineContainer}>
+                        <View key={index} style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                             <ReArrange
                                 index={index}
                                 list={plan.exercises}
@@ -130,7 +130,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                                 }}>
                             </TextInput>
                             <Pressable onPress={() => deleteExercise(index)}>
-                                <Ionicons name="trash" color={Var.red} size={20}></Ionicons>
+                                <Ionicons name="trash" color={Var.red} size={Var.iconSizes.sm}></Ionicons>
                             </Pressable>
                         </View>
                     </View>
@@ -142,7 +142,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                 ownIndex={plan.ownIndex}
                 Close={() => setSearchModal(false)}>
             </AddExercise>
-            <Pressable style={MainStyle.secondaryButton} onPress={() => {setDeleteModal(true)}}><Text style={MainStyle.buttonText}>Delete workout plan</Text></Pressable>
+            <Pressable style={[MainStyle.secondaryButton, {borderColor: Var.red}]} onPress={() => {setDeleteModal(true)}}><Text style={MainStyle.buttonText}>Delete workout plan</Text></Pressable>
             <ModalOverlay visible={deleteModal} onClose={() => setDeleteModal(false)}>
                 <Text style={[MainStyle.containerTitle, MainStyle.modalTitle]}>
                     Are you sure you want to delete
@@ -164,7 +164,7 @@ export default function PlanModal({ Close, visible, id, name }) {
                     <Text style={MainStyle.buttonText}>Yes</Text>
                 </Pressable>
             </ModalOverlay>
-            <View style={MainStyle.inlineContainer}>
+            <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                 <Pressable style={[MainStyle.button, MainStyle.buttonBlock]} onPress={() => {
                     apiFetch("/plans/" + id, {
                         method: "PATCH",

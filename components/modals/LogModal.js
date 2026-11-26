@@ -29,7 +29,7 @@ export default function LogModal({visible, Close, workouts, status}) {
                             <Text style={MainStyle.containerTitle}>{workout.name}</Text>
                             <Pressable
                                 onPress={() => setDeleteModal(true)}>
-                                <Ionicons name="trash" size={20} color={Var.red}/>
+                                <Ionicons name="trash" size={Var.iconSizes.sm} color={Var.red}/>
                             </Pressable>
                         </View>
                         <Text style={MainStyle.strongText}>{workout.ended_at} - {displayTime(workout.duration, "h m s")}</Text>

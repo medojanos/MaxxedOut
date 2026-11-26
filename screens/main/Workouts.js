@@ -41,20 +41,20 @@ export default function Workouts() {
             <Text style={MainStyle.screenTitle}>Workouts</Text>
             <Text style={[MainStyle.lightText, MainStyle.sectionDescription]}>Create or edit your workout plans</Text>
             <Pressable style={MainStyle.button} onPress={() => {navigation.navigate("CreateWorkout")}}>
-                <Ionicons style={MainStyle.autoMargin} name="add-circle" size={50} color={Var.black}></Ionicons>
+                <Ionicons style={MainStyle.autoMargin} name="add-circle" size={Var.iconSizes.xl} color={Var.black}></Ionicons>
             </Pressable>
             {
                 plans ? plans.length > 0 ? 
                 plans.map(plan => (
                     <View key={plan.id} style={MainStyle.container}>
-                        <View style={MainStyle.inlineContainer}>
+                        <View style={[MainStyle.inlineContainer, MainStyle.spacingNone]}>
                             <Text style={MainStyle.containerTitle}>{plan.name}</Text>
                             <Pressable onPress={() => {
                                 setPlanId(plan.id);
                                 setPlanName(plan.name);
                                 setPlanInfoModal(true);
                             }}>
-                                <Ionicons name="information-circle-outline" size={25} color={Var.white}></Ionicons>
+                                <Ionicons name="information-circle-outline" size={Var.iconSizes.md} color={Var.white}></Ionicons>
                             </Pressable>
                         </View>
                         <Pressable style={MainStyle.secondaryButton} onPress={() => {
